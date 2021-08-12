@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Main.PickMode"
+    android:orientation="vertical"
+    android:background="@drawable/marmorleft"
+    android:paddingLeft="10dp"
+    android:paddingTop="10dp"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2.5"
+        android:background="@drawable/plankslaucher">
+
+        <Button
+            android:id="@+id/normalBtn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_bg"
+            android:text="Normal"
+            android:textColor="#ffffff"
+            app:layout_constraintBottom_toTopOf="@+id/circularBtn"
+            app:layout_constraintEnd_toStartOf="@+id/normalQBtn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <Button
+            android:id="@+id/circularBtn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/button_bg"
+            android:text="Circular"
+            android:textColor="#ffffff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/circularQBtn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/normalBtn" />
+
+        <Button
+            android:id="@+id/normalQBtn"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_bg"
+            android:text="?"
+            android:textColor="#ffffff"
+            app:layout_constraintBottom_toBottomOf="@+id/normalBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/normalBtn"
+            app:layout_constraintTop_toTopOf="@+id/normalBtn"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <Button
+            android:id="@+id/circularQBtn"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_bg"
+            android:text="?"
+            android:textColor="#ffffff"
+            app:layout_constraintBottom_toBottomOf="@+id/circularBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/circularBtn"
+            app:layout_constraintTop_toTopOf="@+id/circularBtn" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <FrameLayout
+        android:id="@+id/modeQLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+        <ScrollView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            >
+
+        <TextView
+            android:id="@+id/modeQTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textAlignment="center"
+            android:textColor="#ffffff"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            />
+
+        </ScrollView>
+
+    </FrameLayout>
+
+</LinearLayout>

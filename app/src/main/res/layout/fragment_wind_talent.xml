@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Fragments.WindTalentFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/backgroundplankslight">
+
+                <ImageView
+                    android:layout_width="128dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/fontwind"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/windRow1Item1IB"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/backgroundsymbolwindrow1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/windRow1Item1TV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="3"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/windRow1Item1ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow1Item1IB" />
+
+                <TextView
+                    android:id="@+id/windRow1Item1BorderTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:gravity="center"
+                    android:text="/"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow1Item1TV"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/windRow1Item1ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow1Item1IB" />
+
+                <TextView
+                    android:id="@+id/windRow1Item1ShowTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="X"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow1Item1TV"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow1Item1IB" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/backgroundWindRow2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/backgroundplanksdark">
+
+                <ImageButton
+                    android:id="@+id/windRow2Item1IB"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/backgroundsymbolwindrow2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.25"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/windRow2Item1TV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="3"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.25"
+                    app:layout_constraintStart_toEndOf="@+id/windRow2Item1ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow2Item1IB" />
+
+                <TextView
+                    android:id="@+id/windRow2Item1BorderTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:gravity="center"
+                    android:text="/"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow2Item1TV"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/windRow2Item1ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow2Item1IB" />
+
+                <TextView
+                    android:id="@+id/windRow2Item1ShowTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="X"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow2Item1TV"
+                    app:layout_constraintHorizontal_bias="0.25"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow2Item1IB" />
+
+                <ImageButton
+                    android:id="@+id/windRow2Item2IB"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/backgroundsymbolwindrow2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.75"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/windRow2Item2TV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="3"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.75"
+                    app:layout_constraintStart_toEndOf="@+id/windRow2Item2ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow2Item2IB" />
+
+                <TextView
+                    android:id="@+id/windRow2Item2BorderTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:gravity="center"
+                    android:text="/"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow2Item2TV"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/windRow2Item2ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow2Item2IB" />
+
+                <TextView
+                    android:id="@+id/windRow2Item2ShowTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="X"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow2Item2TV"
+                    app:layout_constraintHorizontal_bias="0.75"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow2Item2IB" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/backgroundWindRow3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/backgroundplanksdark">
+
+                <ImageButton
+                    android:id="@+id/windRow3Item1IB"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/backgroundsymbolwindrow3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.25"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/windRow3Item1TV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="3"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.25"
+                    app:layout_constraintStart_toEndOf="@+id/windRow3Item1ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow3Item1IB" />
+
+                <TextView
+                    android:id="@+id/windRow3Item1BorderTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:gravity="center"
+                    android:text="/"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow3Item1TV"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/windRow3Item1ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow3Item1IB" />
+
+                <TextView
+                    android:id="@+id/windRow3Item1ShowTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="X"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow3Item1TV"
+                    app:layout_constraintHorizontal_bias="0.25"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow3Item1IB" />
+
+                <ImageButton
+                    android:id="@+id/windRow3Item2IB"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/backgroundsymbolwindrow3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.75"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/windRow3Item2TV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="3"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.75"
+                    app:layout_constraintStart_toEndOf="@+id/windRow3Item2ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow3Item2IB" />
+
+                <TextView
+                    android:id="@+id/windRow3Item2BorderTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:gravity="center"
+                    android:text="/"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow3Item2TV"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/windRow3Item2ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow3Item2IB" />
+
+                <TextView
+                    android:id="@+id/windRow3Item2ShowTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="X"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow3Item2TV"
+                    app:layout_constraintHorizontal_bias="0.75"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow3Item2IB" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/backgroundWindRow4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/backgroundplanksdark">
+
+                <ImageButton
+                    android:id="@+id/windRow4Item1IB"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/backgroundsymbolwindrow4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/windRow4Item1TV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="3"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/windRow4Item1ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow4Item1IB" />
+
+                <TextView
+                    android:id="@+id/windRow4Item1BorderTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:gravity="center"
+                    android:text="/"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow4Item1TV"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/windRow4Item1ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow4Item1IB" />
+
+                <TextView
+                    android:id="@+id/windRow4Item1ShowTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="X"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/windRow4Item1TV"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow4Item1IB" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/windNameDisplayTalentTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/textMain"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/windDisplayTalentTV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/textMain"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </LinearLayout>
+        </ScrollView>
+
+        <ImageButton
+            android:id="@+id/windUpgradeBTN"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/button_bg"
+            android:src="@android:drawable/arrow_up_float" />
+    </LinearLayout>
+
+</LinearLayout>

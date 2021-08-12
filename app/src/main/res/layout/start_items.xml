@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StartItems"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="@drawable/marmorregularwindow"
+        >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5">
+
+        <ScrollView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:fadeScrollbars="false"
+            android:scrollbarThumbVertical="@drawable/scrollbar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerStartItem"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item"
+            android:fadeScrollbars="false"/>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/talentsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/plankshorizontal"
+        >
+
+        <Button
+            android:id="@+id/closeStartItemsBTN"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_bg"
+            android:text="Pick" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        >
+
+        <ScrollView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:fadeScrollbars="false">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/showStartItemStatsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+            tools:listitem="@layout/stats"
+            android:fadeScrollbars="false"/>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+
+</LinearLayout>
+
+<com.agsolutions.td.UiViewStartItems
+
+android:id="@+id/uiViewStartItem"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@drawable/overlaytransparent"
+
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toTopOf="parent" />
+
+</FrameLayout>

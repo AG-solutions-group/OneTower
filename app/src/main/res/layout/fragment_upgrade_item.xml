@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="250dp"
+    android:layout_height="100dp"
+    tools:context=".Fragments.ItemUpgradeFragment"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4">
+
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:fadeScrollbars="false"
+        android:scrollbarThumbVertical="@drawable/scrollbar">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/itemBagFragmentRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:listitem="@layout/stats"
+        android:background="#00ffffff"/>
+
+    </ScrollView>
+
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+
+    <ImageView
+        android:id="@+id/upIV"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@android:drawable/arrow_up_float"
+        app:layout_constraintBottom_toTopOf="@+id/upBTN"
+        app:layout_constraintEnd_toEndOf="@+id/upBTN"
+        app:layout_constraintStart_toStartOf="@+id/upBTN" />
+
+        <Button
+            android:id="@+id/upBTN"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:text="UP"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_bg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</LinearLayout>

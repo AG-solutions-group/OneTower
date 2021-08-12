@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Fragments.StatsTowerFragment"
+    android:layout_gravity="center_horizontal">
+    <data>
+        <variable name="updateViewModel" type="com.agsolutions.td.UpdateViewModel"/>
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@drawable/marmorcenter"
+        >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:fadeScrollbars="false"
+            android:scrollbarThumbVertical="@drawable/scrollbar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <ImageView
+                    android:id="@+id/itemChanceTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="12dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/itemfindicon"
+                    app:layout_constraintBottom_toTopOf="@+id/dmgTV"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/itemChanceShowTV"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.itemChance.toString()}"
+                    android:textColor="@{updateViewModel.itemChanceColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/itemChanceTV"
+                    app:layout_constraintStart_toEndOf="@+id/itemChanceTV"
+                    app:layout_constraintTop_toTopOf="@+id/itemChanceTV" />
+
+                <ImageView
+                    android:id="@+id/bonusItemQualityTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/itemqualityicon"
+                    app:layout_constraintBottom_toBottomOf="@+id/itemChanceTV"
+                    app:layout_constraintStart_toEndOf="@+id/itemChanceShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/itemChanceTV" />
+
+                <TextView
+                    android:id="@+id/bonusItemQualityShowTV"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.itemQuality.toString()}"
+                    android:textColor="@{updateViewModel.itemQualityColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/bonusItemQualityTV"
+                    app:layout_constraintStart_toEndOf="@+id/bonusItemQualityTV"
+                    app:layout_constraintTop_toTopOf="@+id/bonusItemQualityTV" />
+
+                <ImageView
+                    android:id="@+id/bagSizeTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/bagicon3"
+                    app:layout_constraintBottom_toBottomOf="@+id/itemChanceTV"
+                    app:layout_constraintStart_toEndOf="@+id/bonusItemQualityShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/itemChanceTV" />
+
+                <TextView
+                    android:id="@+id/bagUsedShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:minWidth="40dp"
+                    android:text="@{updateViewModel.bagString.toString()}"
+                    android:textColor="@{updateViewModel.bagColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/bagSizeTV"
+                    app:layout_constraintStart_toEndOf="@+id/bagSizeTV"
+                    app:layout_constraintTop_toTopOf="@+id/bagSizeTV" />
+
+
+                <ImageView
+                    android:id="@+id/dmgTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="2dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/swordandwandicon"
+                    app:layout_constraintBottom_toTopOf="@+id/speedTV"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/itemChanceTV" />
+
+                <TextView
+                    android:id="@+id/dmgShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:minWidth="40dp"
+                    android:text="@{updateViewModel.towerDmgString.toString()}"
+                    android:textColor="@{updateViewModel.towerDmgColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/dmgTV"
+                    app:layout_constraintStart_toEndOf="@+id/dmgTV"
+                    app:layout_constraintTop_toTopOf="@+id/dmgTV" />
+
+                <ImageView
+                    android:id="@+id/phyDmgTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/swordicon"
+                    app:layout_constraintBottom_toBottomOf="@id/dmgTV"
+                    app:layout_constraintStart_toEndOf="@+id/dmgShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/dmgTV" />
+
+                <TextView
+                    android:id="@+id/phyDmgShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:minWidth="40dp"
+                    android:text="@{updateViewModel.towerPhyDmgString.toString()}"
+                    android:textColor="@{updateViewModel.towerPhyDmgColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/phyDmgTV"
+                    app:layout_constraintStart_toEndOf="@+id/phyDmgTV"
+                    app:layout_constraintTop_toTopOf="@+id/phyDmgTV" />
+
+
+                <ImageView
+                    android:id="@+id/spellDmgTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/wandicon"
+                    app:layout_constraintBottom_toBottomOf="@+id/dmgTV"
+                    app:layout_constraintStart_toEndOf="@+id/phyDmgShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/dmgTV" />
+
+                <TextView
+                    android:id="@+id/spellDmgShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:minWidth="40dp"
+                    android:text="@{updateViewModel.towerMgcDmgString.toString()}"
+                    android:textColor="@{updateViewModel.towerMgcDmgColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/spellDmgTV"
+                    app:layout_constraintStart_toEndOf="@+id/spellDmgTV"
+                    app:layout_constraintTop_toTopOf="@+id/spellDmgTV" />
+
+                <ImageView
+                    android:id="@+id/speedTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="2dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/bowicon"
+                    app:layout_constraintBottom_toTopOf="@+id/hitTV"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/dmgTV" />
+
+                <TextView
+                    android:id="@+id/speedShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:minWidth="30dp"
+                    android:text="@{updateViewModel.towerSpd.toString()}"
+                    android:textColor="@{updateViewModel.towerSpdColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/speedTV"
+                    app:layout_constraintStart_toEndOf="@+id/speedTV"
+                    app:layout_constraintTop_toTopOf="@+id/speedTV" />
+
+
+                <ImageView
+                    android:id="@+id/critTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/criticon"
+                    app:layout_constraintBottom_toBottomOf="@+id/speedTV"
+                    app:layout_constraintStart_toEndOf="@+id/speedShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/speedTV" />
+
+                <TextView
+                    android:id="@+id/critShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:minWidth="30dp"
+                    android:text="@{updateViewModel.towerCrtString.toString()}"
+                    android:textColor="@{updateViewModel.towerCrtColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/critTV"
+                    app:layout_constraintStart_toEndOf="@+id/critTV"
+                    app:layout_constraintTop_toTopOf="@+id/critTV" />
+
+                <ImageView
+                    android:id="@+id/critDmgTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/critdmgicon"
+                    app:layout_constraintBottom_toBottomOf="@+id/speedTV"
+                    app:layout_constraintStart_toEndOf="@+id/critShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/speedTV" />
+
+                <TextView
+                    android:id="@+id/critDmgShowTV"
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.towerCrtDmg.toString()}"
+                    android:textColor="@{updateViewModel.towerCrtDmgColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/critDmgTV"
+                    app:layout_constraintStart_toEndOf="@+id/critDmgTV"
+                    app:layout_constraintTop_toTopOf="@+id/critDmgTV" />
+
+                <ImageView
+                    android:id="@+id/multiCrtTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/multicriticon"
+                    app:layout_constraintBottom_toBottomOf="@+id/speedTV"
+                    app:layout_constraintStart_toEndOf="@+id/critDmgShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/speedTV" />
+
+                <TextView
+                    android:id="@+id/multiCrtShowTV"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.towerMultiCrt.toString()}"
+                    android:textColor="@{updateViewModel.towerMultiCrtColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/multiCrtTV"
+                    app:layout_constraintStart_toEndOf="@+id/multiCrtTV"
+                    app:layout_constraintTop_toTopOf="@+id/multiCrtTV" />
+
+
+                <ImageView
+                    android:id="@+id/hitTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="2dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/hiticon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/speedTV" />
+
+                <TextView
+                    android:id="@+id/hitShowTV"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.towerHit.toString()}"
+                    android:textColor="@{updateViewModel.towerHitColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/hitTV"
+                    app:layout_constraintStart_toEndOf="@+id/hitTV"
+                    app:layout_constraintTop_toTopOf="@+id/hitTV" />
+
+                <ImageView
+                    android:id="@+id/armorPenTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/armorpenicon"
+                    app:layout_constraintBottom_toBottomOf="@+id/hitTV"
+                    app:layout_constraintStart_toEndOf="@+id/hitShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/hitTV" />
+
+                <TextView
+                    android:id="@+id/armorPenShowTV"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.towerArmPen.toString()}"
+                    android:textColor="@{updateViewModel.towerArmPenColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/armorPenTV"
+                    app:layout_constraintStart_toEndOf="@+id/armorPenTV"
+                    app:layout_constraintTop_toTopOf="@+id/armorPenTV" />
+
+                <ImageView
+                    android:id="@+id/magicPenTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/magicpenicon"
+                    app:layout_constraintBottom_toBottomOf="@+id/hitTV"
+                    app:layout_constraintStart_toEndOf="@+id/armorPenShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/hitTV" />
+
+                <TextView
+                    android:id="@+id/magicPenShowTV"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.towerMgcPen.toString()}"
+                    android:textColor="@{updateViewModel.towerMgcPenColor}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/magicPenTV"
+                    app:layout_constraintStart_toEndOf="@+id/magicPenTV"
+                    app:layout_constraintTop_toTopOf="@+id/magicPenTV" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

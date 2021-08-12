@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/snackbar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/marmorlayout"
+    tools:context=".Main.MainActivity">
+
+    <com.agsolutions.td.GameView
+
+        android:id="@+id/gameViewStart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/continueGameBTN"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/button_bg"
+        android:text="Continue"
+        android:textColor="#ffffff"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/newGameBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userLevelProgressBar" />
+
+    <Button
+        android:id="@+id/newGameBtn"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/button_bg"
+        android:text="New Game"
+        android:textColor="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/startItemsBTN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/continueGameBTN" />
+
+    <Button
+        android:id="@+id/startItemsBTN"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/button_bg"
+        android:text="Shop"
+        android:textColor="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/highScoreBTN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newGameBtn" />
+
+    <Button
+        android:id="@+id/highScoreBTN"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/button_bg"
+        android:text="HighScore"
+        android:textColor="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/wikiBTN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startItemsBTN" />
+
+    <Button
+        android:id="@+id/wikiBTN"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/button_bg"
+        android:text="WIKI"
+        android:textColor="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/aboutBTN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/highScoreBTN" />
+
+    <Button
+        android:id="@+id/aboutBTN"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/button_bg"
+        android:text="About"
+        android:textColor="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/quitBTN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wikiBTN" />
+
+    <Button
+        android:id="@+id/quitBTN"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/button_bg"
+        android:text="Quit"
+        android:textColor="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/scaleBTN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/aboutBTN" />
+
+    <Button
+        android:id="@+id/scaleBTN"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/button_bg"
+        android:text="Scale"
+        android:textColor="#ffffff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quitBTN" />
+
+    <TextView
+        android:id="@+id/showUserTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:shadowColor="#000000"
+        android:shadowDx="1.5"
+        android:shadowDy="1.3"
+        android:shadowRadius="1.6"
+        android:text="User"
+        android:textColor="#ffffff"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toTopOf="@+id/showUserLevelTV"
+        app:layout_constraintEnd_toEndOf="@+id/showUserLevelTV"
+        app:layout_constraintStart_toStartOf="@+id/showUserLevelTV"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/showUserLevelTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:shadowColor="#000000"
+        android:shadowDx="1.5"
+        android:shadowDy="1.3"
+        android:shadowRadius="1.6"
+        android:text="Level"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/userLevelProgressBar"
+        app:layout_constraintEnd_toEndOf="@+id/userLevelProgressBar"
+        app:layout_constraintStart_toStartOf="@+id/userLevelProgressBar"
+        app:layout_constraintTop_toBottomOf="@+id/showUserTV" />
+
+    <ProgressBar
+        android:id="@+id/userLevelProgressBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="100dp"
+        android:layout_height="10dp"
+        android:background="@color/backgroundButton"
+        android:progressBackgroundTint="@color/backgroundButton"
+        app:layout_constraintBottom_toTopOf="@+id/continueGameBTN"
+        app:layout_constraintEnd_toEndOf="@+id/continueGameBTN"
+        app:layout_constraintStart_toStartOf="@+id/continueGameBTN"
+        app:layout_constraintTop_toBottomOf="@+id/showUserLevelTV" />
+
+    <ProgressBar
+        android:id="@+id/progressMainBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="100sp"
+        android:translationZ="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

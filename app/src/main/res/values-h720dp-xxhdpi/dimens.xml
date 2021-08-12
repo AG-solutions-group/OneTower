@@ -1,0 +1,15 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <item name="scale" type="integer">10</item>
+    <dimen name="textMain">14sp</dimen>
+    <dimen name="textNews">12sp</dimen>
+    <dimen name="itemStats">12sp</dimen>
+    <dimen name="itemSize">45dp</dimen>
+    <dimen name="itemSizeMargin">50dp</dimen>
+    <dimen name="statsFragmentHight">100dp</dimen>
+    <dimen name="bigText">18sp</dimen>
+    <dimen name="talentBtn">90dp</dimen>
+
+
+
+</resources>

@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Fragments.PoisonTalentFragment"
+    android:orientation="vertical"
+    >
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/backgroundplankslight"
+            >
+
+            <ImageView
+                android:layout_width="128dp"
+                android:layout_height="64dp"
+                android:background="@drawable/fontpoison"
+                android:layout_marginStart="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/poisonRow1Item1IB"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/backgroundsymbolpoisonrow1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/poisonRow1Item1TV"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:textSize="@dimen/textMain"
+        android:gravity="start"
+        android:text="3"
+        android:textColor="@color/Talentfont"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/poisonRow1Item1BorderTV"
+        app:layout_constraintTop_toBottomOf="@+id/poisonRow1Item1IB" />
+
+            <TextView
+                android:id="@+id/poisonRow1Item1BorderTV"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:textSize="@dimen/textMain"
+                android:gravity="center"
+                android:text="/"
+                android:textColor="@color/Talentfont"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/poisonRow1Item1TV"
+                app:layout_constraintStart_toEndOf="@+id/poisonRow1Item1ShowTV"
+                app:layout_constraintTop_toBottomOf="@+id/poisonRow1Item1IB" />
+
+    <TextView
+        android:id="@+id/poisonRow1Item1ShowTV"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:textSize="@dimen/textMain"
+        android:gravity="end"
+        android:text="X"
+        android:textColor="@color/Talentfont"
+        app:layout_constraintEnd_toStartOf="@+id/poisonRow1Item1BorderTV"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/poisonRow1Item1IB" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/backgroundPoisonRow2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/backgroundplanksdark"
+            >
+    <ImageButton
+    android:id="@+id/poisonRow2Item1IB"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:layout_marginTop="8dp"
+        android:background="@drawable/backgroundsymbolpoisonrow2"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.25"
+    app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/poisonRow2Item1TV"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:textSize="@dimen/textMain"
+        android:text="3"
+        android:textAlignment="center"
+        android:textColor="@color/Talentfont"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toEndOf="@+id/poisonRow2Item1ShowTV"
+        app:layout_constraintTop_toBottomOf="@+id/poisonRow2Item1IB" />
+
+            <TextView
+                android:id="@+id/poisonRow2Item1BorderTV"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:textSize="@dimen/textMain"
+                android:gravity="center"
+                android:text="/"
+                android:textColor="@color/Talentfont"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/poisonRow2Item1TV"
+                app:layout_constraintStart_toEndOf="@+id/poisonRow2Item1ShowTV"
+                app:layout_constraintTop_toBottomOf="@+id/poisonRow2Item1IB" />
+
+    <TextView
+        android:id="@+id/poisonRow2Item1ShowTV"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:textSize="@dimen/textMain"
+        android:text="X"
+        android:textAlignment="center"
+        android:textColor="@color/Talentfont"
+        app:layout_constraintEnd_toStartOf="@+id/poisonRow2Item1TV"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/poisonRow2Item1IB" />
+
+    <ImageButton
+        android:id="@+id/poisonRow2Item2IB"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/backgroundsymbolpoisonrow2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/poisonRow2Item2TV"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:textSize="@dimen/textMain"
+        android:text="3"
+        android:textAlignment="center"
+        android:textColor="@color/Talentfont"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toEndOf="@+id/poisonRow2Item2ShowTV"
+        app:layout_constraintTop_toBottomOf="@+id/poisonRow2Item2IB" />
+
+            <TextView
+                android:id="@+id/poisonRow2Item2BorderTV"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:textSize="@dimen/textMain"
+                android:gravity="center"
+                android:text="/"
+                android:textColor="@color/Talentfont"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/poisonRow2Item2TV"
+                app:layout_constraintStart_toEndOf="@+id/poisonRow2Item2ShowTV"
+                app:layout_constraintTop_toBottomOf="@+id/poisonRow2Item2IB" />
+
+    <TextView
+        android:id="@+id/poisonRow2Item2ShowTV"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:textSize="@dimen/textMain"
+        android:text="X"
+        android:textAlignment="center"
+        android:textColor="@color/Talentfont"
+        app:layout_constraintEnd_toStartOf="@+id/poisonRow2Item2TV"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/poisonRow2Item2IB" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/backgroundPoisonRow3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/backgroundplanksdark"
+            >
+
+            <ImageButton
+                android:id="@+id/poisonRow3Item1IB"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/backgroundsymbolpoisonrow3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.25"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/poisonRow3Item1TV"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:textSize="@dimen/textMain"
+                android:text="3"
+                android:textAlignment="center"
+                android:textColor="@color/Talentfont"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.25"
+                app:layout_constraintStart_toEndOf="@+id/poisonRow3Item1ShowTV"
+                app:layout_constraintTop_toBottomOf="@+id/poisonRow3Item1IB" />
+
+            <TextView
+                android:id="@+id/poisonRow3Item1BorderTV"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:textSize="@dimen/textMain"
+                android:gravity="center"
+                android:text="/"
+                android:textColor="@color/Talentfont"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/poisonRow3Item1TV"
+                app:layout_constraintStart_toEndOf="@+id/poisonRow3Item1ShowTV"
+                app:layout_constraintTop_toBottomOf="@+id/poisonRow3Item1IB" />
+
+            <TextView
+                android:id="@+id/poisonRow3Item1ShowTV"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:textSize="@dimen/textMain"
+                android:text="X"
+                android:textAlignment="center"
+                android:textColor="@color/Talentfont"
+                app:layout_constraintEnd_toStartOf="@+id/poisonRow3Item1TV"
+                app:layout_constraintHorizontal_bias="0.25"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/poisonRow3Item1IB" />
+
+            <ImageButton
+                android:id="@+id/poisonRow3Item2IB"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/backgroundsymbolpoisonrow3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.75"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/poisonRow3Item2TV"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:textSize="@dimen/textMain"
+                android:text="3"
+                android:textAlignment="center"
+                android:textColor="@color/Talentfont"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.75"
+                app:layout_constraintStart_toEndOf="@+id/poisonRow3Item2ShowTV"
+                app:layout_constraintTop_toBottomOf="@+id/poisonRow3Item2IB" />
+
+            <TextView
+                android:id="@+id/poisonRow3Item2BorderTV"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:textSize="@dimen/textMain"
+                android:gravity="center"
+                android:text="/"
+                android:textColor="@color/Talentfont"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/poisonRow3Item2TV"
+                app:layout_constraintStart_toEndOf="@+id/poisonRow3Item2ShowTV"
+                app:layout_constraintTop_toBottomOf="@+id/poisonRow3Item2IB" />
+
+            <TextView
+                android:id="@+id/poisonRow3Item2ShowTV"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:textSize="@dimen/textMain"
+                android:text="X"
+                android:textAlignment="center"
+                android:textColor="@color/Talentfont"
+                app:layout_constraintEnd_toStartOf="@+id/poisonRow3Item2TV"
+                app:layout_constraintHorizontal_bias="0.75"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/poisonRow3Item2IB" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/backgroundPoisonRow4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/backgroundplanksdark"
+            >
+
+    <ImageButton
+        android:id="@+id/poisonRow4Item1IB"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/backgroundsymbolpoisonrow4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/poisonRow4Item1TV"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:textSize="@dimen/textMain"
+        android:text="3"
+        android:textAlignment="center"
+        android:textColor="@color/Talentfont"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/poisonRow4Item1ShowTV"
+        app:layout_constraintTop_toBottomOf="@+id/poisonRow4Item1IB" />
+
+            <TextView
+                android:id="@+id/poisonRow4Item1BorderTV"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:textSize="@dimen/textMain"
+                android:gravity="center"
+                android:text="/"
+                android:textColor="@color/Talentfont"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/poisonRow4Item1TV"
+                app:layout_constraintStart_toEndOf="@+id/poisonRow4Item1ShowTV"
+                app:layout_constraintTop_toBottomOf="@+id/poisonRow4Item1IB" />
+
+    <TextView
+        android:id="@+id/poisonRow4Item1ShowTV"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:textSize="@dimen/textMain"
+        android:text="X"
+        android:textAlignment="center"
+        android:textColor="@color/Talentfont"
+        app:layout_constraintEnd_toStartOf="@+id/poisonRow4Item1TV"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/poisonRow4Item1IB" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/poisonNameDisplayTalentTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/textMain"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/poisonDisplayTalentTV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/textMain"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </LinearLayout>
+        </ScrollView>
+
+        <ImageButton
+            android:id="@+id/poisonUpgradeBTN"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/button_bg"
+            android:src="@android:drawable/arrow_up_float" />
+    </LinearLayout>
+
+</LinearLayout>

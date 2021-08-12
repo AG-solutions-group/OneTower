@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">TD</string>
+    <!--app-->
+
+    <!--registration-->
+    <string name="hint_name">Username</string>
+    <string name="hint_pass">Password</string>
+    <string name="hint_repass">Confirm Password</string>
+    <string name="hint_email">Email</string>
+    <string name="register_txt">Create new Account</string>
+    <string name="registration_text">REGISTER</string>
+    <!--Login-->
+    <string name="login_text">LOGIN</string>
+    <string name="already_login_txt">Back to Login</string>
+    <!--error message-->
+    <string name="error_message_name">Please enter valid name</string>
+    <string name="error_message_email">Please enter valid email</string>
+    <string name="error_message_password">Please enter valid password</string>
+    <string name="error_password_match">Your password does not match</string>
+    <string name="error_email_exists">User may already exist</string>
+    <!--success message-->
+    <string name="success_message">User added successfully</string>
+    <string name="login_success_message">User logged successfully</string>
+    <string name="enemy"><u>Enemy</u></string>
+
+    <!--tutorial message-->
+    <string name="tutorial_welcome1">Welcome to One TD!</string>
+    <string name="tutorial_welcome2">How to play One TD</string>
+    <string name="tutorial_welcome3">Stop invading enemies to reach the portal by improving your One Tower with items and talents!</string>
+    <string name="tutorial_welcome4">Each round all enemies get stronger. In turn you have to upgrade your tower by collecting resources like Gold, DIA (diamonds) and TP (talent points) in order to buy ITEMS or learn TALENTS. </string>
+
+    <string name="tutorial_item_found">You found an item!</string>
+    <string name="tutorial_item_found_description">Killed enemies give you Gold and have a chance to drop items. Items improve your towers attributes (e.g. tower damage or speed) but cost resources (e.g. Gold or DIA). Click on an item to see its attributes and costs.  </string>
+    <string name="tutorial_item_found_description2">Your tower can only use a certain amount of items at the same time. Remove unwanted items from the towers inventory by swiping UP.</string>
+    <string name="tutorial_item_found_description3">To use an item simply swipe DOWN on it.</string>
+
+    <string name="tutorial_talents1">You just received a TP!</string>
+    <string name="tutorial_talents2"><u>You receive</u>\n - 1 TP (talent point) every 4 levels\n  - 1 UP (upgrade point) every 5 levels\n\n You can spend TPs in the talents menu and UPs in the items tab.</string>
+    <string name="tutorial_talents3"></string>
+
+    <string name="tutorial_enemies">A boss is approaching!</string>
+    <string name="tutorial_enemies2">One TD has a variety of different enemy types. Some have increased armor, some are super fast. Boss type enemies will spawn every 10 waves to challenge you! They come alone but have vastly increased attributes. You can check the whole list at the wiki page: Menu -> Wiki. \n  \n  Be prepared!</string>
+
+    <string name="tutorial_end">You completed the tutorial!</string>
+    <string name="tutorial_end2">These basics will enable you to start exploring the rest of the game for yourself. \n If you have further questions you can consult the wiki. \n\nEnjoy the game and good luck! </string>
+
+    <string name="tutorial_touch_screen1">Getting aquainted with the interface.</string>
+    <string name="tutorial_touch_screen2">To get additional information about your tower attributes you can simply click on it! The attributes can be seen in the bottom right corner.</string>
+    <string name="tutorial_touch_screen3">Want to know more about your enemies? Click on one to see enemy attributes in the bottom right corner.</string>
+    <string name="tutorial_touch_screen4">To get back to the resources screen tap the icon on the bottom left.</string>
+
+    <!--wiki message-->
+    <string name="wiki_level">Levels 1-9 : normal \n
+        each 10 levels: boss \n
+        levels 11+: random enemies \n each 50 levels: challenge</string>
+    <string name="wiki_enemy">Types \nnormal: nothing special \n armor: extra armor \n magic armor: extra magic armor \n speed: faster \n hp regeneration: regenerating hitpoints \n evade: % chance to evade attacks \n split: split after being killed \n immune: immune to movement impairment and debuffs \n mass: more enemies \n shortcut: take the shortest path \n secondary: tank: more hp, armor, magic armor; is always focused \n secondary: healer: heals random enemies </string>
+    <string name="wiki_abrev">DMG: damage \n SPD: attack speed \n CRT: critical strike chance \n CrtDmg: critical damage multiplier \n HIT: hit chance \n Gold: earned by killing enemies or interest \n DIA: diamonds: earned by killing bosses \n IP: item points: earned by collecting items, that are not being used \n MP: mystery points: ???</string>
+    <string name="wiki_challenge">Killing a "challenge" enemy will grant you 5 lives, 5 bombs and 1 bag slot. Leaking a challenge will not result in losing lives.</string>
+
+</resources>

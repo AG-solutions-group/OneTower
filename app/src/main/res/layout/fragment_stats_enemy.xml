@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Fragments.StatsEnemyFragment"
+    android:layout_gravity="center_horizontal">
+    <data>
+        <variable name="updateViewModel" type="com.agsolutions.td.UpdateViewModel"/>
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/marmorcenter"
+        >
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fadeScrollbars="false"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ProgressBar
+                android:id="@+id/shieldBar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/backgroundButton"
+                android:progressTint="#704A3E"
+                android:max="@{updateViewModel.lvlMaxShieldBar}"
+                android:progress="@{updateViewModel.lvlShieldBar}"
+                android:progressBackgroundTint="@color/backgroundButton"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/lvlShieldShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:gravity="center_vertical"
+                android:text="@{updateViewModel.lvlShield.toString()}"
+                android:textColor="#ffffff"
+                android:textSize="@{updateViewModel.textMain}"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/shieldBar"
+                app:layout_constraintEnd_toStartOf="@+id/lvlMaxShieldShowTV"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/shieldBar" />
+
+            <TextView
+                android:id="@+id/lvlMaxShieldShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:gravity="center_vertical"
+                android:text="@{updateViewModel.lvlMaxShield.toString()}"
+                android:textColor="#ffffff"
+                android:textSize="@{updateViewModel.textMain}"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/shieldBar"
+                app:layout_constraintBottom_toBottomOf="@+id/shieldBar"
+                app:layout_constraintStart_toEndOf="@+id/lvlShieldShowTV"
+                tools:layout_editor_absoluteY="8dp" />
+
+            <ProgressBar
+                android:id="@+id/manaShieldBar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/backgroundButton"
+                android:progressTint="#2196F3"
+                android:max="@{updateViewModel.lvlMaxManaShieldBar}"
+                android:progress="@{updateViewModel.lvlManaShieldBar}"
+                android:progressBackgroundTint="@color/backgroundButton"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/lvlmanaShieldShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:gravity="center_vertical"
+                android:text="@{updateViewModel.lvlManaShield.toString()}"
+                android:textColor="#ffffff"
+                android:textSize="@{updateViewModel.textMain}"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/manaShieldBar"
+                app:layout_constraintEnd_toStartOf="@+id/lvlMaxManaShieldShowTV"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/manaShieldBar" />
+
+            <TextView
+                android:id="@+id/lvlMaxManaShieldShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:gravity="center_vertical"
+                android:text="@{updateViewModel.lvlMaxManaShield.toString()}"
+                android:textColor="#ffffff"
+                android:textSize="@{updateViewModel.textMain}"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/manaShieldBar"
+                app:layout_constraintBottom_toBottomOf="@+id/manaShieldBar"
+                app:layout_constraintStart_toEndOf="@+id/lvlmanaShieldShowTV"
+                tools:layout_editor_absoluteY="8dp" />
+
+            <ProgressBar
+                android:id="@+id/hpBar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/backgroundButton"
+                android:progressTint="#1E9823"
+                android:max="@{updateViewModel.lvlMaxHpBar}"
+                android:progress="@{updateViewModel.lvlHpBar}"
+                android:progressBackgroundTint="@color/backgroundButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/manaShieldBar" />
+
+            <TextView
+                android:id="@+id/lvlHpShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:gravity="center_vertical"
+                android:text="@{updateViewModel.lvlHp.toString()}"
+                android:textColor="#ffffff"
+                android:textSize="@{updateViewModel.textMain}"
+                app:layout_constraintBottom_toBottomOf="@+id/hpBar"
+                app:layout_constraintEnd_toStartOf="@+id/lvlMaxHpShowTV"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/hpBar" />
+
+            <TextView
+                android:id="@+id/lvlMaxHpShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:gravity="center_vertical"
+                android:text="@{updateViewModel.lvlMaxHp.toString()}"
+                android:textColor="#ffffff"
+                android:textSize="@{updateViewModel.textMain}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/hpBar"
+                app:layout_constraintBottom_toBottomOf="@+id/hpBar"
+                app:layout_constraintStart_toEndOf="@+id/lvlHpShowTV"
+                tools:layout_editor_absoluteY="8dp" />
+
+            <TextView
+                android:id="@+id/lvlTypeTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:elevation="1dp"
+                android:gravity="center"
+                android:text="@{updateViewModel.enemyTypeSpecific.toString()}"
+                android:textColor="#ffffff"
+                android:textSize="@{updateViewModel.textMain}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hpBar" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/statsFragmentHight"
+            android:layout_weight="1"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+
+                <ImageView
+                    android:id="@+id/lvlArmorTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="4dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/armoricon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/lvlArmorShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.lvlArmor.toString()}"
+                    android:textColor="#ffffff"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/lvlArmorTV"
+                    app:layout_constraintStart_toEndOf="@+id/lvlArmorRatingShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/lvlArmorTV" />
+
+                <TextView
+                    android:id="@+id/lvlArmorRatingShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.lvlArmorRating.toString()}"
+                    android:textColor="#ffffff"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/lvlArmorTV"
+                    app:layout_constraintStart_toEndOf="@+id/lvlArmorTV"
+                    app:layout_constraintTop_toTopOf="@+id/lvlArmorTV" />
+
+
+                <ImageView
+                    android:id="@+id/lvlMagicArmorTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="0dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/magicarmoricon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lvlArmorTV" />
+
+                <TextView
+                    android:id="@+id/lvlMagicArmorShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.lvlMagicArmor.toString()}"
+                    android:textColor="#ffffff"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/lvlMagicArmorTV"
+                    app:layout_constraintStart_toEndOf="@+id/lvlMagicArmorRatingShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/lvlMagicArmorTV" />
+
+                <TextView
+                    android:id="@+id/lvlMagicArmorRatingShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="0dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.lvlMagicArmorRating.toString()}"
+                    android:textColor="#ffffff"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintStart_toEndOf="@+id/lvlMagicArmorTV"
+                    app:layout_constraintBottom_toBottomOf="@+id/lvlMagicArmorTV"
+                    app:layout_constraintTop_toTopOf="@+id/lvlMagicArmorTV" />
+
+                <ImageView
+                    android:id="@+id/lvlEvadeTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="0dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/evadeicon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lvlMagicArmorTV" />
+
+                <TextView
+                    android:id="@+id/lvlEvadeShowTV"
+                    android:layout_width="wrap_content"
+                    android:minWidth="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.lvlEvade.toString()}"
+                    android:textColor="#ffffff"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/lvlEvadeTV"
+                    app:layout_constraintStart_toEndOf="@+id/lvlEvadeTV"
+                    app:layout_constraintTop_toTopOf="@+id/lvlEvadeTV" />
+
+
+                <ImageView
+                    android:id="@+id/lvlHpRegTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="0dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/hpregicon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lvlEvadeTV" />
+
+                <TextView
+                    android:id="@+id/lvlHpRegShowTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.lvlHpReg.toString()}"
+                    android:textColor="#ffffff"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/lvlHpRegTV"
+                    app:layout_constraintStart_toEndOf="@+id/lvlHpRegTV"
+                    app:layout_constraintTop_toTopOf="@+id/lvlHpRegTV" />
+
+
+                <ImageView
+                    android:id="@+id/lvlSpdTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="0dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/speedicon"
+                    app:layout_constraintStart_toEndOf="@+id/lvlHpRegShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/lvlEvadeTV" />
+
+                <TextView
+                    android:id="@+id/lvlSpdShowTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.lvlSpd.toString()}"
+                    android:textColor="#ffffff"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/lvlSpdTV"
+                    app:layout_constraintStart_toEndOf="@+id/lvlSpdTV"
+                    app:layout_constraintTop_toTopOf="@+id/lvlSpdTV" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+</LinearLayout>
+</layout>

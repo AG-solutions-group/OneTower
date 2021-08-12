@@ -1,0 +1,832 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Main.DisplayScale">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10">
+
+        <TextView
+            android:id="@+id/levelTVX"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:elevation="1dp"
+            android:text="Level"
+            android:textColor="#ffffff"
+            android:textSize="11dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/livesTVX"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:elevation="1dp"
+            android:text="Lives"
+            android:textColor="#ffffff"
+            android:textSize="11dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/levelTVX" />
+
+        <TextView
+            android:id="@+id/levelShowTVX"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:elevation="1dp"
+            android:text="11"
+            android:textColor="#ffffff"
+            android:textSize="11dp"
+            app:layout_constraintStart_toEndOf="@+id/levelTVX"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/livesShowTVX"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:elevation="1dp"
+            android:text="11"
+            android:textColor="#ffffff"
+            android:textSize="11dp"
+            app:layout_constraintStart_toEndOf="@+id/livesTVX"
+            app:layout_constraintTop_toBottomOf="@id/levelTVX" />
+
+        <com.agsolutions.td.Main.GameViewDisplayScale
+            android:id="@+id/gameViewDisplayScale"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerRadio"
+            android:layout_width="80dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/radio">
+
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/backgroundTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="Background"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/minusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/plusButton" />
+
+        <ImageButton
+            android:id="@+id/plusButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:srcCompat="@android:drawable/ic_media_next" />
+
+        <TextView
+            android:id="@+id/showBackgroundScaleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="Number"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:layout_constraintTop_toTopOf="@+id/plusButton" />
+
+        <ImageButton
+            android:id="@+id/minusButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@android:drawable/ic_media_previous" />
+
+        <TextView
+            android:id="@+id/textMainTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="Text Main"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            app:layout_constraintBottom_toTopOf="@+id/plusButton"
+            app:layout_constraintEnd_toStartOf="@+id/minusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/plusButtonTextMain" />
+
+        <ImageButton
+            android:id="@+id/plusButtonTextMain"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/plusButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:srcCompat="@android:drawable/ic_media_next" />
+
+        <TextView
+            android:id="@+id/showTextMainScaleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="Number"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            app:layout_constraintBottom_toTopOf="@+id/plusButton"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:layout_constraintTop_toTopOf="@+id/plusButtonTextMain" />
+
+        <ImageButton
+            android:id="@+id/minusButtonTextMain"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/minusButton"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@android:drawable/ic_media_previous" />
+
+        <TextView
+            android:id="@+id/textNewsTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="Text News"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextMain"
+            app:layout_constraintEnd_toStartOf="@+id/minusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/plusButtonTextNews" />
+
+        <ImageButton
+            android:id="@+id/plusButtonTextNews"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextMain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:srcCompat="@android:drawable/ic_media_next" />
+
+        <TextView
+            android:id="@+id/showTextNewsScaleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="Number"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextMain"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:layout_constraintTop_toTopOf="@+id/plusButtonTextNews" />
+
+        <ImageButton
+            android:id="@+id/minusButtonTextNews"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/minusButtonTextMain"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@android:drawable/ic_media_previous" />
+
+        <TextView
+            android:id="@+id/textStatsTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="Text Stats"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextNews"
+            app:layout_constraintEnd_toStartOf="@+id/minusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/plusButtonTextStats" />
+
+        <ImageButton
+            android:id="@+id/plusButtonTextStats"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextNews"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:srcCompat="@android:drawable/ic_media_next" />
+
+        <TextView
+            android:id="@+id/showTextStatsScaleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Number"
+            android:textSize="12sp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextNews"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:layout_constraintTop_toTopOf="@+id/plusButtonTextStats" />
+
+        <ImageButton
+            android:id="@+id/minusButtonTextStats"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/minusButtonTextNews"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@android:drawable/ic_media_previous" />
+
+        <TextView
+            android:id="@+id/textButtonTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="Text Button"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextStats"
+            app:layout_constraintEnd_toStartOf="@+id/minusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/plusButtonTextButton" />
+
+        <ImageButton
+            android:id="@+id/plusButtonTextButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextStats"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:srcCompat="@android:drawable/ic_media_next" />
+
+        <TextView
+            android:id="@+id/showTextButtonScaleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:text="Number"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextStats"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:layout_constraintTop_toTopOf="@+id/plusButtonTextButton" />
+
+        <ImageButton
+            android:id="@+id/minusButtonTextButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/minusButtonTextStats"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@android:drawable/ic_media_previous" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/constraint2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/itemSizeMargin"
+        android:background="@drawable/marmorrect22">
+
+
+        <ImageView
+            android:id="@+id/bagIV"
+            android:layout_gravity="center"
+            android:layout_width="@dimen/itemSizeMargin"
+            android:layout_height="@dimen/itemSizeMargin"
+            app:srcCompat="@drawable/bagicon3" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item"
+            android:background="@drawable/planksvertical2"
+            >
+
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+
+        <FrameLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            >
+
+            <Button
+                android:id="@+id/saveBTN"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                android:text="SAVE"
+                android:textColor="#ffffff"
+                android:background="@drawable/button_bg"
+                />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="top" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/backgroundplankslight"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout3"
+            android:layout_width="40dp"
+            android:layout_height="80dp"
+            android:elevation="2dp"
+            android:background="@drawable/marmorleft"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/fragment"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/dmgTVD"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:src="@drawable/swordicon"
+                app:layout_constraintBottom_toTopOf="@+id/speedTVD"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/dmgShowTVD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="11"
+                android:textColor="#ffffff"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@+id/dmgTVD"
+                app:layout_constraintStart_toEndOf="@+id/dmgTVD"
+                app:layout_constraintTop_toTopOf="@+id/dmgTVD"
+                app:layout_constraintVertical_bias="0.714" />
+
+            <ImageView
+                android:id="@+id/speedTVD"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:src="@drawable/bowicon"
+                app:layout_constraintBottom_toTopOf="@+id/xpTVD"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dmgTVD" />
+
+            <TextView
+                android:id="@+id/speedShowTVD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="11"
+                android:textColor="#ffffff"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@+id/speedTVD"
+                app:layout_constraintStart_toEndOf="@+id/speedTVD"
+                app:layout_constraintTop_toTopOf="@+id/speedTVD" />
+
+            <ImageView
+                android:id="@+id/xpTVD"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+
+                android:elevation="1dp"
+                android:src="@drawable/goldicon"
+                app:layout_constraintBottom_toTopOf="@+id/talentTVD"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/speedTVD" />
+
+            <TextView
+                android:id="@+id/xpShowTVD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="11"
+                android:textColor="#ffffff"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@+id/xpTVD"
+                app:layout_constraintStart_toEndOf="@+id/xpTVD"
+                app:layout_constraintTop_toTopOf="@+id/xpTVD" />
+
+            <ImageView
+                android:id="@+id/talentTVD"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:src="@drawable/talenticon"
+                app:layout_constraintBottom_toTopOf="@+id/itemChanceTVD"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/xpTVD" />
+
+            <TextView
+                android:id="@+id/talentShowTVD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="11"
+                android:textColor="#ffffff"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@+id/talentTVD"
+                app:layout_constraintStart_toEndOf="@+id/talentTVD"
+                app:layout_constraintTop_toTopOf="@+id/talentTVD" />
+
+            <ImageView
+                android:id="@+id/itemChanceTVD"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:src="@drawable/itemfindicon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/talentTVD" />
+
+            <TextView
+                android:id="@+id/itemChanceShowTVD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="11"
+                android:textColor="#ffffff"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@+id/itemChanceTVD"
+                app:layout_constraintStart_toEndOf="@+id/itemChanceTVD"
+                app:layout_constraintTop_toTopOf="@+id/itemChanceTVD" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment"
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:elevation="2dp"
+            android:background="@drawable/marmorcenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fadeScrollbars="false"
+                    >
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical">
+
+                        <ImageView
+                            android:id="@+id/xpTV"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="12dp"
+                            android:elevation="1dp"
+                            android:src="@drawable/goldicon"
+                            app:layout_constraintBottom_toTopOf="@+id/talentTV"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/xpShowTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:elevation="1dp"
+                            android:minWidth="40dp"
+                            android:text="11"
+                            android:textColor="#ffffff"
+                            android:textSize="12dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/xpTV"
+                            app:layout_constraintStart_toEndOf="@+id/xpTV"
+                            app:layout_constraintTop_toTopOf="@+id/xpTV" />
+
+                        <ImageView
+                            android:id="@+id/useNumberTV"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="2dp"
+                            android:elevation="1dp"
+                            android:src="@drawable/diamondicon"
+                            app:layout_constraintBottom_toTopOf="@+id/upgradeNumberTV"
+                            app:layout_constraintStart_toEndOf="@+id/xpShowTV"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/useNumberShowTV"
+                            android:layout_width="40dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:elevation="1dp"
+                            android:text="11"
+                            android:textColor="#ffffff"
+                            android:textSize="12dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/useNumberTV"
+                            app:layout_constraintStart_toEndOf="@+id/useNumberTV"
+                            app:layout_constraintTop_toTopOf="@+id/useNumberTV" />
+
+                        <ImageView
+                            android:id="@+id/interestTV"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="2dp"
+                            android:elevation="1dp"
+                            android:src="@drawable/interesticon"
+                            app:layout_constraintBottom_toTopOf="@+id/unusedItemsTV"
+                            app:layout_constraintStart_toEndOf="@+id/useNumberShowTV"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/interestShowTV"
+                            android:layout_width="40dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:elevation="1dp"
+                            android:text="11"
+                            android:textColor="#ffffff"
+                            android:textSize="12dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/interestTV"
+                            app:layout_constraintStart_toEndOf="@+id/interestTV"
+                            app:layout_constraintTop_toTopOf="@+id/interestTV" />
+
+                        <ImageView
+                            android:id="@+id/talentTV"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="4dp"
+                            android:elevation="1dp"
+                            android:src="@drawable/talenticon"
+                            app:layout_constraintBottom_toTopOf="@+id/itemChanceTV"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/xpTV" />
+
+                        <TextView
+                            android:id="@+id/talentShowTV"
+                            android:layout_width="40dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:elevation="1dp"
+                            android:text="11"
+                            android:textColor="#ffffff"
+                            android:textSize="12dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/talentTV"
+                            app:layout_constraintStart_toEndOf="@+id/talentTV"
+                            app:layout_constraintTop_toTopOf="@+id/talentTV" />
+
+                        <ImageView
+                            android:id="@+id/upgradeNumberTV"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginTop="4dp"
+                            android:elevation="1dp"
+                            android:src="@drawable/upgradepointsicon"
+                            app:layout_constraintBottom_toTopOf="@+id/bonusItemQualityTV"
+                            app:layout_constraintStart_toEndOf="@+id/talentShowTV"
+                            app:layout_constraintTop_toBottomOf="@+id/useNumberTV" />
+
+                        <TextView
+                            android:id="@+id/upgradeNumberShowTV"
+                            android:layout_width="40dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:elevation="1dp"
+                            android:text="11"
+                            android:textColor="#ffffff"
+                            android:textSize="12dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/upgradeNumberTV"
+                            app:layout_constraintStart_toEndOf="@+id/upgradeNumberTV"
+                            app:layout_constraintTop_toTopOf="@+id/upgradeNumberTV" />
+
+
+                        <ImageView
+                            android:id="@+id/unusedItemsTV"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginTop="4dp"
+                            android:elevation="1dp"
+                            android:src="@drawable/itempointsicon"
+                            app:layout_constraintBottom_toTopOf="@+id/bagSizeTV"
+                            app:layout_constraintStart_toEndOf="@+id/upgradeNumberShowTV"
+                            app:layout_constraintTop_toBottomOf="@+id/interestTV" />
+
+
+                        <TextView
+                            android:id="@+id/unusedItemsShowTV"
+                            android:layout_width="40dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:elevation="1dp"
+                            android:text="11"
+                            android:textColor="#ffffff"
+                            android:textSize="12dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/unusedItemsTV"
+                            app:layout_constraintStart_toEndOf="@+id/unusedItemsTV"
+                            app:layout_constraintTop_toTopOf="@+id/unusedItemsTV" />
+
+
+                        <ImageView
+                            android:id="@+id/itemChanceTV"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="4dp"
+                            android:elevation="1dp"
+                            android:src="@drawable/itemfindicon"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/talentTV" />
+
+                        <TextView
+                            android:id="@+id/itemChanceShowTV"
+                            android:layout_width="40dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:elevation="1dp"
+                            android:text="11"
+                            android:textColor="#ffffff"
+                            android:textSize="12dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/itemChanceTV"
+                            app:layout_constraintStart_toEndOf="@+id/itemChanceTV"
+                            app:layout_constraintTop_toTopOf="@+id/itemChanceTV" />
+
+                        <ImageView
+                            android:id="@+id/bonusItemQualityTV"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginTop="4dp"
+                            android:elevation="1dp"
+                            android:src="@drawable/itemqualityicon"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/itemChanceShowTV"
+                            app:layout_constraintTop_toBottomOf="@+id/upgradeNumberTV" />
+
+                        <TextView
+                            android:id="@+id/bonusItemQualityShowTV"
+                            android:layout_width="40dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:elevation="1dp"
+                            android:text="11"
+                            android:textColor="#ffffff"
+                            android:textSize="12dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/bonusItemQualityTV"
+                            app:layout_constraintStart_toEndOf="@+id/bonusItemQualityTV"
+                            app:layout_constraintTop_toTopOf="@+id/bonusItemQualityTV" />
+
+                        <ImageView
+                            android:id="@+id/bagSizeTV"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginTop="4dp"
+                            android:elevation="1dp"
+                            android:src="@drawable/bagicon3"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/bonusItemQualityShowTV"
+                            app:layout_constraintTop_toBottomOf="@+id/unusedItemsTV" />
+
+                        <TextView
+                            android:id="@+id/bagUsedShowTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:elevation="1dp"
+                            android:minWidth="40dp"
+                            android:text="11"
+                            android:textColor="#ffffff"
+                            android:textSize="12dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/bagSizeTV"
+                            app:layout_constraintStart_toEndOf="@+id/bagSizeTV"
+                            app:layout_constraintTop_toTopOf="@+id/bagSizeTV" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </ScrollView>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="80dp"
+            android:orientation="vertical"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fragment"
+            app:layout_constraintTop_toTopOf="@+id/fragment"
+            android:background="@drawable/marmorright">
+
+            <ImageView
+                android:id="@+id/coinIV"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:src="@drawable/goldicon" />
+
+
+            <ImageView
+                android:id="@+id/dmgIV"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:src="@drawable/swordandwandicon"
+                />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>

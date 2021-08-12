@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/marmorregularwindow"
+    tools:context=".TutorialTalents"
+    android:orientation="vertical"
+    android:padding="5dp"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="@dimen/bigText"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/white"
+            android:text="@string/tutorial_talents1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/textMain"
+            android:text="@string/tutorial_talents2"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/talentsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        >
+
+        <CheckBox
+            android:id="@+id/checkBoxHints"
+            android:layout_gravity="center"
+            android:textSize="@dimen/textMain"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Disable Hints" />
+
+        <Button
+            android:id="@+id/okayBTN"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_bg"
+            android:text="Okay" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <FrameLayout
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:background="#4c9f0d"
+            android:layout_margin="2.5dp"
+            android:id="@+id/radio_view"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="@dimen/textNews"
+            android:hint="hello">
+
+        </TextView>
+
+    </FrameLayout>
+
+</androidx.cardview.widget.CardView>

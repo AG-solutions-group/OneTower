@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Fragments.StatsFragment"
+    android:layout_gravity="center_horizontal">
+    <data>
+        <variable name="updateViewModel" type="com.agsolutions.td.UpdateViewModel"/>
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/marmorcenter"
+        >
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fadeScrollbars="false"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/xpTV"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="12dp"
+                android:elevation="1dp"
+                android:src="@drawable/goldicon"
+                app:layout_constraintBottom_toTopOf="@+id/talentTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/xpShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:elevation="1dp"
+                android:minWidth="40dp"
+                android:text="@{updateViewModel.xpString.toString()}"
+                android:textColor="@{updateViewModel.goldColor}"
+                android:textSize="@{updateViewModel.textStats}"
+                app:layout_constraintBottom_toBottomOf="@+id/xpTV"
+                app:layout_constraintStart_toEndOf="@+id/xpTV"
+                app:layout_constraintTop_toTopOf="@+id/xpTV" />
+
+            <ImageView
+                android:id="@+id/useNumberTV"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="2dp"
+                android:elevation="1dp"
+                android:src="@drawable/diamondicon"
+                app:layout_constraintBottom_toBottomOf="@+id/xpTV"
+                app:layout_constraintStart_toEndOf="@+id/xpShowTV"
+                app:layout_constraintTop_toTopOf="@+id/xpTV" />
+
+            <TextView
+                android:id="@+id/useNumberShowTV"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.diamonds.toString()}"
+                android:textColor="@{updateViewModel.diamondsColor}"
+                android:textSize="@{updateViewModel.textStats}"
+                app:layout_constraintBottom_toBottomOf="@+id/useNumberTV"
+                app:layout_constraintStart_toEndOf="@+id/useNumberTV"
+                app:layout_constraintTop_toTopOf="@+id/useNumberTV" />
+
+            <ImageView
+                android:id="@+id/interestTV"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="2dp"
+                android:elevation="1dp"
+                android:src="@drawable/interesticon"
+                app:layout_constraintBottom_toBottomOf="@+id/useNumberTV"
+                app:layout_constraintStart_toEndOf="@+id/useNumberShowTV"
+                app:layout_constraintTop_toTopOf="@+id/useNumberTV" />
+
+            <TextView
+                android:id="@+id/interestShowTV"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.interestString.toString()}"
+                android:textColor="@{updateViewModel.interestColor}"
+                android:textSize="@{updateViewModel.textStats}"
+                app:layout_constraintBottom_toBottomOf="@+id/interestTV"
+                app:layout_constraintStart_toEndOf="@+id/interestTV"
+                app:layout_constraintTop_toTopOf="@+id/interestTV" />
+
+            <ImageView
+                android:id="@+id/talentTV"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="4dp"
+                android:elevation="1dp"
+                android:src="@drawable/talenticon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/xpTV" />
+
+            <TextView
+                android:id="@+id/talentShowTV"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.talents.toString()}"
+                android:textColor="@{updateViewModel.talentsColor}"
+                android:textSize="@{updateViewModel.textStats}"
+                app:layout_constraintBottom_toBottomOf="@+id/talentTV"
+                app:layout_constraintStart_toEndOf="@+id/talentTV"
+                app:layout_constraintTop_toTopOf="@+id/talentTV" />
+
+            <ImageView
+                android:id="@+id/upgradeNumberTV"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="2dp"
+                android:elevation="1dp"
+                android:src="@drawable/upgradepointsicon"
+                app:layout_constraintBottom_toBottomOf="@+id/talentTV"
+                app:layout_constraintStart_toEndOf="@+id/talentShowTV"
+                app:layout_constraintTop_toTopOf="@+id/talentTV" />
+
+            <TextView
+                android:id="@+id/upgradeNumberShowTV"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.upgradePoints.toString()}"
+                android:textColor="@{updateViewModel.upgradePointsColor}"
+                android:textSize="@{updateViewModel.textStats}"
+                app:layout_constraintBottom_toBottomOf="@+id/upgradeNumberTV"
+                app:layout_constraintStart_toEndOf="@+id/upgradeNumberTV"
+                app:layout_constraintTop_toTopOf="@+id/upgradeNumberTV" />
+
+
+            <ImageView
+                android:id="@+id/unusedItemsTV"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="2dp"
+                android:elevation="1dp"
+                android:src="@drawable/itempointsicon"
+                app:layout_constraintBottom_toBottomOf="@+id/upgradeNumberTV"
+                app:layout_constraintStart_toEndOf="@+id/upgradeNumberShowTV"
+                app:layout_constraintTop_toTopOf="@+id/upgradeNumberTV" />
+
+
+            <TextView
+                android:id="@+id/unusedItemsShowTV"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.itemPoints.toString()}"
+                android:textColor="@{updateViewModel.itemPointsColor}"
+                android:textSize="@{updateViewModel.textStats}"
+                app:layout_constraintBottom_toBottomOf="@+id/unusedItemsTV"
+                app:layout_constraintStart_toEndOf="@+id/unusedItemsTV"
+                app:layout_constraintTop_toTopOf="@+id/unusedItemsTV" />
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+</LinearLayout>
+</layout>

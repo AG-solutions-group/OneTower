@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.agsolutions.td">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.NoActionBar"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".Main.PickMap"
+            android:theme="@style/AppTheme.MapMode"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Main.PickMode"
+            android:theme="@style/AppTheme.MapMode"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Main.StartItemsMenu"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Main.About"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Main.Highscore"
+            android:screenOrientation="portrait" />
+        <activity android:name=".LogIn.Register"
+            android:screenOrientation="portrait" />
+        <activity android:name=".LogIn.LogInScreen"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".GameActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".StartItems"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TutorialItems"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TutorialStart"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TutorialTalents"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TutorialTouchScreen"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TutorialEnd"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TutorialEnemies"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SecretShop"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MysteryMessage"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CuttingStatsEvent"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Main.DisplayScale"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MidnightMadness"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GameMenu"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GameSettings"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GameWiki"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Main.Wiki"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GameEnd"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Talents"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Main.MainActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+    </application>
+
+</manifest>

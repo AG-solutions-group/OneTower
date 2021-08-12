@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Talents"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="@drawable/marmorregularwindow">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/marmorrect33">
+
+        <ImageButton
+            android:id="@+id/fireTalentBTN"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/utilsTalentBTN"
+            app:layout_constraintEnd_toStartOf="@+id/iceTalentBTN"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/earthTalentBTN"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/talentsfire"/>
+
+        <ImageButton
+            android:id="@+id/iceTalentBTN"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/poisonTalentBTN"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/fireTalentBTN"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/talentsice"
+            />
+
+        <ImageButton
+            android:id="@+id/darkTalentBTN"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/moonTalentBTN"
+            app:layout_constraintEnd_toStartOf="@+id/earthTalentBTN"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/wizardTalentBTN"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/talentsdark"/>
+
+        <ImageButton
+            android:id="@+id/wizardTalentBTN"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/butterflyTalentBTN"
+            app:layout_constraintEnd_toStartOf="@+id/darkTalentBTN"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/talentswizard"/>
+
+        <ImageButton
+            android:id="@+id/earthTalentBTN"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/windTalentBTN"
+            app:layout_constraintEnd_toStartOf="@+id/fireTalentBTN"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/darkTalentBTN"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/talentsearth"/>
+
+        <ImageButton
+            android:id="@+id/utilsTalentBTN"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/poisonTalentBTN"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/windTalentBTN"
+            app:layout_constraintTop_toBottomOf="@+id/fireTalentBTN"
+            android:background="@drawable/talentsutils"/>
+
+        <ImageButton
+            android:id="@+id/poisonTalentBTN"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/utilsTalentBTN"
+            app:layout_constraintTop_toBottomOf="@+id/iceTalentBTN"
+           android:background="@drawable/talentspoison"/>
+
+        <ImageButton
+            android:id="@+id/windTalentBTN"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/utilsTalentBTN"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/moonTalentBTN"
+            app:layout_constraintTop_toBottomOf="@+id/earthTalentBTN"
+            android:background="@drawable/talentswind"/>
+
+        <ImageButton
+            android:id="@+id/moonTalentBTN"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/windTalentBTN"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/butterflyTalentBTN"
+            app:layout_constraintTop_toBottomOf="@+id/darkTalentBTN"
+            android:background="@drawable/moon"/>
+
+        <ImageButton
+            android:id="@+id/butterflyTalentBTN"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/moonTalentBTN"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/wizardTalentBTN"
+            android:background="@drawable/talentsbutterfly"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/talentsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/marmorlayout"
+        />
+
+    <FrameLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/marmorrect22"
+        >
+
+        <Button
+            android:id="@+id/saveTalentsBTN"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_bg"
+            android:text="Okay" />
+
+    </FrameLayout>
+
+</LinearLayout>
+
+<com.agsolutions.td.UiViewTalent
+
+android:id="@+id/uiViewTalent"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@drawable/overlaytransparent"
+
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toTopOf="parent" />
+
+</FrameLayout>

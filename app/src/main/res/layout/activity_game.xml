@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable name="updateViewModel" type="com.agsolutions.td.UpdateViewModel"/>
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".GameActivity">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10">
+
+        <com.agsolutions.td.GameView
+
+            android:id="@+id/gameView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/dayNightIV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:elevation="1dp"
+            app:imageResource="@{updateViewModel.dayNightPic}"
+            app:layout_constraintEnd_toStartOf="@+id/recyclerRadio"
+            app:layout_constraintStart_toEndOf="@+id/menuBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/dayNightTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:elevation="1dp"
+            android:text="@{updateViewModel.dayNight.toString()}"
+            android:textColor="#ffffff"
+            android:textSize="@{updateViewModel.textMain}"
+            app:layout_constraintEnd_toEndOf="@+id/dayNightIV"
+            app:layout_constraintStart_toStartOf="@+id/dayNightIV"
+            app:layout_constraintTop_toBottomOf="@+id/dayNightIV" />
+
+        <Button
+            android:id="@+id/menuBtn"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="8dp"
+            android:text="Menu"
+            android:textColor="#ffffff"
+            android:elevation="1dp"
+            android:textSize="@{updateViewModel.textButton}"
+            android:background="@drawable/button_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/playPauseBtn"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="2dp"
+            android:elevation="1dp"
+            android:src="@drawable/play"
+            android:tint="#ffffff"
+            android:background="@drawable/button_bg"
+            app:layout_constraintEnd_toStartOf="@+id/menuBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/gameSpeedBtn"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:background="@drawable/button_bg"
+            android:elevation="1dp"
+            android:text="1x"
+            android:textColor="#ffffff"
+            android:textSize="@{updateViewModel.textButton}"
+            app:layout_constraintEnd_toEndOf="@+id/playPauseBtn"
+            app:layout_constraintStart_toStartOf="@+id/playPauseBtn"
+            app:layout_constraintTop_toBottomOf="@+id/playPauseBtn" />
+
+        <TextView
+            android:id="@+id/levelTV"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:text="Level"
+            android:textColor="#ffffff"
+            android:textSize="@{updateViewModel.textMain}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/livesTV"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:text="Lives"
+            android:textColor="#ffffff"
+            android:textSize="@{updateViewModel.textMain}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/levelTV" />
+
+        <TextView
+            android:id="@+id/levelShowTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:text="@{updateViewModel.level.toString()}"
+            android:textColor="#ffffff"
+            android:textSize="@{updateViewModel.textMain}"
+            app:layout_constraintStart_toEndOf="@+id/levelTV"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/livesShowTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:text="@{updateViewModel.lives.toString()}"
+            android:textColor="#ffffff"
+            android:textSize="@{updateViewModel.textMain}"
+            app:layout_constraintStart_toEndOf="@+id/livesTV"
+            app:layout_constraintTop_toBottomOf="@id/levelTV" />
+
+        <TextView
+            android:id="@+id/enemyTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:text="@string/enemy"
+            android:textColor="#ffffff"
+            android:textSize="@{updateViewModel.textMain}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/livesTV" />
+
+        <TextView
+            android:id="@+id/enemyShowTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:text="@{updateViewModel.enemyType.toString()}"
+            android:textColor="#ffffff"
+            android:textSize="@{updateViewModel.textMain}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/enemyTV" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerActiveAbility"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/recyclerCurrentItem"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/active_ability" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerCurrentItem"
+            android:elevation="1dp"
+            android:layout_width="wrap_content"
+            android:minWidth="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintBottom_toBottomOf="@+id/gameView"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/item" />
+
+        <Button
+            android:id="@+id/firstLastRandomBtn"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:background="@drawable/button_bg"
+            android:singleLine="true"
+            android:elevation="1dp"
+            android:text="first"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="@{updateViewModel.textButton}"
+            app:layout_constraintBottom_toBottomOf="@+id/recyclerActiveAbility"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+        <TextView
+            android:id="@+id/nextLvlTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:text="@{updateViewModel.lvlCounter.toString()}"
+            android:textColor="#ffffff"
+            android:textSize="@{updateViewModel.textMain}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/menuBtn" />
+
+        <TextView
+            android:id="@+id/testTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:text=""
+            android:textColor="#ffffff"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nextLvlTV" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerRadio"
+            android:layout_width="80dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/radio">
+
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <ProgressBar
+            android:id="@+id/progressGameBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="100sp"
+            android:translationZ="2dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/constraint2"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/marmorrect22"
+        >
+
+
+        <Button
+            android:id="@+id/buildBtn"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:paddingEnd="0dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/talentsutils" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_height="match_parent"
+           >
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerBagItem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item"
+                    android:background="@drawable/planksvertical2"
+                >
+                </androidx.recyclerview.widget.RecyclerView>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:padding="4dp"
+            android:paddingStart="2dp"
+            >
+
+            <Button
+                android:id="@+id/talentsBTN"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:elevation="1dp"
+                android:textColor="#ffffff"
+                android:background="@drawable/button_bg"
+                android:textSize="@{updateViewModel.textButton}"
+                android:textAllCaps="false"
+                android:text="Talents"
+                android:singleLine="true"
+                />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="top" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/backgroundplankslight"
+       >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout3"
+            android:layout_width="40dp"
+            android:layout_height="80dp"
+            android:elevation="2dp"
+            android:background="@drawable/marmorleft"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/fragment"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/dmgTV"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                app:imageResource="@{updateViewModel.pictureDmg}"
+                app:layout_constraintBottom_toTopOf="@+id/speedTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/dmgShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.pictureValue.toString()}"
+                android:textColor="@{updateViewModel.pictureColor}"
+                android:textSize="@{updateViewModel.textStatsPic}"
+                app:layout_constraintBottom_toBottomOf="@+id/dmgTV"
+                app:layout_constraintStart_toEndOf="@+id/dmgTV"
+                app:layout_constraintTop_toTopOf="@+id/dmgTV"
+                />
+
+            <ImageView
+                android:id="@+id/speedTV"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:src="@drawable/bowicon"
+                app:layout_constraintBottom_toTopOf="@+id/xpTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dmgTV" />
+
+            <TextView
+                android:id="@+id/speedShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.towerSpd.toString()}"
+                android:textColor="@{updateViewModel.towerSpdColor}"
+                android:textSize="@{updateViewModel.textStatsPic}"
+                app:layout_constraintBottom_toBottomOf="@+id/speedTV"
+                app:layout_constraintStart_toEndOf="@+id/speedTV"
+                app:layout_constraintTop_toTopOf="@+id/speedTV" />
+
+            <ImageView
+                android:id="@+id/xpTV"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:src="@drawable/goldicon"
+                app:layout_constraintBottom_toTopOf="@+id/talentTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/speedTV" />
+
+            <TextView
+                android:id="@+id/xpShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.xpString.toString()}"
+                android:textColor="@{updateViewModel.goldColor}"
+                android:textSize="@{updateViewModel.textStatsPic}"
+                app:layout_constraintBottom_toBottomOf="@+id/xpTV"
+                app:layout_constraintStart_toEndOf="@+id/xpTV"
+                app:layout_constraintTop_toTopOf="@+id/xpTV" />
+
+            <ImageView
+                android:id="@+id/talentTV"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:src="@drawable/talenticon"
+                app:layout_constraintBottom_toTopOf="@+id/itemChanceTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/xpTV" />
+
+            <TextView
+                android:id="@+id/talentShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.talents.toString()}"
+                android:textColor="@{updateViewModel.talentsColor}"
+                android:textSize="@{updateViewModel.textStatsPic}"
+                app:layout_constraintBottom_toBottomOf="@+id/talentTV"
+                app:layout_constraintStart_toEndOf="@+id/talentTV"
+                app:layout_constraintTop_toTopOf="@+id/talentTV" />
+
+            <ImageView
+                android:id="@+id/itemChanceTV"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:src="@drawable/itemfindicon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/talentTV" />
+
+            <TextView
+                android:id="@+id/itemChanceShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.itemChance.toString()}"
+                android:textColor="@{updateViewModel.itemChanceColor}"
+                android:textSize="@{updateViewModel.textStatsPic}"
+                app:layout_constraintBottom_toBottomOf="@+id/itemChanceTV"
+                app:layout_constraintStart_toEndOf="@+id/itemChanceTV"
+                app:layout_constraintTop_toTopOf="@+id/itemChanceTV" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment"
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:elevation="2dp"
+            android:background="@drawable/marmorcenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="80dp"
+            android:orientation="vertical"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fragment"
+            app:layout_constraintTop_toTopOf="@+id/fragment"
+            android:background="@drawable/marmorright">
+
+            <ImageView
+                android:id="@+id/coinIV"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/goldicon" />
+
+
+            <ImageView
+                android:id="@+id/dmgIV"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/swordandwandicon"
+                />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+            <com.agsolutions.td.UiView
+
+                android:id="@+id/uiView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/overlaytransparent"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+</FrameLayout>
+</layout>
