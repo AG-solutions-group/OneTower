@@ -1,10 +1,12 @@
 package com.agsolutions.td
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.agsolutions.td.Companion.Companion.dragStatusCantBuild
 import com.agsolutions.td.Companion.Companion.focusMainWindow
 import com.agsolutions.td.Companion.Companion.hintsBool
 import com.agsolutions.td.Companion.Companion.scaleScreen
@@ -98,11 +100,15 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
                     Rect(xRecycler.toInt(), yRecycler.toInt(), (xRecycler + (300 * (scaleScreen / 10))).toInt(), (yRecycler + (150 * (scaleScreen / 10))).toInt())
                 canvas.drawBitmap(swipeDown!!, null, rect, null)
             }
-            if (com.agsolutions.td.Companion.talentPoints > 1 && com.agsolutions.td.Companion.hintsBool) {
+            // TODO
+            /*
+            if (talentPoints > 1 && com.agsolutions.td.Companion.hintsBool) {
                 var rect =
                     Rect((xTalents).toInt(), (yTalents - (15 * (scaleScreen / 10))).toInt(), (xTalents + (150 * (scaleScreen / 10))).toInt(), (yTalents + (135 * (scaleScreen / 10))).toInt())
                 canvas.drawBitmap(fingerClick!!, null, rect, null)
             }
+
+             */
             if (com.agsolutions.td.Companion.globalItemListBag.isNotEmpty() && com.agsolutions.td.Companion.hintsBool && com.agsolutions.td.Companion.tutorialFirstUseItemBool) {
                 var rect =
                     Rect((xRecyclerBag + (20 * (scaleScreen / 10))).toInt(), (yRecyclerBag - (100 * (scaleScreen / 10))).toInt(), (xRecyclerBag + (320 * (scaleScreen / 10))).toInt(), (yRecyclerBag + (50 * (scaleScreen / 10))).toInt())
@@ -303,6 +309,25 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
                 var yLevelCountD =
                     (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (scaleScreen / 10))
                 canvas.drawText(com.agsolutions.td.Companion.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
+            }
+            if (com.agsolutions.td.Companion.dragStatusDrag) {
+                var xLvl = (Resources.getSystem().getDisplayMetrics().widthPixels / 2).toFloat()
+                var yLvl = (Resources.getSystem().getDisplayMetrics().heightPixels / 2).toFloat()
+                    if (dragStatusCantBuild){
+                    paintText.textSize = 72f * (com.agsolutions.td.Companion.scaleScreen / 10)
+                    paintText.color = Color.parseColor("#EB1900")
+                    var xLevelCountC = xLvl - (paintText.measureText("Can´t Build") / 2)
+                    var yLevelCountC =
+                        (yLvl - (500 * (scaleScreen / 10)))
+                    canvas.drawText("Can´t Build", xLevelCountC, yLevelCountC, paintText)
+                }else {
+                    paintText.textSize = 72f * (com.agsolutions.td.Companion.scaleScreen / 10)
+                    paintText.color = Color.parseColor("#009E11")
+                    var xLevelCountA = xLvl - (paintText.measureText("Build Okay") / 2)
+                    var yLevelCountA =
+                        (yLvl - (500 * (scaleScreen / 10)))
+                    canvas.drawText("Build Okay ", xLevelCountA, yLevelCountA, paintText)
+                }
             }
         }
     }

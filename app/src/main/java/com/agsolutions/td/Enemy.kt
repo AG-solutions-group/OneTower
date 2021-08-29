@@ -6,11 +6,12 @@ import com.agsolutions.td.Companion.Companion.enemyClick
 import com.agsolutions.td.Companion.Companion.gameSpeedAdjuster
 import com.agsolutions.td.Companion.Companion.mapMode
 import com.agsolutions.td.Companion.Companion.mapPick
+import com.agsolutions.td.Companion.Companion.towerList
 import com.agsolutions.td.Main.MainActivity.Companion.startScreenBool
 import java.io.Serializable
 
 
-class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShieldMax: Float, var shield: Float, var shieldMax: Float, var armor: Float, var magicArmor: Float, var evade: Float, var hpReg: Float, var xp: Float, var speed: Float, var color: Int) :
+class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShieldMax: Float, var shield: Float, var shieldMax: Float, var armor: Float, var magicArmor: Float, var evade: Float, var hpReg: Float, var xpEnemy: Float, var speed: Float, var color: Int) :
     Serializable {
 
     var circle: TowerRadius? = null
@@ -27,7 +28,16 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     var extraSpeed = 0f
     var baseSpeed = 0f
     var enemyPathBool = 0
-    var killerId = 0
+    var killerId = -1
+    var dmgTakenDebuff = 1f
+    var xpDropDebuff = 1f
+    var goldDropDebuff = 1f
+    var overallXp = 0f
+    var overallGold = 0f
+    var antihealDebuff = 0
+    var antihealDebuffActive = 0f
+    var antihealDebuffTowerId = 0
+    var hpRegDebuff = 0f
 
     var random1 = 0
     var random2 = 0
@@ -50,7 +60,9 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
 
     // talent ice
     var iceDebuff: Int = 0
+    var iceDebuffTowerId = 0
     var iceDebuffExtra = 0
+    var iceDebuffExtraTowerId = 0
     var iceAlreadyAffected = 0
     var iceSlowEachSpeedReduce = 0f
     var iceSlowExtraSpeedReduce = 0f
@@ -66,6 +78,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
 
     // talent wind
     var pushBackDR = 1f
+    var winddebuffincreased = 1f
 
     // talent poison
     var poisonDebuff: Int = 0
@@ -73,6 +86,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     var poisonStack = 0.0f
     var entangled = false
     var entangleOnHit = 0
+    var entangleOnHitTowerId = 0
     var entangleSpeedReduce = 0f
     var poisonTalentPestAlreadyAffected = 0
     var poisonTalentPestDamage = 0
@@ -88,13 +102,21 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     // talent dark
     var darkSlowAlreadyAffected = false
     var darkDebuff = false
+    var darkDebuffTowerId = 0
     var feared = false
     var fearOnHit = 0
     var fearSpeedReduce = 0f
     var fearDR = 1f
+    var fearTowerId = 0
     var darkTalentLaserAlreadyAffected = 0
+
+    var instaKilled = 1
     var instakillStacks = 0
     var darkTalentLaserTowerId =0
+    var darkMoreDmgDebuff = 0
+    var darkMoreDmgDebuffComplete = 0f
+    var darkMoreDmgDebuffStacks = 0
+    var darkMoreDmgDebuffTowerId = 0
 
     // talent moon
     var talentMoonlightAlreadyAffected = 0f
@@ -119,7 +141,15 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     var markOfTheButterflyStunAlreadyAffected = false
     var markOfTheButterflySlowReduce = 0f
     var markOfTheButterflySlowStunDR = 1f
-
+    var butterflyDebuffEnemyDmg = 0
+    var butterflyDebuffEnemyGoldXp = 0
+    var butterflyDebuffEnemyDmgAlreadyEffected = false
+    var butterflyDebuffEnemyGoldXpAlreadyEffected = false
+    var butterflyDebuffEnemyDmgTowerId = 0
+    var butterflyDebuffEnemyGoldXpTowerId = 0
+    var markOfTheButterflySlowActiveTowerId = 0
+    var markOfTheButterflyTowerId = 0
+    var markOfTheButterflyTowerCounter = mutableListOf<Int>()
 
     var itemFrostAlreadyAffected = 0
     var itemFrostDR = 1f
@@ -129,7 +159,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     var itemLassoSpeedReduce = 0.0f
     var hit = false
     var explosionCounter = 0
-    var hpRegDebuff = 0f
+
 
     var towerDmgReceived = 0
     var burnDmgReceived = 0
@@ -536,6 +566,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
 
 
     fun drawButterfly(canvas: Canvas) {
+        paintButterfly.color = towerList[markOfTheButterflyTowerId].markofTheBitterflyColor
         if (markOfTheButterflyCounter == 1) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y - 50).toFloat(), 9.toFloat(), paintButterfly)
         else if (markOfTheButterflyCounter == 2) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y - 50).toFloat(), 15.toFloat(), paintButterfly)
         else if (markOfTheButterflyCounter >= 3) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y - 50).toFloat(), 21.toFloat(), paintButterfly)
@@ -620,7 +651,12 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
                 }
             }
 
-            enemyRight = (((maxHp * 70.0) - (hp * 70.0)) / maxHp).toFloat()
+            enemyRight = if (hp > 0){
+                    (((maxHp * 70.0) - (hp * 70.0)) / maxHp).toFloat()
+            }
+            else {
+                (((maxHp * 70.0) - (1 * 70.0)) / maxHp).toFloat()
+            }
             enemyRightManaShield =
                 (((manaShieldMax * 70.0) - (manaShield * 70.0)) / manaShieldMax).toFloat()
             enemyRightShield = (((shieldMax * 70.0) - (shield * 70.0)) / shieldMax).toFloat()

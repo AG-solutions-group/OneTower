@@ -40,7 +40,7 @@ class GameViewDisplayScale(context: Context, attributes: AttributeSet) : Surface
 
     //surface holder things-----------------------------------------------------------------------
 
-    override fun surfaceCreated(holder: SurfaceHolder?) {
+    override fun surfaceCreated(p0: SurfaceHolder) {
 
         if (firstBootX) {
             GameThreadDisplayScale.running = true
@@ -54,11 +54,11 @@ class GameViewDisplayScale(context: Context, attributes: AttributeSet) : Surface
         }
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
+    override fun surfaceChanged(p0: SurfaceHolder, format: Int, width: Int, height: Int) {
         thread.interrupt()
     }
 
-    override fun surfaceDestroyed(holder: SurfaceHolder?) {
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
         thread.interrupt()
     }
 
@@ -82,6 +82,4 @@ class GameViewDisplayScale(context: Context, attributes: AttributeSet) : Surface
         canvas.drawBitmap(backgroundDayBmp!!, null, rectBackground, null)
 
     }
-
-
 }

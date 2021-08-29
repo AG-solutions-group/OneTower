@@ -14,7 +14,7 @@ import com.agsolutions.td.Utils.round
 import kotlinx.android.synthetic.main.start_items.*
 
 
-class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFragmentAdapter.OnStatsClickListener {
+class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartTowerAdapter.OnClickListener, ItemFragmentAdapter.OnStatsClickListener {
     companion object {
         var startItems = 0
 
@@ -22,15 +22,22 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
     private val adapter = StartItemAdapter(Items.startItemList, this) {
 
     }
+    private val towerAdapter = StartTowerAdapter(Items.startTowerList, this) {
+
+    }
+
     private val showAdapter = ItemFragmentAdapter(com.agsolutions.td.Companion.itemListStartItems, this)
-    var itemListPlace = mutableListOf<Items>()
+
+    var clicks1 = false
+    var clicks2 = false
+    var position1 = 0
+    var position2 = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.start_items)
 
-
-        window.setLayout((600.0f * (com.agsolutions.td.Companion.scaleScreen /10)).toInt(), (800.0f * (com.agsolutions.td.Companion.scaleScreen /10)).toInt())
+        window.setLayout((600.0f * (com.agsolutions.td.Companion.scaleScreen /10)).toInt(), (1200.0f * (com.agsolutions.td.Companion.scaleScreen /10)).toInt())
         window.setElevation(10F)
 
         recyclerStartItem.adapter = adapter
@@ -38,24 +45,17 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
             GridLayoutManager(this, 3)
         recyclerStartItem.setHasFixedSize(true)
 
+        recyclerStartTower.adapter = towerAdapter
+        recyclerStartTower.layoutManager =
+            GridLayoutManager(this, 3)
+        recyclerStartTower.setHasFixedSize(true)
+
         showStartItemStatsRecycler.adapter = showAdapter
         showStartItemStatsRecycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         showStartItemStatsRecycler.setHasFixedSize(true)
 
         closeStartItemsBTN.visibility = View.INVISIBLE
-
-        Items.startItemList.forEach() {
-            if (it.id == 5018 || it.id == 5019 || it.id == 5020 || it.id == 5021 ||
-                it.id == 5022 || it.id == 5023 || it.id == 5024 || it.id == 5025 ||
-                it.id == 5026 || it.id == 5027
-            ) {
-                itemListPlace.add(it)
-            }
-        }
-        Items.startItemList.removeAll(itemListPlace)
-
-        adapter.notifyDataSetChanged()
 
         recyclerStartItem.doOnLayout {
             val posXY = IntArray(2)
@@ -77,6 +77,13 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
     }
 
     override fun onClick(position: Int) {
+
+        Items.startItemList.forEach(){
+            it.imageOverlay = R.drawable.overlaytransparent
+        }
+
+        Items.startItemList[position].imageOverlay = R.drawable.overlaypick
+        adapter.notifyDataSetChanged()
 
         com.agsolutions.td.Companion.itemListStartItems.removeAll(com.agsolutions.td.Companion.itemListStartItems)
 
@@ -102,20 +109,24 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
 
         showAdapter.notifyDataSetChanged()
 
-        closeStartItemsBTN.visibility = View.VISIBLE
-        val posXY = IntArray(2)
-        closeStartItemsBTN.getLocationInWindow(posXY)
-        talentRecyclerX = posXY[0].toFloat()
-        UiViewStartItems.talentRecyclerY = (posXY[1] + (50 * (scaleScreen / 10))).toFloat()
-        uiViewStartItem.invalidate()
+        clicks1 = true
+        position1 = position
+        if (clicks1 && clicks2) {
+            closeStartItemsBTN.visibility = View.VISIBLE
+            val posXY = IntArray(2)
+            closeStartItemsBTN.getLocationInWindow(posXY)
+            talentRecyclerX = posXY[0].toFloat()
+            UiViewStartItems.talentRecyclerY = (posXY[1] + (50 * (scaleScreen / 10))).toFloat()
+            uiViewStartItem.invalidate()
 
 
-        closeStartItemsBTN.setOnClickListener() {
-            itemList.add(0, Items.startItemList[position])
-            StartItems.startItems += 1
-            Items.startItemList.addAll(itemListPlace)
-            paused = false
-            finish()
+            closeStartItemsBTN.setOnClickListener() {
+                itemList.add(0, Items.startItemList[position1])
+                itemList.add(1, Items.startTowerList[position2])
+                StartItems.startItems += 1
+                paused = false
+                finish()
+            }
         }
     }
 
@@ -139,6 +150,38 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
             com.agsolutions.td.Companion.toastGlobal = true
             com.agsolutions.td.Companion.toastText = "Special Attributes"
         }
+    }
+
+    override fun onTowerClick(position: Int) {
+
+        Items.startTowerList.forEach(){
+            it.imageOverlay = R.drawable.overlaytransparent
+        }
+
+        Items.startTowerList[position].imageOverlay = R.drawable.overlaypick
+        towerAdapter.notifyDataSetChanged()
+
+        clicks2 = true
+        position2 = position
+        if (clicks1 && clicks2) {
+            closeStartItemsBTN.visibility = View.VISIBLE
+            val posXY = IntArray(2)
+            closeStartItemsBTN.getLocationInWindow(posXY)
+            talentRecyclerX = posXY[0].toFloat()
+            UiViewStartItems.talentRecyclerY = (posXY[1] + (50 * (scaleScreen / 10))).toFloat()
+            uiViewStartItem.invalidate()
+
+
+            closeStartItemsBTN.setOnClickListener() {
+                itemList.add(0, Items.startItemList[position1])
+                itemList.add(1, Items.startTowerList[position2])
+                StartItems.startItems += 1
+                paused = false
+                finish()
+            }
+        }
+
+
     }
 
 

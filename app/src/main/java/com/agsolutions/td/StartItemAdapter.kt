@@ -23,7 +23,7 @@ class StartItemAdapter (
         override fun onBindViewHolder(holder: ExampleViewHolder, position: Int) {
                 val currentItem = startItemList[position]
                 holder.imageView.setImageResource(currentItem.image)
-
+                holder.imageViewOverlay.setImageResource(currentItem.imageOverlay)
 
         }
 
@@ -32,6 +32,7 @@ class StartItemAdapter (
     inner class ExampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
             View.OnClickListener {
             val imageView: ImageView = itemView.item_view
+            val imageViewOverlay: ImageView = itemView.item_view_overlay
 
         init {
             itemView.setOnClickListener(this)
@@ -50,6 +51,51 @@ class StartItemAdapter (
             fun onClick(position: Int)
         }
     }
+
+class StartTowerAdapter (
+    private val startItemList: MutableList<Items>,
+    private val listener: OnClickListener,
+    private var callback:()->Unit
+) :
+    RecyclerView.Adapter<StartTowerAdapter.ExampleViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExampleViewHolder {
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item,
+            parent, false)
+
+        return ExampleViewHolder(itemView)
+    }
+    override fun onBindViewHolder(holder: ExampleViewHolder, position: Int) {
+        val currentItem = startItemList[position]
+        holder.imageView.setImageResource(currentItem.image)
+        holder.imageViewOverlay.setImageResource(currentItem.imageOverlay)
+
+    }
+
+    override fun getItemCount() = startItemList.size
+
+    inner class ExampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
+        val imageView: ImageView = itemView.item_view
+        val imageViewOverlay: ImageView = itemView.item_view_overlay
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onTowerClick(position)
+            }
+            callback.invoke()
+        }
+
+    }
+    interface OnClickListener {
+        fun onTowerClick(position: Int)
+    }
+}
 
 /*
 holder.itemView.setOnLongClickListener  {

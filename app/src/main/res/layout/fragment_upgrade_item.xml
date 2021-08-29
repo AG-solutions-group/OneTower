@@ -39,27 +39,26 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-
-    <ImageView
-        android:id="@+id/upIV"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@android:drawable/arrow_up_float"
-        app:layout_constraintBottom_toTopOf="@+id/upBTN"
-        app:layout_constraintEnd_toEndOf="@+id/upBTN"
-        app:layout_constraintStart_toStartOf="@+id/upBTN" />
-
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/upBTN"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:text="UP"
-            android:textColor="#ffffff"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:backgroundTint="@null"
             android:background="@drawable/button_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:icon="@drawable/upgradepointsicon"
+            app:iconTint="@null"
+            app:iconSize="20dp"
+            app:iconPadding="0dp"
+            app:iconGravity="textStart"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -11,7 +11,6 @@ import com.agsolutions.td.Companion.Companion.level
 import com.agsolutions.td.Companion.Companion.mapMode
 import com.agsolutions.td.Companion.Companion.mapPick
 import com.agsolutions.td.Companion.Companion.upgradePoints
-import com.agsolutions.td.Fragments.*
 import com.agsolutions.td.Main.MainActivity
 import kotlinx.android.synthetic.main.game_menu.*
 import java.io.File
@@ -63,7 +62,8 @@ class GameMenu : AppCompatActivity() {
                 else livesX = com.agsolutions.td.Companion.lives
 
             var saveDataList = arrayListOf<Int>(level, livesX , com.agsolutions.td.Companion.dayNightHour, com.agsolutions.td.Companion.dayNightMinute)
-            var saveDataListCurrency = arrayListOf<Int>(com.agsolutions.td.Companion.xp.toInt(), com.agsolutions.td.Companion.diamonds, com.agsolutions.td.Companion.itemPoints.toInt(), com.agsolutions.td.Companion.mysteryPoints, upgradePoints, com.agsolutions.td.Companion.bombActiveAbility, com.agsolutions.td.Companion.chainLightningBonusDmg.toInt(), com.agsolutions.td.Companion.levelCount, com.agsolutions.td.Companion.enemySpawned, com.agsolutions.td.Companion.timer)
+            // TODO com.agsolutions.td.Companion.chainLightningBonusDmg.toInt()
+            var saveDataListCurrency = arrayListOf<Int>(com.agsolutions.td.Companion.gold.toInt(), com.agsolutions.td.Companion.diamonds, com.agsolutions.td.Companion.itemPoints.toInt(), com.agsolutions.td.Companion.mysteryPoints, upgradePoints, com.agsolutions.td.Companion.bombActiveAbility, com.agsolutions.td.Companion.levelCount, com.agsolutions.td.Companion.enemySpawned, com.agsolutions.td.Companion.timer)
             var saveDataListLevelInfo = arrayListOf<Float>(com.agsolutions.td.Companion.lvlHp, com.agsolutions.td.Companion.lvlArmor, com.agsolutions.td.Companion.lvlMagicArmor, com.agsolutions.td.Companion.lvlEvade, com.agsolutions.td.Companion.lvlXp, com.agsolutions.td.Companion.bigNumberScaler, com.agsolutions.td.Companion.levelScalerCrit,
                 com.agsolutions.td.Companion.levelScalerSpeed,
                 com.agsolutions.td.Companion.levelScalerCritDmg,
@@ -81,6 +81,7 @@ class GameMenu : AppCompatActivity() {
             var mysteryPointsList = arrayListOf<Boolean>(com.agsolutions.td.Companion.mysteryAllRounderBool, com.agsolutions.td.Companion.mysterySongBool, com.agsolutions.td.Companion.mysteryClownBool, com.agsolutions.td.Companion.mysteryMaceBool, com.agsolutions.td.Companion.mysteryBowBool, com.agsolutions.td.Companion.mysterySwordBool, com.agsolutions.td.Companion.mysteryLuckyCharmBool, com.agsolutions.td.Companion.mysteryPirateHunterBool,
                 com.agsolutions.td.Companion.mysteryBombsUsedBool, com.agsolutions.td.Companion.mysteryColdHeartBool, com.agsolutions.td.Companion.challengesKilledBool)
 
+            /*
             var gameTalentButterfly = arrayListOf<Int>(ButterflyTalentFragment.butterflyRow1Item1, ButterflyTalentFragment.butterflyRow2Item1, ButterflyTalentFragment.butterflyRow2Item2, ButterflyTalentFragment.butterflyRow3Item1, ButterflyTalentFragment.butterflyRow4Item1)
             var gameTalentDark = arrayListOf<Int>(DarkTalentFragment.darkRow1Item1, DarkTalentFragment.darkRow2Item1, DarkTalentFragment.darkRow2Item2, DarkTalentFragment.darkRow3Item1, DarkTalentFragment.darkRow3Item2, DarkTalentFragment.darkRow4Item1)
             var gameTalentEarth = arrayListOf<Int>(EarthTalentFragment.earthRow1Item1, EarthTalentFragment.earthRow2Item1, EarthTalentFragment.earthRow2Item2, EarthTalentFragment.earthRow3Item1, EarthTalentFragment.earthRow4Item1)
@@ -94,6 +95,7 @@ class GameMenu : AppCompatActivity() {
 
             var saveDataListTalents = arrayListOf(gameTalentButterfly,gameTalentDark, gameTalentEarth,gameTalentFire,gameTalentIce,gameTalentMoon,gameTalentPoison, gameTalentUtils, gameTalentWind, gameTalentWizard)
 
+             */
             val textFile = File("$filesDir/saveGame.dat")
             if (!textFile.exists()) {
                 textFile.createNewFile()
@@ -103,8 +105,9 @@ class GameMenu : AppCompatActivity() {
             }
             val fos = FileOutputStream(textFile)
             val oos = ObjectOutputStream(fos)
+            // saveDataListTalents
             var writeList = ArrayList(Arrays.asList(mysteryPointsList, com.agsolutions.td.Companion.globalItemListBag, com.agsolutions.td.Companion.levelList, com.agsolutions.td.Companion.levelListReserve,
-                saveDataList, saveDataListCurrency, saveDataListLevelInfo, saveDataListItems, saveDataListTalents, com.agsolutions.td.Companion.midnightMadnessSaveList, com.agsolutions.td.Companion.itemListBagMysteryEventCancelled, enemyList))
+                saveDataList, saveDataListCurrency, saveDataListLevelInfo, saveDataListItems, com.agsolutions.td.Companion.midnightMadnessSaveList, com.agsolutions.td.Companion.itemListBagMysteryEventCancelled, enemyList))
             oos.writeObject(writeList)
             oos.close()
             fos.close()

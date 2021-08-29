@@ -9,6 +9,9 @@ import androidx.core.view.doOnLayout
 import com.agsolutions.td.Companion.Companion.focusMainWindow
 import com.agsolutions.td.Companion.Companion.focusTalentWindow
 import com.agsolutions.td.Companion.Companion.showHelpTalent
+import com.agsolutions.td.Companion.Companion.towerClick
+import com.agsolutions.td.Companion.Companion.towerClickID
+import com.agsolutions.td.Companion.Companion.towerList
 import com.agsolutions.td.Fragments.*
 import kotlinx.android.synthetic.main.talents.*
 
@@ -83,18 +86,31 @@ class Talents : AppCompatActivity() {
 
     private fun initviews() {
 
-        if (ButterflyTalentFragment.butterflyRow4Item1 == 3 || DarkTalentFragment.darkRow4Item1 == 3 || EarthTalentFragment.earthRow4Item1 == 3 || FireTalentFragment.fireRow4Item1 == 3 || IceTalentFragment.iceRow4Item1 == 3 ||
-            MoonTalentFragment.moonRow4Item1 == 3 || PoisonTalentFragment.poisonRow4Item1 == 3 || WindTalentFragment.windRow4Item1 == 3 || WizardTalentFragment.wizardRow4Item1 == 3) {
-            earthTalentBTN.visibility = View.VISIBLE
-            wizardTalentBTN.visibility = View.VISIBLE
-            iceTalentBTN.visibility = View.VISIBLE
-            butterflyTalentBTN.visibility = View.VISIBLE
-            poisonTalentBTN.visibility = View.VISIBLE
-            moonTalentBTN.visibility = View.VISIBLE
-            windTalentBTN.visibility = View.VISIBLE
-            utilsTalentBTN.visibility = View.VISIBLE
-            fireTalentBTN.visibility = View.VISIBLE
-            darkTalentBTN.visibility = View.VISIBLE
+        earthTalentBTN.visibility = View.INVISIBLE
+        wizardTalentBTN.visibility = View.INVISIBLE
+        iceTalentBTN.visibility = View.INVISIBLE
+        butterflyTalentBTN.visibility = View.INVISIBLE
+        poisonTalentBTN.visibility = View.INVISIBLE
+        moonTalentBTN.visibility = View.INVISIBLE
+        windTalentBTN.visibility = View.INVISIBLE
+        utilsTalentBTN.visibility = View.INVISIBLE
+        fireTalentBTN.visibility = View.INVISIBLE
+        darkTalentBTN.visibility = View.INVISIBLE
+
+
+        if (towerClick){
+            if (towerList[towerClickID].bagSizeElementCount > 0){
+                if (towerList[towerClickID].itemListBag.contains(Items.eearth)) earthTalentBTN.visibility = View.VISIBLE
+                if (towerList[towerClickID].itemListBag.contains(Items.ewizard)) wizardTalentBTN.visibility = View.VISIBLE
+                if (towerList[towerClickID].itemListBag.contains(Items.eice)) iceTalentBTN.visibility = View.VISIBLE
+                if (towerList[towerClickID].itemListBag.contains(Items.ebutterfly)) butterflyTalentBTN.visibility = View.VISIBLE
+                if (towerList[towerClickID].itemListBag.contains(Items.epoison)) poisonTalentBTN.visibility = View.VISIBLE
+                if (towerList[towerClickID].itemListBag.contains(Items.emoon)) moonTalentBTN.visibility = View.VISIBLE
+                if (towerList[towerClickID].itemListBag.contains(Items.ewind)) windTalentBTN.visibility = View.VISIBLE
+                if (towerList[towerClickID].itemListBag.contains(Items.eutils)) utilsTalentBTN.visibility = View.VISIBLE
+                if (towerList[towerClickID].itemListBag.contains(Items.efire)) fireTalentBTN.visibility = View.VISIBLE
+                if (towerList[towerClickID].itemListBag.contains(Items.edark)) darkTalentBTN.visibility = View.VISIBLE
+            }
         }
 
         saveTalentsBTN.setOnClickListener() {

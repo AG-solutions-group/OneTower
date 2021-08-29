@@ -2,10 +2,8 @@ package com.agsolutions.td
 
 import android.content.*
 import android.content.res.Resources
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Point
-import android.graphics.drawable.ColorDrawable
+import android.graphics.Rect
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.SoundPool.Builder
@@ -32,12 +30,9 @@ import com.agsolutions.td.Companion.Companion.activeAbilityHelpingHandBool
 import com.agsolutions.td.Companion.Companion.activeAbilityHelpingHandButtonCounter
 import com.agsolutions.td.Companion.Companion.activeAbilityList
 import com.agsolutions.td.Companion.Companion.activeAbilityPlace
-import com.agsolutions.td.Companion.Companion.additionalUpgrade
 import com.agsolutions.td.Companion.Companion.allShieldsBool
-import com.agsolutions.td.Companion.Companion.antiHeal
 import com.agsolutions.td.Companion.Companion.armorPenGain
 import com.agsolutions.td.Companion.Companion.armorPenGainCount
-import com.agsolutions.td.Companion.Companion.autoAttackDmg
 import com.agsolutions.td.Companion.Companion.autoSpawn
 import com.agsolutions.td.Companion.Companion.autoSpawnCount
 import com.agsolutions.td.Companion.Companion.autoSpawnCountBool
@@ -47,22 +42,13 @@ import com.agsolutions.td.Companion.Companion.bigNumberScaler
 import com.agsolutions.td.Companion.Companion.bombActiveAbility
 import com.agsolutions.td.Companion.Companion.bombDamage
 import com.agsolutions.td.Companion.Companion.bombsUsedCounter
-import com.agsolutions.td.Companion.Companion.bonusCritFire
-import com.agsolutions.td.Companion.Companion.bonusSpeedWindTalent
 import com.agsolutions.td.Companion.Companion.bossesKilled
 import com.agsolutions.td.Companion.Companion.bossesLeaked
-import com.agsolutions.td.Companion.Companion.bowCount
 import com.agsolutions.td.Companion.Companion.build
 import com.agsolutions.td.Companion.Companion.buildClickBool
 import com.agsolutions.td.Companion.Companion.buildListBag
-import com.agsolutions.td.Companion.Companion.chainLighning
-import com.agsolutions.td.Companion.Companion.chainLightningBonusDmg
-import com.agsolutions.td.Companion.Companion.chainLightningBounceTargets
-import com.agsolutions.td.Companion.Companion.chainLightningCounter
-import com.agsolutions.td.Companion.Companion.chainLightningDmg
-import com.agsolutions.td.Companion.Companion.chainLightningTimer
+import com.agsolutions.td.Companion.Companion.butterflyTowerCount
 import com.agsolutions.td.Companion.Companion.challengesKilled
-import com.agsolutions.td.Companion.Companion.challengesKilledBool
 import com.agsolutions.td.Companion.Companion.continueGame
 import com.agsolutions.td.Companion.Companion.costBase
 import com.agsolutions.td.Companion.Companion.costBlue
@@ -75,10 +61,7 @@ import com.agsolutions.td.Companion.Companion.critDamageGain
 import com.agsolutions.td.Companion.Companion.critDamageGainCount
 import com.agsolutions.td.Companion.Companion.damageGain
 import com.agsolutions.td.Companion.Companion.damageGainCount
-import com.agsolutions.td.Companion.Companion.damageMultiplyerNight
-import com.agsolutions.td.Companion.Companion.darkMagicDmgPercent
-import com.agsolutions.td.Companion.Companion.darkPermaKill
-import com.agsolutions.td.Companion.Companion.darkTalentLaser
+import com.agsolutions.td.Companion.Companion.darkTowerCount
 import com.agsolutions.td.Companion.Companion.day
 import com.agsolutions.td.Companion.Companion.dayNightCounter
 import com.agsolutions.td.Companion.Companion.dayNightHour
@@ -88,13 +71,14 @@ import com.agsolutions.td.Companion.Companion.diamonds
 import com.agsolutions.td.Companion.Companion.diamondsGain
 import com.agsolutions.td.Companion.Companion.diamondsGainCount
 import com.agsolutions.td.Companion.Companion.dmgDisplayList
-import com.agsolutions.td.Companion.Companion.dmgDone
-import com.agsolutions.td.Companion.Companion.dmgImmune
+import com.agsolutions.td.Companion.Companion.dragRect
+import com.agsolutions.td.Companion.Companion.dragRectList
+import com.agsolutions.td.Companion.Companion.dragStatusCantBuild
+import com.agsolutions.td.Companion.Companion.dragStatusDrag
 import com.agsolutions.td.Companion.Companion.dropItemDarkUltimate
 import com.agsolutions.td.Companion.Companion.dropItemList
-import com.agsolutions.td.Companion.Companion.earthTalentBonusHitChance
 import com.agsolutions.td.Companion.Companion.earthTalentBonusPhysicalDmg
-import com.agsolutions.td.Companion.Companion.earthTalentPhyDmgMultiplier
+import com.agsolutions.td.Companion.Companion.earthTowerCount
 import com.agsolutions.td.Companion.Companion.end
 import com.agsolutions.td.Companion.Companion.endlessNight
 import com.agsolutions.td.Companion.Companion.endlessNightActive
@@ -121,15 +105,8 @@ import com.agsolutions.td.Companion.Companion.enemySizeBoss
 import com.agsolutions.td.Companion.Companion.enemySpawned
 import com.agsolutions.td.Companion.Companion.enemySpd
 import com.agsolutions.td.Companion.Companion.enemyType
-import com.agsolutions.td.Companion.Companion.entangle
-import com.agsolutions.td.Companion.Companion.evadeGlobal
 import com.agsolutions.td.Companion.Companion.evadeNight
-import com.agsolutions.td.Companion.Companion.fearDuration
-import com.agsolutions.td.Companion.Companion.fearTimer
-import com.agsolutions.td.Companion.Companion.fireBurnTalent
-import com.agsolutions.td.Companion.Companion.fireTalentBonusCritDmg
-import com.agsolutions.td.Companion.Companion.fireUltimateMulticritBonus
-import com.agsolutions.td.Companion.Companion.fragmentItemCounter
+import com.agsolutions.td.Companion.Companion.fireTowerCount
 import com.agsolutions.td.Companion.Companion.fragmentItemCurrentItem
 import com.agsolutions.td.Companion.Companion.globalArmorPen
 import com.agsolutions.td.Companion.Companion.globalBonusItemChance
@@ -139,9 +116,9 @@ import com.agsolutions.td.Companion.Companion.globalBonusTowerRange
 import com.agsolutions.td.Companion.Companion.globalDmgMultiplier
 import com.agsolutions.td.Companion.Companion.globalItemListBag
 import com.agsolutions.td.Companion.Companion.globalMagicPen
-import com.agsolutions.td.Companion.Companion.globalMultiCrit
 import com.agsolutions.td.Companion.Companion.globalSoundEffects
 import com.agsolutions.td.Companion.Companion.globalSoundMusic
+import com.agsolutions.td.Companion.Companion.gold
 import com.agsolutions.td.Companion.Companion.goldGain
 import com.agsolutions.td.Companion.Companion.goldGainCount
 import com.agsolutions.td.Companion.Companion.healCounter
@@ -150,15 +127,13 @@ import com.agsolutions.td.Companion.Companion.hintsBool
 import com.agsolutions.td.Companion.Companion.hitGain
 import com.agsolutions.td.Companion.Companion.hitGainCount
 import com.agsolutions.td.Companion.Companion.hpRegDebuffGlobal
-import com.agsolutions.td.Companion.Companion.iceExtraDmg
-import com.agsolutions.td.Companion.Companion.iceNova
-import com.agsolutions.td.Companion.Companion.iceNovaTimer
 import com.agsolutions.td.Companion.Companion.iceNovaTimerStartItem
 import com.agsolutions.td.Companion.Companion.iceShardCounter
 import com.agsolutions.td.Companion.Companion.iceShardCounter2
 import com.agsolutions.td.Companion.Companion.iceShardCounter3
 import com.agsolutions.td.Companion.Companion.iceShardCounter4
 import com.agsolutions.td.Companion.Companion.iceShardSpeed
+import com.agsolutions.td.Companion.Companion.iceShardTowerId
 import com.agsolutions.td.Companion.Companion.iceTowerCount
 import com.agsolutions.td.Companion.Companion.insertSpell
 import com.agsolutions.td.Companion.Companion.insertSpellBomb
@@ -167,28 +142,24 @@ import com.agsolutions.td.Companion.Companion.interest
 import com.agsolutions.td.Companion.Companion.interestGain
 import com.agsolutions.td.Companion.Companion.interestGainCount
 import com.agsolutions.td.Companion.Companion.invalidate
-import com.agsolutions.td.Companion.Companion.isSingleTarget
 import com.agsolutions.td.Companion.Companion.itemBoring
 import com.agsolutions.td.Companion.Companion.itemChance
 import com.agsolutions.td.Companion.Companion.itemChanceGain
 import com.agsolutions.td.Companion.Companion.itemChanceGainCount
-import com.agsolutions.td.Companion.Companion.itemDarkUltimate
 import com.agsolutions.td.Companion.Companion.itemFastDraw
 import com.agsolutions.td.Companion.Companion.itemFragmentEnemyList
 import com.agsolutions.td.Companion.Companion.itemLassoCount
 import com.agsolutions.td.Companion.Companion.itemList
 import com.agsolutions.td.Companion.Companion.itemListBagInserter
 import com.agsolutions.td.Companion.Companion.itemListBagMysteryEventCancelled
+import com.agsolutions.td.Companion.Companion.itemListInserter
 import com.agsolutions.td.Companion.Companion.itemPick
-import com.agsolutions.td.Companion.Companion.itemPiggyBank
 import com.agsolutions.td.Companion.Companion.itemPoints
 import com.agsolutions.td.Companion.Companion.itemPointsGain
 import com.agsolutions.td.Companion.Companion.itemPointsGainCount
 import com.agsolutions.td.Companion.Companion.itemQualityGain
 import com.agsolutions.td.Companion.Companion.itemQualityGainCount
 import com.agsolutions.td.Companion.Companion.itemSniperPro
-import com.agsolutions.td.Companion.Companion.itemStartPoison
-import com.agsolutions.td.Companion.Companion.itemStartTalentPoints
 import com.agsolutions.td.Companion.Companion.itemUsed
 import com.agsolutions.td.Companion.Companion.level
 import com.agsolutions.td.Companion.Companion.levelCount
@@ -202,14 +173,11 @@ import com.agsolutions.td.Companion.Companion.levelScalerCritDmg
 import com.agsolutions.td.Companion.Companion.levelScalerItemChance
 import com.agsolutions.td.Companion.Companion.levelScalerItemQuality
 import com.agsolutions.td.Companion.Companion.levelScalerSpeed
-import com.agsolutions.td.Companion.Companion.levelScalerSpeedBool
 import com.agsolutions.td.Companion.Companion.levelStatus
 import com.agsolutions.td.Companion.Companion.lives
 import com.agsolutions.td.Companion.Companion.livesMode2
-import com.agsolutions.td.Companion.Companion.livesMpCounter
 import com.agsolutions.td.Companion.Companion.logVolume
 import com.agsolutions.td.Companion.Companion.logVolumeEffects
-import com.agsolutions.td.Companion.Companion.luckyCharmCount
 import com.agsolutions.td.Companion.Companion.lvlArmor
 import com.agsolutions.td.Companion.Companion.lvlEvade
 import com.agsolutions.td.Companion.Companion.lvlHp
@@ -221,22 +189,11 @@ import com.agsolutions.td.Companion.Companion.lvlScalerSecond
 import com.agsolutions.td.Companion.Companion.lvlSpd
 import com.agsolutions.td.Companion.Companion.lvlXp
 import com.agsolutions.td.Companion.Companion.lvlXpConstant
-import com.agsolutions.td.Companion.Companion.maceCount
 import com.agsolutions.td.Companion.Companion.magicArmorPenGain
 import com.agsolutions.td.Companion.Companion.magicArmorPenGainCount
-import com.agsolutions.td.Companion.Companion.magicBoxCount
 import com.agsolutions.td.Companion.Companion.manaShieldBool
 import com.agsolutions.td.Companion.Companion.mapMode
 import com.agsolutions.td.Companion.Companion.mapPick
-import com.agsolutions.td.Companion.Companion.markOfTheButterfly
-import com.agsolutions.td.Companion.Companion.markOfTheButterflyDmgBoostActive
-import com.agsolutions.td.Companion.Companion.markOfTheButterflyExtraShot
-import com.agsolutions.td.Companion.Companion.markOfTheButterflyExtraShotDmg
-import com.agsolutions.td.Companion.Companion.markOfTheButterflySlow
-import com.agsolutions.td.Companion.Companion.markOfTheButterflySpdBoost
-import com.agsolutions.td.Companion.Companion.markOfTheButterflySpdBoostActive
-import com.agsolutions.td.Companion.Companion.markOfTheButterflySpdBoostActiveCounter
-import com.agsolutions.td.Companion.Companion.markOfTheButterflySpdBoostActiveNumber
 import com.agsolutions.td.Companion.Companion.maxVolume
 import com.agsolutions.td.Companion.Companion.mgcDamageGain
 import com.agsolutions.td.Companion.Companion.mgcDamageGainCount
@@ -252,39 +209,21 @@ import com.agsolutions.td.Companion.Companion.midnightMadnessSaveList
 import com.agsolutions.td.Companion.Companion.midnightMadnessWind
 import com.agsolutions.td.Companion.Companion.midnightMadnessWindLvlSpeedReduce
 import com.agsolutions.td.Companion.Companion.minePlaceholderCounter
-import com.agsolutions.td.Companion.Companion.moonLight
+import com.agsolutions.td.Companion.Companion.moonTowerCount
 import com.agsolutions.td.Companion.Companion.multiCritGain
 import com.agsolutions.td.Companion.Companion.multiCritGainCount
-import com.agsolutions.td.Companion.Companion.mysteryAllRounderBool
-import com.agsolutions.td.Companion.Companion.mysteryBombsUsedBool
-import com.agsolutions.td.Companion.Companion.mysteryBowBool
-import com.agsolutions.td.Companion.Companion.mysteryClownBool
-import com.agsolutions.td.Companion.Companion.mysteryColdHeartBool
-import com.agsolutions.td.Companion.Companion.mysteryLuckyCharmBool
-import com.agsolutions.td.Companion.Companion.mysteryMaceBool
-import com.agsolutions.td.Companion.Companion.mysteryPirateHunterBool
-import com.agsolutions.td.Companion.Companion.mysteryPoints
-import com.agsolutions.td.Companion.Companion.mysterySongBool
-import com.agsolutions.td.Companion.Companion.mysterySwordBool
-import com.agsolutions.td.Companion.Companion.mysteryWokeBool
-import com.agsolutions.td.Companion.Companion.mysteryWokeCount
 import com.agsolutions.td.Companion.Companion.overallSpdMultiplier
 import com.agsolutions.td.Companion.Companion.overallXp
-import com.agsolutions.td.Companion.Companion.particleDmg
-import com.agsolutions.td.Companion.Companion.particleDmgBool
 import com.agsolutions.td.Companion.Companion.personalHighscore
 import com.agsolutions.td.Companion.Companion.phyDamageGain
 import com.agsolutions.td.Companion.Companion.phyDamageGainCount
-import com.agsolutions.td.Companion.Companion.pirateItemCount
 import com.agsolutions.td.Companion.Companion.poisonCloud
 import com.agsolutions.td.Companion.Companion.poisonCloudCounter
 import com.agsolutions.td.Companion.Companion.poisonCloudPlaceholderCounter
-import com.agsolutions.td.Companion.Companion.poisonOverload
 import com.agsolutions.td.Companion.Companion.poisonPestCount
 import com.agsolutions.td.Companion.Companion.poisonTalentPest
 import com.agsolutions.td.Companion.Companion.poisonTowerCount
 import com.agsolutions.td.Companion.Companion.poisonTowerHighestDmg
-import com.agsolutions.td.Companion.Companion.pushBack
 import com.agsolutions.td.Companion.Companion.radioAdd
 import com.agsolutions.td.Companion.Companion.radioList
 import com.agsolutions.td.Companion.Companion.readLockEnemy
@@ -315,62 +254,34 @@ import com.agsolutions.td.Companion.Companion.shootListMine
 import com.agsolutions.td.Companion.Companion.shootListPoison
 import com.agsolutions.td.Companion.Companion.shootListTornado
 import com.agsolutions.td.Companion.Companion.shootReserve
-import com.agsolutions.td.Companion.Companion.shotBounce
-import com.agsolutions.td.Companion.Companion.singleTargetMultiplyer
-import com.agsolutions.td.Companion.Companion.slowAura
-import com.agsolutions.td.Companion.Companion.slowEach
-import com.agsolutions.td.Companion.Companion.slowExtra
-import com.agsolutions.td.Companion.Companion.slowExtraChance
-import com.agsolutions.td.Companion.Companion.slowExtraChanceDark
-import com.agsolutions.td.Companion.Companion.slowExtraDark
 import com.agsolutions.td.Companion.Companion.soundBoolDay
 import com.agsolutions.td.Companion.Companion.soundBoolNight
 import com.agsolutions.td.Companion.Companion.spawnEnemy
 import com.agsolutions.td.Companion.Companion.spdGain
 import com.agsolutions.td.Companion.Companion.spdGainCount
-import com.agsolutions.td.Companion.Companion.spellCastCD
-import com.agsolutions.td.Companion.Companion.spellCastCDBool
-import com.agsolutions.td.Companion.Companion.spellCastCDCounter
-import com.agsolutions.td.Companion.Companion.spellCastCDCounterHeap
-import com.agsolutions.td.Companion.Companion.splashRange
-import com.agsolutions.td.Companion.Companion.stackablePoison
-import com.agsolutions.td.Companion.Companion.sunburn
-import com.agsolutions.td.Companion.Companion.swordCount
-import com.agsolutions.td.Companion.Companion.talentMultishot
-import com.agsolutions.td.Companion.Companion.talentPoints
-import com.agsolutions.td.Companion.Companion.talentsGain
-import com.agsolutions.td.Companion.Companion.talentsGainCount
 import com.agsolutions.td.Companion.Companion.tankBool
-import com.agsolutions.td.Companion.Companion.throwBoulder
-import com.agsolutions.td.Companion.Companion.throwBoulderTimer
 import com.agsolutions.td.Companion.Companion.timer
 import com.agsolutions.td.Companion.Companion.toastGlobal
 import com.agsolutions.td.Companion.Companion.toastText
-import com.agsolutions.td.Companion.Companion.tornadoCounter
 import com.agsolutions.td.Companion.Companion.tornadoPlaceholderCounter
-import com.agsolutions.td.Companion.Companion.tornadoRadius
 import com.agsolutions.td.Companion.Companion.towerClick
 import com.agsolutions.td.Companion.Companion.towerClickBool
+import com.agsolutions.td.Companion.Companion.towerClickID
+import com.agsolutions.td.Companion.Companion.towerCount
 import com.agsolutions.td.Companion.Companion.towerList
 import com.agsolutions.td.Companion.Companion.tutorialFirstUseItemBool
 import com.agsolutions.td.Companion.Companion.tutorialFirstUseItemCounter
 import com.agsolutions.td.Companion.Companion.uiRefreshCounter
-import com.agsolutions.td.Companion.Companion.upgradePoints
 import com.agsolutions.td.Companion.Companion.upgradePointsGain
 import com.agsolutions.td.Companion.Companion.upgradePointsGainCount
 import com.agsolutions.td.Companion.Companion.userLevel
-import com.agsolutions.td.Companion.Companion.windTalentBonusSpeed
-import com.agsolutions.td.Companion.Companion.windTalentDebuff
-import com.agsolutions.td.Companion.Companion.windTowerBonusTowerRange
-import com.agsolutions.td.Companion.Companion.windUltimatePercent
-import com.agsolutions.td.Companion.Companion.wizardBomb
+import com.agsolutions.td.Companion.Companion.utilsTowerCount
+import com.agsolutions.td.Companion.Companion.windTowerCount
 import com.agsolutions.td.Companion.Companion.wizardBombStartItemDmg
-import com.agsolutions.td.Companion.Companion.wizardBombTimer
 import com.agsolutions.td.Companion.Companion.wizardLightningStartItemTargets
 import com.agsolutions.td.Companion.Companion.wizardMine
 import com.agsolutions.td.Companion.Companion.wizardMineCounter
 import com.agsolutions.td.Companion.Companion.wizardMinePlaced
-import com.agsolutions.td.Companion.Companion.wizardMissedLightningDmgBoost
 import com.agsolutions.td.Companion.Companion.wizardTowerCount
 import com.agsolutions.td.Companion.Companion.wizardTowerHighestDmg
 import com.agsolutions.td.Companion.Companion.writeLockDisplay
@@ -381,28 +292,7 @@ import com.agsolutions.td.Companion.Companion.writeLockPoison
 import com.agsolutions.td.Companion.Companion.writeLockShot
 import com.agsolutions.td.Companion.Companion.writeLockTornado
 import com.agsolutions.td.Companion.Companion.writeLockTower
-import com.agsolutions.td.Companion.Companion.xp
 import com.agsolutions.td.Fragments.*
-import com.agsolutions.td.Fragments.ButterflyTalentFragment.Companion.butterflyRow4Item1
-import com.agsolutions.td.Fragments.ButterflyTalentFragment.Companion.butterflyTalentsLoad
-import com.agsolutions.td.Fragments.DarkTalentFragment.Companion.darkRow1Item1
-import com.agsolutions.td.Fragments.DarkTalentFragment.Companion.darkTalentsLoad
-import com.agsolutions.td.Fragments.EarthTalentFragment.Companion.earthRow1Item1
-import com.agsolutions.td.Fragments.EarthTalentFragment.Companion.earthTalentsLoad
-import com.agsolutions.td.Fragments.FireTalentFragment.Companion.fireRow1Item1
-import com.agsolutions.td.Fragments.FireTalentFragment.Companion.fireRow4Item1
-import com.agsolutions.td.Fragments.FireTalentFragment.Companion.fireTalentsLoad
-import com.agsolutions.td.Fragments.IceTalentFragment.Companion.iceRow1Item1
-import com.agsolutions.td.Fragments.IceTalentFragment.Companion.iceRow4Item1
-import com.agsolutions.td.Fragments.IceTalentFragment.Companion.iceTalentsLoad
-import com.agsolutions.td.Fragments.MoonTalentFragment.Companion.moonRow1Item1
-import com.agsolutions.td.Fragments.MoonTalentFragment.Companion.moonTalentsLoad
-import com.agsolutions.td.Fragments.PoisonTalentFragment.Companion.poisonRow1Item1
-import com.agsolutions.td.Fragments.PoisonTalentFragment.Companion.poisonTalentsLoad
-import com.agsolutions.td.Fragments.UtilsTalentFragment.Companion.utilsTalentsLoad
-import com.agsolutions.td.Fragments.WindTalentFragment.Companion.windRow1Item1
-import com.agsolutions.td.Fragments.WindTalentFragment.Companion.windTalentsLoad
-import com.agsolutions.td.Fragments.WizardTalentFragment.Companion.wizardTalentsLoad
 import com.agsolutions.td.GameView.Companion.paintBombDmgDone
 import com.agsolutions.td.GameView.Companion.paintBurnDmgDone
 import com.agsolutions.td.GameView.Companion.paintEarthDmgDone
@@ -420,6 +310,7 @@ import com.agsolutions.td.Items.Companion.efire
 import com.agsolutions.td.Items.Companion.eice
 import com.agsolutions.td.Items.Companion.emoon
 import com.agsolutions.td.Items.Companion.epoison
+import com.agsolutions.td.Items.Companion.eutils
 import com.agsolutions.td.Items.Companion.ewind
 import com.agsolutions.td.Items.Companion.ewizard
 import com.agsolutions.td.Items.Companion.greyItems
@@ -462,8 +353,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         var gameEnd = 1
     }
 
-    private val adapter = ItemAdapter(itemList, this) {
-    }
+    private val adapter = ItemAdapter(itemList, this)
     var updateViewModel: UpdateViewModel = UpdateViewModel()
     var bagAdapter = ItemBagAdapter(itemListBagInserter, this, this)
     private val activeAbilityAdapter = ActiveAbilityAdapter(activeAbilityList, this)
@@ -778,6 +668,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     fun loadGame (){
 
+        /*
+
         //   var editor = sharedPref!!.edit()
        // editor.putBoolean("continueGame", false)
        // editor.apply()
@@ -827,7 +719,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                    var gameCurrencyList = itemListPlace[5] as ArrayList<Int>
                   if (gameCurrencyList != null) {
-                   xp = gameCurrencyList[0].toFloat()
+                   gold = gameCurrencyList[0].toFloat()
                    diamonds = gameCurrencyList[1]
                   itemPoints = gameCurrencyList[2].toFloat()
                   mysteryPoints = gameCurrencyList[3]
@@ -1125,17 +1017,14 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             MoonTalentFragment.moonRow2Item2 += 1
 
                             if (MoonTalentFragment.moonRow2Item2 == 1) {
-                                shotBounce = true
                                 if (Companion.itemStartBounce) Companion.shotBounceTargets += 2
                                 else Companion.shotBounceTargets += 1
                             }
                             if (MoonTalentFragment.moonRow2Item2 == 2) {
-                                shotBounce = true
                                 if (Companion.itemStartBounce) Companion.shotBounceTargets += 4
                                 else Companion.shotBounceTargets += 2
                             }
                             if (MoonTalentFragment.moonRow2Item2 == 3) {
-                                shotBounce = true
                                 if (Companion.itemStartBounce) Companion.shotBounceTargets += 6
                                 else Companion.shotBounceTargets += 3
                             }
@@ -1193,6 +1082,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         }
 
         progressGameBar.visibility = View.INVISIBLE
+
+         */
     }
 
     //----------------------------------------------------------------------------
@@ -1355,6 +1246,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 if (towerClick && towerClickBool) {
                     towerClickBool = false
                     enemyClick = false
+                    talentsBTN.visibility = View.VISIBLE
+                    firstLastRandomBtn.visibility = View.VISIBLE
 
                     itemListBagInserter.clear()
                     bagAdapter.notifyDataSetChanged()
@@ -1391,6 +1284,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
             if (build && buildClickBool){
                 buildClickBool = false
+                talentsBTN.visibility = View.INVISIBLE
+                firstLastRandomBtn.visibility = View.INVISIBLE
 
                 itemListBagInserter.clear()
                 bagAdapter.notifyDataSetChanged()
@@ -1405,6 +1300,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             if (enemyClick && enemySelectedBool) {
                 enemySelectedBool = false
                 towerClick = false
+                talentsBTN.visibility = View.INVISIBLE
+                firstLastRandomBtn.visibility = View.INVISIBLE
 
                 supportFragmentManager.beginTransaction().apply {
                     replace(R.id.fragment, fragmentStatsEnemy)
@@ -1448,6 +1345,17 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
             // UI Draw ----------------------------------------------------------------
 
+            if (dragStatusDrag){
+                var count = 0
+                dragRectList.forEach(){
+                    if (Rect.intersects(it, dragRect)){
+                        count++
+                    }
+                }
+                dragStatusCantBuild = count > 0
+                invalidate++
+            }
+
             if (com.agsolutions.td.Companion.globalItemListBag.isEmpty() && itemList.isNotEmpty() && hintsBool) {
                 val posXY = IntArray(2)
                 recyclerCurrentItem.getLocationOnScreen(posXY)
@@ -1455,7 +1363,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 UiView.yRecycler = posXY[1].toFloat()
                 invalidate++
             }
-            if (com.agsolutions.td.Companion.talentPoints > 1 && hintsBool) {
+            if (towerClick && towerList[towerClickID].talentPoints > 1 && hintsBool) {
                 val posXY = IntArray(2)
                 talentsBTN.getLocationOnScreen(posXY)
                 UiView.xTalents = posXY[0].toFloat()
@@ -1494,15 +1402,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 uiView.invalidate()
             }
 
-
-            if (supportFragmentManager.findFragmentById(R.id.fragment) == fragmentItem) {
-                fragmentItemCounter++
-                        if (fragmentItemCurrentItem != -1 && fragmentItemCounter >= 30) {
-                            fragmentItemCounter = 0
-                            fragmentItem.refresh(supportFragmentManager, fragmentItem)
-                        }
-            } else fragmentItemCounter = 0
-
             when (supportFragmentManager.findFragmentById(R.id.fragment)) {
                 fragmentItem -> {
                     coinIV.setPadding((25 * (scaleScreen / 10)).toInt())
@@ -1537,11 +1436,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         }
 
         //  update game -------------------------------------------------------------
-        if (!paused && end == 0) updateGame()
-
-        // refresh
-        refresh = true
-
+        if (!paused && end == 0) {
+            updateGame()
+            // refresh
+            refresh = true
+        }
     }
 
     //----------------------------------------------------------------------------
@@ -1582,13 +1481,10 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     //----------------------------------------------------------------------------
 
-
-    //----------------------------------------------------------------------------
-
     private fun startItems() {
         //from StartItems class
         if (StartItems.startItems > 0) {
-            adapter.notifyItemInserted(0)
+            adapter.notifyDataSetChanged()
             StartItems.startItems -= 1
         }
     }
@@ -1684,16 +1580,24 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
     //----------------------------------------------------------------------------
 
     fun dropItem (enemy: Enemy){
+        readLockTower.lock()
+        try {
         if (dropItemList >= 1) {
             when ((0..999).random()) {
                 in 0..(towerList[enemy.killerId].overallItemChance * 10).toInt() -> {
                     var itemX = getItem(towerList[enemy.killerId])
-                    if (Companion.upgraderBool && itemX.upgrade != 0) itemX.upgrade *= 2
+                    // TODO
+               //     if (Companion.upgraderBool && itemX.upgrade != 0) itemX.upgrade *= 2
                     itemList.add(0, itemX)
+
                     runOnUiThread {
-                        adapter.notifyItemInserted(0)
+                        itemListInserter.clear()
+                        adapter.notifyDataSetChanged()
+                        itemListInserter.addAll(itemList)
+                        adapter.notifyItemRangeInserted(0, itemListInserter.size)
                         recyclerCurrentItem.smoothScrollToPosition(0)
                     }
+
                     if (supportFragmentManager.findFragmentById(R.id.fragment) == fragmentItem) {
                         fragmentItemCurrentItem += 1
                     }
@@ -1701,6 +1605,9 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             }
             dropItemList -= 1
         }
+            } finally {
+                        readLockTower.unlock()
+            }
     }
 
     //----------------------------------------------------------------------------
@@ -1723,7 +1630,14 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             }
 
             itemList.removeAt(7)
-            adapter.notifyItemRemoved(7)
+
+            runOnUiThread {
+                itemListInserter.clear()
+                adapter.notifyDataSetChanged()
+                itemListInserter.addAll(itemList)
+                adapter.notifyItemRangeInserted(0, itemListInserter.size)
+                recyclerCurrentItem.smoothScrollToPosition(0)
+            }
 
         }
     }
@@ -1773,9 +1687,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 .commit()
         }
 
-        Companion.scrollOldPositionX = 0
-        Companion.scrollOldPositionY = 0
-
         fragmentItemCurrentItem = position
         fragmentItem.refresh(supportFragmentManager, fragmentItem)
     }
@@ -1790,6 +1701,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             when (event.action) {
                 DragEvent.ACTION_DRAG_STARTED -> {
                     if (event.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+                        dragStatusDrag = true
+
                         vv.invalidate()
                         Log.d("drag", "started")
                         true
@@ -1804,8 +1717,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     true
                 }
 
-                DragEvent.ACTION_DRAG_LOCATION ->
-                    true
+                DragEvent.ACTION_DRAG_LOCATION -> {
+                    dragRect = Rect(event.x.toInt(), event.y.toInt(), event.x.toInt(), event.y.toInt())
+
+                true
+                }
 
                 DragEvent.ACTION_DRAG_EXITED -> {
                     vv.invalidate()
@@ -1816,33 +1732,99 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 DragEvent.ACTION_DROP -> {
                     val item: ClipData.Item = event.clipData.getItemAt(0)
                     val dragData = item.text
-                    var towerPlace = Tower(buildListBag[position].dmg, buildListBag[position].speed, buildListBag[position].crit, buildListBag[position].critDmg)
-                    towerPlace.towerRange = TowerRadius(event.x + 80, event.y + 80, 300f)
-                    towerPlace.firstLastRandom = 3
-                    var itemPlace = Items(3000, 0, 999, 0, 0f, 0, 0f, 0, "Earth Element", R.drawable.talentsearth, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Earth Abilities", 0.0f, "", 0f)
-                    when (buildListBag[position].id){
-                        2000, 2100, 2200, 2300 -> itemPlace = Items(3000, 0, 999, 0, 0f, 0, 0f, 0, "Earth Element", R.drawable.talentsearth, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Earth Abilities", 0.0f, "", 0f)
-                        2001, 2101, 2201, 2301 -> itemPlace = Items(3001, 0, 999, 0, 0f, 0, 0f, 0, "Wizard Element", R.drawable.talentswizard, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wizard Abilities", 0.0f, "", 0f)
-                        2002, 2102, 2202, 2302 -> itemPlace = Items(3002, 0, 999, 0, 0f, 0, 0f, 0, "Ice Element", R.drawable.talentsice, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Ice Abilities", 0.0f, "", 0f)
-                        2003, 2103, 2203, 2303 -> itemPlace = Items(3003, 0, 999, 0, 0f, 0, 0f, 0, "Butterfly Element", R.drawable.talentsbutterfly, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Butterfly Abilities", 0.0f, "", 0f)
-                        2004, 2104, 2204, 2304 -> itemPlace = Items(3004, 0, 999, 0, 0f, 0, 0f, 0, "Poison Element", R.drawable.talentspoison, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Poison Abilities", 0.0f, "", 0f)
-                        2005, 2105, 2205, 2305 -> itemPlace = Items(3005, 0, 999, 0, 0f, 0, 0f, 0, "Moon Element", R.drawable.moon, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Moon Abilities", 0.0f, "", 0f)
-                        2006, 2106, 2206, 2306 -> itemPlace = Items(3006, 0, 999, 0, 0f, 0, 0f, 0, "Wind Element", R.drawable.talentswind, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wind Abilities", 0.0f, "", 0f)
-                        2007, 2107, 2207, 2307 -> itemPlace = Items(3007, 0, 999, 0, 0f, 0, 0f, 0, "Utils Element", R.drawable.talentsutils, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Utils Abilities", 0.0f, "", 0f)
-                        2008, 2108, 2208, 2308 -> itemPlace = Items(3008, 0, 999, 0, 0f, 0, 0f, 0, "Fire Element", R.drawable.talentsfire, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Fire Abilities", 0.0f, "", 0f)
-                        2009, 2109, 2209, 2309 -> itemPlace = Items(3009, 0, 999, 0, 0f, 0, 0f, 0, "Dark Element", R.drawable.talentsdark, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Dark Abilities", 0.0f, "", 0f)
+                    var build = true
+
+                    if (level > 0 && position == 0){
+                        if (!Companion.day && Companion.moonTalentItemCost > 0){
+                            if (Companion.gold >= (buildListBag[position].goldCost - (buildListBag[position].goldCost * Companion.moonTalentItemCost))) Companion.gold -= (buildListBag[position].goldCost - (buildListBag[position].goldCost * Companion.moonTalentItemCost))
+                            else build = false
+                        }
+                        else if (Companion.midnightMadnessMidasGoldCost > 0){
+                            if (Companion.gold >= (buildListBag[position].goldCost + (buildListBag[position].goldCost * Companion.midnightMadnessMidasGoldCost))) Companion.gold -= (buildListBag[position].goldCost + (buildListBag[position].goldCost * Companion.midnightMadnessMidasGoldCost))
+                            else build = false
+                        }
+                        else {
+                            if (Companion.gold >= buildListBag[position].goldCost) Companion.gold -= buildListBag[position].goldCost
+                            else build = false
+                        }
                     }
-                    towerPlace.itemListBag.add(itemPlace)
-                    towerList.add(towerPlace)
 
-                    buildListBag.removeAt(position)
+                    if (build && !dragStatusCantBuild) {
+                        var towerPlace =
+                            Tower(buildListBag[position].dmg, buildListBag[position].atkDmg, buildListBag[position].mgcDmg, buildListBag[position].speed, buildListBag[position].crit, buildListBag[position].critDmg)
+                        towerPlace.towerRange = TowerRadius(event.x - 32, event.y - 32, 300f)
+                        dragRectList.add(Rect((event.x - 80).toInt(), (event.y - 80).toInt(), (event.x + 80).toInt(), (event.y + 80).toInt()))
+                        towerPlace.firstLastRandom = 3
+                        towerPlace.bagSize = (buildListBag[position].specialFloat - 1).toInt()
+                        towerPlace.bagSizeElement =
+                            (buildListBag[position].specialFloat2 - 1).toInt()
+                        when (buildListBag[position].id) {
+                            2000 -> {
+                                towerPlace.towerRarity = "basic"
+                                towerPlace.towerRarityMultiplier = 0.80f
+                            }
+                            in 2100..2109 -> {
+                                towerPlace.towerRarity = "rare"
+                                towerPlace.towerRarityMultiplier = 1.0f
+                            }
+                            in 2200..2209 -> {
+                                towerPlace.towerRarity = "epic"
+                                towerPlace.towerRarityMultiplier = 1.2f
+                            }
+                            in 2300..2309 -> {
+                                towerPlace.towerRarity = "legendary"
+                                towerPlace.towerRarityMultiplier = 1.5f
+                            }
+                        }
 
-                    itemListBagInserter.clear()
-                    bagAdapter.notifyDataSetChanged()
-                    itemListBagInserter.addAll(buildListBag)
-                    bagAdapter.notifyItemRangeInserted(0, itemListBagInserter.size)
-                    recyclerBagItem.smoothScrollToPosition(0)
+                        var itemPlace: Items? = null
+                        when (buildListBag[position].id) {
+                            2100, 2200, 2300 -> {
+                                towerPlace.towerPrimaryElement = "earth"
+                                itemPlace = Items.eearth
+                            }
+                            2101, 2201, 2301 -> itemPlace = Items.ewizard
+                            2102, 2202, 2302 -> itemPlace = Items.eice
+                            2103, 2203, 2303 -> {
+                                towerPlace.towerPrimaryElement = "butterfly"
+                                itemPlace = Items.ebutterfly
+                            }
+                            2104, 2204, 2304 -> itemPlace = Items.epoison
+                            2105, 2205, 2305 -> {
+                                towerPlace.towerPrimaryElement = "moon"
+                                itemPlace = Items.emoon
+                            }
+                            2106, 2206, 2306 -> {
+                                towerPlace.towerPrimaryElement = "wind"
+                                itemPlace = Items.ewind
+                            }
+                            2107, 2207, 2307 -> itemPlace = Items.eutils
+                            2108, 2208, 2308 -> itemPlace = Items.efire
+                            2109, 2209, 2309 -> itemPlace = Items.edark
+                        }
+                        if (itemPlace != null) {
+                            towerPlace.itemListBag.add(0, itemPlace)
+                        }
 
+                        writeLockTower.lock()
+                        try {
+                            var towerListIterator = towerList.listIterator()
+                            towerListIterator.add(towerPlace)
+                        } finally {
+                            writeLockTower.unlock()
+                        }
+
+                        if (level == 0 || (level > 0 && position != 0)) {
+                            buildListBag.removeAt(position)
+
+                            itemListBagInserter.clear()
+                            bagAdapter.notifyDataSetChanged()
+                            itemListBagInserter.addAll(buildListBag)
+                            bagAdapter.notifyItemRangeInserted(0, itemListBagInserter.size)
+                            recyclerBagItem.smoothScrollToPosition(0)
+                        }
+
+                    }
                     vv.invalidate()
                     Log.d("drag", "dropped")
                     true
@@ -1854,10 +1836,12 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                     when(event.result) {
                         true -> {
+                            dragStatusDrag = false
                             // drop was handled
                             Log.d("drag", "ended, success")
                         }
                         else ->{
+                            dragStatusDrag = false
                             // drop didn't work
                             Log.d("drag", "ended, fail")
                         }
@@ -1879,7 +1863,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     override fun onBagClick(position: Int, it: View?) {
 
-            towerClick = false
             enemyClick = false
 
             // show item update fragment
@@ -1892,8 +1875,49 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
             itemFragmentEnemyList.removeAll(itemFragmentEnemyList)
 
-        if (build) {
+        if (!towerClick && buildListBag.size > 0) {
                         itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.nameicon, buildListBag[position].name.toString()))
+            if (!Companion.day && Companion.moonTalentItemCost > 0 && level != 0 && buildListBag[position] == buildListBag[0]) {
+                if (buildListBag[position].goldCost > 0) {
+                    when (buildListBag[position].goldCost.toInt()) {
+                        in 0..999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (buildListBag[position].goldCost - (buildListBag[position].goldCost * Companion.moonTalentItemCost)).toInt()
+                            .toString() + " / " + Companion.gold.toInt().toString()))
+                        in 1000..999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (buildListBag[position].goldCost - (buildListBag[position].goldCost * Companion.moonTalentItemCost) / 1000).round(1)
+                            .toString() + "k" + " / " + (Companion.gold / 1000).round(1)
+                            .toString() + "k"))
+                        in 1000000..999999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (buildListBag[position].goldCost - (buildListBag[position].goldCost * Companion.moonTalentItemCost) / 1000000).round(1)
+                            .toString() + "M" + " / " + (Companion.gold / 1000000).round(1)
+                            .toString() + "M"))
+                    }
+                }
+            } else if (Companion.midnightMadnessMidasGoldCost > 0 && level != 0 && buildListBag[position] == buildListBag[0]) {
+                if (buildListBag[position].goldCost > 0) {
+                    when (buildListBag[position].goldCost.toInt()) {
+                        in 0..999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (buildListBag[position].goldCost + (buildListBag[position].goldCost * Companion.midnightMadnessMidasGoldCost)).toInt()
+                            .toString() + " / " + Companion.gold.toInt().toString()))
+                        in 1000..999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (buildListBag[position].goldCost + (buildListBag[position].goldCost * Companion.midnightMadnessMidasGoldCost) / 1000).round(1)
+                            .toString() + "k" + " / " + (Companion.gold / 1000).round(1)
+                            .toString() + "k"))
+                        in 1000000..999999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (buildListBag[position].goldCost + (buildListBag[position].goldCost * Companion.midnightMadnessMidasGoldCost) / 1000000).round(1)
+                            .toString() + "M" + " / " + (Companion.gold / 1000000).round(1)
+                            .toString() + "M"))
+                    }
+                }
+            } else {
+                if (buildListBag[position].goldCost > 0 && level != 0 && buildListBag[position] == buildListBag[0]) {
+                    when (buildListBag[position].goldCost.toInt()) {
+                        in 0..999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (buildListBag[position].goldCost).toInt()
+                            .toString() + " / " + Companion.gold.toInt().toString()))
+                        in 1000..999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (buildListBag[position].goldCost / 1000).round(1)
+                            .toString() + "k" + " / " + (Companion.gold / 1000).round(1)
+                            .toString() + "k"))
+                        in 1000000..999999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (buildListBag[position].goldCost / 1000000).round(1)
+                            .toString() + "M" + " / " + (Companion.gold / 1000000).round(1)
+                            .toString() + "M"))
+                    }
+                }
+            }
+
                         if (buildListBag[position].upgrade > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.upgradepointsicon, buildListBag[position].upgrade.toString()))
                         if (buildListBag[position].dmg > 0) {
                             when ((buildListBag[position].dmg).toInt()) {
@@ -1941,6 +1965,24 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             if (buildListBag[position].specialFloat2 != 0f) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, buildListBag[position].specialFloat2.round(2)
                                 .toString()))
                         }
+            if (buildListBag[position].id == 2000) {
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 0.9"))
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 0.9"))
+            }
+            if (buildListBag[position].id == 2100 || buildListBag[position].id == 2101 || buildListBag[position].id == 2102 || buildListBag[position].id == 2103 || buildListBag[position].id == 2104 || buildListBag[position].id == 2105 || buildListBag[position].id == 2106 || buildListBag[position].id == 2107 || buildListBag[position].id == 2108 || buildListBag[position].id == 2109){
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 1.0"))
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 1.0"))
+            }
+            if (buildListBag[position].id == 2200 || buildListBag[position].id == 2201 || buildListBag[position].id == 2202 || buildListBag[position].id == 2203 || buildListBag[position].id == 2204 || buildListBag[position].id == 2205 || buildListBag[position].id == 2206 || buildListBag[position].id == 2207 || buildListBag[position].id == 2208 || buildListBag[position].id == 2209){
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 1.1"))
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 1.1"))
+            }
+            if (buildListBag[position].id == 2300 || buildListBag[position].id == 2301 || buildListBag[position].id == 2302 || buildListBag[position].id == 2303 || buildListBag[position].id == 2304 || buildListBag[position].id == 2305 || buildListBag[position].id == 2306 || buildListBag[position].id == 2307 || buildListBag[position].id == 2308 || buildListBag[position].id == 2309){
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 1.25"))
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 1.25"))
+            }
+            Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.overlaytransparent, "                ".toString()))
+
         }else {
 
             readLockTower.lock()
@@ -2160,7 +2202,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         enemyDots()
         items()
         activeAbilitiesEffect()
-        dead()
+        dead2()
 
     }
 
@@ -2201,7 +2243,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 enemySpawned = 0
                 levelStatus = "undef"
                 tankBool = true
-                xp *= interest      // interest
+                gold *= interest      // interest
 
                 //    if (level == 1) soundPool.play(soundIds[0], 0f, 0f, 1, -1, 1.0f)
 
@@ -2240,7 +2282,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 }
 
                 if (mapMode == 2) lvlHp *= (1 + (0.09f * scaler) + (listOf<Float>(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.033f, 0.033f, 0.033f, 0.075f, 0.15f).random()))
-                else lvlHp *= (1 + (0.06f * scaler) + (listOf<Float>(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.025f, 0.025f, 0.025f, 0.05f, 0.1f).random()))
+                else lvlHp *= (1 + (0.1f * scaler) + (listOf<Float>(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.033f, 0.033f, 0.033f, 0.075f, 0.15f).random()))
                 lvlArmor *= (1 + (0.03f *scaler) + (listOf<Float>(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.025f, 0.025f, 0.025f, 0.025f, 0.05f).random()))
                 lvlMagicArmor *= (1 + (0.03f * scaler) + (listOf<Float>(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.025f, 0.025f, 0.025f, 0.025f, 0.05f).random()))
                 lvlEvade *= (1 + (0.01f *scaler) + (listOf<Float>(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0125f, 0.0125f, 0.0125f, 0.0125f, 0.025f).random()))
@@ -2254,7 +2296,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     lvlHp /= 1000
                     bigNumberScaler /= 1000
                     lvlXp /= 1000
-                    xp /= 1000
+                    gold /= 1000
 
                     itemList.forEach {
                         it.dmg /= 1000
@@ -2272,8 +2314,25 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     it.atkDmg /= 1000
                                     it.mgcDmg /= 1000
                                 }
+
+                                // item aqu
+                                tower.itemListBag.forEach() {
+                                    it.lvlAqu++
+                                    if (mapMode != 2) {
+                                        if (it.id == 205) if (Utils.divisible(it.lvlAqu, 10)) lives += it.specialFloat.toInt()
+                                    }
+                                    else {
+                                        if (it.id == 205) if (Utils.divisible(it.lvlAqu, 10)) livesMode2 += it.specialFloat.toInt()
+                                    }
+                                }
+                                if (tower.experienceLvl) {
+                                    var xpGain = 1f
+                                    tower.xpTower += xpGain
+                                    towerExperienceGainUtilAura(xpGain, towerList.indexOf(tower))
+                                    if (tower.experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain, towerList.indexOf(tower))
+                                }
                             }
-                                 }finally {
+                        }finally {
                         readLockTower.unlock()
                     }
 
@@ -2318,6 +2377,31 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 costEpic = costBase * 3.0f
                 costLegendary = costBase * 5.0f
 
+                if (level != 0 && level != 1){
+                        if (towerClick) {
+                            buildListBag.removeAt(0)
+                            buildListBag.add(0, Items(2000, 0, 999, 0, (costBase * lvlXp * (1.5f + (towerCount / 10))), 0, 0f, 0, "Basic Tower", R.drawable.towerallgrey, R.drawable.overlaytransparent, 5f, 0.0f, 0.0f, 70f, 1f, 1.5f, 0, "bagspace", 2.0f, "bagspace element", 1f))
+                        }else {
+                            runOnUiThread() {
+                            buildListBag.removeAt(0)
+                            itemListBagInserter.clear()
+                            bagAdapter.notifyDataSetChanged()
+
+                            buildListBag.add(0, Items(2000, 0, 999, 0, (costBase * lvlXp * (1.5f + (towerCount / 10))), 0, 0f, 0, "Basic Tower", R.drawable.towerallgrey, R.drawable.overlaytransparent, 5f, 0.0f, 0.0f, 70f, 1f, 1.5f, 0, "bagspace", 2.0f, "bagspace element", 1f))
+                            itemListBagInserter.addAll(buildListBag)
+                            bagAdapter.notifyItemRangeInserted(0, itemListBagInserter.size)
+                            }
+                        }
+                } else {
+                    runOnUiThread() {
+                        itemListBagInserter.clear()
+                        bagAdapter.notifyDataSetChanged()
+                        buildListBag.add(0, Items(2000, 0, 999, 0, (costBase * lvlXp * (1.5f + (towerCount / 10))), 0, 0f, 0, "Basic Tower", R.drawable.towerallgrey, R.drawable.overlaytransparent, 5f, 0.0f, 0.0f, 70f, 1f, 1.5f, 0, "bagspace", 2.0f, "bagspace element", 1f))
+                        itemListBagInserter.addAll(buildListBag)
+                        bagAdapter.notifyItemRangeInserted(0, itemListBagInserter.size)
+                    }
+                }
+
                 if (level == 1) {
                     radioList.add(
                         radioList.size,
@@ -2347,11 +2431,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 manaShieldBool = false
                 shieldBool = false
 
-                if (level == 20 && itemDarkUltimate) {
-                    DarkTalentFragment.darkRow4Item1 = 1
-                    com.agsolutions.td.Companion.dropItemDarkUltimate += 1
-                    Companion.darkPermaKill += 0.25f
-                }
                 if (level == 30) levelListReserve.addAll(listOf("speed", "mass", "regeneration", "immune", "split", "manaShield", "shield"))
                 if (level == 75) levelListReserve.addAll(listOf("healer", "tank"))
 
@@ -2365,46 +2444,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                 addItemsToList ()
                 itemsPerRound ()
-
-                // item aqu
-                readLockTower.lock ()
-                    try {
-                            var towerListIterator = towerList.listIterator()
-                            while (towerListIterator.hasNext()) {
-                                var tower = towerListIterator.next()
-
-                                tower.itemListBag.forEach() {
-                                it.lvlAqu++
-                                    if (mapMode != 2) {
-                                   if (it.id == 205) if (Utils.divisible(it.lvlAqu, 10)) lives += it.specialFloat.toInt()
-                                  }
-                                  else {
-                                    if (it.id == 205) if (Utils.divisible(it.lvlAqu, 10)) livesMode2 += it.specialFloat.toInt()
-                                  }
-                                 }
-                            }
-                                 }finally {
-                        readLockTower.unlock()
-                    }
-
-                // upgrade points
-                if (level > 0 && Utils.divisible(level, 5)) {
-                    upgradePoints += 1
-                    if (additionalUpgrade > 0 && level > 0 && Utils.divisible(level, additionalUpgrade)) upgradePoints += 1
-                }
-                // talent points
-                if (level > 0 && Utils.divisible(level, 4)) {
-                    talentsGain = true
-                    if (Companion.upgraderBool) upgradePoints++
-                    Companion.talentPoints +=1
-                }
-
-
-                // butterfly talent ultimate
-                if (butterflyRow4Item1 == 3 && Utils.divisible(level, 50)) singleTargetMultiplyer += 0.2f
-
             }
-
         }
 
     fun dayNight () {
@@ -2459,6 +2499,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 endlessNightActiveCounter = 0
             }
         } else {
+            if (dayNightVariable < -5) dayNightVariable = -5
+            if (dayNightVariable > 5) dayNightVariable = 5
             day = !(dayNightHour < dayNightVariable || dayNightHour > 19)
         }
     }
@@ -2642,10 +2684,10 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             while (towerListIterator.hasNext()) {
                                 var tower = towerListIterator.next()
 
-                                repeat(3) {
+                                repeat(2) {
                                     if (tower.itemListBag.size > 0) {
                                         val randomItem: Int = (0 until tower.itemListBag.size).random()
-                                        if (tower.itemListBag[randomItem].crossedOut == true) {
+                                        if (tower.itemListBag[randomItem].crossedOut || tower.itemListBag[randomItem].element) {
                                         } else {
                                             when {
                                                 (greyItems.contains(tower.itemListBag[randomItem].id)) -> {
@@ -2754,6 +2796,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         // update mystery points--------------------------------------------
 
+            // TODO
+            /*
         when {
             darkRow1Item1 == 1 && earthRow1Item1 == 1 && fireRow1Item1 == 1 && iceRow1Item1 == 1 && windRow1Item1 == 1 && moonRow1Item1 == 1 && poisonRow1Item1 == 1 && mysteryAllRounderBool-> {
                 mysteryAllRounderBool = false
@@ -2876,13 +2920,15 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 }, 150)
             }
         }
+
+             */
         }
 
     fun updateViewModel () {
 
         // update ViewModel--------------------------------------------
 
-        // update gains ----------------------------------------------
+        // update gains for UI ----------------------------------------------
         if (goldGain) goldGainCount++
         if (goldGainCount >= 120) {
             goldGainCount = 0
@@ -2892,11 +2938,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         if (diamondsGainCount >= 120) {
             diamondsGainCount = 0
             diamondsGain = false
-        }
-        if (talentsGain) talentsGainCount++
-        if (talentsGainCount >= 120) {
-            talentsGainCount = 0
-            talentsGain = false
         }
         if (interestGain) interestGainCount++
         if (interestGainCount >= 120) {
@@ -3002,9 +3043,10 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     enemyMaxHp = it.maxHp
                     enemyHp = it.hp
                     enemyArmor = it.armor
-                    enemyArmorReduction = 100 - (100 * armorPen(it, Tower(0f,0f,0f,0f)))
+                    // TODO it.armorReduced
+                    enemyArmorReduction = 100 - (100 * armorPen(it, Tower(0f,0f, 0f,0f,0f,0f)))
                     enemyMagicArmor = it.magicArmor
-                    enemyMagicArmorReduction = 100 - (100 * magicPen(it, Tower(0f,0f,0f,0f)))
+                    enemyMagicArmorReduction = 100 - (100 * magicPen(it, Tower(0f,0f, 0f,0f,0f,0f)))
                     enemyEvade = it.evade
                     enemyHpReg = it.hpReg
                     enemySpd = it.speed
@@ -3035,7 +3077,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 var it = enemyListIterator.next()
 
                 // enemy hp updates
-                if (it.hpReg > 0 && it.hp < it.maxHp && it.hp > 0) it.hp += (it.hpReg * (1 - it.hpRegDebuff - hpRegDebuffGlobal))
+                var hpDebuffPlace = if (it.hpRegDebuff + hpRegDebuffGlobal > 0.9f) 0.9f else it.hpRegDebuff + hpRegDebuffGlobal
+                if (it.hpReg > 0 && it.hp < it.maxHp && it.hp > 0) it.hp += (it.hpReg * (1 - hpDebuffPlace))
                 if (it.hp > it.maxHp) it.hp = it.maxHp
 
                 // movement speed
@@ -3059,6 +3102,20 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                     }
                 }
+
+                // dmg debuff
+                var butterflyDebuffEnemyDmgAlreadyEffectedPlace = if (it.butterflyDebuffEnemyDmgAlreadyEffected) towerList[it.butterflyDebuffEnemyDmgTowerId].butterflyDebuffEnemyDmg else 0f
+
+                it.dmgTakenDebuff = 1f + butterflyDebuffEnemyDmgAlreadyEffectedPlace
+
+                // gold and xp debuff
+                var butterflyDebuffEnemyGoldXpAlreadyEffectedPlace = if (it.butterflyDebuffEnemyGoldXpAlreadyEffected) towerList[it.butterflyDebuffEnemyGoldXpTowerId].butterflyDebuffEnemyGoldXp else 0f
+                it.xpDropDebuff = 1f + butterflyDebuffEnemyGoldXpAlreadyEffectedPlace
+                it.goldDropDebuff = 1f + butterflyDebuffEnemyGoldXpAlreadyEffectedPlace
+
+                it.overallXp = it.xpEnemy * it.xpDropDebuff
+                it.overallGold = it.xpEnemy * it.goldDropDebuff * midnightMadnessMidasGold
+
             }
         }finally {
             writeLockEnemy.unlock()
@@ -3067,16 +3124,16 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         if (towerList.size > 0) {
             readLockTower.lock()
             try {
-                poisonTowerHighestDmg.overallSpellDmg = 0f
+                poisonTowerHighestDmg.overallTowerSpellDmg = 0f
                 var towerListIterator = towerList.listIterator()
                 while (towerListIterator.hasNext()) {
                     var tower = towerListIterator.next()
                     if (tower.itemListBag.contains(epoison)){
-                        if (tower.overallSpellDmg > poisonTowerHighestDmg.overallSpellDmg)
+                        if (tower.overallTowerSpellDmg > poisonTowerHighestDmg.overallTowerSpellDmg)
                         poisonTowerHighestDmg = tower
                     }
                     if (tower.itemListBag.contains(ewizard)){
-                        if (tower.overallSpellDmg > wizardTowerHighestDmg.overallSpellDmg)
+                        if (tower.overallTowerSpellDmg > wizardTowerHighestDmg.overallTowerSpellDmg)
                             wizardTowerHighestDmg = tower
                     }
                 }
@@ -3093,12 +3150,16 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         // Ice Talent
 
-        when (iceShardSpeed) {
-            100 -> Companion.iceShardCounter3 = 1
-            75 -> iceShardCounter3 = 2
-            50 -> iceShardCounter3 = 3
+        if (Companion.iceShard) {
+            when (Companion.iceShardSpeed) {
+                135 -> Companion.iceShardCounter3 = 1
+                120 -> iceShardCounter3 = 2
+                105 -> iceShardCounter3 = 3
+                90 -> iceShardCounter3 = 4
+                75 -> iceShardCounter3 = 5
+            }
         }
-        if (iceShardSpeed > 0 && iceShardCounter2 < iceShardCounter3) {
+        if (Companion.iceShard && iceShardCounter2 < iceShardCounter3) {
             writeLockIce.lock()
             try {
                 iceShardCounter += 1
@@ -3120,7 +3181,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             }
         }
 
-        if (iceShardSpeed > 0) {
+        if (Companion.iceShard) {
             iceShardCounter4++
             if (iceShardCounter4 >= 3) {
                 writeLockIce.lock()
@@ -3176,41 +3237,52 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         // Tornado
 
-        if (tornadoRadius > 0) {
-            writeLockTornado.lock()
-            try {
-            tornadoCounter++
-            if (tornadoCounter >= 300) {
-                tornadoCounter = 0
-                if (enemyList.isNotEmpty()) {
-                    var shootListTornadoIterator = shootListTornado.listIterator()
-                    shootListTornadoIterator.add(ShootTornadoTalent())
-                }
-            } else if (tornadoCounter == 100 && shootListTornado.isNotEmpty()) {
-                    var shootListTornadoIterator = shootListTornado.listIterator()
-                    while (shootListTornadoIterator.hasNext()) {
-                        var it = shootListTornadoIterator.next()
-                        it.broken = 1
-                        Companion.randomEnemyTornadoBool = true
-                    }
-                }
+        writeLockTornado.lock()
+        readLockTower.lock()
+        try {
+            var towerListIterator = towerList.listIterator()
+            while (towerListIterator.hasNext()) {
+                var tower = towerListIterator.next()
+                if (tower.tornadoRadius > 0) {
 
-                tornadoPlaceholderCounter++
-                if (tornadoPlaceholderCounter >= 2) {
-                    tornadoPlaceholderCounter = 0
-               //     for (it in shootListTornado)
-               //     CoroutineScope(Dispatchers.Default).launch {
-                    var shootListTornadoIterator = shootListTornado.listIterator()
-                    while (shootListTornadoIterator.hasNext()) {
-                        var it = shootListTornadoIterator.next()
-                        var tornadoCloudPlaceholder = it.tornadoRadius
-                        crossesTornado(tornadoCloudPlaceholder)
+                    tower.tornadoCounter++
+                    if (tower.tornadoCounter >= 300) {
+                        tower.tornadoCounter = 0
+                        if (enemyList.isNotEmpty()) {
+                            var shootListTornadoIterator = shootListTornado.listIterator()
+                            var shootTornadoTalentPlace = ShootTornadoTalent()
+                            shootTornadoTalentPlace.tornadoRadius =
+                                TowerRadius(tower.towerRange.x, tower.towerRange.y, tower.tornadoRadius)
+                            shootListTornadoIterator.add(shootTornadoTalentPlace)
+                        }
+                    } else if (tower.tornadoCounter == 100 && shootListTornado.isNotEmpty()) {
+                        var shootListTornadoIterator = shootListTornado.listIterator()
+                        while (shootListTornadoIterator.hasNext()) {
+                            var it = shootListTornadoIterator.next()
+                            it.broken = 1
+                            it.randomEnemyTornadoBool = true
+                        }
+                    }
+
+                    tornadoPlaceholderCounter++
+                    if (tornadoPlaceholderCounter >= 2) {
+                        tornadoPlaceholderCounter = 0
+                        //     for (it in shootListTornado)
+                        //     CoroutineScope(Dispatchers.Default).launch {
+                        var shootListTornadoIterator = shootListTornado.listIterator()
+                        while (shootListTornadoIterator.hasNext()) {
+                            var it = shootListTornadoIterator.next()
+                            var tornadoCloudPlaceholder = it.tornadoRadius
+                            crossesTornado(tornadoCloudPlaceholder)
+                        }
                     }
                 }
+            }
             } finally {
                 writeLockTornado.unlock()
+                readLockTower.unlock()
             }
-        }
+
 
 
         // mine talent
@@ -3251,6 +3323,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         // update shot
         writeLockShot.lock()
+        readLockTower.lock()
         try {
                   var shootListIterator = shootList.listIterator()
                   while (shootListIterator.hasNext()) {
@@ -3259,7 +3332,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
              //   CoroutineScope(Dispatchers.Default).launch {
 
                     if (it.broken != 1) {
-                        if (it.chainLightning && chainLighning) {
+                        if (it.chainLightning) {
                             if (it.bounceLeft > 0) {
                                 if (crossesChainLightning(it)) {
                                     it.alreadyBouncedReset = false
@@ -3269,7 +3342,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     if (it.bounceLeft == 0) it.broken = 1
                                 }
                             }
-                        } else if (shotBounce) {
+                        } else if (towerList[it.towerId].towerPrimaryElement == "moon") {
                             if (it.bounceLeft > 0) {
                                     if (crosses2(it)) {
                                         rotationBulletY = it.bullet.y
@@ -3285,20 +3358,26 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 it.broken = 1
                             }
                         } else {
+
                             if (crosses2(it)) {
                                 it.broken = 1
                                 towerList[it.towerId].randomEnemyForShotBool = true
                             }
+
+
                             if (enemyList.isEmpty()) {
                                 it.broken = 1
                                 towerList[it.towerId].randomEnemyForShotBool = true
                             }
+
                         }
-                    }
+                        }
                 }
         } finally {
             writeLockShot.unlock()
+            readLockTower.unlock()
         }
+
     }
 
     //----------------------------------------------------------------------------
@@ -3309,10 +3388,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
              crossesAll()
 
-             // multicrit
-             if (fireRow4Item1 == 3) fireUltimateMulticritBonus =
-                 (floor(level / 50f)).toInt()
-
              // lives
              if (mapMode == 2) {
                  lives = enemyList.size + enemySizeBoss
@@ -3322,9 +3397,17 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
              // -----------------------------------------------------------------------------------------
              // update tower ----------------------------------------------------------------------------
 
-             poisonTowerCount = 0
-             wizardTowerCount = 0
-             iceTowerCount = 0
+             var poisonTowerCountPlace = 0
+             var wizardTowerCountPlace = 0
+             var iceTowerCountPlace = 0
+             var fireTowerCountPlace = 0
+             var moonTowerCountPlace = 0
+             var windTowerCountPlace = 0
+             var utilsTowerCountPlace = 0
+             var darkTowerCountPlace = 0
+             var butterflyTowerCountPlace = 0
+             var earthTowerCountPlace = 0
+
 
              writeLockTower.lock()
              try {
@@ -3332,67 +3415,158 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                  while (towerListIterator.hasNext()) {
                      var it = towerListIterator.next()
 
-                     if (it.itemListBag.contains(epoison)) poisonTowerCount += 1
-                     if (it.itemListBag.contains(ewizard)) wizardTowerCount += 1
-                     if (it.itemListBag.contains(eice)) iceTowerCount += 1
+                     var bagSizeElementCountPlace = 0
+
+                     if (it.itemListBag.contains(epoison)) {
+                         bagSizeElementCountPlace ++
+                         poisonTowerCountPlace ++
+                     }
+                     if (it.itemListBag.contains(ewizard)) {
+                         bagSizeElementCountPlace++
+                         wizardTowerCountPlace ++
+                     }
+                     if (it.itemListBag.contains(eice)) {
+                         bagSizeElementCountPlace++
+                         iceTowerCountPlace ++
+                     }
+                     if (it.itemListBag.contains(efire)) {
+                         bagSizeElementCountPlace++
+                         fireTowerCountPlace ++
+                     }
+                     if (it.itemListBag.contains(emoon)) {
+                         bagSizeElementCountPlace++
+                         moonTowerCountPlace ++
+                     }
+                     if (it.itemListBag.contains(ewind)) {
+                         bagSizeElementCountPlace++
+                         windTowerCountPlace ++
+                     }
+                     if (it.itemListBag.contains(eutils)) {
+                         bagSizeElementCountPlace++
+                         utilsTowerCountPlace ++
+                     }
+                     if (it.itemListBag.contains(edark)) {
+                         bagSizeElementCountPlace++
+                         darkTowerCountPlace ++
+                     }
+                     if (it.itemListBag.contains(ebutterfly)) {
+                         bagSizeElementCountPlace++
+                         butterflyTowerCountPlace ++
+                     }
+                     if (it.itemListBag.contains(eearth)) {
+                         bagSizeElementCountPlace++
+                         earthTowerCountPlace ++
+                     }
+
+                     it.bagSizeElementCount = bagSizeElementCountPlace
+
+
+                     var extraDmgAura = 0f
+                     var extraSpdAura = 0f
+                     var extraItemChance = 0f
+                     var extraItemQuality = 0f
+                     var markOfTheButterflySpdBoostTowersNumberPlace = 0
+
+                     var towerListIteratorZ = Companion.towerList.listIterator()
+                     while (towerListIteratorZ.hasNext()) {
+                         var tower = towerListIteratorZ.next()
+                         if (it != tower) {
+                             if (splash150(it.towerRange.x, it.towerRange.y, it.towerR, tower.towerRange.x, tower.towerRange.y, tower.towerR)) {
+                                 if (tower.earthExtraTowerDmg > 0) extraDmgAura += tower.earthExtraTowerDmg
+                                 if (tower.windExtraTowerSpd > 0) extraSpdAura += tower.windExtraTowerSpd
+                                 if (tower.itemChanceAura > 0) extraItemChance += tower.itemChanceAura
+                                 if (tower.itemQualityAura > 0) extraItemQuality += tower.itemQualityAura
+                                 if (it.markOfTheButterflySpdBoost > 0 && it.towerPrimaryElement == "butterfly") markOfTheButterflySpdBoostTowersNumberPlace ++
+
+                             }
+                         }
+                     }
+                     it.markOfTheButterflySpdBoostTowersNumber = markOfTheButterflySpdBoostTowersNumberPlace
+
+                     // level
+                     when (it.xpTower.toInt()){
+                         in 0..it.xpGoal2.toInt() -> {}
+                         else -> {
+                             it.towerLevel ++
+                             it.talentPoints ++
+                             it.towerRarityMultiplier += 0.02f
+                             itemListBagAddMultiplier(it)
+                             var xp2 = it.xpGoal2
+                             it.xpGoal1 = xp2
+                             it.xpGoal2 = (xp2 * 1.75f)
+                         }
+                     }
+
+                     if (it.towerLevelBool){
+                         it.towerLevelBool = false
+                         it.towerLevel += 5
+                         it.talentPoints += 5
+                         it.towerRarityMultiplier += 0.1f
+                         repeat(5){
+                                 _ -> itemListBagAddMultiplier(it)
+                         }
+                         var xp2 = it.xpGoal2
+                         it.xpGoal1 = (xp2 * 1.75f) * 4
+                         it.xpGoal2 = (xp2 * 1.75f) * 5
+                     }
 
                      // tower speed
-                     if (bonusSpeedWindTalent > 0) {
+                     if (it.bonusSpeedWindTalent > 0) {
                          if (it.crossesAllList.size == 0) it.bonusSpeedWindTalentPercent = 0.0f
                          if (it.bonusSpeedWindTalentPercent > 100) it.bonusSpeedWindTalentPercent =
                              100f
                      }
 
-                     if (markOfTheButterflySpdBoostActive) {
-                         markOfTheButterflySpdBoostActiveCounter++
-                         if (markOfTheButterflySpdBoostActiveCounter >= 180) {
-                             markOfTheButterflySpdBoostActiveCounter = 0
-                             markOfTheButterflySpdBoostActive = false
-                             markOfTheButterflySpdBoostActiveNumber = 0f
+                     if (it.markOfTheButterflySpdBoostActive) {
+                         it.markOfTheButterflySpdBoostActiveCounter++
+                         if (it.markOfTheButterflySpdBoostActiveCounter >= 180) {
+                             it.markOfTheButterflySpdBoostActiveCounter = 0
+                             it.markOfTheButterflySpdBoostActive = false
+                             it.markOfTheButterflySpdBoostActiveNumber = 0f
                          }
                      }
 
-                     it.overallTowerSpd = it.speed - (it.speed * (overallSpdMultiplier / 100))
+                     it.overallTowerSpd = it.speed - (it.speed * ((overallSpdMultiplier + extraSpdAura) / 100))
 
                      var talentBonusSpeed = 0f
-                     if (it.itemListBag.contains(ewind)) talentBonusSpeed += windTalentBonusSpeed
-                     levelScalerSpeedBool =
+                     if (it.itemListBag.contains(ewind)) talentBonusSpeed += Companion.windTalentBonusSpeed
+                     Companion.levelScalerSpeedBool =
                          (it.bonusTowerSpeed + talentBonusSpeed) * levelScalerSpeed
                      when {
-                         (levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + markOfTheButterflySpdBoostActiveNumber) > 300 -> {
+                         (Companion.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 300 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
                                      ((it.overallTowerSpd * ((50f / 100f)) / 2f) +
                                              (((it.overallTowerSpd * ((50f) / 100f)) / 4f)) +
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 8f)) +
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 16f)) +
-                                             (((it.overallTowerSpd * ((levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + markOfTheButterflySpdBoostActiveNumber - 300f) / 100f)) / 32f)))
+                                             (((it.overallTowerSpd * ((Companion.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 300f) / 100f)) / 32f)))
                          }
-                         (levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + markOfTheButterflySpdBoostActiveNumber) > 200 -> {
+                         (Companion.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 200 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
                                      ((it.overallTowerSpd * ((50f / 100f)) / 2f) +
                                              (((it.overallTowerSpd * ((50f) / 100f)) / 4f)) +
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 8f)) +
-                                             (((it.overallTowerSpd * ((levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + markOfTheButterflySpdBoostActiveNumber - 200f) / 100f)) / 16f)))
+                                             (((it.overallTowerSpd * ((Companion.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 200f) / 100f)) / 16f)))
                          }
-                         (levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + markOfTheButterflySpdBoostActiveNumber) > 100 -> {
+                         (Companion.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 100 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
                                      ((it.overallTowerSpd * ((50f / 100f)) / 2f) +
                                              (((it.overallTowerSpd * ((50f) / 100f)) / 4f)) +
-                                             (((it.overallTowerSpd * ((levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + markOfTheButterflySpdBoostActiveNumber - 100f) / 100f)) / 8f)))
+                                             (((it.overallTowerSpd * ((Companion.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 100f) / 100f)) / 8f)))
                          }
-                         (levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + markOfTheButterflySpdBoostActiveNumber) > 50 -> {
+                         (Companion.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 50 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
                                      ((it.overallTowerSpd * ((50f / 100f) / 2f)) +
-                                             ((it.overallTowerSpd * ((levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + markOfTheButterflySpdBoostActiveNumber - 50f) / 100f)) / 4f))
+                                             ((it.overallTowerSpd * ((Companion.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 50f) / 100f)) / 4f))
                          }
                          else -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
-                                     ((it.overallTowerSpd * ((levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + markOfTheButterflySpdBoostActiveNumber) / 100f)) / 2f)
+                                     ((it.overallTowerSpd * ((Companion.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) / 100f)) / 2f)
                          }
                      }
 
-                     if (poisonOverload > 0) it.poisonOverloadCounter++
-                     if (poisonOverload > 0 && it.poisonOverloadCounter >= poisonOverload && it.crossesAllList.isNotEmpty()) it.poisonOverloadActive =
+                     if (it.poisonOverload > 0) it.poisonOverloadCounter++
+                     if (it.poisonOverload > 0 && it.poisonOverloadCounter >= it.poisonOverload && it.crossesAllList.isNotEmpty()) it.poisonOverloadActive =
                          true
                      if (it.poisonOverloadActive) it.poisonOverloadDuration++
                      if (it.poisonOverloadDuration < 100 && it.poisonOverloadActive) {
@@ -3402,71 +3576,75 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                          it.poisonOverloadCounter = 0
                          it.poisonOverloadActive = false
                      }
+                     if (it.itemListBag.contains(eearth)) it.towerAttackSpeed * 2
+
                      if (it.towerAttackSpeed <= 3) it.towerAttackSpeed = 3f
                      it.towerAttackSpeedShow = (it.towerAttackSpeed / 60)
 
                      // tower crit
-                     var talentFireBonusCrit = 0f
-                     if (it.itemListBag.contains(efire)) talentFireBonusCrit += Companion.fireTalentBonusCrit
-                     it.levelScalerCritBool = (talentFireBonusCrit + it.bonusCrit) * levelScalerCrit
-                     it.overallCrit =
-                         ((((it.crit + it.levelScalerCritBool) * 0.03f) / (1 + (0.03f * (it.crit + it.levelScalerCritBool + 50)))) * 100)
+                     var talentFireBonusCrit= 0f
+                     if (it.itemListBag.contains(efire)) talentFireBonusCrit += 10f
+                     var levelScalerCritBool = (it.bonusCrit + talentFireBonusCrit) * levelScalerCrit
+                     it.overallCrit = ((((it.crit + levelScalerCritBool) * 0.03f) / (1 + (0.03f * (it.crit + levelScalerCritBool + 50)))) * 100)
 
                      // crit damage
                      var levelScalerCritDmgBool = 0f
                      var talentFireBonusCritDmg = 0f
-                     if (it.itemListBag.contains(efire)) talentFireBonusCritDmg += fireTalentBonusCritDmg
+                     if (it.itemListBag.contains(efire)) talentFireBonusCritDmg += 0.5f
+                     if (it.fireTalentBonusCritDmg > 0) talentFireBonusCritDmg += it.fireTalentBonusCritDmg
                      levelScalerCritDmgBool = (it.bonusCritDmg + talentFireBonusCritDmg) * levelScalerCritDmg
-                     if (it.itemListBag.contains(efire)) levelScalerCritDmgBool += (bonusCritFire * it.critCounter)
+                     if (it.itemListBag.contains(efire)) levelScalerCritDmgBool += (it.bonusCritFire * it.critCounter)
                      it.overallCritDmg = it.critDmg + levelScalerCritDmgBool
 
-                     // multi crit
+                     // multicrit
+                     if (it.fireRow4Item1 == 3) it.fireUltimateMulticritBonus =
+                         (floor(level / 50f)).toInt()
                      it.overallMulticrit =
-                         globalMultiCrit + it.towermultiCrit + fireUltimateMulticritBonus
+                         it.bonusmultiCrit + it.fireUltimateMulticritBonus
 
                      // tower dmg
-                     var talentBonusDamageMultiplyer = 0f
-                     if (it.itemListBag.contains(ewind)) talentBonusDamageMultiplyer += Companion.windBonusDamageMultiplyer
                      if (mapMode != 2) it.bonusDamageMultiplyerItemLastStance =
                          ((8f - lives) * it.itemLastStance)
                      it.overallDamageMultiplyer =
-                         1 + it.bonusDamageMultiplyer + talentBonusDamageMultiplyer + it.bonusDamageMultiplyerItemLastStance + globalDmgMultiplier
+                         1 + it.bonusDamageMultiplyer + it.bonusDamageMultiplyerItemLastStance + globalDmgMultiplier
 
                      if (day) it.overallTowerDmg =
-                         (it.dmg + it.bonusTowerDmg + itemsDmg(it)) * it.overallDamageMultiplyer
+                         (it.dmg + it.bonusTowerDmg + itemsDmg(it)) * (it.overallDamageMultiplyer + extraDmgAura)
                      else it.overallTowerDmg =
-                         (it.dmg + it.bonusTowerDmg + itemsDmg(it)) * it.overallDamageMultiplyer * damageMultiplyerNight
+                         (it.dmg + it.bonusTowerDmg + itemsDmg(it)) * (it.overallDamageMultiplyer + extraDmgAura) * it.damageMultiplyerNight
                      it.overallTowerDmgBool = it.overallTowerDmg
                      it.overallTowerDmg *= bigNumberScaler
 
                      // physical dmg
                      var talentPhysicalDmgMultiplyer = 1f
-                     if (it.itemListBag.contains(eearth)) talentPhysicalDmgMultiplyer += earthTalentPhyDmgMultiplier
+                     if (it.itemListBag.contains(eearth)) talentPhysicalDmgMultiplyer += it.earthTalentPhyDmgMultiplier
                      var talentBonusPhysicalDmg = 0f
                      if (it.itemListBag.contains(eearth)) talentBonusPhysicalDmg += earthTalentBonusPhysicalDmg
-                     it.towerPhysicalDmg =
-                         (it.overallTowerDmgBool + it.bonusPhysicalDmg + talentBonusPhysicalDmg) * talentPhysicalDmgMultiplyer * bigNumberScaler
+                     it.overallTowerPhysicalDmg =
+                         (it.phyDmg + it.overallTowerDmgBool + it.bonusPhysicalDmg + talentBonusPhysicalDmg) * talentPhysicalDmgMultiplyer * bigNumberScaler
 
                      // spell dmg
-                     it.overallSpellDmg =
-                         (it.overallTowerDmgBool + (it.overallTowerDmgBool * (globalBonusSpellDmgPercent / 100)) + it.bonusSpellDamage) * it.overallSpellDmgMultiplyer * bigNumberScaler
+                     var spellDmgTalent = 0f
+                     if (it.talentWizardLvlToDmg) spellDmgTalent += ((it.towerLevel * 3) /100)
+                     it.overallTowerSpellDmg =
+                         (it.mgcDmg + it.overallTowerDmgBool + (it.overallTowerDmgBool * (globalBonusSpellDmgPercent / 100)) + it.bonusSpellDamage) * (it.overallSpellDmgMultiplyer + spellDmgTalent) * bigNumberScaler
 
                      // hit chance
                      var talentBonusHitChance = 0f
-                     if (it.itemListBag.contains(eearth)) talentBonusHitChance += earthTalentBonusHitChance
+                     if (it.itemListBag.contains(eearth)) talentBonusHitChance += it.earthTalentBonusHitChance
                      it.hitChance =
                          100.0f + it.itemBonusHitChance + it.bonusHitChance + talentBonusHitChance
 
                      // item chance
                      it.overallItemChance =
-                         (itemChance + ((itemChance * ((it.bonusItemChance + globalBonusItemChance) / 100)))) * levelScalerItemChance
+                         (itemChance + ((itemChance * ((it.bonusItemChance + globalBonusItemChance + extraItemChance) / 100)))) * levelScalerItemChance
 
                      // item quality
-                     it.overallItemQuality = (it.bonusItemQuality + globalBonusItemQuality) * levelScalerItemQuality
+                     it.overallItemQuality = (it.bonusItemQuality + globalBonusItemQuality + extraItemQuality) * levelScalerItemQuality
 
                      // tower range
                      var talentBonusRange = 0f
-                     if (it.itemListBag.contains(ewind)) talentBonusRange += windTowerBonusTowerRange
+                     if (it.windTowerBonusTowerRange > 0) talentBonusRange += it.windTowerBonusTowerRange
                      else talentBonusRange += globalBonusTowerRange
                      it.towerR = it.towerRange.r + talentBonusRange + it.towerBonusRange
 
@@ -3475,6 +3653,9 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                      // magic pen
                      it.overallBonusMagicPen = it.bonusMagicPen + globalMagicPen
+
+                     // dmg immune
+                     it.overallDmgImmune = 1 + (it.bonusDmgImmune)
 
                      // evade night
                      if (day) evadeNight = 0f
@@ -3488,40 +3669,150 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                      // TODO             else isSingleTarget = false
 
                  }
+
+                 poisonTowerCount = poisonTowerCountPlace
+                 wizardTowerCount = wizardTowerCountPlace
+                 iceTowerCount = iceTowerCountPlace
+                 fireTowerCount = fireTowerCountPlace
+                 moonTowerCount = moonTowerCountPlace
+                 windTowerCount = windTowerCountPlace
+                 utilsTowerCount = utilsTowerCountPlace
+                 darkTowerCount = darkTowerCountPlace
+                 butterflyTowerCount = butterflyTowerCountPlace
+                 earthTowerCount = earthTowerCountPlace
+
                  } finally {
                      writeLockTower.unlock()
                  }
+
          }
 
-        //----------------------------------------------------------------------------------
+    private fun itemListBagAddMultiplier(it:Tower) {
+
+        for (pos in it.itemListBag){
+
+            it.bonusTowerSpeed += (pos.speed * 0.02f)
+            pos.speed *= 1.02f
+            it.bonusTowerDmg += (pos.dmg * 0.02f)
+            pos.dmg *= 1.02f
+            it.bonusPhysicalDmg += (pos.atkDmg * 0.02f)
+            pos.atkDmg *= 1.02f
+            it.bonusSpellDamage += (pos.mgcDmg * 0.02f)
+            pos.mgcDmg *= 1.02f
+            it.bonusCrit += (pos.crit * 0.02f)
+            pos.crit *= 1.02f
+            it.bonusCritDmg += (pos.critDmg * 0.02f)
+            pos.critDmg *= 1.02f
+
+            if (pos.id == 4) {
+                it.bonusItemChance += (pos.specialFloat2 * 0.02f)
+                pos.specialFloat2 *= 1.02f
+            }
+
+            if (pos.id == 6) {
+                gold += (pos.specialFloat * 0.02f)
+                pos.specialFloat *= 1.02f
+            }
+
+            if ((pos.id == 100 || pos.id == 102 || pos.id == 103) && pos.special2 == "item find") {
+
+                it.bonusItemChance += (pos.specialFloat2 * 0.02f)
+                pos.specialFloat2 *= 1.02f
+            }
+            if ((pos.id == 100 || pos.id == 102 || pos.id == 103) && pos.special2 == "item quality") {
+
+                it.bonusItemQuality += (pos.specialFloat2 * 0.02f)
+                pos.specialFloat2 *= 1.02f
+            }
+            if (pos.id == 104 || pos.id == 204) {
+
+                it.bonusItemQuality += (pos.specialFloat2 * 0.02f)
+                pos.specialFloat2 *= 1.02f
+            }
+            if ((pos.id == 200 || pos.id == 202 || pos.id == 203) && pos.special == "armor penetration"){
+
+                it.bonusArmorPen += (pos.specialFloat * 0.02f)
+                pos.specialFloat *= 1.02f
+            }
+            if ((pos.id == 200 || pos.id == 202 || pos.id == 203) && pos.special == "magic penetration") {
+
+                it.bonusMagicPen += (pos.specialFloat * 0.02f)
+                pos.specialFloat *= 1.02f
+            }
+            if ((pos.id == 200 || pos.id == 202 || pos.id == 203) && pos.special == "hit chance"){
+
+                it.itemBonusHitChance += (pos.specialFloat * 0.02f)
+                pos.specialFloat *= 1.02f
+            }
+            if (pos.id == 212){
+
+                it.itemBonusHitChance += (pos.specialFloat * 0.02f)
+                pos.specialFloat *= 1.02f
+            }
+            if (pos.id == 215){
+
+                it.bonusArmorPen += (pos.specialFloat * 0.02f)
+                pos.specialFloat *= 1.02f
+            }
+            if (pos.id == 216){
+
+                it.bonusMagicPen += (pos.specialFloat * 0.02f)
+                pos.specialFloat *= 1.02f
+            }
+            if ((pos.id == 300 || pos.id == 302 || pos.id == 303) && pos.special2 == "item find"){
+
+                it.bonusItemChance += (pos.specialFloat2 * 0.02f)
+                pos.specialFloat2 *= 1.02f
+            }
+            if ((pos.id == 300 || pos.id == 302 || pos.id == 303) && pos.special2 == "item quality"){
+
+                it.bonusItemQuality += (pos.specialFloat2 * 0.02f)
+                pos.specialFloat2 *= 1.02f
+            }
+            if (pos.id == 314) {
+
+                it.armorPenPerHit += (pos.specialFloat * 0.02f)
+                pos.specialFloat *= 1.02f
+            }
+            if (pos.id == 315) {
+
+                it.magicPenPerHit += (pos.specialFloat * 0.02f)
+                pos.specialFloat *= 1.02f
+            }
+        }
+    }
+
+
+    //----------------------------------------------------------------------------------
 
         private fun enemyDots () {
 
-            writeLockEnemy.lock()
-            Companion.writeLockDisplay.lock()
-            try {
-                var enemyListIterator = enemyList.listIterator()
-                while (enemyListIterator.hasNext()) {
-                    var it = enemyListIterator.next()
-         //       for (it in enemyList)
-         //           CoroutineScope(Dispatchers.Default).launch {
+            if (towerList.size > 0) {
 
-                    // stats ---------------------------------------------------------------------------------------
+                writeLockEnemy.lock()
+                writeLockTower.lock()
+                Companion.writeLockDisplay.lock()
+                try {
+                    var enemyListIterator = enemyList.listIterator()
+                    while (enemyListIterator.hasNext()) {
+                        var it = enemyListIterator.next()
+                        //       for (it in enemyList)
+                        //           CoroutineScope(Dispatchers.Default).launch {
 
-                    // lives
-                    if (mapMode == 2) {
-                        if (it.name == "boss" || it.name == "challenge") {
-                            enemySizeBoss += 3
+                        // stats ---------------------------------------------------------------------------------------
+
+                        // lives
+                        if (mapMode == 2) {
+                            if (it.name == "boss" || it.name == "challenge") {
+                                enemySizeBoss += 3
+                            }
                         }
-                    }
 
-                    //---------------------------------------------------------------------------------------
+                        //---------------------------------------------------------------------------------------
 
-                    if (spellCastCDCounter > 0) spellCastCDBool = true
 
-                    // ice nova
+                        // ice nova
 
-                    if (iceNova) {
                         if (it.iceNovaAlreadyAffected) it.iceNovaAlreadyAffectedCounter++
                         if (it.iceNovaAlreadyAffectedCounter >= 75) {
                             it.baseSpeed += it.iceNovaSpeedReduce
@@ -3529,21 +3820,25 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             it.iceNovaAlreadyAffectedCounter = 0
                             it.iceNovaAlreadyAffected = false
                         }
-                    }
 
-                    // ice Debuff
+                        // ice Debuff
 
-                    if (slowEach > 0) {
                         if (it.iceDebuff == 1) {
                             if (it.iceAlreadyAffected == 0) {
                                 if (it.name == "speed") it.extraSpeed = 0.0f       // counter speed
                                 if (it.name == "immune") it.iceSlowEachSpeedReduce =
-                                    (it.baseSpeed * (slowEach / 100)) * dmgImmune.toFloat()
+                                    (it.baseSpeed * (towerList[it.iceDebuffTowerId].slowEach / 100)) * towerList[it.iceDebuffTowerId].overallDmgImmune.toFloat()
                                 else it.iceSlowEachSpeedReduce =
-                                    (it.baseSpeed * (slowEach / 100)).toFloat()
+                                    (it.baseSpeed * (towerList[it.iceDebuffTowerId].slowEach / 100)).toFloat()
                                 it.baseSpeed -= it.iceSlowEachSpeedReduce
                                 it.iceDebuff += 1
                                 it.iceAlreadyAffected = 1
+                                if (towerList[it.iceDebuffTowerId].experienceSlow) {
+                                    var xpGain = (1 / 100f)
+                                    towerList[it.iceDebuffTowerId].xpTower += xpGain
+                                    towerExperienceGainUtilAura(xpGain, it.iceDebuffTowerId)
+                                    if (towerList[it.iceDebuffTowerId].experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain, it.iceDebuffTowerId)
+                                }
                             } else it.iceDebuff += 1
                         } else if (it.iceDebuff > 90) {
                             it.iceDebuff = 0
@@ -3551,89 +3846,98 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             it.baseSpeed += it.iceSlowEachSpeedReduce
                             it.iceSlowEachSpeedReduce = 0f
                         } else if (it.iceDebuff > 0) it.iceDebuff += 1
-                    }
 
-                    // ice slow Extra
+                        // dark talent dmg debuff
+                        if (it.darkMoreDmgDebuff == 1) {
+                            it.darkMoreDmgDebuff++
+                            it.darkMoreDmgDebuffComplete =
+                                it.darkMoreDmgDebuffStacks * towerList[it.darkMoreDmgDebuffTowerId].darkDmgDebuff
+                        } else if (it.darkMoreDmgDebuff >= 180) {
+                            it.darkMoreDmgDebuff = 0
+                            it.darkMoreDmgDebuffStacks = 0
+                        } else if (it.darkMoreDmgDebuff > 1) {
+                            it.darkMoreDmgDebuffComplete =
+                                it.darkMoreDmgDebuffStacks * towerList[it.darkMoreDmgDebuffTowerId].darkDmgDebuff
+                            it.darkMoreDmgDebuff++
+                        }
 
-                    if (slowExtra > 0) {
-                        if (it.iceDebuffExtra == 1 && it.iceExtraAlreadyAffected == 0) {
-                            when ((0..99).random()) {
-                                in 0..slowExtraChance -> {
-                                    if (it.name == "immune") it.iceSlowExtraSpeedReduce =
-                                        (it.baseSpeed * (slowExtra / 100)) * it.iceDebuffExtraDR * dmgImmune.toFloat()
-                                    else it.iceSlowExtraSpeedReduce =
-                                        (it.baseSpeed * (slowExtra / 100)) * it.iceDebuffExtraDR.toFloat()
-                                    it.baseSpeed -= it.iceSlowExtraSpeedReduce
-                                    it.iceExtraAlreadyAffected = 1
-                                    it.iceDebuffExtra += 1
-                                    it.iceDebuffExtraDR *= 0.66f
-                                    if (it.iceDebuffExtraDR <= 0.1f) it.iceDebuffExtraDR = 0f
+                        // antiheal debuffs from items
+                        if (it.antihealDebuff == 1) {
+                            it.antihealDebuff++
+                            it.antihealDebuffActive = towerList[it.antihealDebuffTowerId].bonusAntiHeal
+                        } else if (it.darkMoreDmgDebuff >= 180) {
+                            it.antihealDebuff = 0
+                            it.antihealDebuffActive = 0f
+                        } else if (it.antihealDebuff > 1) it.antihealDebuff++
+
+                        // ice slow Extra
+
+                        if (towerList[it.iceDebuffExtraTowerId].slowExtra > 0) {
+                            if (it.iceDebuffExtra == 1 && it.iceExtraAlreadyAffected == 0) {
+                                when ((0..99).random()) {
+                                    in 0..towerList[it.iceDebuffExtraTowerId].slowExtraChance -> {
+                                        if (it.name == "immune") it.iceSlowExtraSpeedReduce =
+                                            (it.baseSpeed * (towerList[it.iceDebuffExtraTowerId].slowExtra / 100)) * it.iceDebuffExtraDR * towerList[it.iceDebuffExtraTowerId].overallDmgImmune.toFloat()
+                                        else it.iceSlowExtraSpeedReduce =
+                                            (it.baseSpeed * (towerList[it.iceDebuffExtraTowerId].slowExtra / 100)) * it.iceDebuffExtraDR.toFloat()
+                                        it.baseSpeed -= it.iceSlowExtraSpeedReduce
+                                        it.iceExtraAlreadyAffected = 1
+                                        it.iceDebuffExtra += 1
+                                        it.iceDebuffExtraDR *= 0.66f
+                                        if (it.iceDebuffExtraDR <= 0.1f) it.iceDebuffExtraDR = 0f
+                                        if (towerList[it.iceDebuffExtraTowerId].experienceSlow) {
+                                            var xpGain = (1 / 100f)
+                                            towerList[it.iceDebuffExtraTowerId].xpTower += xpGain
+                                            towerExperienceGainUtilAura(xpGain, it.iceDebuffExtraTowerId)
+                                            if (towerList[it.iceDebuffExtraTowerId].experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain, it.iceDebuffExtraTowerId)
+                                        }
+                                    }
+                                    in towerList[it.iceDebuffExtraTowerId].slowExtraChance..99 -> it.iceDebuffExtra =
+                                        0
                                 }
-                                in slowExtraChance..99 -> it.iceDebuffExtra = 0
-                            }
-                        } else if (it.iceDebuffExtra > 90) {
-                            it.iceDebuffExtra = 0
-                            it.iceExtraAlreadyAffected = 0
-                            it.baseSpeed += it.iceSlowExtraSpeedReduce
-                            it.iceSlowExtraSpeedReduce = 0f
-                        } else if (it.iceExtraAlreadyAffected == 1) it.iceDebuffExtra += 1
-                    }
+                            } else if (it.iceDebuffExtra > 90) {
+                                it.iceDebuffExtra = 0
+                                it.iceExtraAlreadyAffected = 0
+                                it.baseSpeed += it.iceSlowExtraSpeedReduce
+                                it.iceSlowExtraSpeedReduce = 0f
+                            } else if (it.iceExtraAlreadyAffected == 1) it.iceDebuffExtra += 1
+                            else if (it.iceDebuffExtra > 1) it.iceDebuffExtra += 1
+                        }
 
-                    // fire Debuff
+                        // fire Debuff
 
-                    if (fireBurnTalent > 0) {
                         if (it.fireDebuff == 1 || it.fireDebuff == 21 || it.fireDebuff == 41 || it.fireDebuff == 61 || it.fireDebuff == 81 || it.fireDebuff == 101) {
 
-                            var dmg = 0f
+                            if (it.hp > 0) {
+                                var dmg = 0f
 
-                            if (it.name == "boss" || it.name == "challenge") {
-                                when (fireBurnTalent) {
-                                    1 -> dmg =
-                                        (((it.maxHp * 0.005f) / 2) * Companion.windTalentDebuff * it.fireDebuffDR * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
-                                    2 -> dmg =
-                                        (((it.maxHp * 0.0075f) / 2) * Companion.windTalentDebuff * it.fireDebuffDR * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
-                                    3 -> dmg =
-                                        (((it.maxHp * 0.01f) / 2) * Companion.windTalentDebuff * it.fireDebuffDR * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
+                                if (it.name == "boss" || it.name == "challenge") {
+                                    dmg =
+                                        (((it.maxHp * towerList[it.fireDebuffTowerId].fireBurnTalentDmg) / 2) * it.winddebuffincreased * it.fireDebuffDR * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
+                                } else {
+                                    if (it.name == "immune") dmg =
+                                        ((it.maxHp * towerList[it.fireDebuffTowerId].fireBurnTalentDmg) * it.winddebuffincreased * it.fireDebuffDR * towerList[it.fireDebuffTowerId].overallDmgImmune * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
+                                    else dmg =
+                                        (((it.maxHp * towerList[it.fireDebuffTowerId].fireBurnTalentDmg)) * it.winddebuffincreased * it.fireDebuffDR * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
                                 }
-                            }else {
-                                when (fireBurnTalent) {
-                                    1 -> {
-                                        if (it.name == "immune") dmg =
-                                            ((it.maxHp * 0.005f) * Companion.windTalentDebuff * it.fireDebuffDR * dmgImmune * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
-                                        else dmg =
-                                            (((it.maxHp * 0.005f)) * Companion.windTalentDebuff * it.fireDebuffDR * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
+                                it.hp -= dmg
+                                if (dmg > (it.maxHp / 100)) {
+                                    var dmgString = "0"
+                                    when (dmg.toInt()) {
+                                        in 0..999 -> dmgString = dmg.toInt().toString()
+                                        in 1000..999999 -> dmgString =
+                                            (dmg / 1000).toInt().toString() + "k"
+                                        in 1000000..999999999 -> dmgString =
+                                            (dmg / 1000000).toInt().toString() + "M"
                                     }
-                                    2 -> {
-                                        if (it.name == "immune") dmg =
-                                            ((it.maxHp * 0.0075f) * Companion.windTalentDebuff * it.fireDebuffDR * dmgImmune * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
-                                        else dmg =
-                                            (((it.maxHp * 0.0075f)) * Companion.windTalentDebuff * it.fireDebuffDR * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
-                                    }
-                                    3 -> {
-                                        if (it.name == "immune") dmg =
-                                            ((it.maxHp * 0.01f) * Companion.windTalentDebuff * it.fireDebuffDR * dmgImmune * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
-                                        else dmg =
-                                            (((it.maxHp * 0.01f)) * Companion.windTalentDebuff * it.fireDebuffDR * 2) * magicPen(it, towerList[it.fireDebuffTowerId])
-                                    }
+                                    var dmgDisplayListIterator = dmgDisplayList.listIterator()
+                                    dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, -50, paintBurnDmgDone, -30, -15))
                                 }
-                            }
-                            it.hp -= dmg
-                            if (dmg > (it.maxHp / 100)) {
-                                var dmgString = "0"
-                                when (dmg.toInt()) {
-                                    in 0..999 -> dmgString = dmg.toInt().toString()
-                                    in 1000..999999 -> dmgString =
-                                        (dmg / 1000).toInt().toString() + "k"
-                                    in 1000000..999999999 -> dmgString =
-                                        (dmg / 1000000).toInt().toString() + "M"
-                                }
-                                var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, -50, paintBurnDmgDone, -30, -15))
-                            }
 
-                            if (it.hp < 0) {
-                                it.killerId = it.fireDebuffTowerId
-                                it.hp = 0.0f
+                                if (it.hp < 0){
+                                    it.killerId = it.fireDebuffTowerId
+                                    dead(it)
+                                }
                             }
                             it.fireDebuff += 1
                         } else if (it.fireDebuff >= 102) {
@@ -3641,90 +3945,90 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             if (it.fireDebuffDR <= 0.1f) it.fireDebuffDR = 0f
                             it.fireDebuff = 0
                         } else if (it.fireDebuff > 0) it.fireDebuff += 1
-                    }
 
 
-                        readLockTower.lock()
-                        try {
-                            var towerListIterator = Companion.towerList.listIterator()
-                            while (towerListIterator.hasNext()) {
-                                var tower = towerListIterator.next()
+                        var sunburnOnlyOne = 0
+                        var towerListIterator = Companion.towerList.listIterator()
+                        while (towerListIterator.hasNext()) {
+                            var tower = towerListIterator.next()
 
-                                // ice aura
-                                if (slowAura > 0) {
-                                    if (tower.itemListBag.contains(eice)) {
-                                        if (tower.crossesAllList.contains(it) && it.iceAuraAlreadyAffected == 0) {
-                                            if (it.name == "immune") it.iceAuraSpeedReduce =
-                                                (it.baseSpeed * (slowAura / 100) * dmgImmune).toFloat()
-                                            else it.iceAuraSpeedReduce =
-                                                (it.baseSpeed * (slowAura / 100)).toFloat()
-                                            it.baseSpeed -= it.iceAuraSpeedReduce
-                                            it.iceAuraAlreadyAffected = 1
-                                        } else if (!tower.crossesAllList.contains(it) && it.iceAuraAlreadyAffected == 1) {
-                                            it.iceAuraAlreadyAffected = 0
-                                            it.baseSpeed += it.iceAuraSpeedReduce
-                                            it.iceAuraSpeedReduce = 0f
-                                        }
+                            // ice aura
+                            if (tower.slowAura > 0) {
+                                if (tower.itemListBag.contains(eice)) {
+                                    if (tower.crossesAllList.contains(it) && it.iceAuraAlreadyAffected == 0) {
+                                        if (it.name == "immune") it.iceAuraSpeedReduce =
+                                            (it.baseSpeed * (tower.slowAura / 100) * tower.overallDmgImmune).toFloat()
+                                        else it.iceAuraSpeedReduce =
+                                            (it.baseSpeed * (tower.slowAura / 100)).toFloat()
+                                        it.baseSpeed -= it.iceAuraSpeedReduce
+                                        it.iceAuraAlreadyAffected = 1
+                                    } else if (!tower.crossesAllList.contains(it) && it.iceAuraAlreadyAffected == 1) {
+                                        it.iceAuraAlreadyAffected = 0
+                                        it.baseSpeed += it.iceAuraSpeedReduce
+                                        it.iceAuraSpeedReduce = 0f
                                     }
                                 }
+                            }
 
-                                // item lasso
-                                if (tower.itemLasso > 0) {
-                                    if (it.itemLassoAlreadyAffected > 0 && tower.crossesAllList.contains(it)) it.itemLassoAlreadyAffected++
-                                    else if (it.itemLassoAlreadyAffected > 0 && !tower.crossesAllList.contains(it)) it.itemLassoAlreadyAffected =
-                                        0
-                                    else if (it.itemLassoAlreadyAffected < 0) it.itemLassoAlreadyAffected--
-                                    if (it.itemLassoAlreadyAffected >= 50) {
-                                        it.itemLassoAlreadyAffected = -1
-                                        it.itemLassoSpeedReduce = it.baseSpeed
-                                        it.baseSpeed -= it.itemLassoSpeedReduce
-                                    } else if (it.itemLassoAlreadyAffected <= -80) {
-                                        it.itemLassoAlreadyAffected = 0
-                                        it.itemLassoAlreadyAffectedTowerId = 0
-                                        it.baseSpeed += it.itemLassoSpeedReduce
-                                        it.itemLassoSpeedReduce = 0f
-                                    }
+                            // item lasso
+                            if (tower.itemLasso > 0) {
+                                if (it.itemLassoAlreadyAffected > 0 && tower.crossesAllList.contains(it)) it.itemLassoAlreadyAffected++
+                                else if (it.itemLassoAlreadyAffected > 0 && !tower.crossesAllList.contains(it)) it.itemLassoAlreadyAffected =
+                                    0
+                                else if (it.itemLassoAlreadyAffected < 0) it.itemLassoAlreadyAffected--
+                                if (it.itemLassoAlreadyAffected >= 50) {
+                                    it.itemLassoAlreadyAffected = -1
+                                    it.itemLassoSpeedReduce = it.baseSpeed
+                                    it.baseSpeed -= it.itemLassoSpeedReduce
+                                } else if (it.itemLassoAlreadyAffected <= -80) {
+                                    it.itemLassoAlreadyAffected = 0
+                                    it.itemLassoAlreadyAffectedTowerId = 0
+                                    it.baseSpeed += it.itemLassoSpeedReduce
+                                    it.itemLassoSpeedReduce = 0f
                                 }
+                            }
 
-                                // item frost
-                                if (tower.itemFrost > 0) {
-                                    if (it.itemFrostAlreadyAffected > 0) it.itemFrostAlreadyAffected ++
-                                    if (it.itemFrostAlreadyAffected >= 50){
-                                        it.itemFrostAlreadyAffected = 0
-                                        it.baseSpeed += it.itemFrostSpeedReduce
-                                        it.itemFrostSpeedReduce = 0f
-                                    }
+                            // item frost
+                            if (tower.itemFrost > 0) {
+                                if (it.itemFrostAlreadyAffected > 0) it.itemFrostAlreadyAffected++
+                                if (it.itemFrostAlreadyAffected >= 50) {
+                                    it.itemFrostAlreadyAffected = 0
+                                    it.baseSpeed += it.itemFrostSpeedReduce
+                                    it.itemFrostSpeedReduce = 0f
                                 }
-
-                            }
-                         } finally {
-                            readLockTower.unlock()
-                    }
-
-                    // fire talent sun burn
-                    if (sunburn > 0 && day) {
-                        if (enemyList.contains(it)) {
-                            when ((0..999).random()) {
-                                0 -> it.fireDebuff = 1
-                            }
-                            var dmg = 0f
-                            if (it.fireDebuff > 0){
-                                if (it.name == "immune") dmg = (it.maxHp / 100 / 60) * sunburn * (fireBurnTalent / 2)* Companion.windTalentDebuff * dmgImmune
-                                else dmg = (it.maxHp / 100 / 60) * sunburn * (fireBurnTalent / 2)* Companion.windTalentDebuff
-                            }else {
-                                if (it.name == "immune") dmg = (it.maxHp / 100 / 60 / 1.5f) * sunburn * Companion.windTalentDebuff * dmgImmune
-                                else dmg = (it.maxHp / 100 / 60 / 1.5f) * sunburn * Companion.windTalentDebuff
                             }
 
-                            if (it.hp > dmg) it.hp -= dmg
+                            // fire talent sun burn
+                            if (tower.sunburn > 0 && day && sunburnOnlyOne < 1) {
+                                sunburnOnlyOne++
+                                if (enemyList.contains(it)) {
+                                    when ((0..999).random()) {
+                                        0 -> it.fireDebuff = 1
+                                    }
+                                    var dmg = 0f
+                                    if (it.fireDebuff > 0) {
+                                        if (it.name == "immune") dmg =
+                                            (it.maxHp / 100 / 60) * tower.sunburn * (tower.fireBurnTalentDmg / 2) * it.winddebuffincreased * tower.overallDmgImmune
+                                        else dmg =
+                                            (it.maxHp / 100 / 60) * tower.sunburn * (tower.fireBurnTalentDmg / 2) * it.winddebuffincreased
+                                    } else {
+                                        if (it.name == "immune") dmg =
+                                            (it.maxHp / 100 / 60 / 1.5f) * tower.sunburn * it.winddebuffincreased * tower.overallDmgImmune
+                                        else dmg =
+                                            (it.maxHp / 100 / 60 / 1.5f) * tower.sunburn * it.winddebuffincreased
+                                    }
+
+                                    if (it.hp > dmg) it.hp -= dmg
+                                }
+                            }
+
+
                         }
-                    }
 
-                    // butterfly slow stun
 
-                    if (markOfTheButterflySlow) {
+                        // butterfly slow stun
 
-                        if (it.markOfTheButterflySlowActive == 1 && !it.markOfTheButterflySlowAlreadyAffected && !it.markOfTheButterflyStunAlreadyAffected){
+                        if (it.markOfTheButterflySlowActive == 1 && !it.markOfTheButterflySlowAlreadyAffected && !it.markOfTheButterflyStunAlreadyAffected) {
                             it.markOfTheButterflySlowActive = 0
                             when ((0..2).random()) {
                                 in 0..1 -> it.markOfTheButterflySlow = 1
@@ -3737,746 +4041,92 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                         if (it.markOfTheButterflySlow == 1) {
                             if (it.name == "speed") it.extraSpeed = 0.0f       // counter speed
-                            if (it.name == "immune") it.markOfTheButterflySlowReduce = (it.baseSpeed * (30f / 100f)) * dmgImmune.toFloat()
-                            else it.markOfTheButterflySlowReduce = (it.baseSpeed * (30f / 100f)).toFloat()
+                            if (it.name == "immune") it.markOfTheButterflySlowReduce =
+                                (it.baseSpeed * (30f / 100f)) * towerList[it.markOfTheButterflySlowActiveTowerId].overallDmgImmune.toFloat()
+                            else it.markOfTheButterflySlowReduce =
+                                (it.baseSpeed * (30f / 100f)).toFloat()
                             it.baseSpeed -= it.markOfTheButterflySlowReduce
                             it.markOfTheButterflySlowAlreadyAffected = true
                             it.markOfTheButterflySlow += 1
                         } else if (it.markOfTheButterflySlow >= 120 * it.markOfTheButterflySlowStunDR) {
                             it.markOfTheButterflySlowStunDR *= 0.66f
-                            if (it.markOfTheButterflySlowStunDR <= 0.1f) it.markOfTheButterflySlowStunDR = 0f
+                            if (it.markOfTheButterflySlowStunDR <= 0.1f) it.markOfTheButterflySlowStunDR =
+                                0f
                             it.markOfTheButterflySlow = 0
                             it.markOfTheButterflySlowAlreadyAffected = false
                             it.baseSpeed += it.markOfTheButterflySlowReduce
                             it.markOfTheButterflySlowReduce = 0f
-                        } else if (it.markOfTheButterflySlowAlreadyAffected) it.markOfTheButterflySlow ++
+                        } else if (it.markOfTheButterflySlowAlreadyAffected) it.markOfTheButterflySlow++
 
                         if (it.markOfTheButterflyStun == 1) {
-                                it.markOfTheButterflySlowReduce = it.baseSpeed
+                            it.markOfTheButterflySlowReduce = it.baseSpeed
                             it.baseSpeed -= it.markOfTheButterflySlowReduce
-                                it.markOfTheButterflyStunAlreadyAffected = true
-                                it.markOfTheButterflyStun += 1
+                            it.markOfTheButterflyStunAlreadyAffected = true
+                            it.markOfTheButterflyStun += 1
                         } else if (it.markOfTheButterflyStun >= 20 * it.markOfTheButterflySlowStunDR && (it.name == "boss" || it.name == "challenge")) {
                             it.markOfTheButterflySlowStunDR *= 0.66f
-                            if (it.markOfTheButterflySlowStunDR <= 0.1f) it.markOfTheButterflySlowStunDR = 0f
+                            if (it.markOfTheButterflySlowStunDR <= 0.1f) it.markOfTheButterflySlowStunDR =
+                                0f
                             it.markOfTheButterflyStunAlreadyAffected = false
                             it.markOfTheButterflyStun = 0
                             it.baseSpeed += it.markOfTheButterflySlowReduce
                             it.markOfTheButterflySlowReduce = 0f
-                        }else if (it.markOfTheButterflyStun >= 40 * it.markOfTheButterflySlowStunDR) {
+                        } else if (it.markOfTheButterflyStun >= 40 * it.markOfTheButterflySlowStunDR) {
                             it.markOfTheButterflySlowStunDR *= 0.66f
-                            if (it.markOfTheButterflySlowStunDR <= 0.1f) it.markOfTheButterflySlowStunDR = 0f
+                            if (it.markOfTheButterflySlowStunDR <= 0.1f) it.markOfTheButterflySlowStunDR =
+                                0f
                             it.markOfTheButterflyStunAlreadyAffected = false
                             it.markOfTheButterflyStun = 0
                             it.baseSpeed += it.markOfTheButterflySlowReduce
                             it.markOfTheButterflySlowReduce = 0f
                         } else if (it.markOfTheButterflyStunAlreadyAffected) it.markOfTheButterflyStun += 1
-                    }
 
-                    // poison Debuff
 
-                    if (stackablePoison > 0) {
+                        // butterfly debuff dmg + xp
+
+                        if (it.butterflyDebuffEnemyDmg == 1) {
+                            it.butterflyDebuffEnemyDmgAlreadyEffected = true
+                            it.butterflyDebuffEnemyDmg++
+                        } else if (it.butterflyDebuffEnemyDmg >= 300) {
+                            it.butterflyDebuffEnemyDmg = 0
+                            it.butterflyDebuffEnemyDmgAlreadyEffected = false
+                        } else if (it.butterflyDebuffEnemyDmg > 0) {
+                            it.butterflyDebuffEnemyDmg++
+                        }
+
+                        if (it.butterflyDebuffEnemyGoldXp == 1) {
+                            it.butterflyDebuffEnemyGoldXpAlreadyEffected = true
+                            it.butterflyDebuffEnemyDmg++
+                        } else if (it.butterflyDebuffEnemyGoldXp >= 300) {
+                            it.butterflyDebuffEnemyDmg = 0
+                            it.butterflyDebuffEnemyGoldXpAlreadyEffected = false
+                        } else if (it.butterflyDebuffEnemyGoldXp > 0) {
+                            it.butterflyDebuffEnemyDmg++
+                        }
+
+                        // poison Debuff
+
                         if (it.poisonDebuff == 1 || it.poisonDebuff == 31 || it.poisonDebuff == 61 || it.poisonDebuff == 91 || it.poisonDebuff == 121
                             || it.poisonDebuff == 151 || it.poisonDebuff == 181 || it.poisonDebuff == 211
                         ) {
-                           var dmg = 0f
-                            if (it.name == "immune") dmg = ((it.poisonStack * 2f + (it.poisonStack.pow((it.poisonStack / 20)))) * ((towerList[it.poisonDebuffTowerId].overallSpellDmg  * magicPen(it, towerList[it.poisonDebuffTowerId]))* 0.15f) * stackablePoison * windTalentDebuff * dmgImmune) *2
-                            else dmg = ((it.poisonStack * 2f + (it.poisonStack.pow((it.poisonStack / 20)))) * ((towerList[it.poisonDebuffTowerId].overallSpellDmg  * magicPen(it, towerList[it.poisonDebuffTowerId]))* 0.15f) * stackablePoison * windTalentDebuff) * 2
-
-                            if  (it.manaShield > 0){
-                                if (it.manaShield > dmg) {
-                                    it.manaShield -= dmg
-                                    dmg = 0f
-                                }else {
-                                    dmg = (dmg - it.manaShield)
-                                    it.manaShield = 0f
-                                }
-                            }
-                            if (it.shield > 0) dmg = 0f
-
-                            it.hp -= dmg
-                            if (dmg > (it.maxHp / 100)) {
-                                var dmgString = "0"
-                                when (dmg.toInt()) {
-                                    in 0..999 -> dmgString = dmg.toInt().toString()
-                                    in 1000..999999 -> dmgString =
-                                        (dmg / 1000).toInt().toString() + "k"
-                                    in 1000000..999999999 -> dmgString =
-                                        (dmg / 1000000).toInt().toString() + "M"
-                                }
-                                var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, -50, paintPoisonDmgDone, 30, 15))
-                            }
-
-                            if (it.hp < 0) {
-                                it.killerId = it.poisonDebuffTowerId
-                                it.hp = 0.0f
-                            }
-                            it.poisonDebuff += 1
-                        } else if (it.poisonDebuff >= 212) {
-                            it.poisonDebuff = 0
-                            it.poisonDebuffTowerId = 0
-                            it.poisonStack = 0.0f
-                        } else if (it.poisonDebuff > 0) it.poisonDebuff += 1
-                    }
-
-                    // poison entangle
-
-                    if (entangle > 0) {
-                        if (it.entangleOnHit == 1 && it.entangled == false) {
-                            when ((0..99).random()) {
-                                in 0..entangle -> {
-                                    it.entangleSpeedReduce = it.baseSpeed
-                                    it.baseSpeed -= it.entangleSpeedReduce
-                                    it.entangled = true
-                                }
-                            }
-                            it.entangleOnHit += 1
-                        } else if (it.entangled == true && it.entangleOnHit >= 20 * it.entangleDR && (it.name == "boss" || it.name == "challenge")) {
-                            it.entangleDR *= 0.66f
-                            if (it.entangleDR <= 0.1f) it.entangleDR = 0f
-                            it.entangled = false
-                        it.entangleOnHit = 0
-                            it.baseSpeed += it.entangleSpeedReduce
-                            it.entangleSpeedReduce = 0f
-                    }else if (it.entangled == true && it.entangleOnHit >= 40 * it.entangleDR) {
-                            it.entangleDR *= 0.66f
-                            if (it.entangleDR <= 0.1f) it.entangleDR = 0f
-                            it.entangled = false
-                            it.entangleOnHit = 0
-                            it.baseSpeed += it.entangleSpeedReduce
-                            it.entangleSpeedReduce = 0f
-                        } else if (it.entangled == true) it.entangleOnHit += 1
-                    }
-
-                    // throw boulder
-                    if (throwBoulder > 0) {
-                        if (it.throwBoulderHit >= 40 * it.throwBoulderDR) {
-                            it.throwBoulderDR *= 0.66f
-                            if (it.throwBoulderDR <= 0.1f) it.throwBoulderDR = 0f
-                            it.throwBoulderHitAlreadyEffected = false
-                            it.throwBoulderHit = 0
-                            it.baseSpeed += it.throwBoulderSpeedReduce
-                            it.throwBoulderSpeedReduce = 0f
-                        } else if (it.throwBoulderHitAlreadyEffected) it.throwBoulderHit += 1
-
-                    }
-
-                    // dark slow
-                    if (slowExtraDark > 0) {
-                        if (it.darkDebuff == true && it.darkSlowAlreadyAffected == false) {
-                            it.darkDebuff = false
-                            when ((0..99).random()) {
-                                in 0..slowExtraChanceDark -> {
-                                    if (it.name == "speed") it.extraSpeed =
-                                        0.0f       // counter speed
-                                    it.baseSpeed -= (it.baseSpeed * (slowExtraDark / 100)).toFloat()
-                                    it.darkSlowAlreadyAffected = true
-                                }
-                            }
-                        }
-                    }
-
-                    // dark fear
-                    if (it.fearOnHit >= 1) {
-                        if (it.fearOnHit == 1 && it.feared == false) {
-                                    it.fearSpeedReduce = it.baseSpeed
-                            it.baseSpeed -= (it.fearSpeedReduce + 2f)
-                                    it.feared = true
-                                    it.fearOnHit += 1
-                        } else if (it.feared == true && it.fearOnHit >= ((10 * fearDuration) * it.fearDR) && (it.name == "boss" || it.name == "challenge")) {
-                            it.fearDR *= 0.66f
-                            if (it.fearDR <= 0.1f) it.fearDR = 0f
-                            it.feared = false
-                            it.fearOnHit = 0
-                            it.baseSpeed += (it.fearSpeedReduce + 2f)
-                            it.fearSpeedReduce = 0f
-                        } else if (it.feared == true && it.fearOnHit >= (30 * fearDuration) * it.fearDR) {
-                            it.fearDR *= 0.66f
-                            if (it.fearDR <= 0.1f) it.fearDR = 0f
-                            it.feared = false
-                            it.fearOnHit = 0
-                            it.baseSpeed += (it.fearSpeedReduce + 2f)
-                            it.fearSpeedReduce = 0f
-                        } else if (it.feared == true) it.fearOnHit += 1
-                    }
-
-                    // talent poison pest
-                    if (poisonTalentPest > 0) {
-                        if (it.poisonTalentPestAlreadyAffected > 0) {
-                            it.poisonTalentPestAlreadyAffected++
-                            it.poisonTalentPestDamage++
-                            if (it.poisonTalentPestDamage > 151) {
-                                it.poisonTalentPestDamage = 0
-                                it.poisonTalentPestAlreadyAffected = 0
-                                it.poisonTalentPestImmune = true
-                            }
-                            if (it.name == "boss" || it.name == "challenge"){
-                                if (it.poisonTalentPestDamage == 1 || it.poisonTalentPestDamage == 51 || it.poisonTalentPestDamage == 101 || it.poisonTalentPestDamage == 151) {
-                                    var dmg = 0f
-                                    dmg = (((it.maxHp / (50..300).random())) * poisonTalentPest * (it.poisonTalentPestDamage / 15) * windTalentDebuff) * 10
-                                    if (it.hp > dmg) it.hp -= dmg
-                                    else {
-                                            when ((0..5).random()) {
-                                                0 -> {
-                                                }
-                                                in 1..5 -> {
-                                                    for (itX in enemyList.shuffled()) {
-                                                        if (itX.poisonTalentPestAlreadyAffected > 0 || it.poisonTalentPestImmune) {
-                                                        } else {
-                                                            itX.poisonTalentPestAlreadyAffected = 1
-                                                            break
-                                                        }
-                                                    }
-                                            }
-                                        }
-                                    }
-                                    if (dmg > (it.maxHp / 100)) {
-                                        var dmgString = "0"
-                                        when (dmg.toInt()) {
-                                            in 0..999 -> dmgString = dmg.toInt().toString()
-                                            in 1000..999999 -> dmgString =
-                                                (dmg / 1000).toInt().toString() + "k"
-                                            in 1000000..999999999 -> dmgString =
-                                                (dmg / 1000000).toInt().toString() + "M"
-                                        }
-                                        var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                        dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, -50, paintPestDmgDone, 0, 0))
-                                    }
-                                }
-                            } else {
-                                if (it.poisonTalentPestDamage == 1 || it.poisonTalentPestDamage == 51 || it.poisonTalentPestDamage == 101 || it.poisonTalentPestDamage == 151) {
-                                    var dmg = 0f
-                                    if (it.name == "immune") dmg =
-                                        (((it.maxHp / (50..300).random())) * poisonTalentPest * (it.poisonTalentPestDamage / 15) * windTalentDebuff * dmgImmune) * 30
-                                    else dmg =
-                                        (((it.maxHp / (50..300).random())) * poisonTalentPest * (it.poisonTalentPestDamage / 15) * windTalentDebuff) * 30
-
-                                    if (it.manaShield > 0) {
-                                        if (it.manaShield > dmg) {
-                                            it.manaShield -= dmg
-                                            dmg = 0f
-                                        } else {
-                                            dmg = (dmg - it.manaShield)
-                                            it.manaShield = 0f
-                                        }
-                                    }
-                                    if (it.shield > 0) dmg = 0f
-                                    if (it.hp > dmg) it.hp -= dmg
-                                    else {
-                                        when ((0..5).random()) {
-                                            0 -> {
-                                            }
-                                            in 1..5 -> {
-                                                for (itX in enemyList.shuffled()) {
-                                                    if (itX.poisonTalentPestAlreadyAffected > 0 || it.poisonTalentPestImmune) {
-                                                    } else {
-                                                        itX.poisonTalentPestAlreadyAffected = 1
-                                                        break
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (dmg > (it.maxHp / 100)) {
-                                        var dmgString = "0"
-                                        when (dmg.toInt()) {
-                                            in 0..999 -> dmgString = dmg.toInt().toString()
-                                            in 1000..999999 -> dmgString =
-                                                (dmg / 1000).toInt().toString() + "k"
-                                            in 1000000..999999999 -> dmgString =
-                                                (dmg / 1000000).toInt().toString() + "M"
-                                        }
-                                        var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                        dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, -50, paintPestDmgDone, 0, 0))
-                                    }
-                                }
-                            }
-                        }
-                        if (it.poisonTalentPestAlreadyAffected == 100 || it.poisonTalentPestAlreadyAffected == 150){
-                            when ((0..1).random()) {
-                                0 -> it.poisonTalentPestAlreadyAffected = 1
-                                1 -> {
-                                    for (itX in enemyList.shuffled()) {
-                                        if (itX.poisonTalentPestAlreadyAffected > 0 || it.poisonTalentPestImmune) {
-                                        } else {
-                                            it.poisonTalentPestAlreadyAffected = 1
-                                            itX.poisonTalentPestAlreadyAffected = 1
-                                            break
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // dark talent laser
-                    if (darkTalentLaser > 0) {
-                        if (it.darkTalentLaserAlreadyAffected >= 250) {
-                            it.darkTalentLaserAlreadyAffected = 0
-                            it.darkTalentLaserTowerId = 0
-                        } else if (it.darkTalentLaserAlreadyAffected > 0 && towerList[it.darkTalentLaserTowerId].crossesAllList.contains(it)) {
-                            it.darkTalentLaserAlreadyAffected ++
-                            it.maxHp -= (it.maxHp * (darkTalentLaser / 100))
-                            it.hp -= (it.maxHp * (darkTalentLaser / 100))
-                            if (it.hp <0) {
-                                it.killerId = it.darkTalentLaserTowerId
-                                it.hp = 0f
-                            }
-                        } else {
-                            it.darkTalentLaserAlreadyAffected = 0
-                            it.darkTalentLaserTowerId = 0
-                        }
-                    }
-
-                    // talent moonlight
-                    if (moonLight > 0 && it.talentMoonlightDraw > 0) {
-                        it.talentMoonlightDraw++
-                        if (it.talentMoonlightDraw > 15) it.talentMoonlightDraw = 0
-                    }
-
-                    // wizard talent bomb
-                    if (wizardBomb) {
-                        if (it.wizardBombActive > 0) it.wizardBombActive++
-                        if (it.wizardBombActive >= 170) {
-                            it.wizardBombActive = 0
-                            var dmg = 0f
-                            dmg = ((Companion.wizardBombDmg * bigNumberScaler) + (towerList[it.wizardBombTowerId].overallSpellDmg * (0.1f + wizardBombStartItemDmg )))
-
-                            if  (it.manaShield > 0){
-                                if (it.manaShield > dmg) {
-                                    it.manaShield -= dmg
-                                    dmg = 0f
-                                }else {
-                                    dmg = (dmg - it.manaShield)
-                                    it.manaShield = 0f
-                                }
-                            }
-                            if (it.shield > 0) dmg = 0f
-                            it.hp -= dmg
-                            if (dmg > (it.maxHp / 100)) {
-                                var dmgString = "0"
-                                when (dmg.toInt()) {
-                                    in 0..999 -> dmgString = dmg.toInt().toString()
-                                    in 1000..999999 -> dmgString =
-                                        (dmg / 1000).toInt().toString() + "k"
-                                    in 1000000..999999999 -> dmgString =
-                                        (dmg / 1000000).toInt().toString() + "M"
-                                }
-                                var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintWizardDmgDone, -30, -15))
-                            }
-
-                            if (it.hp < 0) {
-                                it.killerId = it.wizardBombTowerId
-                                it.hp = 0f
-                            }
-                            var enemyListIteratorZ = enemyList.listIterator()
-                            while (enemyListIteratorZ.hasNext()) {
-                                var otherEnemy = enemyListIteratorZ.next()
-                                if (splash100(it.circle!!.x, it.circle!!.y, it.circle!!.r, otherEnemy.circle!!.x, otherEnemy.circle!!.y, otherEnemy.circle!!.r)) {
-                                    var dmg = 0f
-                                    dmg = ((Companion.wizardBombDmg * 0.66f *bigNumberScaler) + (towerList[it.wizardBombTowerId].overallSpellDmg * (0.1f + wizardBombStartItemDmg)))
-
-                                    if  (otherEnemy.manaShield > 0){
-                                        if (otherEnemy.manaShield > dmg) {
-                                            otherEnemy.manaShield -= dmg
-                                            dmg = 0f
-                                        }else {
-                                            dmg = (dmg - otherEnemy.manaShield)
-                                            otherEnemy.manaShield = 0f
-                                        }
-                                    }
-                                    if (otherEnemy.shield > 0) dmg = 0f
-                                    otherEnemy.hp -= dmg
-                                    if (dmg > (otherEnemy.maxHp / 100)) {
-                                        var dmgString = "0"
-                                        when (dmg.toInt()) {
-                                            in 0..999 -> dmgString = dmg.toInt().toString()
-                                            in 1000..999999 -> dmgString =
-                                                (dmg / 1000).toInt().toString() + "k"
-                                            in 1000000..999999999 -> dmgString =
-                                                (dmg / 1000000).toInt().toString() + "M"
-                                        }
-                                        var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                        dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(otherEnemy)], dmgString, 1, 50, paintWizardDmgDone, -30, -15))
-                                    }
-                                    if (otherEnemy.hp < 0) {
-                                        otherEnemy.killerId = it.wizardBombTowerId
-                                        otherEnemy.hp = 0f
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // wizard mine
-                    if (wizardMine) {
-                        if (it.mineAlreadyAffected) it.mineAlreadyAffectedCounter ++
-                        if (it.mineAlreadyAffectedCounter >= 180){
-                            it.baseSpeed += it.mineSpeedReduce
-                            it.mineSpeedReduce = 0f
-                            it.mineAlreadyAffected = false
-                        }
-                    }
-
-                    // wizard lightning
-                    if (it.wizardMissedLightningActiveHit >= 1) it.wizardMissedLightningActiveHit ++
-                    if (it.wizardMissedLightningActiveHit >= 20) it.wizardMissedLightningActiveHit = 0
-
-                }
-                // ---------------------------------------------------------------------------------------------------------
-
-                // talent poison pest
-                if (poisonTowerCount > 0) {
-                    var counter = 250
-                    if (poisonTowerCount ==2) counter =225
-                    else if (poisonTowerCount ==3) counter = 210
-                    else if (poisonTowerCount ==4) counter = 200
-                    else if (poisonTowerCount >= 5) counter = 195
-                    if (poisonTalentPest > 0) poisonPestCount++
-                    if (poisonTalentPest > 0 && poisonPestCount >= counter) {
-                        for (it in enemyList.shuffled()) {
-                            if (it.poisonTalentPestAlreadyAffected > 0 || it.poisonTalentPestImmune) {
-                            } else {
-                                when ((0..3).random()) {
-                                    0 -> it.poisonTalentPestAlreadyAffected = 1
-                                }
-                                poisonPestCount = 0
-                                break
-                            }
-                        }
-                    }
-                }
-
-                readLockTower.lock()
-                try {
-                var towerListIterator = Companion.towerList.listIterator()
-                while (towerListIterator.hasNext()) {
-                    var tower = towerListIterator.next()
-
-                    // wizard chain lightning
-                    if (chainLighning && (tower.itemListBag.contains(ewizard))) {
-                        chainLightningCounter++
-                        if (spellCastCDBool) chainLightningCounter += (chainLightningTimer * (spellCastCD * spellCastCDCounter)).toInt()
-                        var counter = 0
-                        if (wizardTowerCount ==2) counter = 10
-                        else if (wizardTowerCount ==3) counter = 30
-                        else if (wizardTowerCount ==4) counter = 50
-                        else if (wizardTowerCount >= 5) counter = 80
-                        var chainLightningTimerBool = chainLightningTimer - counter
-                        if (chainLightningCounter >= chainLightningTimerBool) {
-                            chainLightningCounter = 0
-                            if (tower.crossesAllList.isNotEmpty()) {
-                                spellCastCDCounterHeap += 1
-                                var shootListPlace = Shoot()
-                                shootListPlace.chainLightning = true
-                                shootListPlace.paint.color = Color.WHITE
-                                shootListPlace.bulletSpeed = 12f
-                                shootListPlace.bullet = TowerRadius(600f, 750f, 8f)
-                                shootListPlace.bounceLeft = chainLightningBounceTargets
-                                var shootListIterator = shootList.listIterator()
-                                shootListIterator.add(shootListPlace)
-                            }
-                        }
-                    }
-
-                    // earth talent throw boulder
-
-                    if (throwBoulder > 0 && (tower.itemListBag.contains(eearth))) {
-                        tower.throwBoulderCounter++
-                        if (spellCastCDBool) tower.throwBoulderCounter += (throwBoulderTimer * (spellCastCD * spellCastCDCounter)).toInt()
-                        if (tower.throwBoulderCounter >= throwBoulderTimer) {
-                            tower.throwBoulderCounter = 0
-                            if (tower.crossesAllList.isNotEmpty()) {
-                                spellCastCDCounterHeap += 1
-                                for (it in tower.crossesAllList.shuffled()) {
-                                    var dmg = 0f
-                                    dmg = (tower.towerPhysicalDmg * armorPen(it, tower)) * throwBoulder
-
-                                    if  (it.shield > 0){
-                                        if (it.shield > dmg) {
-                                            it.shield -= dmg
-                                            dmg = 0f
-                                        }else {
-                                            dmg = (dmg - it.shield)
-                                            it.shield = 0f
-                                        }
-                                    }
-                                    if (it.manaShield > 0) dmg = 0f
-                                    it.hp -= dmg
-                                    if (dmg > (it.maxHp / 100)) {
-                                        var dmgString = "0"
-                                        when (dmg.toInt()) {
-                                            in 0..999 -> dmgString = dmg.toInt().toString()
-                                            in 1000..999999 -> dmgString =
-                                                (dmg / 1000).toInt().toString() + "k"
-                                            in 1000000..999999999 -> dmgString =
-                                                (dmg / 1000000).toInt().toString() + "M"
-                                        }
-                                        var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                        dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintEarthDmgDone, -30, -15))
-                                    }
-
-                                    if (it.hp < 0) {
-                                        it.killerId = towerList.indexOf(tower)
-                                        it.hp = 0f
-                                    }
-
-                                    if (it.name == "speed") it.extraSpeed = 0.0f       // counter speed
-                                    it.throwBoulderSpeedReduce = it.baseSpeed
-                                    it.baseSpeed -= it.throwBoulderSpeedReduce
-                                    it.throwBoulderHitAlreadyEffected = true
-                                    //        var enemyListIteratorZ = enemyList.listIterator()
-                                    //        while (enemyListIteratorZ.hasNext()) {
-                                    //            var otherEnemy = enemyListIteratorZ.next()
-                                    for (otherEnemy in enemyList) {
-                                        if (splash60(it.circle!!.x, it.circle!!.y, it.circle!!.r, otherEnemy.circle!!.x, otherEnemy.circle!!.y, otherEnemy.circle!!.r)) {
-                                            if (otherEnemy.throwBoulderHitAlreadyEffected) {
-                                            } else {
-                                                var dmg = 0f
-                                                dmg = (tower.towerPhysicalDmg * armorPen(it, tower)) * throwBoulder * 0.75f
-
-                                                if  (otherEnemy.shield > 0){
-                                                    if (otherEnemy.shield > dmg) {
-                                                        otherEnemy.shield -= dmg
-                                                        dmg = 0f
-                                                    }else {
-                                                        dmg = (dmg - otherEnemy.shield)
-                                                        otherEnemy.shield = 0f
-                                                    }
-                                                }
-                                                if (otherEnemy.manaShield > 0) dmg = 0f
-                                                otherEnemy.hp -= dmg
-                                                if (dmg > (otherEnemy.maxHp / 100)) {
-                                                    var dmgString = "0"
-                                                    when (dmg.toInt()) {
-                                                        in 0..999 -> dmgString = dmg.toInt().toString()
-                                                        in 1000..999999 -> dmgString =
-                                                            (dmg / 1000).toInt().toString() + "k"
-                                                        in 1000000..999999999 -> dmgString =
-                                                            (dmg / 1000000).toInt().toString() + "M"
-                                                    }
-                                                    var dmgDisplayListIterator =
-                                                        dmgDisplayList.listIterator()
-                                                    dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(otherEnemy)], dmgString, 1, 50, paintEarthDmgDone, -30, -15))
-                                                }
-
-                                                if (otherEnemy.hp < 0) {
-                                                    otherEnemy.killerId = towerList.indexOf(tower)
-                                                    otherEnemy.hp = 0f
-                                                }
-                                                if (otherEnemy.name == "speed") otherEnemy.extraSpeed = 0.0f       // counter speed
-                                                otherEnemy.throwBoulderSpeedReduce = otherEnemy.baseSpeed
-                                                otherEnemy.baseSpeed -= otherEnemy.throwBoulderSpeedReduce
-                                                otherEnemy.throwBoulderHitAlreadyEffected = true
-                                            }
-                                        }
-                                    }
-                                    break
-                                }
-                            }
-                        }
-                    }
-
-                    // item frost
-                    if (tower.itemFrost > 0) tower.itemFrostCount++
-                    if (tower.itemFrost > 0 && tower.itemFrostCount >= 25) {
-                        for (it in tower.crossesAllList.shuffled()) {
-                            if (it.itemFrostAlreadyAffected > 0) {
-                            } else {
-                                if (it.name == "speed") it.extraSpeed = 0.0f       // counter speed
-                                it.itemFrostSpeedReduce = (it.baseSpeed * (tower.itemFrost / 100) * it.itemFrostDR).toFloat()
-                                it.baseSpeed -= it.itemFrostSpeedReduce
-                                it.itemFrostAlreadyAffected = 1
-                                tower.itemFrostCount = 0
-                                it.itemFrostDR *= 0.66f
-                                if (it.itemFrostDR <= 0.1f) it.itemFrostDR = 0f
-                                break
-                            }
-                        }
-                    }
-
-                    // ice nova
-                    if (iceNova && (tower.itemListBag.contains(eice))) {
-                        tower.iceNovaCounter++
-                        if (globalItemListBag.contains(Items.stid6)) iceNovaTimerStartItem = iceNovaTimer / 2
-                        else iceNovaTimerStartItem = iceNovaTimer
-                        if (spellCastCDBool) tower.iceNovaCounter += (iceNovaTimerStartItem * (spellCastCD * spellCastCDCounter)).toInt()
-                        if (tower.iceNovaCounter >= iceNovaTimerStartItem) {
-                            tower.iceNovaCounter = 0
-                            if (tower.crossesAllList.isNotEmpty()) {
-                                spellCastCDCounterHeap += 1
-                                for (it in tower.crossesAllList.shuffled()) {
-                                    var dmg = 0f
-                                    dmg = (tower.overallSpellDmg * magicPen(it, tower))
-
-                                    if (it.manaShield > 0) {
-                                        if (it.manaShield > dmg) {
-                                            it.manaShield -= dmg
-                                            dmg = 0f
-                                        } else {
-                                            dmg = (dmg - it.manaShield)
-                                            it.manaShield = 0f
-                                        }
-                                    }
-                                    if (it.shield > 0) dmg = 0f
-                                    it.hp -= dmg
-                                    if (dmg > (it.maxHp / 100)) {
-                                        var dmgString = "0"
-                                        when (dmg.toInt()) {
-                                            in 0..999 -> dmgString = dmg.toInt().toString()
-                                            in 1000..999999 -> dmgString =
-                                                (dmg / 1000).toInt().toString() + "k"
-                                            in 1000000..999999999 -> dmgString =
-                                                (dmg / 1000000).toInt().toString() + "M"
-                                        }
-                                        var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                        dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintIceDmgDone, 30, 15))
-                                    }
-
-                                    if (it.hp < 0) {
-                                        it.killerId = towerList.indexOf(tower)
-                                        it.hp = 0f
-                                    }
-                                    if (it.iceNovaAlreadyAffected) {
-                                        it.baseSpeed += it.iceNovaSpeedReduce
-                                        it.iceNovaSpeedReduce = 0f
-                                    }
-                                    if (it.name == "speed") it.extraSpeed = 0.0f       // counter speed
-                                    it.iceNovaSpeedReduce =
-                                        (it.baseSpeed * 0.7f * it.iceNovaDR).toFloat()
-                                    it.baseSpeed -= it.iceNovaSpeedReduce
-                                    it.iceNovaAlreadyAffected = true
-                                    it.iceNovaDR *= 0.66f
-                                    if (it.iceNovaDR <= 0.1f) it.iceNovaDR = 0f
-                                    //              var enemyListIteratorZ = enemyList.listIterator()
-                                    //              while (enemyListIteratorZ.hasNext()) {
-                                    //                  var otherEnemy = enemyListIteratorZ.next()
-                                    for (otherEnemy in enemyList) {
-                                        if (splash60(it.circle!!.x, it.circle!!.y, it.circle!!.r, otherEnemy.circle!!.x, otherEnemy.circle!!.y, otherEnemy.circle!!.r)) {
-                                            if (otherEnemy.iceNovaAlreadyAffected) {
-                                                otherEnemy.baseSpeed += otherEnemy.iceNovaSpeedReduce
-                                                otherEnemy.iceNovaSpeedReduce = 0f
-                                            }
-                                            var dmg = 0f
-                                            dmg = (tower.overallSpellDmg * magicPen(otherEnemy, tower) * 0.75f)
-
-                                            if (otherEnemy.manaShield > 0) {
-                                                if (otherEnemy.manaShield > dmg) {
-                                                    otherEnemy.manaShield -= dmg
-                                                    dmg = 0f
-                                                } else {
-                                                    dmg = (dmg - otherEnemy.manaShield)
-                                                    otherEnemy.manaShield = 0f
-                                                }
-                                            }
-                                            if (otherEnemy.shield > 0) dmg = 0f
-                                            otherEnemy.hp -= dmg
-                                            if (dmg > (otherEnemy.maxHp / 100)) {
-                                                var dmgString = "0"
-                                                when (dmg.toInt()) {
-                                                    in 0..999 -> dmgString = dmg.toInt().toString()
-                                                    in 1000..999999 -> dmgString =
-                                                        (dmg / 1000).toInt().toString() + "k"
-                                                    in 1000000..999999999 -> dmgString =
-                                                        (dmg / 1000000).toInt().toString() + "M"
-                                                }
-                                                var dmgDisplayListIterator =
-                                                    dmgDisplayList.listIterator()
-                                                dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(otherEnemy)], dmgString, 1, 50, paintIceDmgDone, 30, 15))
-                                            }
-
-                                            if (otherEnemy.hp < 0) {
-                                                otherEnemy.killerId = towerList.indexOf(tower)
-                                                otherEnemy.hp = 0f
-                                            }
-                                            if (otherEnemy.name == "speed") otherEnemy.extraSpeed = 0.0f       // counter speed
-                                            otherEnemy.iceNovaSpeedReduce =
-                                                (otherEnemy.baseSpeed * 0.8f * otherEnemy.iceNovaDR).toFloat()
-                                            otherEnemy.baseSpeed -= otherEnemy.iceNovaSpeedReduce
-                                            otherEnemy.iceNovaAlreadyAffected = true
-                                            otherEnemy.iceNovaDR *= 0.66f
-                                            if (otherEnemy.iceNovaDR <= 0.1f) otherEnemy.iceNovaDR = 0f
-                                        }
-                                    }
-                                    break
-                                }
-                            }
-                        }
-                    }
-
-                    // wizard talent bomb
-                    if (wizardBomb && (tower.itemListBag.contains(ewizard))) {
-                        tower.wizardBombCounter++
-                        if (spellCastCDBool) tower.wizardBombCounter += (wizardBombTimer * (spellCastCD * spellCastCDCounter)).toInt()
-                        if (tower.wizardBombCounter >= wizardBombTimer) {
-                            tower.wizardBombCounter = 0
-                            if (tower.crossesAllList.isNotEmpty()) {
-                                spellCastCDCounterHeap += 1
-                                for (it in tower.crossesAllList.shuffled()) {
-                                    it.wizardBombActive = 1
-                                    it.wizardBombTowerId = towerList.indexOf(tower)
-                                    break
-                                }
-                            }
-                        }
-                    }
-
-                    // item lasso
-                    if (tower.itemLasso > 0) itemLassoCount++
-                    if (tower.itemLasso > 0 && itemLassoCount >= (300 / tower.itemLasso).toInt()) {
-
-                        for (it in tower.crossesAllList.shuffled()) {
-                            if (it.itemLassoAlreadyAffected != 0) {
-                            } else {
-                                it.itemLassoAlreadyAffected = 1
-                                it.itemLassoAlreadyAffectedTowerId = towerList.indexOf(tower)
-                                itemLassoCount = 0
-                                break
-                            }
-                        }
-                    }
-
-                    // dark talent fear
-                if (Companion.darkTalentFear && (tower.itemListBag.contains(edark))) {
-                    tower.fearCounter++
-                    if (spellCastCDBool) tower.fearCounter += (fearTimer * (spellCastCD * spellCastCDCounter)).toInt()
-                    if (tower.fearCounter >= fearTimer) {
-                        tower.fearCounter = 0
-                        if (tower.crossesAllList.isNotEmpty()) {
-                            spellCastCDCounterHeap += 1
-                            for (it in tower.crossesAllList) {
-                                when ((0..9).random()) {
-                                    0 -> {
-                                        it.fearOnHit = 1
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                    // wizard lightning
-                if (tower.wizardMissedLightningActive) {
-                    spellCastCDCounterHeap +=1
-                    tower.wizardMissedLightningActive = false
-                    repeat((2 + wizardLightningStartItemTargets)) {
-                        if (enemyList.isNotEmpty()) {
-                            for (it in enemyList.shuffled()) {
+                            if (it.hp > 0) {
                                 var dmg = 0f
-                                dmg = tower.overallSpellDmg * magicPen(it, tower) * wizardMissedLightningDmgBoost
+                                if (it.name == "immune") dmg =
+                                    ((it.poisonStack * 2f + (it.poisonStack.pow((it.poisonStack / 20)))) * ((towerList[it.poisonDebuffTowerId].overallTowerSpellDmg * magicPen(it, towerList[it.poisonDebuffTowerId])) * 0.15f) * towerList[it.poisonDebuffTowerId].stackablePoison * it.winddebuffincreased * towerList[it.poisonDebuffTowerId].overallDmgImmune)
+                                else dmg =
+                                    ((it.poisonStack * 2f + (it.poisonStack.pow((it.poisonStack / 20)))) * ((towerList[it.poisonDebuffTowerId].overallTowerSpellDmg * magicPen(it, towerList[it.poisonDebuffTowerId])) * 0.15f) * towerList[it.poisonDebuffTowerId].stackablePoison * it.winddebuffincreased)
 
-                                if  (it.manaShield > 0){
+                                if (it.manaShield > 0) {
                                     if (it.manaShield > dmg) {
                                         it.manaShield -= dmg
                                         dmg = 0f
-                                    }else {
+                                    } else {
                                         dmg = (dmg - it.manaShield)
                                         it.manaShield = 0f
                                     }
                                 }
                                 if (it.shield > 0) dmg = 0f
+
                                 it.hp -= dmg
                                 if (dmg > (it.maxHp / 100)) {
                                     var dmgString = "0"
@@ -4488,54 +4138,243 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                             (dmg / 1000000).toInt().toString() + "M"
                                     }
                                     var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                    dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintWizardDmgDone, -30, -15))
+                                    dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, -50, paintPoisonDmgDone, 30, 15))
                                 }
 
-                                if (it.hp < 0) {
-                                    it.killerId = towerList.indexOf(tower)
-                                    it.hp = 0f
+                                if (it.hp < 0){
+                                    it.killerId = it.poisonDebuffTowerId
+                                    dead(it)
                                 }
+                            }
+                            it.poisonDebuff += 1
+                        } else if (it.poisonDebuff >= 212) {
+                            it.poisonDebuff = 0
+                            it.poisonDebuffTowerId = 0
+                            it.poisonStack = 0.0f
+                        } else if (it.poisonDebuff > 0) it.poisonDebuff += 1
 
-                                it.wizardMissedLightningActiveHit = 1
-                                break
+
+                        // poison entangle
+
+                        if (it.entangleOnHit == 1 && it.entangled == false) {
+                            when ((0..99).random()) {
+                                in 0..towerList[it.entangleOnHitTowerId].entangle -> {
+                                    it.entangleSpeedReduce = it.baseSpeed
+                                    it.baseSpeed -= it.entangleSpeedReduce
+                                    it.entangled = true
+                                }
+                            }
+                            it.entangleOnHit += 1
+                        } else if (it.entangled == true && it.entangleOnHit >= 20 * it.entangleDR && (it.name == "boss" || it.name == "challenge")) {
+                            it.entangleDR *= 0.66f
+                            if (it.entangleDR <= 0.1f) it.entangleDR = 0f
+                            it.entangled = false
+                            it.entangleOnHit = 0
+                            it.baseSpeed += it.entangleSpeedReduce
+                            it.entangleSpeedReduce = 0f
+                        } else if (it.entangled == true && it.entangleOnHit >= 40 * it.entangleDR) {
+                            it.entangleDR *= 0.66f
+                            if (it.entangleDR <= 0.1f) it.entangleDR = 0f
+                            it.entangled = false
+                            it.entangleOnHit = 0
+                            it.baseSpeed += it.entangleSpeedReduce
+                            it.entangleSpeedReduce = 0f
+                        } else if (it.entangled == true) it.entangleOnHit += 1
+
+                        // throw boulder
+                        if (it.throwBoulderHit >= 40 * it.throwBoulderDR) {
+                            it.throwBoulderDR *= 0.66f
+                            if (it.throwBoulderDR <= 0.1f) it.throwBoulderDR = 0f
+                            it.throwBoulderHitAlreadyEffected = false
+                            it.throwBoulderHit = 0
+                            it.baseSpeed += it.throwBoulderSpeedReduce
+                            it.throwBoulderSpeedReduce = 0f
+                        } else if (it.throwBoulderHitAlreadyEffected) it.throwBoulderHit += 1
+
+                        // dark slow
+                        if (it.darkDebuff == true && it.darkSlowAlreadyAffected == false) {
+                            it.darkDebuff = false
+                            when ((0..99).random()) {
+                                in 0..towerList[it.darkDebuffTowerId].slowExtraChanceDark -> {
+                                    if (it.name == "speed") it.extraSpeed =
+                                        0.0f       // counter speed
+                                    it.baseSpeed -= (it.baseSpeed * (towerList[it.darkDebuffTowerId].slowExtraDark / 100)).toFloat()
+                                    it.darkSlowAlreadyAffected = true
+                                }
                             }
                         }
-                    }
-                }
 
-                    // dark talent laser
-                    if (darkTalentLaser > 0 && (tower.itemListBag.contains(edark))) {
-                        tower.darkTalentLaserCount++
-                        for (it in tower.crossesAllList) {
-                            if (it.darkTalentLaserAlreadyAffected > 0) {
-                                tower.darkTalentLaserAlreadyAffectedCount++
-                                break
+                        // dark fear
+                        if (it.fearOnHit >= 1) {
+                            if (it.fearOnHit == 1 && it.feared == false) {
+                                it.fearSpeedReduce = it.baseSpeed
+                                it.baseSpeed -= (it.fearSpeedReduce + 2f)
+                                it.feared = true
+                                it.fearOnHit += 1
+                            } else if (it.feared == true && it.fearOnHit >= ((10 * towerList[it.fearTowerId].fearDuration) * it.fearDR) && (it.name == "boss" || it.name == "challenge")) {
+                                it.fearDR *= 0.66f
+                                if (it.fearDR <= 0.1f) it.fearDR = 0f
+                                it.feared = false
+                                it.fearOnHit = 0
+                                it.baseSpeed += (it.fearSpeedReduce + 2f)
+                                it.fearSpeedReduce = 0f
+                            } else if (it.feared && it.fearOnHit >= (30 * towerList[it.fearTowerId].fearDuration) * it.fearDR) {
+                                it.fearDR *= 0.66f
+                                if (it.fearDR <= 0.1f) it.fearDR = 0f
+                                it.feared = false
+                                it.fearOnHit = 0
+                                it.baseSpeed += (it.fearSpeedReduce + 2f)
+                                it.fearSpeedReduce = 0f
+                            } else if (it.feared == true) it.fearOnHit += 1
+                        }
+
+                        // talent poison pest
+                        if (poisonTalentPest > 0) {
+                            if (it.poisonTalentPestAlreadyAffected > 0) {
+                                it.poisonTalentPestAlreadyAffected++
+                                it.poisonTalentPestDamage++
+                                if (it.poisonTalentPestDamage > 151) {
+                                    it.poisonTalentPestDamage = 0
+                                    it.poisonTalentPestAlreadyAffected = 0
+                                    it.poisonTalentPestImmune = true
+                                }
+                                if (it.name == "boss" || it.name == "challenge") {
+                                    if (it.poisonTalentPestDamage == 1 || it.poisonTalentPestDamage == 51 || it.poisonTalentPestDamage == 101 || it.poisonTalentPestDamage == 151) {
+                                        var dmg = 0f
+                                        dmg =
+                                            (((it.maxHp / (50..300).random())) * poisonTalentPest * (it.poisonTalentPestDamage / 15) * it.winddebuffincreased) * 10
+                                        if (it.hp > dmg) it.hp -= dmg
+                                        else {
+                                            when ((0..5).random()) {
+                                                0 -> {
+                                                }
+                                                in 1..5 -> {
+                                                    for (itX in enemyList.shuffled()) {
+                                                        if (itX.poisonTalentPestAlreadyAffected > 0 || it.poisonTalentPestImmune) {
+                                                        } else {
+                                                            itX.poisonTalentPestAlreadyAffected = 1
+                                                            break
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (dmg > (it.maxHp / 100)) {
+                                            var dmgString = "0"
+                                            when (dmg.toInt()) {
+                                                in 0..999 -> dmgString = dmg.toInt().toString()
+                                                in 1000..999999 -> dmgString =
+                                                    (dmg / 1000).toInt().toString() + "k"
+                                                in 1000000..999999999 -> dmgString =
+                                                    (dmg / 1000000).toInt().toString() + "M"
+                                            }
+                                            var dmgDisplayListIterator =
+                                                dmgDisplayList.listIterator()
+                                            dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, -50, paintPestDmgDone, 0, 0))
+                                        }
+                                    }
+                                } else {
+                                    if (it.poisonTalentPestDamage == 1 || it.poisonTalentPestDamage == 51 || it.poisonTalentPestDamage == 101 || it.poisonTalentPestDamage == 151) {
+                                        var dmg = 0f
+                                        if (it.name == "immune") dmg =
+                                            (((it.maxHp / (50..300).random())) * poisonTalentPest * (it.poisonTalentPestDamage / 15) * it.winddebuffincreased * towerList[it.poisonDebuffTowerId].overallDmgImmune) * 30
+                                        else dmg =
+                                            (((it.maxHp / (50..300).random())) * poisonTalentPest * (it.poisonTalentPestDamage / 15) * it.winddebuffincreased) * 30
+
+                                        if (it.manaShield > 0) {
+                                            if (it.manaShield > dmg) {
+                                                it.manaShield -= dmg
+                                                dmg = 0f
+                                            } else {
+                                                dmg = (dmg - it.manaShield)
+                                                it.manaShield = 0f
+                                            }
+                                        }
+                                        if (it.shield > 0) dmg = 0f
+                                        if (it.hp > dmg) it.hp -= dmg
+                                        else {
+                                            when ((0..5).random()) {
+                                                0 -> {
+                                                }
+                                                in 1..5 -> {
+                                                    for (itX in enemyList.shuffled()) {
+                                                        if (itX.poisonTalentPestAlreadyAffected > 0 || it.poisonTalentPestImmune) {
+                                                        } else {
+                                                            itX.poisonTalentPestAlreadyAffected = 1
+                                                            break
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (dmg > (it.maxHp / 100)) {
+                                            var dmgString = "0"
+                                            when (dmg.toInt()) {
+                                                in 0..999 -> dmgString = dmg.toInt().toString()
+                                                in 1000..999999 -> dmgString =
+                                                    (dmg / 1000).toInt().toString() + "k"
+                                                in 1000000..999999999 -> dmgString =
+                                                    (dmg / 1000000).toInt().toString() + "M"
+                                            }
+                                            var dmgDisplayListIterator =
+                                                dmgDisplayList.listIterator()
+                                            dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, -50, paintPestDmgDone, 0, 0))
+                                        }
+                                    }
+                                }
+                            }
+                            if (it.poisonTalentPestAlreadyAffected == 100 || it.poisonTalentPestAlreadyAffected == 150) {
+                                when ((0..1).random()) {
+                                    0 -> it.poisonTalentPestAlreadyAffected = 1
+                                    1 -> {
+                                        for (itX in enemyList.shuffled()) {
+                                            if (itX.poisonTalentPestAlreadyAffected > 0 || it.poisonTalentPestImmune) {
+                                            } else {
+                                                it.poisonTalentPestAlreadyAffected = 1
+                                                itX.poisonTalentPestAlreadyAffected = 1
+                                                break
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
-                        if (tower.darkTalentLaserAlreadyAffectedCount == 0) {
-                            tower.darkTalentLaserCount = 301
-                        }
-                        tower.darkTalentLaserAlreadyAffectedCount = 0
-                    }
-                    if (darkTalentLaser > 0 && tower.darkTalentLaserCount >= 300 && (tower.itemListBag.contains(edark))) {
-                        for (it in tower.crossesAllList.shuffled()) {
-                            it.darkTalentLaserAlreadyAffected = 1
-                            it.darkTalentLaserTowerId = towerList.indexOf(tower)
-                            tower.darkTalentLaserCount = 0
-                            break
-                        }
-                    }
 
-                    // moon talent moonlight
-                    if (moonLight > 0 && !day && (tower.itemListBag.contains(emoon))) tower.moonLightCount ++
-                    if (spellCastCDBool) tower.moonLightCount += (moonLight * (spellCastCD * spellCastCDCounter)).toInt()
-                    if ( moonLight > 0 && tower.moonLightCount >= (60 / moonLight)) {
-                        tower.moonLightCount = 0
-                        if (tower.crossesAllList.isNotEmpty()) {
-                            spellCastCDCounterHeap += 1
-                            for (it in tower.crossesAllList.shuffled()) {
-                                var dmg =
-                                    ceil((0..(tower.overallSpellDmg * magicPen(it, tower)).toInt()).random() / 10f) * (1 + it.talentMoonlightAlreadyAffected)
+                        // dark talent laser
+                        if (towerList[it.darkTalentLaserTowerId].darkTalentLaser > 0) {
+                            if (it.darkTalentLaserAlreadyAffected >= 250) {
+                                it.darkTalentLaserAlreadyAffected = 0
+                                it.darkTalentLaserTowerId = 0
+                            } else if (it.darkTalentLaserAlreadyAffected > 0 && towerList[it.darkTalentLaserTowerId].crossesAllList.contains(it)) {
+                                it.darkTalentLaserAlreadyAffected++
+                                if (it.hp > 0) {
+                                    it.maxHp -= (it.maxHp * (towerList[it.darkTalentLaserTowerId].darkTalentLaser / 100))
+                                    it.hp -= (it.maxHp * (towerList[it.darkTalentLaserTowerId].darkTalentLaser / 100))
+                                    if (it.hp < 0) {
+                                        it.killerId = it.darkTalentLaserTowerId
+                                        dead(it)
+                                    }
+                                }
+                            } else {
+                                it.darkTalentLaserAlreadyAffected = 0
+                                it.darkTalentLaserTowerId = 0
+                            }
+                        }
+
+                        // talent moonlight
+                        if (it.talentMoonlightDraw > 0) {
+                            it.talentMoonlightDraw++
+                            if (it.talentMoonlightDraw > 15) it.talentMoonlightDraw = 0
+                        }
+
+                        // wizard talent bomb
+                        if (it.wizardBombActive > 0) it.wizardBombActive++
+                        if (it.wizardBombActive >= 170) {
+                            it.wizardBombActive = 0
+                            if (it.hp > 0) {
+                                var dmg = 0f
+                                dmg =
+                                    ((towerList[it.wizardBombTowerId].wizardBombDmg * bigNumberScaler) + (towerList[it.wizardBombTowerId].overallTowerSpellDmg * (0.1f + wizardBombStartItemDmg)))
 
                                 if (it.manaShield > 0) {
                                     if (it.manaShield > dmg) {
@@ -4558,33 +4397,586 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                             (dmg / 1000000).toInt().toString() + "M"
                                     }
                                     var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                    dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintMoonDmgDone, 30, 15))
+                                    dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintWizardDmgDone, -30, -15))
                                 }
 
-                                if (it.hp < 0) {
-                                    it.killerId = towerList.indexOf(tower)
-                                    it.hp = 0f
+                                if (it.hp < 0){
+                                    it.killerId = it.wizardBombTowerId
+                                    dead(it)
                                 }
-                                it.talentMoonlightAlreadyAffected += 0.33f
-                                it.talentMoonlightDraw = 1
-                                break
+                            }
+                            var enemyListIteratorZ = enemyList.listIterator()
+                            while (enemyListIteratorZ.hasNext()) {
+                                var otherEnemy = enemyListIteratorZ.next()
+                                if (splash100(it.circle!!.x, it.circle!!.y, it.circle!!.r, otherEnemy.circle!!.x, otherEnemy.circle!!.y, otherEnemy.circle!!.r)) {
+                                    if (otherEnemy.hp > 0) {
+                                        var dmg = 0f
+                                        dmg =
+                                            ((towerList[it.wizardBombTowerId].wizardBombDmg * 0.66f * bigNumberScaler) + (towerList[it.wizardBombTowerId].overallTowerSpellDmg * (0.1f + wizardBombStartItemDmg)))
+
+                                        if (otherEnemy.manaShield > 0) {
+                                            if (otherEnemy.manaShield > dmg) {
+                                                otherEnemy.manaShield -= dmg
+                                                dmg = 0f
+                                            } else {
+                                                dmg = (dmg - otherEnemy.manaShield)
+                                                otherEnemy.manaShield = 0f
+                                            }
+                                        }
+                                        if (otherEnemy.shield > 0) dmg = 0f
+                                        otherEnemy.hp -= dmg
+                                        if (dmg > (otherEnemy.maxHp / 100)) {
+                                            var dmgString = "0"
+                                            when (dmg.toInt()) {
+                                                in 0..999 -> dmgString = dmg.toInt().toString()
+                                                in 1000..999999 -> dmgString =
+                                                    (dmg / 1000).toInt().toString() + "k"
+                                                in 1000000..999999999 -> dmgString =
+                                                    (dmg / 1000000).toInt().toString() + "M"
+                                            }
+                                            var dmgDisplayListIterator =
+                                                dmgDisplayList.listIterator()
+                                            dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(otherEnemy)], dmgString, 1, 50, paintWizardDmgDone, -30, -15))
+                                        }
+                                        if (otherEnemy.hp < 0) {
+                                            otherEnemy.killerId = it.wizardBombTowerId
+                                            dead(otherEnemy)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // wizard mine
+                        if (wizardMine) {
+                            if (it.mineAlreadyAffected) it.mineAlreadyAffectedCounter++
+                            if (it.mineAlreadyAffectedCounter >= 180) {
+                                it.baseSpeed += it.mineSpeedReduce
+                                it.mineSpeedReduce = 0f
+                                it.mineAlreadyAffected = false
+                            }
+                        }
+
+                        // wizard lightning
+                        if (it.wizardMissedLightningActiveHit >= 1) it.wizardMissedLightningActiveHit++
+                        if (it.wizardMissedLightningActiveHit >= 20) it.wizardMissedLightningActiveHit =
+                            0
+
+                    }
+                    // ---------------------------------------------------------------------------------------------------------
+
+                    // talent poison pest
+                    if (poisonTowerCount > 0) {
+                        var counter = 250
+                        if (poisonTowerCount == 2) counter = 225
+                        else if (poisonTowerCount == 3) counter = 210
+                        else if (poisonTowerCount == 4) counter = 200
+                        else if (poisonTowerCount >= 5) counter = 195
+                        if (poisonTalentPest > 0) poisonPestCount++
+                        if (poisonTalentPest > 0 && poisonPestCount >= counter) {
+                            for (it in enemyList.shuffled()) {
+                                if (it.poisonTalentPestAlreadyAffected > 0 || it.poisonTalentPestImmune) {
+                                } else {
+                                    when ((0..3).random()) {
+                                        0 -> it.poisonTalentPestAlreadyAffected = 1
+                                    }
+                                    poisonPestCount = 0
+                                    break
+                                }
                             }
                         }
                     }
 
+                    var towerListIterator = Companion.towerList.listIterator()
+                    while (towerListIterator.hasNext()) {
+                        var tower = towerListIterator.next()
+
+                        if (tower.spellCastCDCounter > 0) tower.spellCastCDBool = true
+
+                        // wizard chain lightning
+                        if (tower.chainLighning) {
+                            tower.chainLightningCounter++
+                            if (tower.spellCastCDBool) tower.chainLightningCounter += (tower.chainLightningTimer * (tower.spellCastCD * tower.spellCastCDCounter)).toInt()
+                            var counter = 0
+                            if (wizardTowerCount == 2) counter = 10
+                            else if (wizardTowerCount == 3) counter = 30
+                            else if (wizardTowerCount == 4) counter = 50
+                            else if (wizardTowerCount >= 5) counter = 80
+                            var chainLightningTimerBool = tower.chainLightningTimer - counter
+                            if (tower.chainLightningCounter >= chainLightningTimerBool) {
+                                tower.chainLightningCounter = 0
+                                if (tower.crossesAllList.isNotEmpty()) {
+                                    tower.spellCastCDCounterHeap += 1
+                                    var shootListPlace = Shoot()
+                                    shootListPlace.chainLightning = true
+                                    shootListPlace.paint.color = Color.WHITE
+                                    shootListPlace.bulletSpeed = 12f
+                                    shootListPlace.bullet =
+                                        TowerRadius(tower.towerRange.x, tower.towerRange.y, 8f)
+                                    shootListPlace.bounceLeft = tower.chainLightningBounceTargets
+                                    var shootListIterator = shootList.listIterator()
+                                    shootListIterator.add(shootListPlace)
+                                }
+                            }
+                        }
+
+                        // earth talent throw boulder
+
+                        if (tower.throwBoulder > 0) {
+                            tower.throwBoulderCounter++
+                            if (tower.spellCastCDBool) tower.throwBoulderCounter += (tower.throwBoulderTimer * (tower.spellCastCD * tower.spellCastCDCounter)).toInt()
+                            if (tower.throwBoulderCounter >= tower.throwBoulderTimer) {
+                                tower.throwBoulderCounter = 0
+                                if (tower.crossesAllList.isNotEmpty()) {
+                                    tower.spellCastCDCounterHeap += 1
+                                    for (it in tower.crossesAllList.shuffled()) {
+                                        if (it.hp > 0) {
+                                            var dmg = 0f
+                                            dmg =
+                                                (tower.overallTowerPhysicalDmg * armorPen(it, tower)) * tower.throwBoulder
+
+                                            if (it.shield > 0) {
+                                                if (it.shield > dmg) {
+                                                    it.shield -= dmg
+                                                    dmg = 0f
+                                                } else {
+                                                    dmg = (dmg - it.shield)
+                                                    it.shield = 0f
+                                                }
+                                            }
+                                            if (it.manaShield > 0) dmg = 0f
+                                            it.hp -= dmg
+                                            if (dmg > (it.maxHp / 100)) {
+                                                var dmgString = "0"
+                                                when (dmg.toInt()) {
+                                                    in 0..999 -> dmgString = dmg.toInt().toString()
+                                                    in 1000..999999 -> dmgString =
+                                                        (dmg / 1000).toInt().toString() + "k"
+                                                    in 1000000..999999999 -> dmgString =
+                                                        (dmg / 1000000).toInt().toString() + "M"
+                                                }
+                                                var dmgDisplayListIterator =
+                                                    dmgDisplayList.listIterator()
+                                                dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintEarthDmgDone, -30, -15))
+                                            }
+                                            if (it.hp < 0){
+                                                it.killerId = towerList.indexOf(tower)
+                                                dead(it)
+                                            }
+                                        }
+                                        if (it.name == "speed") it.extraSpeed =
+                                            0.0f       // counter speed
+                                        it.throwBoulderSpeedReduce = it.baseSpeed
+                                        it.baseSpeed -= it.throwBoulderSpeedReduce
+                                        it.throwBoulderHitAlreadyEffected = true
+                                        var enemyListIteratorZ = enemyList.listIterator()
+                                        while (enemyListIteratorZ.hasNext()) {
+                                            var otherEnemy = enemyListIteratorZ.next()
+                                            if (splash60(it.circle!!.x, it.circle!!.y, it.circle!!.r, otherEnemy.circle!!.x, otherEnemy.circle!!.y, otherEnemy.circle!!.r)) {
+                                                if (otherEnemy.throwBoulderHitAlreadyEffected) {
+                                                } else {
+                                                    if (otherEnemy.hp > 0) {
+                                                        var dmg = 0f
+                                                        dmg =
+                                                            (tower.overallTowerPhysicalDmg * armorPen(it, tower)) * tower.throwBoulder * 0.75f
+
+                                                        if (otherEnemy.shield > 0) {
+                                                            if (otherEnemy.shield > dmg) {
+                                                                otherEnemy.shield -= dmg
+                                                                dmg = 0f
+                                                            } else {
+                                                                dmg = (dmg - otherEnemy.shield)
+                                                                otherEnemy.shield = 0f
+                                                            }
+                                                        }
+                                                        if (otherEnemy.manaShield > 0) dmg = 0f
+                                                        otherEnemy.hp -= dmg
+                                                        if (dmg > (otherEnemy.maxHp / 100)) {
+                                                            var dmgString = "0"
+                                                            when (dmg.toInt()) {
+                                                                in 0..999 -> dmgString =
+                                                                    dmg.toInt().toString()
+                                                                in 1000..999999 -> dmgString =
+                                                                    (dmg / 1000).toInt()
+                                                                        .toString() + "k"
+                                                                in 1000000..999999999 -> dmgString =
+                                                                    (dmg / 1000000).toInt()
+                                                                        .toString() + "M"
+                                                            }
+                                                            var dmgDisplayListIterator =
+                                                                dmgDisplayList.listIterator()
+                                                            dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(otherEnemy)], dmgString, 1, 50, paintEarthDmgDone, -30, -15))
+                                                        }
+
+                                                        if (otherEnemy.hp < 0){
+                                                            otherEnemy.killerId = towerList.indexOf(tower)
+                                                            dead(otherEnemy)
+                                                        }
+
+                                                    }
+                                                    if (otherEnemy.name == "speed") otherEnemy.extraSpeed =
+                                                        0.0f       // counter speed
+                                                    otherEnemy.throwBoulderSpeedReduce =
+                                                        otherEnemy.baseSpeed
+                                                    otherEnemy.baseSpeed -= otherEnemy.throwBoulderSpeedReduce
+                                                    otherEnemy.throwBoulderHitAlreadyEffected = true
+                                                }
+                                            }
+                                        }
+                                        break
+                                    }
+                                }
+                            }
+                        }
+
+                        // item frost
+                        if (tower.itemFrost > 0) tower.itemFrostCount++
+                        if (tower.itemFrost > 0 && tower.itemFrostCount >= 25) {
+                            for (it in tower.crossesAllList.shuffled()) {
+                                if (it.itemFrostAlreadyAffected > 0) {
+                                } else {
+                                    if (it.name == "speed") it.extraSpeed =
+                                        0.0f       // counter speed
+                                    it.itemFrostSpeedReduce =
+                                        (it.baseSpeed * (tower.itemFrost / 100) * it.itemFrostDR).toFloat()
+                                    it.baseSpeed -= it.itemFrostSpeedReduce
+                                    it.itemFrostAlreadyAffected = 1
+                                    tower.itemFrostCount = 0
+                                    it.itemFrostDR *= 0.66f
+                                    if (it.itemFrostDR <= 0.1f) it.itemFrostDR = 0f
+                                    break
+                                }
+                            }
+                        }
+
+                        // ice nova
+                        if ((tower.itemListBag.contains(eice))) {
+                            tower.iceNovaCounter++
+                            if (globalItemListBag.contains(Items.stid6)) iceNovaTimerStartItem =
+                                tower.iceNovaTimer / 2
+                            else iceNovaTimerStartItem = tower.iceNovaTimer
+                            if (tower.spellCastCDBool) tower.iceNovaCounter += (iceNovaTimerStartItem * (tower.spellCastCD * tower.spellCastCDCounter)).toInt()
+                            if (tower.iceNovaCounter >= iceNovaTimerStartItem) {
+                                tower.iceNovaCounter = 0
+                                if (tower.crossesAllList.isNotEmpty()) {
+                                    tower.spellCastCDCounterHeap += 1
+                                    for (it in tower.crossesAllList.shuffled()) {
+                                        if (tower.iceNovaSpellDmg > 0) {
+                                            if (it.hp > 0) {
+                                                var dmg = 0f
+                                                dmg =
+                                                    ((tower.overallTowerSpellDmg * tower.iceNovaSpellDmg) * magicPen(it, tower))
+                                                if (it.manaShield > 0) {
+                                                    if (it.manaShield > dmg) {
+                                                        it.manaShield -= dmg
+                                                        dmg = 0f
+                                                    } else {
+                                                        dmg = (dmg - it.manaShield)
+                                                        it.manaShield = 0f
+                                                    }
+                                                }
+                                                if (it.shield > 0) dmg = 0f
+                                                it.hp -= dmg
+                                                if (dmg > (it.maxHp / 100)) {
+                                                    var dmgString = "0"
+                                                    when (dmg.toInt()) {
+                                                        in 0..999 -> dmgString =
+                                                            dmg.toInt().toString()
+                                                        in 1000..999999 -> dmgString =
+                                                            (dmg / 1000).toInt().toString() + "k"
+                                                        in 1000000..999999999 -> dmgString =
+                                                            (dmg / 1000000).toInt().toString() + "M"
+                                                    }
+                                                    var dmgDisplayListIterator =
+                                                        dmgDisplayList.listIterator()
+                                                    dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintIceDmgDone, 30, 15))
+                                                }
+
+                                                if (it.hp < 0){
+                                                    it.killerId = towerList.indexOf(tower)
+                                                    dead(it)
+                                                }
+                                            }
+                                        }
+                                        if (it.iceNovaAlreadyAffected) {
+                                            it.baseSpeed += it.iceNovaSpeedReduce
+                                            it.iceNovaSpeedReduce = 0f
+                                        }
+                                        if (it.name == "speed") it.extraSpeed = 0.0f       // counter speed
+                                        if (it.name == "immune") it.iceNovaSpeedReduce = (it.baseSpeed * 0.7f * it.iceNovaDR) * towerList[it.markOfTheButterflySlowActiveTowerId].overallDmgImmune.toFloat()
+                                        else it.iceNovaSpeedReduce = (it.baseSpeed * 0.7f * it.iceNovaDR).toFloat()
+                                        it.baseSpeed -= it.iceNovaSpeedReduce
+                                        it.iceNovaAlreadyAffected = true
+                                        it.iceNovaDR *= 0.66f
+                                        if (it.iceNovaDR <= 0.1f) it.iceNovaDR = 0f
+                                        if (tower.experienceSlow) {
+                                            var xpGain = (1 / 100f)
+                                            tower.xpTower += xpGain
+                                            towerExperienceGainUtilAura(xpGain, towerList.indexOf(tower))
+                                            if (tower.experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain, towerList.indexOf(tower))
+                                        }
+                                        //              var enemyListIteratorZ = enemyList.listIterator()
+                                        //              while (enemyListIteratorZ.hasNext()) {
+                                        //                  var otherEnemy = enemyListIteratorZ.next()
+                                        for (otherEnemy in enemyList) {
+                                            if (splash60(it.circle!!.x, it.circle!!.y, it.circle!!.r, otherEnemy.circle!!.x, otherEnemy.circle!!.y, otherEnemy.circle!!.r)) {
+                                                if (otherEnemy.iceNovaAlreadyAffected) {
+                                                    otherEnemy.baseSpeed += otherEnemy.iceNovaSpeedReduce
+                                                    otherEnemy.iceNovaSpeedReduce = 0f
+                                                }
+                                                if (tower.iceNovaSpellDmg > 0) {
+                                                    if (otherEnemy.hp > 0) {
+                                                        var dmg = 0f
+                                                        dmg =
+                                                            ((tower.overallTowerSpellDmg * tower.iceNovaSpellDmg) * magicPen(otherEnemy, tower) * 0.75f)
+
+                                                        if (otherEnemy.manaShield > 0) {
+                                                            if (otherEnemy.manaShield > dmg) {
+                                                                otherEnemy.manaShield -= dmg
+                                                                dmg = 0f
+                                                            } else {
+                                                                dmg = (dmg - otherEnemy.manaShield)
+                                                                otherEnemy.manaShield = 0f
+                                                            }
+                                                        }
+                                                        if (otherEnemy.shield > 0) dmg = 0f
+                                                        otherEnemy.hp -= dmg
+                                                        if (dmg > (otherEnemy.maxHp / 100)) {
+                                                            var dmgString = "0"
+                                                            when (dmg.toInt()) {
+                                                                in 0..999 -> dmgString =
+                                                                    dmg.toInt().toString()
+                                                                in 1000..999999 -> dmgString =
+                                                                    (dmg / 1000).toInt()
+                                                                        .toString() + "k"
+                                                                in 1000000..999999999 -> dmgString =
+                                                                    (dmg / 1000000).toInt()
+                                                                        .toString() + "M"
+                                                            }
+                                                            var dmgDisplayListIterator =
+                                                                dmgDisplayList.listIterator()
+                                                            dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(otherEnemy)], dmgString, 1, 50, paintIceDmgDone, 30, 15))
+                                                        }
+
+                                                        if (otherEnemy.hp < 0){
+                                                            otherEnemy.killerId = towerList.indexOf(tower)
+                                                            dead(otherEnemy)
+                                                        }
+
+                                                    }
+                                                }
+                                                if (otherEnemy.name == "speed") otherEnemy.extraSpeed = 0.0f       // counter speed
+                                                if (it.name == "immune") otherEnemy.iceNovaSpeedReduce = (otherEnemy.baseSpeed * 0.8f * otherEnemy.iceNovaDR) * towerList[otherEnemy.markOfTheButterflySlowActiveTowerId].overallDmgImmune.toFloat()
+                                                else otherEnemy.iceNovaSpeedReduce = (otherEnemy.baseSpeed * 0.8f * otherEnemy.iceNovaDR).toFloat()
+                                                otherEnemy.baseSpeed -= otherEnemy.iceNovaSpeedReduce
+                                                otherEnemy.iceNovaAlreadyAffected = true
+                                                otherEnemy.iceNovaDR *= 0.66f
+                                                if (otherEnemy.iceNovaDR <= 0.1f) otherEnemy.iceNovaDR = 0f
+                                                if (tower.experienceSlow) {
+                                                    var xpGain = (1 / 100f)
+                                                    tower.xpTower += xpGain
+                                                    towerExperienceGainUtilAura(xpGain, towerList.indexOf(tower))
+                                                    if (tower.experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain, towerList.indexOf(tower))
+                                                }
+                                            }
+                                        }
+                                        break
+                                    }
+                                }
+                            }
+                        }
+
+                        // wizard talent bomb
+                        if (tower.itemListBag.contains(Items.ewizard)) {
+                            tower.wizardBombCounter++
+                            if (tower.spellCastCDBool) tower.wizardBombCounter += (tower.wizardBombTimer * (tower.spellCastCD * tower.spellCastCDCounter)).toInt()
+                            if (tower.wizardBombCounter >= tower.wizardBombTimer) {
+                                tower.wizardBombCounter = 0
+                                if (tower.crossesAllList.isNotEmpty()) {
+                                    tower.spellCastCDCounterHeap += 1
+                                    for (it in tower.crossesAllList.shuffled()) {
+                                        it.wizardBombActive = 1
+                                        it.wizardBombTowerId = towerList.indexOf(tower)
+                                        break
+                                    }
+                                }
+                            }
+                        }
+
+                        // item lasso
+                        if (tower.itemLasso > 0) itemLassoCount++
+                        if (tower.itemLasso > 0 && itemLassoCount >= (300 / tower.itemLasso).toInt()) {
+
+                            for (it in tower.crossesAllList.shuffled()) {
+                                if (it.itemLassoAlreadyAffected != 0) {
+                                } else {
+                                    it.itemLassoAlreadyAffected = 1
+                                    it.itemLassoAlreadyAffectedTowerId = towerList.indexOf(tower)
+                                    itemLassoCount = 0
+                                    break
+                                }
+                            }
+                        }
+
+                        // dark talent fear
+                        if (tower.darkTalentFear) {
+                            tower.fearCounter++
+                            if (tower.spellCastCDBool) tower.fearCounter += (tower.fearTimer * (tower.spellCastCD * tower.spellCastCDCounter)).toInt()
+                            if (tower.fearCounter >= tower.fearTimer) {
+                                tower.fearCounter = 0
+                                if (tower.crossesAllList.isNotEmpty()) {
+                                    tower.spellCastCDCounterHeap += 1
+                                    for (it in tower.crossesAllList) {
+                                        when ((0..9).random()) {
+                                            0 -> {
+                                                it.fearOnHit = 1
+                                                it.fearTowerId = towerList.indexOf(tower)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // wizard lightning
+                        if (tower.wizardMissedLightningActive) {
+                            tower.spellCastCDCounterHeap += 1
+                            tower.wizardMissedLightningActive = false
+                            repeat((2 + wizardLightningStartItemTargets)) {
+                                if (enemyList.isNotEmpty()) {
+                                    for (it in enemyList.shuffled()) {
+                                        if (it.hp > 0) {
+                                            var dmg = 0f
+                                            dmg =
+                                                tower.overallTowerSpellDmg * magicPen(it, tower) * tower.wizardMissedLightningDmgBoost
+
+                                            if (it.manaShield > 0) {
+                                                if (it.manaShield > dmg) {
+                                                    it.manaShield -= dmg
+                                                    dmg = 0f
+                                                } else {
+                                                    dmg = (dmg - it.manaShield)
+                                                    it.manaShield = 0f
+                                                }
+                                            }
+                                            if (it.shield > 0) dmg = 0f
+                                            it.hp -= dmg
+                                            if (dmg > (it.maxHp / 100)) {
+                                                var dmgString = "0"
+                                                when (dmg.toInt()) {
+                                                    in 0..999 -> dmgString = dmg.toInt().toString()
+                                                    in 1000..999999 -> dmgString =
+                                                        (dmg / 1000).toInt().toString() + "k"
+                                                    in 1000000..999999999 -> dmgString =
+                                                        (dmg / 1000000).toInt().toString() + "M"
+                                                }
+                                                var dmgDisplayListIterator =
+                                                    dmgDisplayList.listIterator()
+                                                dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintWizardDmgDone, -30, -15))
+                                            }
+
+                                            if (it.hp < 0) {
+                                                it.killerId = towerList.indexOf(tower)
+                                                dead(it)
+                                            }
+
+                                        }
+
+                                        it.wizardMissedLightningActiveHit = 1
+                                        break
+                                    }
+                                }
+                            }
+                        }
+
+                        // dark talent laser
+                        if (tower.darkTalentLaser > 0) {
+                            tower.darkTalentLaserCount++
+                            for (it in tower.crossesAllList) {
+                                if (it.darkTalentLaserAlreadyAffected > 0) {
+                                    tower.darkTalentLaserAlreadyAffectedCount++
+                                    break
+                                }
+                            }
+                            if (tower.darkTalentLaserAlreadyAffectedCount == 0) {
+                                tower.darkTalentLaserCount = 301
+                            }
+                            tower.darkTalentLaserAlreadyAffectedCount = 0
+                        }
+                        if (tower.darkTalentLaser > 0 && tower.darkTalentLaserCount >= 300) {
+                            for (it in tower.crossesAllList.shuffled()) {
+                                it.darkTalentLaserAlreadyAffected = 1
+                                it.darkTalentLaserTowerId = towerList.indexOf(tower)
+                                tower.darkTalentLaserCount = 0
+                                break
+                            }
+                        }
+
+                        // moon talent moonlight
+                        if (tower.moonLight > 0 && !day && (tower.itemListBag.contains(emoon))) tower.moonLightCount++
+                        if (tower.spellCastCDBool) tower.moonLightCount += (tower.moonLight * (tower.spellCastCD * tower.spellCastCDCounter)).toInt()
+                        if (tower.moonLight > 0 && tower.moonLightCount >= (60 / tower.moonLight)) {
+                            tower.moonLightCount = 0
+                            if (tower.crossesAllList.isNotEmpty()) {
+                                tower.spellCastCDCounterHeap += 1
+                                for (it in tower.crossesAllList.shuffled()) {
+                                    if (it.hp > 0) {
+                                        if (tower.experienceMoonlight) {
+                                            var xpGain = (1 * 0.05f)
+                                            tower.xpTower += xpGain
+                                            towerExperienceGainUtilAura(xpGain, towerList.indexOf(tower))
+                                            if (tower.experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain, towerList.indexOf(tower))
+                                        }
+
+                                        var dmg =
+                                            ceil((0..(tower.overallTowerSpellDmg * magicPen(it, tower)).toInt()).random() / 10f) * (1 + it.talentMoonlightAlreadyAffected)
+
+                                        if (it.manaShield > 0) {
+                                            if (it.manaShield > dmg) {
+                                                it.manaShield -= dmg
+                                                dmg = 0f
+                                            } else {
+                                                dmg = (dmg - it.manaShield)
+                                                it.manaShield = 0f
+                                            }
+                                        }
+                                        if (it.shield > 0) dmg = 0f
+                                        it.hp -= dmg
+                                        if (dmg > (it.maxHp / 100)) {
+                                            var dmgString = "0"
+                                            when (dmg.toInt()) {
+                                                in 0..999 -> dmgString = dmg.toInt().toString()
+                                                in 1000..999999 -> dmgString =
+                                                    (dmg / 1000).toInt().toString() + "k"
+                                                in 1000000..999999999 -> dmgString =
+                                                    (dmg / 1000000).toInt().toString() + "M"
+                                            }
+                                            var dmgDisplayListIterator =
+                                                dmgDisplayList.listIterator()
+                                            dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintMoonDmgDone, 30, 15))
+                                        }
+
+                                        if (it.hp < 0){
+                                            it.killerId = towerList.indexOf(tower)
+                                            dead(it)
+                                        }
+                                    }
+                                    it.talentMoonlightAlreadyAffected += 0.33f
+                                    it.talentMoonlightDraw = 1
+                                    break
+                                }
+                            }
+                        }
+                        tower.spellCastCDBool = false
+                        tower.spellCastCDCounter = tower.spellCastCDCounterHeap
+                        tower.spellCastCDCounterHeap = 0
                     }
-                    } finally {
-                    readLockTower.unlock()
+
+                } finally {
+                    writeLockEnemy.unlock()
+                    writeLockTower.unlock()
+                    Companion.writeLockDisplay.unlock()
                 }
-
-                spellCastCDBool = false
-                spellCastCDCounter = spellCastCDCounterHeap
-                spellCastCDCounterHeap = 0
-
-
-            } finally {
-                writeLockEnemy.unlock()
-                Companion.writeLockDisplay.unlock()
             }
         }
 
@@ -4627,11 +5019,9 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         private fun towerAttack() {
 
-
-
             writeLockShot.lock()
             readLockEnemy.lock()
-            writeLockTower.lock()
+            readLockTower.lock()
             try {
                 var towerListIterator = Companion.towerList.listIterator()
                 while (towerListIterator.hasNext()) {
@@ -4641,10 +5031,9 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     it.timertower++
 
                     // multishot
-                    if (talentMultishot && (it.itemListBag.contains(ewind))) {
-                        if (it.timertower >= it.towerAttackSpeed) {
+                    if (it.towerPrimaryElement == "wind") {
+                        if (it.timertower >= it.towerAttackSpeed && it.crossesAllList.isNotEmpty()) {
                             it.timertower = 0
-                            if (it.crossesAllList.isNotEmpty()) {
                                 var crossesAllListIterator = it.crossesAllList.listIterator()
                                 while (crossesAllListIterator.hasNext()) {
                                     var enemy = crossesAllListIterator.next()
@@ -4658,12 +5047,9 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     shootListPlace.bullet = TowerRadius(it.towerRange.x, it.towerRange.y, 5f)
                                     shootListIterator.add(shootListPlace)  // add new shoot
                                 }
-                            }
-                            if (it.crossesAllList.isNotEmpty()) {
                                 GlobalScope.launch {
                                     soundPool.play(soundIds[0], logVolumeEffects, logVolumeEffects, 1, 0, 1.0f)
                                 }
-                            }
                         }
                     }
                     // normal attack
@@ -4671,24 +5057,23 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         if (it.timertower >= it.towerAttackSpeed && it.crossesAllList.isNotEmpty()) {
                             if (it.firstLastRandom == 0 && !it.crossesAllList.contains(it.randomEnemyForShot)) it.randomEnemyForShotSticky =
                                 true
-                            if (it.shootCounter >= 3) {
-                                var shootListIterator = shootList.listIterator()
-                                var shootListPlace = Shoot()
-                                var towerindex = towerList.indexOf(it)
-                                shootListPlace.towerId = towerindex
-                                shootListPlace.bullet = TowerRadius(it.towerRange.x, it.towerRange.y, 5f)
-                                shootListIterator.add(shootListPlace)   // add new shoot
-                                it.shootCounter = 0
-                                GlobalScope.launch {
-                                    soundPool.play(soundIds[0], logVolumeEffects, logVolumeEffects, 1, 0, 1.0f)
-                                }
-                                it.timertower = 0
-                            } else it.timertower = (it.towerAttackSpeed - 1f).toInt()
+                            var shootListIterator = shootList.listIterator()
+                            var shootListPlace = Shoot()
+                            var towerindex = towerList.indexOf(it)
+                            shootListPlace.towerId = towerindex
+                            shootListPlace.bounceLeft = it.shotBounceTargets
+                            shootListPlace.bullet =
+                                TowerRadius(it.towerRange.x, it.towerRange.y, 5f)
+                            shootListIterator.add(shootListPlace)   // add new shoot
+                            GlobalScope.launch {
+                                soundPool.play(soundIds[0], logVolumeEffects, logVolumeEffects, 1, 0, 1.0f)
+                            }
+                            it.timertower = 0
                         }
                     }
 
 
-                    if (markOfTheButterflyExtraShot && it.shootCounter >= 3 && shootButterflyReserve > 0 && !talentMultishot) {
+                    if (it.markOfTheButterflyExtraShot && it.shootCounter >= 3 && shootButterflyReserve > 0 && it.towerPrimaryElement == "butterfly") {
                         shootButterflyReserve -= 1
                         it.shootCounter = 0
                         var shootListIterator = shootList.listIterator()
@@ -4701,13 +5086,14 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         GlobalScope.launch {
                             soundPool.play(soundIds[0], logVolumeEffects, logVolumeEffects, 1, 0, 1.0f)
                         }
-                    } else if (it.shootCounter >= 3 && shootReserve > 0 && !talentMultishot) {
+                    } else if (it.shootCounter >= 3 && shootReserve > 0 && it.towerPrimaryElement != "wind") {
                         shootReserve -= 1
                         it.shootCounter = 0
                         var shootListIterator = shootList.listIterator()
                         var shootListPlace = Shoot()
                         var towerindex = towerList.indexOf(it)
                         shootListPlace.towerId = towerindex
+                        shootListPlace.bounceLeft = it.shotBounceTargets
                         shootListPlace.bullet = TowerRadius(it.towerRange.x, it.towerRange.y, 5f)
                         shootListIterator.add(shootListPlace)   // add new shoot
                         GlobalScope.launch {
@@ -4718,18 +5104,16 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             }finally {
                 writeLockShot.unlock()
                 readLockEnemy.unlock()
-                writeLockTower.unlock()
+                readLockTower.unlock()
             }
         }
 
         //------------------------------------------------------------------------------------
 
-
-
         private fun crosses2(bullet: Shoot): Boolean {
             var check = false
             // check if shot crosses enemy
-            writeLockEnemy.lock()
+            readLockEnemy.lock()
             writeLockShot.lock()
             try {
                 var sShotList = mutableListOf<Enemy>()
@@ -4747,13 +5131,13 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                     if (squaredDistance <= sumOfRadius * sumOfRadius) {
                         check = true
-                        if (shotBounce) {
+                        if (towerList[bullet.towerId].towerPrimaryElement == "moon") {
                             it.talentMoonAlreadyHit += 1
                             bullet.bullet.x = it.circle!!.x
                             bullet.bullet.y = it.circle!!.y
                         }
 
-                        if (!shotBounce && !talentMultishot && splashRange > 0) {
+                        if (towerList[bullet.towerId].towerPrimaryElement == "earth") {
 
                             var enemyListIteratorX = enemyList.listIterator()
                             while (enemyListIteratorX.hasNext()) {
@@ -4765,7 +5149,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 val squaredDistance2 =
                                     (distanceX2 * distanceX2) + (distanceY2 * distanceY2)
 
-                                val sumOfRadius2 = (bullet.bullet.r + splashRange) + (itX.circle!!.r - 20)
+                                val sumOfRadius2 = (bullet.bullet.r + towerList[bullet.towerId].splashRange) + (itX.circle!!.r - 20)
 
                                 if (squaredDistance2 <= sumOfRadius2 * sumOfRadius2) {
                             //        var splashListIterator = splashList.listIterator()
@@ -4780,26 +5164,25 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                   //          var singleShotListIterator = singleShotList.listIterator()
                   //          singleShotListIterator.add(it)
                         }
+                        crossedDmgCalc(bullet, sShotList, mShotList, bullet.towerId)      // calculate damage
                     }
                 }
-                crossedDmgCalc(bullet, sShotList, mShotList, bullet.towerId)      // calculate damage
                 return check
             } finally {
-                writeLockEnemy.unlock()
+                readLockEnemy.unlock()
                 writeLockShot.unlock()
-
             }
         }
 
             private fun crossedDmgCalc(bullet: Shoot, singleShotList: MutableList<Enemy>, splashList: MutableList<Enemy>, towerId: Int) {
                 // calculate damage for all enemies in splash radius
 
-                writeLockEnemy.lock()
+                readLockEnemy.lock()
                 writeLockShot.lock()
                 Companion.writeLockDisplay.lock()
                 try {
 
-                    if (!shotBounce && !talentMultishot && splashRange > 0) {
+                    if (towerList[towerId].towerPrimaryElement == "earth") {
 
                         var splashListIterator = splashList.listIterator()
                         while (splashListIterator.hasNext()) {
@@ -4808,166 +5191,189 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                             // dmg -------------------------------------------------------------------
 
-                            dmgDone =
-                                if (splash15(it.circle!!.x, it.circle!!.y, it.circle!!.r, bullet.bullet.x, bullet.bullet.y, bullet.bullet.r)) {
-                                    splash15 = true // for boulder throw
-                                    dmgCalc(it, splash15, bullet)
-                                } else if (splash30(it.circle!!.x, it.circle!!.y, it.circle!!.r, bullet.bullet.x, bullet.bullet.y, bullet.bullet.r)) dmgCalc(it, splash15, bullet) * 0.9f
-                                else if (splash60(it.circle!!.x, it.circle!!.y, it.circle!!.r, bullet.bullet.x, bullet.bullet.y, bullet.bullet.r)) dmgCalc(it, splash15, bullet) * 0.70f
-                                else if (splash100(it.circle!!.x, it.circle!!.y, it.circle!!.r, bullet.bullet.x, bullet.bullet.y, bullet.bullet.r)) dmgCalc(it, splash15, bullet) * 0.5f
-                                else if (splash150(it.circle!!.x, it.circle!!.y, it.circle!!.r, bullet.bullet.x, bullet.bullet.y, bullet.bullet.r)) dmgCalc(it, splash15, bullet) * 0.25f
-                                else 0.0f
+                            if (it.hp > 0) {
+                                var dmgDone = 0.0f
+                                dmgDone =
+                                    if (splash15(it.circle!!.x, it.circle!!.y, it.circle!!.r, bullet.bullet.x, bullet.bullet.y, bullet.bullet.r)) {
+                                        splash15 = true // for boulder throw
+                                        dmgCalc(it, splash15, bullet)
+                                    } else if (splash30(it.circle!!.x, it.circle!!.y, it.circle!!.r, bullet.bullet.x, bullet.bullet.y, bullet.bullet.r)) dmgCalc(it, splash15, bullet) * 0.9f
+                                    else if (splash60(it.circle!!.x, it.circle!!.y, it.circle!!.r, bullet.bullet.x, bullet.bullet.y, bullet.bullet.r)) dmgCalc(it, splash15, bullet) * 0.70f
+                                    else if (splash100(it.circle!!.x, it.circle!!.y, it.circle!!.r, bullet.bullet.x, bullet.bullet.y, bullet.bullet.r)) dmgCalc(it, splash15, bullet) * 0.5f
+                                    else if (splash150(it.circle!!.x, it.circle!!.y, it.circle!!.r, bullet.bullet.x, bullet.bullet.y, bullet.bullet.r)) dmgCalc(it, splash15, bullet) * 0.25f
+                                    else 0.0f
 
-                            if (bullet.sniper && itemSniperPro) dmgDone = itemSniperPro(dmgDone, it)
-                            if (bullet.sniper) {
-                                dmgDone *= 3
-                                bullet.sniper = false
-                            }
+                                if (towerList[towerId].experienceEarthHit && splashList.size > 3 && splash15) {
+                                    when ((0..5).random()){
+                                        0 -> {
+                                            var xpGain = (1f / 2f)
+                                            towerList[towerId].xpTower += xpGain
+                                            towerExperienceGainUtilAura(xpGain, towerId)
+                                            if (towerList[towerId].experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain, towerId)
+                                        }
+                                    }
+                                }
 
-                                if  (it.shield > 0){
+                                if (bullet.sniper && itemSniperPro) dmgDone =
+                                    itemSniperPro(dmgDone, it)
+                                if (bullet.sniper) {
+                                    dmgDone *= 3
+                                    bullet.sniper = false
+                                }
+
+                                if (it.shield > 0) {
                                     if (it.shield > dmgDone) {
                                         it.shield -= dmgDone
                                         dmgDone = 0f
-                                    }else {
+                                    } else {
                                         dmgDone = (dmgDone - it.shield)
                                         it.shield = 0f
                                     }
                                 }
 
-                            if (it.hit && it.shield <= 0f ) dmgDone += spellDmg(it, splash15, towerId)
+                              if (it.hit && it.shield <= 0f) dmgDone += spellDmg(it, splash15, towerId)
 
-                            if (it.manaShield > 0) dmgDone = 0f
+                                if (it.manaShield > 0) dmgDone = 0f
 
-                            it.hp -= (dmgDone + particleDmg)
-                            if ((dmgDone + particleDmg) > (it.maxHp / 100)) {
-                                var dmgString = "0"
-                                when ((dmgDone + particleDmg).toInt()) {
-                                    in 0..999 -> dmgString = (dmgDone + particleDmg).toInt().toString()
-                                    in 1000..999999 -> dmgString =
-                                        ((dmgDone + particleDmg) / 1000).toInt().toString() + "k"
-                                    in 1000000..999999999 -> dmgString =
-                                        ((dmgDone + particleDmg) / 1000000).toInt().toString() + "M"
+                                it.hp -= (dmgDone + towerList[towerId].particleDmg)
+                                if ((dmgDone + towerList[towerId].particleDmg) > (it.maxHp / 100)) {
+                                    var dmgString = "0"
+                                    when ((dmgDone + towerList[towerId].particleDmg).toInt()) {
+                                        in 0..999 -> dmgString =
+                                            (dmgDone + towerList[towerId].particleDmg).toInt().toString()
+                                        in 1000..999999 -> dmgString =
+                                            ((dmgDone + towerList[towerId].particleDmg) / 1000).toInt()
+                                                .toString() + "k"
+                                        in 1000000..999999999 -> dmgString =
+                                            ((dmgDone + towerList[towerId].particleDmg) / 1000000).toInt()
+                                                .toString() + "M"
+                                    }
+                                    var dmgDisplayListIterator = dmgDisplayList.listIterator()
+                                    dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintTowerDmgDone, 0, 0))
                                 }
-                                var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintTowerDmgDone, 0, 0))
-                            }
 
-                            particleDmg = 0f
-                            if (it.hp < 0) {
-                                if (particleDmgBool) particleDmg += (it.hp * -1)
-                                if (towerList[towerId].itemListBag.contains(edark)) {
-                                    if (darkPermaKill > 0) {
-                                        for (item in towerList[towerId].itemListBag) {
-                                            if (item.id == 6666) {
-                                                if (it.name == "boss") {
-                                                    towerList[towerId].bonusPhysicalDmg += (darkPermaKill * 5) * (lvlScaler / 20)
-                                                    item.specialFloat += (darkPermaKill * 5) * (lvlScaler / 20)
-                                                } else if (it.name == "challenge") {
-                                                    towerList[towerId].bonusPhysicalDmg += (darkPermaKill * 10) * (lvlScaler / 20)
-                                                    item.specialFloat += (darkPermaKill * 10) * (lvlScaler / 20)
-                                                } else {
-                                                    towerList[towerId].bonusPhysicalDmg += darkPermaKill * (lvlScaler / 20)
-                                                    item.specialFloat += darkPermaKill * (lvlScaler / 20)
+                                towerList[towerId].particleDmg = 0f
+                                if (it.hp < 0) {
+                                    if (towerList[towerId].particleDmgBool) towerList[towerId].particleDmg += (it.hp * -1)
+                                    if (towerList[towerId].darkPermaKill > 0) {
+                                            for (item in towerList[towerId].itemListBag) {
+                                                if (item.id == 6666) {
+                                                    if (it.name == "boss") {
+                                                        towerList[towerId].bonusPhysicalDmg += (towerList[towerId].darkPermaKill * 5) * (lvlScaler / 20)
+                                                        item.specialFloat += (towerList[towerId].darkPermaKill * 5) * (lvlScaler / 20)
+                                                    } else if (it.name == "challenge") {
+                                                        towerList[towerId].bonusPhysicalDmg += (towerList[towerId].darkPermaKill * 10) * (lvlScaler / 20)
+                                                        item.specialFloat += (towerList[towerId].darkPermaKill * 10) * (lvlScaler / 20)
+                                                    } else {
+                                                        towerList[towerId].bonusPhysicalDmg += towerList[towerId].darkPermaKill * (lvlScaler / 20)
+                                                        item.specialFloat += towerList[towerId].darkPermaKill * (lvlScaler / 20)
+                                                    }
                                                 }
                                             }
-                                        }
                                     }
+                                    it.killerId = towerId
+                                    dead(it)
                                 }
-                                it.killerId = towerId
-                                it.hp = 0.0f
+                                //    splashListIterator.remove()
                             }
-                        //    splashListIterator.remove()
                         }
                     }else {
                         var singleShotListIterator = singleShotList.listIterator()
                         while (singleShotListIterator.hasNext()) {
                             var it = singleShotListIterator.next()
-                            dmgDone = dmgCalc(it, true, bullet)
-                            if (shotBounce) {
-                                when (bullet.alreadyBounced) {
-                                    0 -> {
+
+                            if (it.hp > 0) {
+                                var dmgDone = 0.0f
+                                dmgDone = dmgCalc(it, true, bullet)
+
+                                if (towerList[towerId].towerPrimaryElement == "moon") {
+                                    when (bullet.alreadyBounced) {
+                                        0 -> {
+                                        }
+                                        1 -> dmgDone *= 0.75f
+                                        2 -> dmgDone *= 0.5f
+                                        3 -> dmgDone *= 0.33f
+                                        4 -> dmgDone *= 0.20f
+                                        in 5..99 -> dmgDone *= 0.1f
                                     }
-                                    1 -> dmgDone *= 0.75f
-                                    2 -> dmgDone *= 0.5f
-                                    3 -> dmgDone *= 0.33f
-                                    4 -> dmgDone *= 0.20f
-                                    in 5..99 -> dmgDone *= 0.1f
                                 }
-                            }
-                            if (bullet.sniper && itemSniperPro) dmgDone = itemSniperPro(dmgDone, it)
-                            if (bullet.sniper){
-                                dmgDone *= 3
-                                bullet.sniper = false
-                            }
-                            if (markOfTheButterflyDmgBoostActive) {
-                                markOfTheButterflyDmgBoostActive = false
-                                dmgDone *= markOfTheButterfly
-                            }
-                            if (singleTargetMultiplyer > 1) {
-                                dmgDone *= singleTargetMultiplyer
-                            }
-                            if (bullet.butterflyUltimate) dmgDone * markOfTheButterflyExtraShotDmg
-
-                            if  (it.shield > 0){
-                                if (it.shield > dmgDone) {
-                                    it.shield -= dmgDone
-                                    dmgDone = 0f
-                                }else {
-                                    dmgDone = (dmgDone - it.shield)
-                                    it.shield = 0f
+                                if (bullet.sniper && itemSniperPro) dmgDone =
+                                    itemSniperPro(dmgDone, it)
+                                if (bullet.sniper) {
+                                    dmgDone *= 3
+                                    bullet.sniper = false
                                 }
-                            }
-
-                            if (it.hit && it.shield <= 0f ) dmgDone += spellDmg(it, true, towerId)
-
-                            if (it.manaShield > 0) dmgDone = 0f
-
-                            it.hp -= (dmgDone + particleDmg)
-                            if ((dmgDone + particleDmg) > (it.maxHp / 100)) {
-                                var dmgString = "0"
-                                when ((dmgDone + particleDmg).toInt()) {
-                                    in 0..999 -> dmgString = (dmgDone + particleDmg).toInt().toString()
-                                    in 1000..999999 -> dmgString =
-                                        ((dmgDone + particleDmg) / 1000).toInt().toString() + "k"
-                                    in 1000000..999999999 -> dmgString =
-                                        ((dmgDone + particleDmg) / 1000000).toInt().toString() + "M"
+                                if (towerList[towerId].markOfTheButterflyDmgBoostActive) {
+                                    towerList[towerId].markOfTheButterflyDmgBoostActive = false
+                                    dmgDone *= towerList[towerId].markOfTheButterfly
                                 }
-                                var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintTowerDmgDone, 0, 0))
-                            }
 
-                            particleDmg = 0f
-                            if (it.hp < 0) {
-                                if (particleDmgBool) particleDmg += (it.hp * -1)
-                                if (towerList[towerId].itemListBag.contains(edark)) {
-                                    if (darkPermaKill > 0) {
-                                        for (item in towerList[towerId].itemListBag) {
-                                            if (item.id == 6666) {
-                                                if (it.name == "boss") {
-                                                    towerList[towerId].bonusPhysicalDmg += (darkPermaKill * 5) * (lvlScaler / 20)
-                                                    item.specialFloat += (darkPermaKill * 5) * (lvlScaler / 20)
-                                                } else if (it.name == "challenge") {
-                                                    towerList[towerId].bonusPhysicalDmg += (darkPermaKill * 10) * (lvlScaler / 20)
-                                                    item.specialFloat += (darkPermaKill * 10) * (lvlScaler / 20)
-                                                } else {
-                                                    towerList[towerId].bonusPhysicalDmg += darkPermaKill * (lvlScaler / 20)
-                                                    item.specialFloat += darkPermaKill * (lvlScaler / 20)
+                                if (bullet.butterflyUltimate) dmgDone * towerList[towerId].markOfTheButterflyExtraShotDmg
+
+                                if (it.shield > 0) {
+                                    if (it.shield > dmgDone) {
+                                        it.shield -= dmgDone
+                                        dmgDone = 0f
+                                    } else {
+                                        dmgDone = (dmgDone - it.shield)
+                                        it.shield = 0f
+                                    }
+                                }
+
+                              if (it.hit && it.shield <= 0f) dmgDone += spellDmg(it, true, towerId)
+
+                                if (it.manaShield > 0) dmgDone = 0f
+
+                                it.hp -= (dmgDone + towerList[towerId].particleDmg)
+
+                                if ((dmgDone + towerList[towerId].particleDmg) > (it.maxHp / 100)) {
+                                    var dmgString = "0"
+                                    when ((dmgDone + towerList[towerId].particleDmg).toInt()) {
+                                        in 0..999 -> dmgString =
+                                            (dmgDone + towerList[towerId].particleDmg).toInt().toString()
+                                        in 1000..999999 -> dmgString =
+                                            ((dmgDone + towerList[towerId].particleDmg) / 1000).toInt()
+                                                .toString() + "k"
+                                        in 1000000..999999999 -> dmgString =
+                                            ((dmgDone + towerList[towerId].particleDmg) / 1000000).toInt()
+                                                .toString() + "M"
+                                    }
+                                    var dmgDisplayListIterator = dmgDisplayList.listIterator()
+                                    dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintTowerDmgDone, 0, 0))
+                                }
+
+                                towerList[towerId].particleDmg = 0f
+                                if (it.hp <= 0) {
+                                    if (towerList[towerId].particleDmgBool) towerList[towerId].particleDmg += (it.hp * -1)
+                                    if (towerList[towerId].darkPermaKill > 0) {
+                                            for (item in towerList[towerId].itemListBag) {
+                                                if (item.id == 6666) {
+                                                    if (it.name == "boss") {
+                                                        towerList[towerId].bonusPhysicalDmg += (towerList[towerId].darkPermaKill * 5) * (lvlScaler / 20)
+                                                        item.specialFloat += (towerList[towerId].darkPermaKill * 5) * (lvlScaler / 20)
+                                                    } else if (it.name == "challenge") {
+                                                        towerList[towerId].bonusPhysicalDmg += (towerList[towerId].darkPermaKill * 10) * (lvlScaler / 20)
+                                                        item.specialFloat += (towerList[towerId].darkPermaKill * 10) * (lvlScaler / 20)
+                                                    } else {
+                                                        towerList[towerId].bonusPhysicalDmg += towerList[towerId].darkPermaKill * (lvlScaler / 20)
+                                                        item.specialFloat += towerList[towerId].darkPermaKill * (lvlScaler / 20)
+                                                    }
                                                 }
                                             }
+
+
                                         }
-                                    }
+                                    it.killerId = towerId
+                                    dead(it)
                                 }
-                                it.killerId = towerId
-                                it.hp = 0.0f
                             }
-                        //    singleShotListIterator.remove()
                         }
                     }
                     splashList.removeAll(splashList)
                     singleShotList.removeAll(singleShotList)
                 }finally {
                     writeLockShot.unlock()
-                    writeLockEnemy.unlock()
+                    readLockEnemy.unlock()
                     Companion.writeLockDisplay.unlock()
                 }
             }
@@ -4976,167 +5382,229 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         private fun dmgCalc(it: Enemy, splash15: Boolean, bullet: Shoot): Float {
             // calculate damage
-            writeLockEnemy.lock()
-            writeLockShot.lock()
-            readLockTower.lock()
-            try {
+
+                    var autoAttackDmg = 0.0f
                     var dmgDoneX = 0.0f
                     var hitX =
-                        if (!day && endlessNight > 0) (((towerList[bullet.towerId].hitChance + (3 * endlessNight)) - (((100) * (((it.evade + evadeGlobal + (evadeNight - (3 * endlessNight))) * 0.06) / (1 + (0.06 * (it.evade + evadeGlobal + (evadeNight - (3 * endlessNight))))))))) * 10).toInt()
-                        else ((towerList[bullet.towerId].hitChance - (((100) * (((it.evade + evadeNight + evadeGlobal) * 0.06) / (1 + (0.06 * (it.evade + evadeNight + evadeGlobal))))))) * 10).toInt()       // + 10 evade at night
+                        if (!day && endlessNight > 0) (((towerList[bullet.towerId].hitChance + (3 * endlessNight)) - (((100) * (((it.evade + (evadeNight - (3 * endlessNight))) * 0.06) / (1 + (0.06 * (it.evade + (evadeNight - (3 * endlessNight))))))))) * 10).toInt()
+                        else ((towerList[bullet.towerId].hitChance - (((100) * (((it.evade + evadeNight) * 0.06) / (1 + (0.06 * (it.evade + evadeNight))))))) * 10).toInt()       // + 10 evade at night
                     if (hitX > 999) hitX = 998
+
                     when ((0..999).random()) { //evade
                         in (hitX + 1)..999 -> {
                             dmgDoneX = 0.0f
-                            if (Companion.wizardMissedLightning && towerList[bullet.towerId].itemListBag.contains(ewizard)) towerList[bullet.towerId].wizardMissedLightningActive = true
+                            if (towerList[bullet.towerId].wizardMissedLightning) towerList[bullet.towerId].wizardMissedLightningActive = true
                         }
                         in 0..hitX -> {
                             when ((0..999).random()) {      //crit
                                 in 0..(towerList[bullet.towerId].overallCrit * 10).toInt() -> {
                                     if (!itemBoring) {      // item cant crit
                                         autoAttackDmg =
-                                            ((towerList[bullet.towerId].towerPhysicalDmg * towerList[bullet.towerId].overallCritDmg) * armorPen(it, towerList[bullet.towerId])) * multicrit(towerList[bullet.towerId])
-                                        if (splash15) towerList[bullet.towerId].critCounter = 0  // FireTalent
-                                        if (fireBurnTalent > 0 && it.fireDebuff == 0 && splash15) {
+                                            ((towerList[bullet.towerId].overallTowerPhysicalDmg * towerList[bullet.towerId].overallCritDmg) * armorPen(it, towerList[bullet.towerId])) * multicrit(towerList[bullet.towerId])
+                                        if (splash15 && towerList[bullet.towerId].itemListBag.contains(Items.efire)) towerList[bullet.towerId].critCounter =
+                                            0  // FireTalent
+                                        if (towerList[bullet.towerId].itemListBag.contains(Items.efire) && it.fireDebuff == 0 && splash15) {
                                             it.fireDebuff = 1
                                             it.fireDebuffTowerId = bullet.towerId
                                         } // FireTalent
+                                        if (towerList[bullet.towerId].experienceFireCrit) {
+                                            var xpGain = (1 / 10f)
+                                            towerList[bullet.towerId].xpTower += xpGain
+                                            towerExperienceGainUtilAura(xpGain, bullet.towerId)
+                                            if (towerList[bullet.towerId].experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain, bullet.towerId)
+                                        }
                                     } else {
-                                        autoAttackDmg =
-                                            towerList[bullet.towerId].towerPhysicalDmg * armorPen(it, towerList[bullet.towerId])
+                                        autoAttackDmg = towerList[bullet.towerId].overallTowerPhysicalDmg * armorPen(it, towerList[bullet.towerId])
+                                        if (splash15 && towerList[bullet.towerId].itemListBag.contains(Items.efire)) towerList[bullet.towerId].critCounter += 1 // FireTalent
                                     }
                                 }
                                 in ((towerList[bullet.towerId].overallCrit * 10).toInt() + 1)..999 -> {
-                                    autoAttackDmg =
-                                        towerList[bullet.towerId].towerPhysicalDmg * armorPen(it, towerList[bullet.towerId])
-                                    if (splash15) towerList[bullet.towerId].critCounter += 1 // FireTalent
+                                    autoAttackDmg = towerList[bullet.towerId].overallTowerPhysicalDmg * armorPen(it, towerList[bullet.towerId])
+                                    if (splash15 && towerList[bullet.towerId].itemListBag.contains(Items.efire)) towerList[bullet.towerId].critCounter += 1 // FireTalent
                                 }
                             }
 
                             // all hits ---------------------------------------------------------
+                            // all hits ---------------------------------------------------------
+                            // all hits ---------------------------------------------------------
+
 
                             GlobalScope.launch {
                                 soundPool.play(soundIds[1], logVolumeEffects, logVolumeEffects, 1, 0, 1.0f)
                             }
                             it.hit = true
-                            // pen
-                            it.armor -= towerList[bullet.towerId].armorPenPerHit
-                            it.magicArmor -= towerList[bullet.towerId].magicPenPerHit
-                            if (talentMultishot && splash15) dmgDoneX =
-                                (autoAttackDmg / (towerList[bullet.towerId].crossesAllList + 1).size)
+
+                            // talent multi shot
+                            if (towerList[bullet.towerId].towerPrimaryElement == "wind" && splash15) dmgDoneX =
+                                (autoAttackDmg / (towerList[bullet.towerId].crossesAllList.size + 2))
                             else dmgDoneX = autoAttackDmg
-                            if (slowExtraDark > 0 && splash15 && it.name != "challenge" && towerList[bullet.towerId].itemListBag.contains(edark)) it.darkDebuff =
-                                true // dark talent
-                            if (slowEach > 0 && splash15 && it.name != "challenge" && towerList[bullet.towerId].itemListBag.contains(eice)) it.iceDebuff =
-                                1 // Ice talent
-                            if (slowExtra > 0 && splash15 && it.name != "challenge" && towerList[bullet.towerId].itemListBag.contains(eice)) it.iceDebuffExtra =
-                                1 // Ice talent
-                            if (stackablePoison > 0 && splash15 && towerList[bullet.towerId].itemListBag.contains(epoison)) {           // Poison talent
-                                it.poisonDebuff = 1
-                                if (towerList[bullet.towerId].overallSpellDmg > towerList[it.poisonDebuffTowerId].overallSpellDmg) {
-                                    it.poisonDebuffTowerId = bullet.towerId
-                                }
-                                if (itemStartPoison) it.poisonStack += 2.0f
-                                else it.poisonStack += 1.0f
-                            }
-                            if (entangle > 0 && it.name != "immune" && splash15 && it.name != "challenge" && towerList[bullet.towerId].itemListBag.contains(epoison)) it.entangleOnHit =
-                                1 // Nature talent
-                            if (pushBack > 0 && it.name != "immune" && splash15 && it.name != "challenge" && towerList[bullet.towerId].itemListBag.contains(ewind)) pushback(it)     // Wind talent
-                            if (bonusSpeedWindTalent > 0 && splash15 && towerList[bullet.towerId].itemListBag.contains(ewind)) towerList[bullet.towerId].bonusSpeedWindTalentPercent += bonusSpeedWindTalent
-                            if (towerList[bullet.towerId].itemSlowDeath > 0) {
-                                var dmg = ((it.maxHp * towerList[bullet.towerId].itemSlowDeath) * magicPen(it, towerList[bullet.towerId]))
 
-                                if (it.manaShield > 0) {
-                                    if (it.manaShield > dmg) {
-                                        it.manaShield -= dmg
-                                        dmg = 0f
-                                    } else {
-                                        dmg = (dmg - it.manaShield)
-                                        it.manaShield = 0f
-                                    }
-                                }
-                                if (it.shield > 0) dmg = 0f
+                           if (towerList[bullet.towerId].experienceEachHit) {
+                               var xpGain = (1 * 0.03f)
+                               towerList[bullet.towerId].xpTower += xpGain
+                               towerExperienceGainUtilAura(xpGain, bullet.towerId)
+                               if (towerList[bullet.towerId].experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain, bullet.towerId)
+                           }
+                           if (towerList[bullet.towerId].experienceDrop) {
+                               when ((0..99).random()) {
+                                   0 -> {
+                                       itemList.add(Items(6, 1, 999, 0, 0f, 0, 0f, 0, "Experiencer", R.drawable.xpgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: gain xp", it.overallXp, "", 0f))
+                                       Companion.insertItem += 1
+                                   }
+                               }
+                           }
+                           // pen
+                           it.armor -= towerList[bullet.towerId].armorPenPerHit
+                           it.magicArmor -= towerList[bullet.towerId].magicPenPerHit
 
-                                it.hp -= dmg
-                                if (it.hp < 0) {
-                                    it.killerId = bullet.towerId
-                                    it.hp = 0.0f
-                                }
-                            }
-                            if (windUltimatePercent > 0 && towerList[bullet.towerId].itemListBag.contains(ewind)) {
-                                var dmg = ((it.maxHp * windUltimatePercent) * magicPen(it, towerList[bullet.towerId]))
+                           // dark talent slow
+                           if (towerList[bullet.towerId].slowExtraDark > 0 && splash15) {
+                               it.darkDebuff = true // dark talent
+                               it.darkDebuffTowerId = bullet.towerId
+                           }
+                           // dark talent debuff
+                           if (towerList[bullet.towerId].darkDmgDebuff > 0 && splash15) {
+                               it.darkMoreDmgDebuff = 1
+                               it.darkMoreDmgDebuffTowerId = 1
+                               it.darkMoreDmgDebuffStacks += 1
+                           }
+                           // Ice talent slow
+                           if (splash15 && towerList[bullet.towerId].slowEach > 0) {
+                               it.iceDebuffTowerId = bullet.towerId
+                               it.iceDebuff = 1
+                           }
+                           // Ice talent slow extra
+                           if (towerList[bullet.towerId].slowExtra > 0 && splash15){
+                               it.iceDebuffExtra = 1
+                               it.iceDebuffExtraTowerId = bullet.towerId
+                           }
+                           // Poison talent stackable poison
+                           if (towerList[bullet.towerId].itemListBag.contains(Items.epoison) && splash15) {
+                               if (it.poisonDebuff > 0 && towerList[bullet.towerId].overallTowerSpellDmg > towerList[it.poisonDebuffTowerId].overallTowerSpellDmg) {
+                                   it.poisonDebuffTowerId = bullet.towerId
+                               }else if (it.poisonDebuff == 0) it.poisonDebuffTowerId = bullet.towerId
+                               it.poisonDebuff = 1
+                               if (towerList[bullet.towerId].itemStartPoison) it.poisonStack += 2.0f
+                               else it.poisonStack += 1.0f
+                           }
+                           // Nature talent entangle
+                           if (towerList[bullet.towerId].entangle > 0 && it.name != "immune" && splash15) {
+                               it.entangleOnHitTowerId = bullet.towerId
+                               it.entangleOnHit = 1
+                           }
+                           // Wind talent pushback
+                           if (towerList[bullet.towerId].pushBack > 0 && it.name != "immune" && splash15) pushback(it, bullet)
+                           // Wind talent bonus speed
+                           if (towerList[bullet.towerId].bonusSpeedWindTalent > 0 && splash15) towerList[bullet.towerId].bonusSpeedWindTalentPercent += towerList[bullet.towerId].bonusSpeedWindTalent
+                           // item slow death
+                           if (towerList[bullet.towerId].itemSlowDeath > 0) {
+                               var dmg = ((it.maxHp * towerList[bullet.towerId].itemSlowDeath) * magicPen(it, towerList[bullet.towerId]))
 
-                                if (it.manaShield > 0) {
-                                    if (it.manaShield > dmg) {
-                                        it.manaShield -= dmg
-                                        dmg = 0f
-                                    } else {
-                                        dmg = (dmg - it.manaShield)
-                                        it.manaShield = 0f
-                                    }
-                                }
-                                if (it.shield > 0) dmg = 0f
+                               if (it.manaShield > 0) {
+                                   if (it.manaShield > dmg) {
+                                       it.manaShield -= dmg
+                                       dmg = 0f
+                                   } else {
+                                       dmg = (dmg - it.manaShield)
+                                       it.manaShield = 0f
+                                   }
+                               }
+                               if (it.shield > 0) dmg = 0f
 
-                                it.hp -= dmg
-                                if (it.hp < 0) {
-                                    it.killerId = bullet.towerId
-                                    it.hp = 0.0f
+                               it.hp -= dmg
+                               if (it.hp < 0) {
+                                   it.killerId = bullet.towerId
+                                   dead(it)
+                               }
+                           }
+                           // wind debuff
+                           if (towerList[bullet.towerId].windTalentDebuff > 0) it.winddebuffincreased = (1 + towerList[bullet.towerId].windTalentDebuff)
+
+                           // talent wind ultimate
+                           if (towerList[bullet.towerId].windUltimatePercent > 0) {
+                               var dmg = ((it.maxHp * towerList[bullet.towerId].windUltimatePercent) * magicPen(it, towerList[bullet.towerId]))
+
+                               if (it.manaShield > 0) {
+                                   if (it.manaShield > dmg) {
+                                       it.manaShield -= dmg
+                                       dmg = 0f
+                                   } else {
+                                       dmg = (dmg - it.manaShield)
+                                       it.manaShield = 0f
+                                   }
+                               }
+                               if (it.shield > 0) dmg = 0f
+
+                               it.hp -= dmg
+                               if (it.hp < 0) {
+                                   it.killerId = bullet.towerId
+                                   dead(it)
+                               }
+                           }
+                           // anti heal
+                           if (towerList[bullet.towerId].bonusAntiHeal > 0){
+                               it.antihealDebuff = 1
+                               it.antihealDebuffTowerId = bullet.towerId
+                           }
+                           // Dark talent instakill
+                           if (splash15 && it.name != "boss" && it.name != "challenge" && it.instakillStacks < 11 && towerList[bullet.towerId].itemListBag.contains(edark)) {
+                               it.instakillStacks++
+                                   when ((0..999).random()) {
+                                       in 0..(instaKill * 10).toInt() -> {
+                                           it.hp = -1.0f
+                                           it.killerId = bullet.towerId
+                                           it.instaKilled = 2
+                                           dead(it)
+                                       }
+                               }
+                           }
+                           // Butterfly talent
+                           if (towerList[bullet.towerId].towerPrimaryElement == "butterfly") {
+                               if (towerList[bullet.towerId].markOfTheButterflyEnemyId < enemyList.size) {
+                                   if (enemyList.indexOf(it) != towerList[bullet.towerId].markOfTheButterflyEnemyId && enemyList[towerList[bullet.towerId].markOfTheButterflyEnemyId].markOfTheButterflyCounter > 1 && it.markOfTheButterflyTowerCounter.size > 1) {}
+                                   else enemyList[towerList[bullet.towerId].markOfTheButterflyEnemyId].markOfTheButterflyCounter = 0
+                               }
+                               it.markOfTheButterflyCounter++
+                               if (!it.markOfTheButterflyTowerCounter.contains(bullet.towerId))it.markOfTheButterflyTowerCounter.add(bullet.towerId)
+                               towerList[bullet.towerId].markOfTheButterflyEnemyId = enemyList.indexOf(it)
+                               it.markOfTheButterflyTowerId = bullet.towerId
+                               if (it.markOfTheButterflyCounter >= 3) {
+                                   it.markOfTheButterflyTowerCounter.remove(bullet.towerId)
+                                   it.markOfTheButterflyCounter = 0
+                                   if (towerList[bullet.towerId].experienceButterflyPop > 0) {
+                                       var xpGain = (1f * towerList[bullet.towerId].experienceButterflyPop)
+                                       towerList[bullet.towerId].xpTower += xpGain
+                                       towerExperienceGainUtilAura(xpGain, bullet.towerId)
+                                       if (towerList[bullet.towerId].experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain, bullet.towerId)
+                                   }
+                                   if (towerList[bullet.towerId].butterflyDebuffEnemyDmg > 0) {
+                                       it.butterflyDebuffEnemyDmgTowerId = bullet.towerId
+                                       it.butterflyDebuffEnemyDmg = 1
+                                   }
+                                   if (towerList[bullet.towerId].butterflyDebuffEnemyDmg > 0) {
+                                       it.butterflyDebuffEnemyGoldXpTowerId = bullet.towerId
+                                       it.butterflyDebuffEnemyGoldXp = 1
+                                   }
+                                   towerList[bullet.towerId].markOfTheButterflyDmgBoostActive = true
+                                   if (towerList[bullet.towerId].markOfTheButterflySpdBoost > 0) {
+                                       towerList[bullet.towerId].markOfTheButterflySpdBoostActiveNumber += towerList[bullet.towerId].markOfTheButterflySpdBoostTowersNumber
+                                       towerList[bullet.towerId].markOfTheButterflySpdBoostActiveCounter = 0
+                                       towerList[bullet.towerId].markOfTheButterflySpdBoostActive = true
+                                   }
+                                   if (towerList[bullet.towerId].markOfTheButterflySlow && splash15) {
+                                       it.markOfTheButterflySlowActive = 1
+                                       it.markOfTheButterflySlowActiveTowerId = bullet.towerId
+                                   }
+                                   if (towerList[bullet.towerId].markOfTheButterflyExtraShot) {
+                                       shootButterflyReserve++
+                                   }
+
                                 }
                             }
-                            if (antiHeal > 0) it.hpRegDebuff = antiHeal
-                            // Dark talent instakill
-                            if (instaKill > 0 && splash15 && it.name != "boss" && it.name != "challenge" && it.instakillStacks < 11 && towerList[bullet.towerId].itemListBag.contains(edark)) {
-                                it.instakillStacks++
-                                if (isSingleTarget) {
-                                    when ((0..999).random()) {
-                                        in 0..(instaKill * 3 * 10).toInt() -> {
-                                            it.hp = 0.0f
-                                            overallXp += it.xp * itemPiggyBank * 2
-                                            xp += it.xp * itemPiggyBank * 2
-                                        }
-                                    }
-                                } else {
-                                    when ((0..999).random()) {
-                                        in 0..(instaKill * 10).toInt() -> {
-                                            it.hp = 0.0f
-                                            overallXp += it.xp * itemPiggyBank * 2
-                                            xp += it.xp * itemPiggyBank * 2
-                                        }
-                                    }
-                                }
-                            }
-                            // Butterfly talent
-                            if (markOfTheButterfly > 1 && towerList[bullet.towerId].itemListBag.contains(ebutterfly)) {
-                                var enemyListIteratorZ = enemyList.listIterator()
-                                while (enemyListIteratorZ.hasNext()) {
-                                    var otherZ = enemyListIteratorZ.next()
-                                    if (enemyList.indexOf(otherZ) != (enemyList.indexOf(it))) otherZ.markOfTheButterflyCounter =
-                                        0
-                                }
-                                it.markOfTheButterflyCounter++
-                                if (it.markOfTheButterflyCounter >= 3) {
-                                    it.markOfTheButterflyCounter = 0
-                                    markOfTheButterflyDmgBoostActive = true
-                                    if (markOfTheButterflySpdBoost > 0) {
-                                        markOfTheButterflySpdBoostActiveNumber += markOfTheButterflySpdBoost
-                                        markOfTheButterflySpdBoostActiveCounter = 0
-                                        markOfTheButterflySpdBoostActive = true
-                                    }
-                                    if (markOfTheButterflySlow && splash15 && it.name != "challenge") it.markOfTheButterflySlowActive =
-                                        1
-                                    if (markOfTheButterflyExtraShot) {
-                                        shootButterflyReserve++
-                                    }
-                                }
-                            }
+
                         }
                     }
                 return dmgDoneX
-            } finally {
-                writeLockEnemy.unlock()
-                writeLockShot.unlock()
-                readLockTower.unlock()
-            }
         }
 
     //------------------------------------------------------------------------------------
@@ -5145,6 +5613,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         // check if shot crosses enemy
         var check = false
         writeLockEnemy.lock()
+        readLockTower.lock()
         Companion.writeLockDisplay.lock()
         try {
             var enemyListIterator = enemyList.listIterator()
@@ -5164,54 +5633,58 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         bullet.bullet.x = it.circle!!.x
                         bullet.bullet.y = it.circle!!.y
 
-                        var dmg = (towerList[bullet.towerId].overallSpellDmg + (chainLightningBonusDmg * bigNumberScaler))* magicPen(it, towerList[bullet.towerId]) * chainLightningDmg
+                    if (it.hp > 0) {
+                        var dmg =
+                            (towerList[bullet.towerId].overallTowerSpellDmg + (towerList[bullet.towerId].chainLightningBonusDmg * bigNumberScaler)) * magicPen(it, towerList[bullet.towerId]) * towerList[bullet.towerId].chainLightningDmg
 
-                                if (it.manaShield > 0) {
-                                    if (it.manaShield > dmg) {
-                                        it.manaShield -= dmg
-                                        dmg = 0f
-                                    } else {
-                                        dmg = (dmg - it.manaShield)
-                                        it.manaShield = 0f
-                                    }
-                                }
-                                if (it.shield > 0) dmg = 0f
-                                when (bullet.alreadyBounced) {
-                                    0 -> {
-                                    }
-                                    1 -> dmg *= 0.9f
-                                    2 -> dmg *= 0.8f
-                                    3 -> dmg *= 0.7f
-                                    4 -> dmg *= 0.6f
-                                    5 -> dmg *= 0.5f
-                                    6 -> dmg *= 0.4f
-                                    7 -> dmg *= 0.3f
-                                    8 -> dmg *= 0.2f
-                                    in 9..99 -> dmg *= 0.1f
+                        if (it.manaShield > 0) {
+                            if (it.manaShield > dmg) {
+                                it.manaShield -= dmg
+                                dmg = 0f
+                            } else {
+                                dmg = (dmg - it.manaShield)
+                                it.manaShield = 0f
                             }
+                        }
+                        if (it.shield > 0) dmg = 0f
+                        when (bullet.alreadyBounced) {
+                            0 -> {
+                            }
+                            1 -> dmg *= 0.9f
+                            2 -> dmg *= 0.8f
+                            3 -> dmg *= 0.7f
+                            4 -> dmg *= 0.6f
+                            5 -> dmg *= 0.5f
+                            6 -> dmg *= 0.4f
+                            7 -> dmg *= 0.3f
+                            8 -> dmg *= 0.2f
+                            in 9..99 -> dmg *= 0.1f
+                        }
                         it.hp -= dmg
 
-                    if (dmg > (it.maxHp / 100)) {
-                        var dmgString = "0"
-                        when (dmg.toInt()) {
-                            in 0..999 -> dmgString = dmg.toInt().toString()
-                            in 1000..999999 -> dmgString = (dmg / 1000).toInt().toString() + "k"
-                            in 1000000..999999999 -> dmgString =
-                                (dmg / 1000000).toInt().toString() + "M"
+                        if (dmg > (it.maxHp / 100)) {
+                            var dmgString = "0"
+                            when (dmg.toInt()) {
+                                in 0..999 -> dmgString = dmg.toInt().toString()
+                                in 1000..999999 -> dmgString = (dmg / 1000).toInt().toString() + "k"
+                                in 1000000..999999999 -> dmgString =
+                                    (dmg / 1000000).toInt().toString() + "M"
+                            }
+                            var dmgDisplayListIterator = dmgDisplayList.listIterator()
+                            dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintWizardDmgDone, -30, -15))
                         }
-                        var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                        dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintWizardDmgDone, -30, -15))
-                    }
 
                         if (it.hp < 0) {
                             it.killerId = bullet.towerId
-                            it.hp = 0f
-                            chainLightningBonusDmg += (it.xp / 10)
+                            towerList[bullet.towerId].chainLightningBonusDmg += (it.xpEnemy / 10)
+                            dead(it)
                         }
+                    }
                     }
                 }
         } finally {
             writeLockEnemy.unlock()
+            readLockTower.unlock()
             Companion.writeLockDisplay.unlock()
         }
         return check
@@ -5361,34 +5834,41 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                         // dmg -------------------------------------------------------------------
 
-                        var dmg = 0f
-                        if (it.name == "boss" || it.name == "challenge") dmg = (it.maxHp * (0.05f + (0.01f * iceTowerCount))) * it.iceUltimateDR
-                        else dmg = ((it.maxHp * (0.10f + (0.01f * iceTowerCount))) * magicPen(it, Tower(0f, 0f, 0f, 0f))) * it.iceUltimateDR
+                            var dmg = 0f
+                            if (it.name == "boss" || it.name == "challenge") dmg =
+                                (it.maxHp * (0.05f + (0.01f * iceTowerCount))) * it.iceUltimateDR
+                            else dmg =
+                                ((it.maxHp * (0.10f + (0.01f * iceTowerCount))) * magicPen(it, Tower(0f, 0f, 0f, 0f, 0f, 0f))) * it.iceUltimateDR
 
-                        if (it.hp > dmg) it.hp -= dmg
-                        else it.hp = 1f
-                        if (dmg > (it.maxHp / 100)) {
-                            var dmgString = "0"
-                            when (dmg.toInt()) {
-                                in 0..999 -> dmgString = dmg.toInt().toString()
-                                in 1000..999999 -> dmgString = (dmg / 1000).toInt().toString() + "k"
-                                in 1000000..999999999 -> dmgString =
-                                    (dmg / 1000000).toInt().toString() + "M"
+                            if (it.hp > dmg) it.hp -= dmg
+                            else it.hp = 1f
+                            if (dmg > (it.maxHp / 100)) {
+                                var dmgString = "0"
+                                when (dmg.toInt()) {
+                                    in 0..999 -> dmgString = dmg.toInt().toString()
+                                    in 1000..999999 -> dmgString =
+                                        (dmg / 1000).toInt().toString() + "k"
+                                    in 1000000..999999999 -> dmgString =
+                                        (dmg / 1000000).toInt().toString() + "M"
+                                }
+                                var dmgDisplayListIterator = dmgDisplayList.listIterator()
+                                dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintIceDmgDone, 30, 15))
                             }
-                            var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                            dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(it)], dmgString, 1, 50, paintIceDmgDone, 30, 15))
+
+                            it.iceUltimateDR *= 0.9f
+
+                            if (towerList[it.iceDebuffTowerId].slowEach > 0) {
+                                it.iceDebuff = 1
+                                it.iceDebuffTowerId = iceShardTowerId
+                            }
+                            if (towerList[it.iceDebuffTowerId].slowExtra > 0) {
+                                it.iceDebuffExtra = 1
+                                it.iceDebuffExtraTowerId = iceShardTowerId
+                            }
+
+                            shard.color = Color.TRANSPARENT
+                            shard.hit = true
                         }
-
-                        it.iceUltimateDR *= 0.9f
-
-                        if (slowEach > 0) it.iceDebuff =
-                            1 // Ice talent
-                        if (slowExtra > 0) it.iceDebuffExtra =
-                            1 // Ice talent
-
-                        shard.color = Color.TRANSPARENT
-                        shard.hit = true
-                    }
                 }
 
                 return check
@@ -5531,7 +6011,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 otherEnemy.mineSpeedReduce = 0f
                             }
 
-                            var dmg = ((3f * lvlScaler) * magicPen(it, Tower(0f, 0f, 0f, 0f)))
+                            var dmg = ((3f * lvlScaler) * magicPen(it, Tower(0f,0f, 0f,  0f, 0f, 0f)))
                             if (otherEnemy.hp > dmg) otherEnemy.hp -= dmg
                             else otherEnemy.hp = 1f
 
@@ -5570,9 +6050,10 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         //------------------------------------------------------------------------------------
 
         private fun crossesAll() {
+
             // calculating all enemies in tower range
             writeLockEnemy.lock()
-            readLockTower.lock()
+            writeLockTower.lock()
             try {
                 var enemyListIterator = enemyList.listIterator()
                 while (enemyListIterator.hasNext()) {
@@ -5583,14 +6064,13 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         val distanceX = (towerZ.towerRange.x) - it.circle!!.x
                         val distanceY = (towerZ.towerRange.y) - it.circle!!.y
                         val squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
-                        val sumOfRadius = towerZ.towerRange.r + (it.circle!!.r - 20)
+                        val sumOfRadius = towerZ.towerR + (it.circle!!.r - 20)
                         if (squaredDistance <= sumOfRadius * sumOfRadius) {
 
                             if (towerZ.crossesAllList.contains(it)) {
                             } else {
-                                if (it == towerZ.randomEnemyForShot) towerZ.randomEnemyForShotSticky =
-                                    true
-                                if (talentMultishot) {
+                                if (it == towerZ.randomEnemyForShot) towerZ.randomEnemyForShotSticky = true
+                                if (towerZ.towerPrimaryElement != "wind") {
                                     if (towerZ.firstLastRandom == 1) towerZ.crossesAllList.add(0, it)     // last
                                     else if (towerZ.firstLastRandom == 0 || towerZ.firstLastRandom == 3) towerZ.crossesAllList.add(towerZ.crossesAllList.size, it)      // first
                                     else if (towerZ.firstLastRandom == 2) towerZ.crossesAllList.add((0..towerZ.crossesAllList.size).random(), it)        // random
@@ -5607,17 +6087,38 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             if (towerZ.crossesNoneList.contains(it)) {
                             } else towerZ.crossesNoneList.add(0, it)
                         }
+                        if (it.dead == 1) {
+                            if (dmgDisplayList.isNotEmpty()) {
+                                var dmgDisplayListIterator = dmgDisplayList.listIterator()
+                                while (dmgDisplayListIterator.hasNext()) {
+                                    var display = dmgDisplayListIterator.next()
+                                    if (display.indexx == it) {
+                                        display.displayDmgDelete = true
+                                    }
+                                }
+                            }
+                            if (it == towerZ.randomEnemyForShot) towerZ.randomEnemyForShotSticky = true
+                            towerZ.crossesAllList.remove(it)
+                            towerZ.crossesNoneList.remove(it)
+                        }
                     }
+                }
+                var enemyListIteratorZ = enemyList.listIterator()
+                while (enemyListIteratorZ.hasNext()) {
+                    var itZ = enemyListIteratorZ.next()
+                    if (itZ.dead == 1) enemyListIteratorZ.remove()
                 }
             } finally {
                 writeLockEnemy.unlock()
-                readLockTower.unlock()
+                writeLockTower.unlock()
             }
         }
 
         //------------------------------------------------------------------------------------
 
         private fun multicrit (tower: Tower): Int {
+            readLockTower.lock()
+            try {
             // calculating multicrit
             var multicritcounter = 1
             var x = 1
@@ -5637,33 +6138,35 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 shootReserve ++
             }
             return multicritcounter
+                 } finally {
+                readLockTower.unlock()
+            }
         }
 
         //------------------------------------------------------------------------------------
 
         private fun spellDmg(it: Enemy, splash15: Boolean, towerId: Int): Float {
             // calculating magic damage
-            writeLockEnemy.lock()
-            try {
+
                 var dmg = 0f
 
                 // ice talent
 
                 if (it.iceAlreadyAffected == 1){
-                    dmg += (towerList[towerId].overallSpellDmg *0.2f) * magicPen(it, towerList[towerId])
+                    dmg += (towerList[towerId].overallTowerSpellDmg *0.2f) * magicPen(it, towerList[towerId])
                 }
 
-                if (iceExtraDmg > 0 && splash15) {
+                if (towerList[towerId].iceExtraDmg > 0 && splash15) {
                     when ((0..9).random()) {
-                        0 -> dmg += (towerList[towerId].overallSpellDmg * magicPen(it, towerList[towerId])) * iceExtraDmg
+                        0 -> dmg += (towerList[towerId].overallTowerSpellDmg * magicPen(it, towerList[towerId])) * towerList[towerId].iceExtraDmg
                         in 1..9 -> {
                         }
                     }
                 }
 
                 // dark talent
-                if (darkMagicDmgPercent > 0) {
-                    dmg += (towerList[towerId].overallSpellDmg * magicPen(it, towerList[towerId])) * darkMagicDmgPercent
+                if (towerList[towerId].darkMagicDmgPercent > 0) {
+                    dmg += (towerList[towerId].overallTowerSpellDmg * magicPen(it, towerList[towerId])) * towerList[towerId].darkMagicDmgPercent
                 }
 
                 if  (it.manaShield > 0){
@@ -5677,14 +6180,12 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 }
                 if (it.shield > 0) dmg = 0f
                 return dmg
-            } finally {
-                writeLockEnemy.unlock()
-            }
+
         }
 
         //------------------------------------------------------------------------------------
 
-        private fun pushback(it: Enemy) {
+        private fun pushback(it: Enemy, bullet: Shoot) {
             // Wind talent
             writeLockEnemy.lock()
             try {
@@ -5692,13 +6193,13 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 in 0..(99 * it.pushBackDR).toInt() -> {
                     when (it.passed) {
                         1.toByte() ->
-                            it.circle!!.x += pushBack
+                            it.circle!!.x += towerList[bullet.towerId].pushBack
                         2.toByte() ->
-                            it.circle!!.y += pushBack
+                            it.circle!!.y += towerList[bullet.towerId].pushBack
                         3.toByte() ->
-                            it.circle!!.x -= pushBack
+                            it.circle!!.x -= towerList[bullet.towerId].pushBack
                         4.toByte() ->
-                            it.circle!!.y -= pushBack
+                            it.circle!!.y -= towerList[bullet.towerId].pushBack
                     }
                     it.pushBackDR * 0.66
                 }
@@ -5713,6 +6214,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         //------------------------------------------------------------------------------------
 
         private fun itemsDmg (tower: Tower) :Float{
+            readLockTower.lock()
+            try {
             var returnX = 0.0f
 
             if (tower.itemDisruptor > 0){
@@ -5726,6 +6229,9 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
             return returnX
 
+                } finally {
+                readLockTower.unlock()
+            }
         }
 
         //------------------------------------------------------------------------------------
@@ -5851,21 +6357,18 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         //------------------------------------------------------------------------------------
 
-        private fun dead () {
+        private fun dead (enemy: Enemy) {
 
             // enemy DEAD
-            writeLockEnemy.lock()
-            Companion.writeLockDisplay.lock()
-            try {
-                var enemyListIterator = enemyList.listIterator()
-                while (enemyListIterator.hasNext()) {
-                    var enemy = enemyListIterator.next()
 
-                    if (enemy.name == "split" && enemy.hp <= 0 && enemy.dead == 0){
+                    if (enemy.name == "split" && enemy.hp < 0 && enemy.dead == 0){
+                        Companion.writeLockEnemy.lock()
+                        try {
+                        var enemyListIterator = enemyList.listIterator()
                         var y = 10
                                 repeat(2) {
                                     var x =
-                                        Enemy(enemy.maxHp * 0.2f, enemy.maxHp * 0.2f, 0f, 0f, 0f, 0f, enemy.armor, enemy.magicArmor, enemy.evade, enemy.hpReg * 0, (enemy.xp * 0.5f), lvlSpd, R.color.splitter)
+                                        Enemy(enemy.maxHp * 0.2f, enemy.maxHp * 0.2f, 0f, 0f, 0f, 0f, enemy.armor, enemy.magicArmor, enemy.evade, enemy.hpReg * 0, (enemy.xpEnemy * 0.5f), lvlSpd, R.color.splitter)
                                     x.circle!!.x = (enemy.circle!!.x + y)
                                     x.circle!!.y = enemy.circle!!.y
                                     x.baseSpeed = x.speed
@@ -5876,12 +6379,16 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 }
                         enemy.passed = 5.toByte()
                         enemy.dead = 1
+                        } finally {
+                            writeLockEnemy.unlock()
+                        }
                     } else if (enemy.hp <= 0 && enemy.dead == 0) {
+
                         if (enemy.wizardBombActive > 0){
                             for (otherEnemy in enemyList) {
                                 if (splash100(enemy.circle!!.x, enemy.circle!!.y, enemy.circle!!.r, otherEnemy.circle!!.x, otherEnemy.circle!!.y, otherEnemy.circle!!.r)) {
                                     var dmg = 0f
-                                    dmg = ((Companion.wizardBombDmg * 0.66f *bigNumberScaler) + (towerList[enemy.wizardBombTowerId].overallSpellDmg * (0.1f + wizardBombStartItemDmg)))
+                                    dmg = ((towerList[enemy.wizardBombTowerId].wizardBombDmg * 0.66f *bigNumberScaler) + (towerList[enemy.wizardBombTowerId].overallTowerSpellDmg * (0.1f + wizardBombStartItemDmg)))
 
                                     if  (otherEnemy.manaShield > 0){
                                         if (otherEnemy.manaShield > dmg) {
@@ -5903,19 +6410,24 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                             in 1000000..999999999 -> dmgString =
                                                 (dmg / 1000000).toInt().toString() + "M"
                                         }
+                                        Companion.writeLockDisplay.lock()
+                                        try {
                                         var dmgDisplayListIterator = dmgDisplayList.listIterator()
                                         dmgDisplayListIterator.add(DmgDisplay(enemyList[enemyList.indexOf(otherEnemy)], dmgString, 1, 50, paintWizardDmgDone, -30, -15))
-                                    }
+                                        } finally {
+                                        Companion.writeLockDisplay.unlock()
+                                             }
+                                        }
                                 }
                             }
                         }
+                        if (towerList[enemy.killerId].talentFireKill) towerList[enemy.killerId].bonusCrit += 1f
+
                         if (enemy.name == "boss") {         // boss
-                            if (itemStartTalentPoints) talentPoints += 1
                             diamonds ++
                             bossesKilled += 1
                         }
                         if (enemy.name == "challenge") {    // challenge
-                            if (itemStartTalentPoints) talentPoints += 1
                             if (mapMode != 2) lives += 5
                             else livesMode2 += 5
                             com.agsolutions.td.Companion.itemList.add(Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
@@ -5932,45 +6444,64 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 bombActiveAbility += 5
                             }
                         }
-                        enemy.dead = 1
-                        enemy.passed = 5.toByte()
-                        enemiesKilled += 1
 
-                        overallXp += enemy.xp * itemPiggyBank * midnightMadnessMidasGold
-                        xp += enemy.xp * itemPiggyBank * midnightMadnessMidasGold
+                        overallXp += enemy.overallXp
+                        gold += enemy.overallGold * towerList[enemy.killerId].itemPiggyBank
+                        var xpGain : Float =
+                            if (enemy.name == "boss") ((1 * 3) * (0.75f + towerList[enemy.killerId].experienceKill))
+                            else if (enemy.name == "challenge") (1 * 5) * (0.75f + towerList[enemy.killerId].experienceKill)
+                            else (1) * (0.75f + towerList[enemy.killerId].experienceKill) * enemy.instaKilled
+                        towerList[enemy.killerId].xpTower += xpGain
+                        towerExperienceGainUtilAura(xpGain, enemy.killerId)
+                        if (towerList[enemy.killerId].experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain, enemy.killerId)
+
                         if (enemy.selected){
                             supportFragmentManager.beginTransaction().apply {
-                            replace(R.id.fragment, fragmentStats)
-                            .addToBackStack(null)
-                            .commit()
+                                replace(R.id.fragment, fragmentStats)
+                                    .addToBackStack(null)
+                                    .commit()
                             }
                         }
                         dropItemList += 1
                         dropItem(enemy)
-                    }
 
-                    if (enemy.passed == 5.toByte() && enemy.dead != 1) {
-                        if (enemy.name == "challenge") {}
-                        else if (enemy.name == "boss") {
-                            bossesLeaked += 1
-                            lives -= 3
-                        }
-                        else lives -= 1
-                        if (lives < 0) lives = 0
-                        soundPool.play(soundIds[2], logVolumeEffects, logVolumeEffects, 1, 0, 1.0f)
+                        enemiesKilled += 1
                         enemy.dead = 1
-                    }
-                }
-            } finally {
-                writeLockEnemy.unlock()
-                Companion.writeLockDisplay.unlock()
-            }
+                        enemy.passed = 5.toByte()
+
+                        }
+
         }
+
+    fun dead2 (){
+        Companion.readLockEnemy.lock()
+        try {
+            var enemyListIterator = enemyList.listIterator()
+            while (enemyListIterator.hasNext()) {
+                var enemy = enemyListIterator.next()
+                if (enemy.passed == 5.toByte() && enemy.dead != 1) {
+                    if (enemy.name == "challenge") {
+                    } else if (enemy.name == "boss") {
+                        bossesLeaked += 1
+                        lives -= 3
+                    } else lives -= 1
+                    if (lives < 0) lives = 0
+                    soundPool.play(soundIds[2], logVolumeEffects, logVolumeEffects, 1, 0, 1.0f)
+                    enemy.dead = 1
+                }
+            }
+            } finally {
+                readLockEnemy.unlock()
+            }
+    }
+
 
 
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     private fun getItem(tower: Tower): Items {
+        readLockTower.lock()
+        try {
 
         // grey: #DBDBDB (219,219,219)
         // blue: (94, 105, 255)
@@ -5987,34 +6518,34 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         when ((0..999).random()) {
             in 0..ceil((65 - tower.overallItemQuality) * 10).toInt() ->
-                when ((0..9).random()) {
-                    in 0..7 ->
+                when ((0..8).random()) {
+                    in 0..6 ->
                     if (itemListNormal.isNotEmpty()) {
                         when ((Items.itemListNormal).random()) {
                             0 -> {
                                 when ((0..3).random()) {
                                     in 0..1 -> x =
-                                        Items(0, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Mace & Blaze", R.drawable.wandswordgrey, R.drawable.overlaytransparent, (0.75f * lvlScaler), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1, "", 0f, "", 0f)
+                                        Items(0, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Mace & Blaze", R.drawable.wandswordgrey, R.drawable.overlaytransparent, (0.75f * lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1, "", 0f, "", 0f)
                                     2 -> x =
-                                        Items(0, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Mace", R.drawable.pdoubleswordsgrey, R.drawable.overlaytransparent, 0f, (1.25f * lvlScaler), 0.0f, 0.0f, 0.0f, 0.0f, 1, "", 0f, "", 0f)
+                                        Items(0, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Mace", R.drawable.pdoubleswordsgrey, R.drawable.overlaytransparent, 0f, (1.25f * lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 0.0f, 1, "", 0f, "", 0f)
                                     3 -> x =
-                                        Items(0, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Wand", R.drawable.zauberstabgrey, R.drawable.overlaytransparent, 0f, 0.0f, (1.25f * lvlScaler), 0.0f, 0.0f, 0.0f, 1, "", 0f, "", 0f)
+                                        Items(0, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Wand", R.drawable.zauberstabgrey, R.drawable.overlaytransparent, 0f, 0.0f, (1.25f * lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 1, "", 0f, "", 0f)
                                 }
                             }
                             1 -> x =
-                                Items(1, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Bow", R.drawable.pbowgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, (4.0f * lvlScalerSecond), 0.0f, 0.0f, 1, "", 0f, "", 0f)
+                                Items(1, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Bow", R.drawable.pbowgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, (4.0f * lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 0.0f, 1, "", 0f, "", 0f)
                             2 -> {
                                 when ((0..99).random()) {
                                     in 0..65 -> x =
-                                        Items(2, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Sword", R.drawable.pcritgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, (3.0f * lvlScalerSecond), 0.0f, 1, "", 0f, "", 0f)
+                                        Items(2, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Sword", R.drawable.pcritgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, (3.0f * lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 1, "", 0f, "", 0f)
                                     in 66..99 -> x =
-                                        Items(6, 1, 999, 0, 0f, 0, 0f, 0, "Gold Digger", R.drawable.goldgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "+ Gold", ((costBase * lvlXp) / 4), "", 0f)
+                                        Items(6, 1, 999, 0, 0f, 0, 0f, 0, "Gold Digger", R.drawable.goldgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "+ Gold", (((costBase * lvlXp) / 4)*tower.towerRarityMultiplier), "", 0f)
                                 }
                             }
                             3 -> x =
-                                Items(3, 1, 25, 0, 0f, 0, 0f, 0, "Magic Box", R.drawable.magicboxgrey, R.drawable.overlaytransparent, (0.5f * lvlScaler), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1, "no use cost", 0f, "", 0f)
+                                Items(3, 1, 25, 0, 0f, 0, 0f, 0, "Magic Box", R.drawable.magicboxgrey, R.drawable.overlaytransparent, (0.5f * lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1, "no use cost", 0f, "", 0f)
                             4 -> x =
-                                Items(4, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 1, "", 0f, "plus itemchance", 15f + ((ceil(level / 10.0f)) * 4))
+                                Items(4, 1, 999, 0, (costBase * lvlXp), 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 1, "", 0f, "plus itemchance", 15f + ((ceil(level / 10.0f)) * 4 * tower.towerRarityMultiplier))
                             5 -> {
                                 if (mapMode == 2) x =
                                     Items(5, 1, 999, 0, ((costBase * lvlXp) / 2), 0, 0f, 0, "Bomb", R.drawable.bombgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: 5% dmg to all enemies", 0f, "", 0f)
@@ -6023,77 +6554,62 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             }
                         }
                     }
-                    8 -> {
+                    7, 8 -> {
                         when ((0..9).random()){
-                            0 -> x = Items(2000, 0, 999,0,0f, 0, 0f, 0, "Basic Earth Tower", R.drawable.talentsearth, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "", 0.0f, "", 0f)
-                            1 -> x = Items(2001, 1, 999,0,0f, 0, 0f, 0, "Basic Wizard Tower", R.drawable.talentswizard, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "", 0.0f, "", 0f)
-                            2 -> x = Items(2002, 2, 999,0,0f, 0, 0f, 0, "Basic Ice Tower", R.drawable.talentsice, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "", 0.0f, "", 0f)
-                            3 -> x = Items(2003, 3, 999,0,0f, 0, 0f, 0, "Basic Butterfly Tower", R.drawable.talentsbutterfly, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "", 0.0f, "", 0f)
-                            4 -> x = Items(2004, 4, 999,0,0f, 0, 0f, 0, "Basic Poison Tower", R.drawable.talentspoison, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "", 0.0f, "", 0f)
-                            5 -> x = Items(2005, 5, 999,0,0f, 0, 0f, 0, "Basic Moon Tower", R.drawable.moon, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "", 0.0f, "", 0f)
-                            6 -> x = Items(2006, 6, 999,0,0f, 0, 0f, 0, "Basic Wind Tower", R.drawable.talentswind, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "", 0.0f, "", 0f)
-                            7 -> x = Items(2007, 7, 999,0,0f, 0, 0f, 0, "Basic Utils Tower", R.drawable.talentsutils, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0,"", 0.0f, "", 0f)
-                            8 -> x = Items(2008, 8, 999,0,0f, 0, 0f, 0, "Basic Fire Tower", R.drawable.talentsfire, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0,"", 0.0f, "", 0f)
-                            9 -> x = Items(2009, 9, 999,0,0f, 0, 0f, 0, "Basic Dark Tower", R.drawable.talentsdark, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "", 0.0f, "", 0f)
-
-                        }
-                    }
-                    9 -> {
-                        when ((0..9).random()) {
-                            0 -> x = Items(3000, 0, 999, 0, 0f, 0, 0f, 0, "Earth Element", R.drawable.talentsearth, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Earth Abilities", 0.0f, "", 0f)
-                            1 -> x = Items(3001, 0, 999, 0, 0f, 0, 0f, 0, "Wizard Element", R.drawable.talentswizard, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wizard Abilities", 0.0f, "", 0f)
-                            2 -> x = Items(3002, 0, 999, 0, 0f, 0, 0f, 0, "Ice Element", R.drawable.talentsice, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Ice Abilities", 0.0f, "", 0f)
-                            3 -> x = Items(3003, 0, 999, 0, 0f, 0, 0f, 0, "Butterfly Element", R.drawable.talentsbutterfly, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Butterfly Abilities", 0.0f, "", 0f)
-                            4 -> x = Items(3004, 0, 999, 0, 0f, 0, 0f, 0, "Poison Element", R.drawable.talentspoison, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Poison Abilities", 0.0f, "", 0f)
-                            5 -> x = Items(3005, 0, 999, 0, 0f, 0, 0f, 0, "Moon Element", R.drawable.moon, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Moon Abilities", 0.0f, "", 0f)
-                            6 -> x = Items(3006, 0, 999, 0, 0f, 0, 0f, 0, "Wind Element", R.drawable.talentswind, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wind Abilities", 0.0f, "", 0f)
-                            7 -> x = Items(3007, 0, 999, 0, 0f, 0, 0f, 0, "Utils Element", R.drawable.talentsutils, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Utils Abilities", 0.0f, "", 0f)
-                            8 -> x = Items(3008, 0, 999, 0, 0f, 0, 0f, 0, "Fire Element", R.drawable.talentsfire, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Fire Abilities", 0.0f, "", 0f)
-                            9 -> x = Items(3009, 0, 999, 0, 0f, 0, 0f, 0, "Dark Element", R.drawable.talentsdark, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Dark Abilities", 0.0f, "", 0f)
+                            0 -> x = Items.eearth
+                            1 -> x = Items.ewizard
+                            2 -> x = Items.eice
+                            3 -> x = Items.ebutterfly
+                            4 -> x = Items.epoison
+                            5 -> x = Items.emoon
+                            6 -> x = Items.ewind
+                            7 -> x = Items.eutils
+                            8 -> x = Items.efire
+                            9 -> x = Items.edark
                         }
                     }
                 }
             in floor((65 - tower.overallItemQuality) * 10).toInt()..ceil((88 - (tower.overallItemQuality / 1.5)) * 10).toInt() ->
-                when ((0..9).random()) {
-                    in 0..7 ->
+                when ((0..8).random()) {
+                    in 0..6 ->
                         if (itemListRare.isNotEmpty()) {
                             when (Items.itemListRare.random()) {
                                 100 -> {
                                     when ((0..7).random()) {
                                         in 0..1 -> x =
-                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Mace & Blaze", R.drawable.wandswordblue, R.drawable.overlaytransparent, (2.25f * lvlScaler), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
+                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Mace & Blaze", R.drawable.wandswordblue, R.drawable.overlaytransparent, (2.25f * lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
                                         in 2..3 -> x =
-                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Mace & Blaze", R.drawable.wandswordblue, R.drawable.overlaytransparent, (2.25f * lvlScaler), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2, "", 0f, "item quality", 1f + (ceil(level / 10.0f)))
+                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Mace & Blaze", R.drawable.wandswordblue, R.drawable.overlaytransparent, (2.25f * lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2, "", 0f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
                                         4 -> x =
-                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Mace", R.drawable.pdoubleswordsblue, R.drawable.overlaytransparent, 0f, (3.75f * lvlScaler), 0.0f, 0.0f, 0.0f, 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
+                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Mace", R.drawable.pdoubleswordsblue, R.drawable.overlaytransparent, 0f, (3.75f * lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
                                         5 -> x =
-                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Mace", R.drawable.pdoubleswordsblue, R.drawable.overlaytransparent, 0f, (3.75f * lvlScaler), 0.0f, 0.0f, 0.0f, 0.0f, 2, "", 0f, "item quality", 1f + (ceil(level / 10.0f)))
+                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Mace", R.drawable.pdoubleswordsblue, R.drawable.overlaytransparent, 0f, (3.75f * lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 0.0f, 2, "", 0f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
                                         6 -> x =
-                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Wand", R.drawable.zauberstabblue, R.drawable.overlaytransparent, 0f, 0.0f, (3.75f * lvlScaler), 0.0f, 0.0f, 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
+                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Wand", R.drawable.zauberstabblue, R.drawable.overlaytransparent, 0f, 0.0f, (3.75f * lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
                                         7 -> x =
-                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Wand", R.drawable.zauberstabblue, R.drawable.overlaytransparent, 0f, 0.0f, (3.75f * lvlScaler), 0.0f, 0.0f, 0.0f, 2, "", 0f, "item quality", 1f + (ceil(level / 10.0f)))
+                                            Items(100, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Wand", R.drawable.zauberstabblue, R.drawable.overlaytransparent, 0f, 0.0f, (3.75f * lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 2, "", 0f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
                                     }
                                 }
                                 101 -> x =
-                                    Items(101, 1, 25, 0, 0f, 0, 0f, 0, "Rare Magic Box", R.drawable.magicboxblue, R.drawable.overlaytransparent, (1.5f * lvlScaler), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2, "no use cost", 0f, "", 0f)
+                                    Items(101, 1, 25, 0, 0f, 0, 0f, 0, "Rare Magic Box", R.drawable.magicboxblue, R.drawable.overlaytransparent, (1.5f * lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2, "no use cost", 0f, "", 0f)
                                 102 -> {
                                     when ((0..1).random()) {
                                         0 -> x =
-                                            Items(102, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Bow", R.drawable.pbowblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, (12.0f * lvlScalerSecond), 0.0f, 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
+                                            Items(102, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Bow", R.drawable.pbowblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, (12.0f * lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
                                         1 -> x =
-                                            Items(102, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Bow", R.drawable.pbowblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, (12.0f * lvlScalerSecond), 0.0f, 0.0f, 2, "", 0f, "item quality", 1f + (ceil(level / 10.0f)))
+                                            Items(102, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Bow", R.drawable.pbowblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, (12.0f * lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 0.0f, 2, "", 0f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
                                     }
                                 }
                                 103 -> {
                                     when ((0..1).random()) {
                                         0 -> x =
-                                            Items(103, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Sword", R.drawable.pcritblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, (9.0f * lvlScalerSecond), 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
+                                            Items(103, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Sword", R.drawable.pcritblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, (9.0f * lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
                                         1 -> x =
-                                            Items(103, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Sword", R.drawable.pcritblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, (9.0f * lvlScalerSecond), 0.0f, 2, "", 0f, "item quality", 1f + (ceil(level / 10.0f)))
+                                            Items(103, 1, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Rare Sword", R.drawable.pcritblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, (9.0f * lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 2, "", 0f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
                                     }
                                 }
                                 104 -> x =
-                                    Items(104, 30, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "", 0f, "item quality", 2f + (ceil(level / 10.0f)) * 2)
+                                    Items(104, 30, 999, 0, (costBlue * lvlXp), 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "", 0f, "item quality", 2f + (ceil(level / 10.0f)) * 2 * tower.towerRarityMultiplier)
                                 105 -> x =
                                     Items(105, 1, 999, 0, 0f, 1, 0f, 0, "Piggy Bank", R.drawable.piggybank, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "10% more Gold from enemies", 0f, "", 0f)
                                 106 -> x =
@@ -6102,246 +6618,164 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     Items(107, 10, 999, 0, (costBlue * lvlXp * 0.66f), 0, 0f, 0, "Number One", R.drawable.numberonegreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "+1 talent point", 1f, "", 0f)
                             }
                         }
-                    8 -> {
+                    7,8 -> {
                         when ((0..9).random()) {
-                            0 -> x =
-                                Items(2100, 0, 999, 0, 0f, 0, 0f, 0, "Earth", R.drawable.talentsearth, R.drawable.overlaytransparent, 10f, 0.0f, 0.0f, 45f, 1f, 2f, 0, "Enables Earth Talent", 0.0f, "", 0f)
-                            1 -> x =
-                                Items(2101, 1, 999, 0, 0f, 0, 0f, 0, "Wizard", R.drawable.talentswizard, R.drawable.overlaytransparent, 10f, 0.0f, 0.0f, 45f, 1f, 2f, 0, "Enables Wizard Talent", 0.0f, "", 0f)
-                            2 -> x =
-                                Items(2102, 2, 999, 0, 0f, 0, 0f, 0, "Ice", R.drawable.talentsice, R.drawable.overlaytransparent, 10f, 0.0f, 0.0f, 45f, 1f, 2f, 0, "Enables Ice Talent", 0.0f, "", 0f)
-                            3 -> x =
-                                Items(2103, 3, 999, 0, 0f, 0, 0f, 0, "Butterfly", R.drawable.talentsbutterfly, R.drawable.overlaytransparent, 10f, 0.0f, 0.0f, 45f, 1f, 2f, 0, "Enables Butterfly Talent", 0.0f, "", 0f)
-                            4 -> x =
-                                Items(2104, 4, 999, 0, 0f, 0, 0f, 0, "Poison", R.drawable.talentspoison, R.drawable.overlaytransparent, 10f, 0.0f, 0.0f, 45f, 1f, 2f, 0, "Enables Poison Talent", 0.0f, "", 0f)
-                            5 -> x =
-                                Items(2105, 5, 999, 0, 0f, 0, 0f, 0, "Moon", R.drawable.moon, R.drawable.overlaytransparent, 10f, 0.0f, 0.0f, 45f, 1f, 2f, 0, "Enables Moon Talent", 0.0f, "", 0f)
-                            6 -> x =
-                                Items(2106, 6, 999, 0, 0f, 0, 0f, 0, "Wind", R.drawable.talentswind, R.drawable.overlaytransparent, 10f, 0.0f, 0.0f, 45f, 1f, 2f, 0, "Enables Wind Talent", 0.0f, "", 0f)
-                            7 -> x =
-                                Items(2107, 7, 999, 0, 0f, 0, 0f, 0, "Utils", R.drawable.talentsutils, R.drawable.overlaytransparent, 10f, 0.0f, 0.0f, 45f, 1f, 2f, 0, "Enables Utils Talent", 0.0f, "", 0f)
-                            8 -> x =
-                                Items(2108, 8, 999, 0, 0f, 0, 0f, 0, "Fire", R.drawable.talentsfire, R.drawable.overlaytransparent, 10f, 0.0f, 0.0f, 45f, 1f, 2f, 0, "Enables Fire Talent", 0.0f, "", 0f)
-                            9 -> x =
-                                Items(2109, 9, 999, 0, 0f, 0, 0f, 0, "Dark", R.drawable.talentsdark, R.drawable.overlaytransparent, 10f, 0.0f, 0.0f, 45f, 1f, 2f, 0, "Enables Dark Talent", 0.0f, "", 0f)
-                        }
-                    }
-                    9 -> {
-                        when ((0..9).random()) {
-                            0 -> x = Items(3000, 0, 999, 0, 0f, 0, 0f, 0, "Earth Element", R.drawable.talentsearth, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Earth Abilities", 0.0f, "", 0f)
-                            1 -> x = Items(3001, 0, 999, 0, 0f, 0, 0f, 0, "Wizard Element", R.drawable.talentswizard, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wizard Abilities", 0.0f, "", 0f)
-                            2 -> x = Items(3002, 0, 999, 0, 0f, 0, 0f, 0, "Ice Element", R.drawable.talentsice, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Ice Abilities", 0.0f, "", 0f)
-                            3 -> x = Items(3003, 0, 999, 0, 0f, 0, 0f, 0, "Butterfly Element", R.drawable.talentsbutterfly, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Butterfly Abilities", 0.0f, "", 0f)
-                            4 -> x = Items(3004, 0, 999, 0, 0f, 0, 0f, 0, "Poison Element", R.drawable.talentspoison, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Poison Abilities", 0.0f, "", 0f)
-                            5 -> x = Items(3005, 0, 999, 0, 0f, 0, 0f, 0, "Moon Element", R.drawable.moon, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Moon Abilities", 0.0f, "", 0f)
-                            6 -> x = Items(3006, 0, 999, 0, 0f, 0, 0f, 0, "Wind Element", R.drawable.talentswind, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wind Abilities", 0.0f, "", 0f)
-                            7 -> x = Items(3007, 0, 999, 0, 0f, 0, 0f, 0, "Utils Element", R.drawable.talentsutils, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Utils Abilities", 0.0f, "", 0f)
-                            8 -> x = Items(3008, 0, 999, 0, 0f, 0, 0f, 0, "Fire Element", R.drawable.talentsfire, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Fire Abilities", 0.0f, "", 0f)
-                            9 -> x = Items(3009, 0, 999, 0, 0f, 0, 0f, 0, "Dark Element", R.drawable.talentsdark, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Dark Abilities", 0.0f, "", 0f)
+                            0 -> x = Items(2100, 0, 999,0,(costBlue * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Rare Earth Tower", R.drawable.towerearthblue, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+                            1 -> x = Items(2101, 0, 999,0,(costBlue * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Rare Wizard Tower", R.drawable.towerwizardblue, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+                            2 -> x = Items(2102, 0, 999,0,(costBlue * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Rare Ice Tower", R.drawable.towericeblue, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f,0, "bagspace", 3.0f, "bagspace element", 2f)
+                            3 -> x = Items(2103, 0, 999,0,(costBlue * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Rare Butterfly Tower", R.drawable.towerbutterflyblue, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+                            4 -> x = Items(2104, 0, 999,0,(costBlue * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Rare Poison Tower", R.drawable.towerpoisonblue, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+                            5 -> x = Items(2105, 0, 999,0,(costBlue * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Rare Moon Tower", R.drawable.towermoonblue, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+                            6 -> x = Items(2106, 0, 999,0,(costBlue * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Rare Wind Tower", R.drawable.towerwindblue, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f,0, "bagspace", 3.0f, "bagspace element", 2f)
+                            7 -> x = Items(2107, 0, 999,0,(costBlue * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Rare Utils Tower", R.drawable.towerutilsblue, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f,0,"bagspace", 3.0f, "bagspace element", 2f)
+                            8 -> x = Items(2108, 0, 999,0,(costBlue * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Rare Fire Tower", R.drawable.towerfireblue, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0,"bagspace", 3.0f, "bagspace element", 2f)
+                            9 -> x = Items(2109, 0, 999,0,(costBlue * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Rare Dark Tower", R.drawable.towerdarkblue, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
                         }
                     }
                 }
             in floor((88 - (tower.overallItemQuality / 1.5)) * 10).toInt()..ceil((96 - (tower.overallItemQuality / 2)) * 10).toInt() ->
-                when ((0..9).random()) {
-                    in 0..7 ->
+                when ((0..8).random()) {
+                    in 0..6 ->
                         if (itemListEpic.isNotEmpty()) {
                             when (Items.itemListEpic.random()) {
                                 200 -> {
                                     when ((0..3).random()) {
                                         in 0..1 -> x =
-                                            Items(200, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Mace & Blaze", R.drawable.wandswordorange, R.drawable.overlaytransparent, ((3.0f * lvlScaler) + (level * 0.075f)), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3, specialPen(), (0.9f * lvlScalerSecond), "", 0f)
+                                            Items(200, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Mace & Blaze", R.drawable.wandswordorange, R.drawable.overlaytransparent, ((3.0f * lvlScaler) + (level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3, specialPen(), (0.9f * lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                         2 -> x =
-                                            Items(200, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Mace", R.drawable.pdoubleswordsorange, R.drawable.overlaytransparent, 0f, ((5.0f * lvlScaler) + (level * 0.075f)), 0.0f, 0.0f, 0.0f, 0.0f, 3, specialPenPhy(), (0.9f * lvlScalerSecond), "", 0f)
+                                            Items(200, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Mace", R.drawable.pdoubleswordsorange, R.drawable.overlaytransparent, 0f, ((5.0f * lvlScaler) + (level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 3, specialPenPhy(), (0.9f * lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                         3 -> x =
-                                            Items(200, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Wand", R.drawable.zauberstaborange, R.drawable.overlaytransparent, 0f, 0.0f, ((5.0f * lvlScaler) + (level * 0.075f)), 0.0f, 0.0f, 0.0f, 3, "magic penetration", (0.9f * lvlScalerSecond), "", 0f)
+                                            Items(200, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Wand", R.drawable.zauberstaborange, R.drawable.overlaytransparent, 0f, 0.0f, ((5.0f * lvlScaler) + (level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 3, "magic penetration", (0.9f * lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                     }
                                 }
                                 201 -> x =
-                                    Items(201, 1, 25, 0, 0f, 0, 0f, 0, "Epic Magic Box", R.drawable.magicboxorange, R.drawable.overlaytransparent, ((2.0f * lvlScaler) + (level * 0.075f)), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3, "no use cost", 0f, "", 0f)
+                                    Items(201, 1, 25, 0, 0f, 0, 0f, 0, "Epic Magic Box", R.drawable.magicboxorange, R.drawable.overlaytransparent, ((2.0f * lvlScaler) + (level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3, "no use cost", 0f, "", 0f)
                                 202 -> x =
-                                    Items(202, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Bow", R.drawable.pboworange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((16.0f * lvlScalerSecond) + (level * 0.075f)), 0.0f, 0.0f, 3, specialPen(), (0.9f * lvlScalerSecond), "", 0f)
+                                    Items(202, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Bow", R.drawable.pboworange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((16.0f * lvlScalerSecond) + (level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 3, specialPen(), (0.9f * lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                 203 -> x =
-                                    Items(203, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Sword", R.drawable.pcritorange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((12.0f * lvlScalerSecond) + (level * 0.075f)), 0.0f, 3, specialPen(), (0.9f * lvlScalerSecond), "", 0f)
+                                    Items(203, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Sword", R.drawable.pcritorange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((12.0f * lvlScalerSecond) + (level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 3, specialPen(), (0.9f * lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                 204 -> x =
-                                    Items(204, 30, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Lucky Charm", R.drawable.luckycharmorange, R.drawable.overlaytransparent, (2.0f * lvlScaler), 0.0f, 0.0f, 0.0f, 0f, 0.0f, 3, "", 0f, "item quality", 1f + (ceil(level / 10.0f)))
+                                    Items(204, 30, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Lucky Charm", R.drawable.luckycharmorange, R.drawable.overlaytransparent, (2.0f * lvlScaler)* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 3, "", 0f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
                                 205 -> x =
                                     Items(205, 10, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Lifeline", R.drawable.lifelineorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "+1 live/10 rounds ", 1f, "", 0f)
                                 206 -> x =
                                     Items(206, 1, 30, 0, (costEpic * lvlXp), 0, 0f, 0, "X-Factor", R.drawable.talentorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "+3 talent points", 3f, "", 0f)
                                 207 -> when ((0..2).random()) {
                                     0 -> x =
-                                        Items(207, 1, 30, 0, (costEpic * lvlXp) / 2, 0, 0f, 0, "Battery", R.drawable.batteryorange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 0, "+ X dmg/round", 0.5f, "", 0f)
+                                        Items(207, 1, 30, 0, (costEpic * lvlXp) / 2, 0, 0f, 0, "Battery", R.drawable.batteryorange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 0, "+ X dmg/round", 0.5f* tower.towerRarityMultiplier, "", 0f)
                                     1 -> x =
-                                        Items(207, 1, 30, 0, (costEpic * lvlXp) / 2, 0, 0f, 0, "Battery", R.drawable.batteryorange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 0, "+ X spd/round", 2f, "", 0f)
+                                        Items(207, 1, 30, 0, (costEpic * lvlXp) / 2, 0, 0f, 0, "Battery", R.drawable.batteryorange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 0, "+ X spd/round", 2f* tower.towerRarityMultiplier, "", 0f)
                                     2 -> x =
-                                        Items(207, 1, 30, 0, (costEpic * lvlXp) / 2, 0, 0f, 0, "Battery", R.drawable.batteryorange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 0, "+ X crit/round", 1.5f, "", 0f)
+                                        Items(207, 1, 30, 0, (costEpic * lvlXp) / 2, 0, 0f, 0, "Battery", R.drawable.batteryorange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 0, "+ X crit/round", 1.5f* tower.towerRarityMultiplier, "", 0f)
                                 }
                                 208 -> x =
-                                    Items(208, 30, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Freezer", R.drawable.frostorange, R.drawable.overlaytransparent, 0.0f, 0.0f, ((2f * lvlScaler) + (level * 0.075f)), 0f, 0.0f, 0.0f, 0, "slows a random unit for 20%", 20.0f, "", 0f)
+                                    Items(208, 30, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Freezer", R.drawable.frostorange, R.drawable.overlaytransparent, 0.0f, 0.0f, ((2f * lvlScaler) + (level * 0.075f))* tower.towerRarityMultiplier, 0f, 0.0f, 0.0f, 0, "slows a random unit for 20%", 20.0f, "", 0f)
                                 209 -> x =
                                     Items(209, 1, 50, 0, 0f, 1, 0f, 0, "Coin", R.drawable.coininterest, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 0, "+ 1.5% interest rate", 0.015f, "", 0f)
                                 210 -> x =
-                                    Items(210, 50, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Lasso", R.drawable.lassoorange, R.drawable.overlaytransparent, ((0.5f * lvlScaler) + (level * 0.075f)), 0.0f, 0.0f, 0f, 0.0f, 0.0f, 3, "throws X lassos that stun", 1.0f, "", 0f)
+                                    Items(210, 50, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Lasso", R.drawable.lassoorange, R.drawable.overlaytransparent, ((0.5f * lvlScaler) + (level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 3, "throws X lassos that stun", 1.0f, "", 0f)
                                 211 -> x =
-                                    Items(211, 30, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "20/20", R.drawable.critdmgorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, ((9f * lvlScalerSecond) + (level * 0.015f)), (0.01f * level), 3, "", 0.0f, "", 0f)
+                                    Items(211, 30, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "20/20", R.drawable.critdmgorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, ((9f * lvlScalerSecond) + (level * 0.015f))* tower.towerRarityMultiplier, (0.01f * level)* tower.towerRarityMultiplier, 3, "", 0.0f, "", 0f)
                                 212 -> x =
-                                    Items(212, 40, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "One Punch Thingy", R.drawable.hitorange, R.drawable.overlaytransparent, ((0.5f * lvlScaler) + (level * 0.075f)), 0.0f, 0.0f, 0f, 0f, 0f, 3, "+ X hit", (1.5f * lvlScalerSecond), "", 0f)
+                                    Items(212, 40, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "One Punch Thingy", R.drawable.hitorange, R.drawable.overlaytransparent, ((0.5f * lvlScaler) + (level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, 0f, 0f, 3, "+ X hit", (1.5f * lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                 213 -> x =
                                     if (mapMode == 2) Items(213, 25, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Last Stance", R.drawable.laststanceorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "+10% dmg/live lost", 0.0f, "", 0f)
-                                    else Items(200, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Mace & Blaze", R.drawable.wandswordorange, R.drawable.overlaytransparent, ((3.0f * lvlScaler) + (level * 0.075f)), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3, specialPen(), (1f * lvlScalerSecond), "", 0f)
+                                    else Items(200, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Epic Mace & Blaze", R.drawable.wandswordorange, R.drawable.overlaytransparent, ((3.0f * lvlScaler) + (level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3, specialPen(), (1f * lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                 214 -> x =
                                     Items(214, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Sniper", R.drawable.sniperorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "snipes a single target", 0.0f, "", 0f)
                                 215 -> x =
-                                    Items(215, 40, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Shredder", R.drawable.shredderorange, R.drawable.overlaytransparent, ((0.5f * lvlScaler) + (level * 0.075f)), 0.0f, 0.0f, 0f, 0f, 0f, 3, "+ X Armor Penetration", (0.5f * lvlScalerSecond), "", 0f)
+                                    Items(215, 40, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Shredder", R.drawable.shredderorange, R.drawable.overlaytransparent, ((0.5f * lvlScaler) + (level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, 0f, 0f, 3, "+ X Armor Penetration", (0.5f * lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                 216 -> x =
-                                    Items(216, 40, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Shield Breaker", R.drawable.magicbrakerorange, R.drawable.overlaytransparent, ((0.5f * lvlScaler) + (level * 0.075f)), 0.0f, 0.0f, 0f, 0f, 0f, 3, "+ X Magic Penetration", (0.5f * lvlScalerSecond), "", 0f)
+                                    Items(216, 40, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Shield Breaker", R.drawable.magicbrakerorange, R.drawable.overlaytransparent, ((0.5f * lvlScaler) + (level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, 0f, 0f, 3, "+ X Magic Penetration", (0.5f * lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                 217 -> x =
-                                    Items(217, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Snowman", R.drawable.snowmanorange, R.drawable.overlaytransparent, ((0.5f * lvlScaler) + (level * 0.05f)), 0.0f, 0.0f, ((4f * lvlScalerSecond) + (level * 0.05f)), ((3f * lvlScalerSecond) + (level * 0.05f)), 0f, 3, "+10% slow on hit", 0f, "", 0f)
+                                    Items(217, 1, 999, 0, (costEpic * lvlXp), 0, 0f, 0, "Snowman", R.drawable.snowmanorange, R.drawable.overlaytransparent, ((0.5f * lvlScaler) + (level * 0.05f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((4f * lvlScalerSecond) + (level * 0.05f))* tower.towerRarityMultiplier, ((3f * lvlScalerSecond) + (level * 0.05f))* tower.towerRarityMultiplier, 0f, 3, "+10% slow on hit", 0f, "", 0f)
                             }
                         }
-                    8 -> {
+                    7,8 -> {
                         when ((0..9).random()){
-                            0 -> x = Items(2200, 0, 999,0,0f, 0, 0f, 0, "Earth", R.drawable.talentsearth, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Earth Talent", 0.0f, "", 0f)
-                            1 -> x = Items(2201, 1, 999,0,0f, 0, 0f, 0, "Wizard", R.drawable.talentswizard, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Wizard Talent", 0.0f, "", 0f)
-                            2 -> x = Items(2202, 2, 999,0,0f, 0, 0f, 0, "Ice", R.drawable.talentsice, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Ice Talent", 0.0f, "", 0f)
-                            3 -> x = Items(2203, 3, 999,0,0f, 0, 0f, 0, "Butterfly", R.drawable.talentsbutterfly, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Butterfly Talent", 0.0f, "", 0f)
-                            4 -> x = Items(2204, 4, 999,0,0f, 0, 0f, 0, "Poison", R.drawable.talentspoison, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Poison Talent", 0.0f, "", 0f)
-                            5 -> x = Items(2205, 5, 999,0,0f, 0, 0f, 0, "Moon", R.drawable.moon, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Moon Talent", 0.0f, "", 0f)
-                            6 -> x = Items(2206, 6, 999,0,0f, 0, 0f, 0, "Wind", R.drawable.talentswind, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Wind Talent", 0.0f, "", 0f)
-                            7 -> x = Items(2207, 7, 999,0,0f, 0, 0f, 0, "Utils", R.drawable.talentsutils, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0,"Enables Utils Talent", 0.0f, "", 0f)
-                            8 -> x = Items(2208, 8, 999,0,0f, 0, 0f, 0, "Fire", R.drawable.talentsfire, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0,"Enables Fire Talent", 0.0f, "", 0f)
-                            9 -> x = Items(2209, 9, 999,0,0f, 0, 0f, 0, "Dark", R.drawable.talentsdark, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Dark Talent", 0.0f, "", 0f)
-                        }
-                    }
-                    9 -> {
-                        when ((0..9).random()) {
-                            0 -> x = Items(3000, 0, 999, 0, 0f, 0, 0f, 0, "Earth Element", R.drawable.talentsearth, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Earth Abilities", 0.0f, "", 0f)
-                            1 -> x = Items(3001, 0, 999, 0, 0f, 0, 0f, 0, "Wizard Element", R.drawable.talentswizard, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wizard Abilities", 0.0f, "", 0f)
-                            2 -> x = Items(3002, 0, 999, 0, 0f, 0, 0f, 0, "Ice Element", R.drawable.talentsice, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Ice Abilities", 0.0f, "", 0f)
-                            3 -> x = Items(3003, 0, 999, 0, 0f, 0, 0f, 0, "Butterfly Element", R.drawable.talentsbutterfly, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Butterfly Abilities", 0.0f, "", 0f)
-                            4 -> x = Items(3004, 0, 999, 0, 0f, 0, 0f, 0, "Poison Element", R.drawable.talentspoison, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Poison Abilities", 0.0f, "", 0f)
-                            5 -> x = Items(3005, 0, 999, 0, 0f, 0, 0f, 0, "Moon Element", R.drawable.moon, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Moon Abilities", 0.0f, "", 0f)
-                            6 -> x = Items(3006, 0, 999, 0, 0f, 0, 0f, 0, "Wind Element", R.drawable.talentswind, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wind Abilities", 0.0f, "", 0f)
-                            7 -> x = Items(3007, 0, 999, 0, 0f, 0, 0f, 0, "Utils Element", R.drawable.talentsutils, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Utils Abilities", 0.0f, "", 0f)
-                            8 -> x = Items(3008, 0, 999, 0, 0f, 0, 0f, 0, "Fire Element", R.drawable.talentsfire, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Fire Abilities", 0.0f, "", 0f)
-                            9 -> x = Items(3009, 0, 999, 0, 0f, 0, 0f, 0, "Dark Element", R.drawable.talentsdark, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Dark Abilities", 0.0f, "", 0f)
+                            0 -> x = Items(2200, 0, 999,0,(costEpic * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Epic Earth Tower", R.drawable.towerearthorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                            1 -> x = Items(2201, 0, 999,0,(costEpic * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Epic Wizard Tower", R.drawable.towerwizardorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
+                            2 -> x = Items(2202, 0, 999,0,(costEpic * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Epic Ice Tower", R.drawable.towericeorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
+                            3 -> x = Items(2203, 0, 999,0,(costEpic * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Epic Butterfly Tower", R.drawable.towerbutterflyorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
+                            4 -> x = Items(2204, 0, 999,0,(costEpic * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Epic Poison Tower", R.drawable.towerpoisonorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
+                            5 -> x = Items(2205, 0, 999,0,(costEpic * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Epic Moon Tower", R.drawable.towermoonorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
+                            6 -> x = Items(2206, 0, 999,0,(costEpic * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Epic Wind Tower", R.drawable.towerwindorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                            7 -> x = Items(2207, 0, 999,0,(costEpic * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Epic Utils Tower", R.drawable.towerutilsorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0,"bagspace", 4.0f, "bagspace element", 2f)
+                            8 -> x = Items(2208, 0, 999,0,(costEpic * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Epic Fire Tower", R.drawable.towerfireorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f, 0,"bagspace", 4.0f, "bagspace element", 2f)
+                            9 -> x = Items(2209, 0, 999,0,(costEpic * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Epic Dark Tower", R.drawable.towerdarkorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
                         }
                     }
                 }
             in floor((96 - (tower.overallItemQuality / 2)) * 10).toInt()..999 ->
-                when ((0..9).random()) {
-                    in 0..7 ->
+                when ((0..8).random()) {
+                    in 0..6 ->
                         if (itemListLegendary.isNotEmpty()) {
                             when (Items.itemListLegendary.random()) {
                                 300 ->
                                     when ((0..11).random()) {
-                                        0 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace & Blaze", R.drawable.wandswordpurple, R.drawable.overlaytransparent, ((4.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
-                                        1 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace & Blaze", R.drawable.wandswordpurple, R.drawable.overlaytransparent, ((4.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(level / 10.0f)))
-                                        2 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace & Blaze", R.drawable.wandswordpurple, R.drawable.overlaytransparent, ((4.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
-                                        3 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace & Blaze", R.drawable.wandswordpurple, R.drawable.overlaytransparent, ((4.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(level / 10.0f)))
-                                        6 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace", R.drawable.pdoubleswordspurple, R.drawable.overlaytransparent, 0f, ((7.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
-                                        7 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace", R.drawable.pdoubleswordspurple, R.drawable.overlaytransparent, 0f, ((7.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
-                                        8 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace", R.drawable.pdoubleswordspurple, R.drawable.overlaytransparent, 0f, ((7.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(level / 10.0f)))
-                                        9 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace", R.drawable.pdoubleswordspurple, R.drawable.overlaytransparent, 0f, ((7.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(level / 10.0f)))
-                                        10 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Wand", R.drawable.zauberstabpurple, R.drawable.overlaytransparent, 0f, 0.0f, ((7.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
-                                        11 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Wand", R.drawable.zauberstabpurple, R.drawable.overlaytransparent, 0f, 0.0f, ((7.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
-                                        12 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Wand", R.drawable.zauberstabpurple, R.drawable.overlaytransparent, 0f, 0.0f, ((7.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(level / 10.0f)))
-                                        13 -> x =
-                                            Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Wand", R.drawable.zauberstabpurple, R.drawable.overlaytransparent, 0f, 0.0f, ((7.5f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(level / 10.0f)))
+                                        0 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace & Blaze", R.drawable.wandswordpurple, R.drawable.overlaytransparent, ((4.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        1 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace & Blaze", R.drawable.wandswordpurple, R.drawable.overlaytransparent, ((4.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
+                                        2 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace & Blaze", R.drawable.wandswordpurple, R.drawable.overlaytransparent, ((4.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        3 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace & Blaze", R.drawable.wandswordpurple, R.drawable.overlaytransparent, ((4.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
+                                        6 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace", R.drawable.pdoubleswordspurple, R.drawable.overlaytransparent, 0f, ((7.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        7 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace", R.drawable.pdoubleswordspurple, R.drawable.overlaytransparent, 0f, ((7.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        8 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace", R.drawable.pdoubleswordspurple, R.drawable.overlaytransparent, 0f, ((7.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
+                                        9 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Mace", R.drawable.pdoubleswordspurple, R.drawable.overlaytransparent, 0f, ((7.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
+                                        10 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Wand", R.drawable.zauberstabpurple, R.drawable.overlaytransparent, 0f, 0.0f, ((7.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        11 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Wand", R.drawable.zauberstabpurple, R.drawable.overlaytransparent, 0f, 0.0f, ((7.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        12 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Wand", R.drawable.zauberstabpurple, R.drawable.overlaytransparent, 0f, 0.0f, ((7.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
+                                        13 -> x = Items(300, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Wand", R.drawable.zauberstabpurple, R.drawable.overlaytransparent, 0f, 0.0f, ((7.5f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
                                     }
-                                301 -> x =
-                                    Items(301, 1, 25, 0, 0f, 0, 0f, 0, "Legendary Magic Box", R.drawable.magicboxpurple, R.drawable.overlaytransparent, ((3.0f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5, "no xp cost", 0f, "", 0f)
+                                301 -> x = Items(301, 1, 25, 0, 0f, 0, 0f, 0, "Legendary Magic Box", R.drawable.magicboxpurple, R.drawable.overlaytransparent, ((3.0f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5, "no xp cost", 0f, "", 0f)
                                 302 ->
                                     when ((0..2).random()) {
-                                        0 -> x =
-                                            Items(302, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * lvlScalerSecond) + (level * 0.15f)), 0.0f, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
-                                        1 -> x =
-                                            Items(302, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * lvlScalerSecond) + (level * 0.15f)), 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
-                                        2 -> x =
-                                            Items(302, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * lvlScalerSecond) + (level * 0.15f)), 0.0f, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(level / 10.0f)))
-                                        3 -> x =
-                                            Items(302, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * lvlScalerSecond) + (level * 0.15f)), 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(level / 10.0f)))
+                                        0 -> x = Items(302, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        1 -> x = Items(302, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        2 -> x = Items(302, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
+                                        3 -> x = Items(302, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
                                     }
                                 303 ->
                                     when ((0..2).random()) {
-                                        0 -> x =
-                                            Items(303, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * lvlScalerSecond) + (level * 0.15f)), 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
-                                        1 -> x =
-                                            Items(303, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * lvlScalerSecond) + (level * 0.15f)), 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2))
-                                        2 -> x =
-                                            Items(303, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * lvlScalerSecond) + (level * 0.15f)), 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(level / 10.0f)))
-                                        3 -> x =
-                                            Items(303, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * lvlScalerSecond) + (level * 0.15f)), 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(level / 10.0f)))
+                                        0 -> x = Items(303, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        1 -> x = Items(303, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        2 -> x = Items(303, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
+                                        3 -> x = Items(303, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(level / 10.0f))* tower.towerRarityMultiplier)
                                     }
-                                304 -> x =
-                                    Items(304, 20, 100, 0, (costLegendary * lvlXp * 0.5f), costDia, 0f, 0, "Frost Aura", R.drawable.iceaurapurple, R.drawable.overlaytransparent, ((1.0f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, ((1.0f * lvlScalerSecond) + (level * 0.15f)), 0.0f, 0.0f, 0, "Slow aura X%", 20f, "", 0f)
-                                305 -> x =
-                                    Items(305, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Disruptor", R.drawable.disruptorpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "Adds X dmg per enemy in tower range", (2f * lvlScaler), "", 0f)
-                                306 -> x =
-                                    Items(306, 50, 999, 0, 0f, costDia, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f)
-                                307 -> x =
-                                    Items(307, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Multibarrel", R.drawable.bouncepurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((4.0f * lvlScalerSecond) + (level * 0.15f)), 0.0f, 0.0f, 5, "+2 bounce", 2f, "", 0f)
-                                308 -> x =
-                                    Items(308, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Freezer", R.drawable.frostlila, R.drawable.overlaytransparent, ((1.0f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, ((4.0f * lvlScalerSecond) + (level * 0.15f)), ((3.0f * lvlScalerSecond) + (level * 0.15f)), 0.0f, 5, "slows a random unit for 30%", 30.0f, "", 0f)
-                                309 -> x =
-                                    Items(309, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Lasso", R.drawable.lassopurple, R.drawable.overlaytransparent, ((1.0f * lvlScaler) + (level * 0.15f)), 0.0f, 0.0f, 0f, 0.0f, 0.0f, 5, "throws X lassos that stun", 3.0f, "", 0f)
-                                310 -> x =
-                                    Items(310, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "BullZ-I", R.drawable.bullseyepurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0f, ((12.0f * lvlScalerSecond) + (level * 0.15f)), 0f, 5, "+1 multicrit", 1f, "", 0f)
-                                311 -> x =
-                                    Items(311, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "21/20", R.drawable.critdmgpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, ((12f * lvlScalerSecond) + (level * 0.15f)), (0.015f * level), 5, "", 0.0f, "", 0f)
-                                312 -> x =
-                                    Items(312, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Slow Death", R.drawable.slowdeathpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "burns 1% hp as mgc dmg per attack", 0.01f, "", 0f)
-                                313 -> x =
-                                    Items(313, 10, 999, 0, 0f, costDia, 0f, 0, "Lovely!", R.drawable.heartdiagreen, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "+5 lives", 5f, "", 0f)
-                                314 -> x =
-                                    Items(314, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Shredder", R.drawable.shredderpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, ((6.0f * lvlScalerSecond) + (level * 0.15f)), 0f, 0f, 0, "reduces armor by X per hit", 0.5f, "", 0f)
-                                315 -> x =
-                                    Items(315, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Magic Braker", R.drawable.magicbrakerpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, ((6.0f * lvlScalerSecond) + (level * 0.15f)), 0f, 0f, 0, "reduces magic armor by X per hit", 0.5f, "", 0f)
+                                304 -> x = Items(304, 20, 100, 0, (costLegendary * lvlXp * 0.5f), costDia, 0f, 0, "Frost Aura", R.drawable.iceaurapurple, R.drawable.overlaytransparent, ((1.0f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((1.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0, "Slow aura X%", 20f, "", 0f)
+                                305 -> x = Items(305, 1, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Disruptor", R.drawable.disruptorpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "Adds X dmg per enemy in tower range", (2f * lvlScaler)* tower.towerRarityMultiplier, "", 0f)
+                                306 -> x = Items(306, 50, 999, 0, 0f, costDia, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f)
+                                307 -> x = Items(307, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Multibarrel", R.drawable.bouncepurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((4.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "+2 bounce", 2f, "", 0f)
+                                308 -> x = Items(308, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Freezer", R.drawable.frostlila, R.drawable.overlaytransparent, ((1.0f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((4.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, ((3.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "slows a random unit for 30%", 30.0f, "", 0f)
+                                309 -> x = Items(309, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Lasso", R.drawable.lassopurple, R.drawable.overlaytransparent, ((1.0f * lvlScaler) + (level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 5, "throws X lassos that stun", 3.0f, "", 0f)
+                                310 -> x = Items(310, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "BullZ-I", R.drawable.bullseyepurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0f, ((12.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0f, 5, "+1 multicrit", 1f, "", 0f)
+                                311 -> x = Items(311, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "21/20", R.drawable.critdmgpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, ((12f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, (0.015f * level)* tower.towerRarityMultiplier, 5, "", 0.0f, "", 0f)
+                                312 -> x = Items(312, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Slow Death", R.drawable.slowdeathpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "burns 1% hp as mgc dmg per attack", 0.01f, "", 0f)
+                                313 -> x = Items(313, 10, 999, 0, 0f, costDia, 0f, 0, "Lovely!", R.drawable.heartdiagreen, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "+5 lives", 5f, "", 0f)
+                                314 -> x = Items(314, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Shredder", R.drawable.shredderpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, ((6.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0f, 0f, 0, "reduces armor by X per hit", 0.5f* tower.towerRarityMultiplier, "", 0f)
+                                315 -> x = Items(315, 30, 999, 0, (costLegendary * lvlXp), costDia, 0f, 0, "Legendary Magic Braker", R.drawable.magicbrakerpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, ((6.0f * lvlScalerSecond) + (level * 0.15f))* tower.towerRarityMultiplier, 0f, 0f, 0, "reduces magic armor by X per hit", 0.5f* tower.towerRarityMultiplier, "", 0f)
                             }
                         }
-                    8 -> {
+                    7,8 -> {
                         when ((0..9).random()){
-                            0 -> x = Items(2300, 0, 999,0,0f, 0, 0f, 0, "Earth", R.drawable.talentsearth, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Earth Talent", 0.0f, "", 0f)
-                            1 -> x = Items(2301, 1, 999,0,0f, 0, 0f, 0, "Wizard", R.drawable.talentswizard, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Wizard Talent", 0.0f, "", 0f)
-                            2 -> x = Items(2302, 2, 999,0,0f, 0, 0f, 0, "Ice", R.drawable.talentsice, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Ice Talent", 0.0f, "", 0f)
-                            3 -> x = Items(2303, 3, 999,0,0f, 0, 0f, 0, "Butterfly", R.drawable.talentsbutterfly, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Butterfly Talent", 0.0f, "", 0f)
-                            4 -> x = Items(2304, 4, 999,0,0f, 0, 0f, 0, "Poison", R.drawable.talentspoison, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Poison Talent", 0.0f, "", 0f)
-                            5 -> x = Items(2305, 5, 999,0,0f, 0, 0f, 0, "Moon", R.drawable.moon, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Moon Talent", 0.0f, "", 0f)
-                            6 -> x = Items(2306, 6, 999,0,0f, 0, 0f, 0, "Wind", R.drawable.talentswind, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Wind Talent", 0.0f, "", 0f)
-                            7 -> x = Items(2307, 7, 999,0,0f, 0, 0f, 0, "Utils", R.drawable.talentsutils, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0,"Enables Utils Talent", 0.0f, "", 0f)
-                            8 -> x = Items(2308, 8, 999,0,0f, 0, 0f, 0, "Fire", R.drawable.talentsfire, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0,"Enables Fire Talent", 0.0f, "", 0f)
-                            9 -> x = Items(2309, 9, 999,0,0f, 0, 0f, 0, "Dark", R.drawable.talentsdark, R.drawable.overlaytransparent,10f, 0.0f,0.0f,45f, 1f, 2f, 0, "Enables Dark Talent", 0.0f, "", 0f)
-                        }
-                    }
-                    9 -> {
-                        when ((0..9).random()) {
-                            0 -> x = Items(3000, 0, 999, 0, 0f, 0, 0f, 0, "Earth Element", R.drawable.talentsearth, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Earth Abilities", 0.0f, "", 0f)
-                            1 -> x = Items(3001, 0, 999, 0, 0f, 0, 0f, 0, "Wizard Element", R.drawable.talentswizard, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wizard Abilities", 0.0f, "", 0f)
-                            2 -> x = Items(3002, 0, 999, 0, 0f, 0, 0f, 0, "Ice Element", R.drawable.talentsice, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Ice Abilities", 0.0f, "", 0f)
-                            3 -> x = Items(3003, 0, 999, 0, 0f, 0, 0f, 0, "Butterfly Element", R.drawable.talentsbutterfly, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Butterfly Abilities", 0.0f, "", 0f)
-                            4 -> x = Items(3004, 0, 999, 0, 0f, 0, 0f, 0, "Poison Element", R.drawable.talentspoison, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Poison Abilities", 0.0f, "", 0f)
-                            5 -> x = Items(3005, 0, 999, 0, 0f, 0, 0f, 0, "Moon Element", R.drawable.moon, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Moon Abilities", 0.0f, "", 0f)
-                            6 -> x = Items(3006, 0, 999, 0, 0f, 0, 0f, 0, "Wind Element", R.drawable.talentswind, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wind Abilities", 0.0f, "", 0f)
-                            7 -> x = Items(3007, 0, 999, 0, 0f, 0, 0f, 0, "Utils Element", R.drawable.talentsutils, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Utils Abilities", 0.0f, "", 0f)
-                            8 -> x = Items(3008, 0, 999, 0, 0f, 0, 0f, 0, "Fire Element", R.drawable.talentsfire, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Fire Abilities", 0.0f, "", 0f)
-                            9 -> x = Items(3009, 0, 999, 0, 0f, 0, 0f, 0, "Dark Element", R.drawable.talentsdark, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Dark Abilities", 0.0f, "", 0f)
+                            0 -> x = Items(2300, 0, 999,0,(costLegendary * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Legendary Earth Tower", R.drawable.towerearthpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                            1 -> x = Items(2301, 0, 999,0,(costLegendary * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Legendary Wizard Tower", R.drawable.towerwizardpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f,0, "bagspace", 5.0f, "bagspace element", 3f)
+                            2 -> x = Items(2302, 0, 999,0,(costLegendary * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Legendary Ice Tower", R.drawable.towericepurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                            3 -> x = Items(2303, 0, 999,0,(costLegendary * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Legendary Butterfly Tower", R.drawable.towerbutterflypurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                            4 -> x = Items(2304, 0, 999,0,(costLegendary * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Legendary Poison Tower", R.drawable.towerpoisonpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                            5 -> x = Items(2305, 0, 999,0,(costLegendary * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Legendary Moon Tower", R.drawable.towermoonpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                            6 -> x = Items(2306, 0, 999,0,(costLegendary * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Legendary Wind Tower", R.drawable.towerwindpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f,0, "bagspace", 5.0f, "bagspace element", 3f)
+                            7 -> x = Items(2307, 0, 999,0,(costLegendary * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Legendary Utils Tower", R.drawable.towerutilspurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f,0,"bagspace", 5.0f, "bagspace element", 3f)
+                            8 -> x = Items(2308, 0, 999,0,(costLegendary * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Legendary Fire Tower", R.drawable.towerfirepurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f,0,"bagspace", 5.0f, "bagspace element", 3f)
+                            9 -> x = Items(2309, 0, 999,0,(costLegendary * lvlXp * (1.5f + (towerCount /10))), 0, 0f, 0, "Legendary Dark Tower", R.drawable.towerdarkpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f,0, "bagspace", 5.0f, "bagspace element", 3f)
                         }
                     }
                 }
         }
 
         return x
+        } finally {
+            readLockTower.unlock()
+        }
     }
 
     // ----------------------------------------------------------------------------------------------------------------------------------------------
@@ -6425,6 +6859,36 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     }
 
+    fun towerExperienceGainUtilAura(xpGain: Float, killerId: Int) {
+
+            var it = towerList[killerId]
+
+            var towerListIteratorZ = Companion.towerList.listIterator()
+            while (towerListIteratorZ.hasNext()) {
+                var tower = towerListIteratorZ.next()
+                if (it != tower) {
+                    if (splash150(it.towerRange.x, it.towerRange.y, it.towerR, tower.towerRange.x, tower.towerRange.y, tower.towerR)) {
+                        if (tower.experienceGainUtilsAura) tower.xpTower += xpGain / 10
+                    }
+                }
+            }
+    }
+
+    fun towerExperienceShareUtilAura(xpGain: Float, killerId: Int) {
+
+            var it = towerList[killerId]
+
+            var towerListIteratorZ = Companion.towerList.listIterator()
+            while (towerListIteratorZ.hasNext()) {
+                var tower = towerListIteratorZ.next()
+                if (it != tower) {
+                    if (splash150(it.towerRange.x, it.towerRange.y, it.towerR, tower.towerRange.x, tower.towerRange.y, tower.towerR)) {
+                        tower.xpTower += xpGain / 10
+                    }
+                }
+            }
+    }
+
     // ----------------------------------------------------------------------------------------------------------------------------------------------
 
     private fun addItemsToList() {
@@ -6449,21 +6913,3 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
     }
 
 }
-
-class MyDragShadowBuilder(v: View) : View.DragShadowBuilder(v) {
-            private val shadow = ColorDrawable(Color.LTGRAY)
-
-            override fun onProvideShadowMetrics(size: Point, touch: Point) {
-                val width: Int = (view.width / 1.2F).toInt()
-                val height: Int = (view.height / 1.2F).toInt()
-                //val width: Int = view.width / 2
-                //val height: Int = view.height / 2
-
-                shadow.setBounds(0, 0, width, height)
-                size.set(width, height)
-                touch.set(width / 2, height / 2)
-            }
-            override fun onDrawShadow(canvas: Canvas) {
-                shadow.draw(canvas)
-            }
-        }

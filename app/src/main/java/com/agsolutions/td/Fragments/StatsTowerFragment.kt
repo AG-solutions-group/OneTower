@@ -62,6 +62,8 @@ class StatsTowerFragment (var updateViewModel: UpdateViewModel) : Fragment() {
 
         var scalePics = 1.5
 
+        rarityTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
+        rarityTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
         dmgTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
         dmgTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
         phyDmgTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
@@ -88,7 +90,13 @@ class StatsTowerFragment (var updateViewModel: UpdateViewModel) : Fragment() {
         bonusItemQualityTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
         bagSizeTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
         bagSizeTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
+        bagSizeElementTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
+        bagSizeElementTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
 
+        rarityTV.setOnClickListener(){
+            com.agsolutions.td.Companion.toastGlobal = true
+            com.agsolutions.td.Companion.toastText = "Rarity - rarity of tower"
+        }
         dmgTV.setOnClickListener(){
             com.agsolutions.td.Companion.toastGlobal = true
             com.agsolutions.td.Companion.toastText = "Damage - bonus physical and spell damage"

@@ -61,7 +61,7 @@
             app:layout_constraintStart_toStartOf="@+id/dayNightIV"
             app:layout_constraintTop_toBottomOf="@+id/dayNightIV" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/menuBtn"
             android:layout_width="80dp"
             android:layout_height="60dp"
@@ -70,6 +70,7 @@
             android:textColor="#ffffff"
             android:elevation="1dp"
             android:textSize="@{updateViewModel.textButton}"
+            app:backgroundTint="@null"
             android:background="@drawable/button_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +84,8 @@
             android:layout_marginEnd="2dp"
             android:elevation="1dp"
             android:src="@drawable/play"
-            android:tint="#ffffff"
+            app:tint="#ffffff"
+            app:backgroundTint="@null"
             android:background="@drawable/button_bg"
             app:layout_constraintEnd_toStartOf="@+id/menuBtn"
             app:layout_constraintTop_toTopOf="parent" />
@@ -92,7 +94,9 @@
             android:id="@+id/gameSpeedBtn"
             android:layout_width="40dp"
             android:layout_height="30dp"
+            app:backgroundTint="@null"
             android:background="@drawable/button_bg"
+            android:padding="0dp"
             android:elevation="1dp"
             android:text="1x"
             android:textColor="#ffffff"
@@ -215,11 +219,14 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:listitem="@layout/item" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/firstLastRandomBtn"
             android:layout_width="70dp"
             android:layout_height="30dp"
+            app:backgroundTint="@null"
             android:background="@drawable/button_bg"
+            android:visibility="invisible"
+            android:padding="0dp"
             android:singleLine="true"
             android:elevation="1dp"
             android:text="first"
@@ -296,7 +303,7 @@
         >
 
 
-        <Button
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/buildBtn"
             android:layout_gravity="center"
             android:padding="5dp"
@@ -333,18 +340,24 @@
             android:paddingStart="2dp"
             >
 
-            <Button
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:id="@+id/talentsBTN"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
+                android:visibility="invisible"
                 android:elevation="1dp"
                 android:textColor="#ffffff"
+                app:backgroundTint="@null"
                 android:background="@drawable/button_bg"
                 android:textSize="@{updateViewModel.textButton}"
-                android:textAllCaps="false"
-                android:text="Talents"
+                android:text="@{updateViewModel.talents.toString()}"
                 android:singleLine="true"
+                app:icon="@drawable/talenticon"
+                app:iconSize="20dp"
+                app:iconGravity="textEnd"
+                app:iconTint="@null"
                 />
 
             <androidx.constraintlayout.widget.Barrier

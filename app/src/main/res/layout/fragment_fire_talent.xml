@@ -40,6 +40,7 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/backgroundsymbolfirerow1"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.35"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,12 +49,12 @@
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
-                    android:text="3"
+                    android:text="1"
                     android:textAlignment="center"
                     android:textColor="@color/Talentfont"
                     android:textSize="@dimen/textMain"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_bias="0.35"
                     app:layout_constraintStart_toEndOf="@+id/fireRow1Item1ShowTV"
                     app:layout_constraintTop_toBottomOf="@+id/fireRow1Item1IB" />
 
@@ -81,10 +82,64 @@
                     android:textColor="@color/Talentfont"
                     android:textSize="@dimen/textMain"
                     app:layout_constraintEnd_toStartOf="@+id/fireRow1Item1TV"
-                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_bias="0.35"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/fireRow1Item1IB" />
+
+                <ImageButton
+                    android:id="@+id/fireRow1Item2IB"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/backgroundsymbolfirerow1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.65"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/fireRow1Item2TV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="1"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.65"
+                    app:layout_constraintStart_toEndOf="@+id/fireRow1Item2ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/fireRow1Item2IB" />
+
+                <TextView
+                    android:id="@+id/fireRow1Item2BorderTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:gravity="center"
+                    android:text="/"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/fireRow1Item2TV"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/fireRow1Item2ShowTV"
+                    app:layout_constraintTop_toBottomOf="@+id/fireRow1Item2IB" />
+
+                <TextView
+                    android:id="@+id/fireRow1Item2ShowTV"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="X"
+                    android:textAlignment="center"
+                    android:textColor="@color/Talentfont"
+                    android:textSize="@dimen/textMain"
+                    app:layout_constraintEnd_toStartOf="@+id/fireRow1Item2TV"
+                    app:layout_constraintHorizontal_bias="0.65"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/fireRow1Item2IB" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

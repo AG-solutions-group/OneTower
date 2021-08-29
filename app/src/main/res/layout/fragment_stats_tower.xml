@@ -32,20 +32,90 @@
                 android:layout_height="wrap_content"
                 >
 
+
+                <ImageView
+                    android:id="@+id/rarityTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="12dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/rarityicon"
+                    app:layout_constraintBottom_toTopOf="@+id/itemChanceTV"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/rarityShowTV"
+                    android:layout_width="wrap_content"
+                    android:minWidth="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.towerRarity.toString()}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/rarityTV"
+                    app:layout_constraintStart_toEndOf="@+id/rarityTV"
+                    app:layout_constraintTop_toTopOf="@+id/rarityTV" />
+
+                <TextView
+                    android:id="@+id/rarityMultiShowTV"
+                    android:layout_width="wrap_content"
+                    android:minWidth="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:text="@{updateViewModel.towerRarityMultiplier.toString()}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/rarityTV"
+                    app:layout_constraintStart_toEndOf="@+id/rarityShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/rarityTV" />
+
+                <ProgressBar
+                    android:id="@+id/xpBar"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@color/backgroundButton"
+                    android:max="@{updateViewModel.towerLevelXp}"
+                    android:min="@{updateViewModel.towerLevelXpMin}"
+                    android:progress="@{updateViewModel.towerLevelXpProg}"
+                    android:progressBackgroundTint="@color/backgroundButton"
+                    android:progressTint="#1E9823"
+                    app:layout_constraintBottom_toBottomOf="@+id/rarityTV"
+                    app:layout_constraintStart_toEndOf="@+id/rarityMultiShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/rarityTV" />
+
+                <TextView
+                    android:id="@+id/xpShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="1dp"
+                    android:gravity="center_vertical"
+                    android:text="@{updateViewModel.towerLevel.toString()}"
+                    android:textColor="#ffffff"
+                    android:textSize="@{updateViewModel.textMain}"
+                    app:layout_constraintBottom_toBottomOf="@+id/xpBar"
+                    app:layout_constraintEnd_toEndOf="@+id/xpBar"
+                    app:layout_constraintStart_toStartOf="@+id/xpBar"
+                    app:layout_constraintTop_toTopOf="@+id/xpBar" />
+
                 <ImageView
                     android:id="@+id/itemChanceTV"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="12dp"
+                    android:layout_marginTop="2dp"
                     android:elevation="1dp"
                     android:src="@drawable/itemfindicon"
                     app:layout_constraintBottom_toTopOf="@+id/dmgTV"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/rarityTV" />
 
                 <TextView
                     android:id="@+id/itemChanceShowTV"
-                    android:layout_width="40dp"
+                    android:layout_width="wrap_content"
+                    android:minWidth="30dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
@@ -69,7 +139,8 @@
 
                 <TextView
                     android:id="@+id/bonusItemQualityShowTV"
-                    android:layout_width="40dp"
+                    android:layout_width="wrap_content"
+                    android:minWidth="30dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
@@ -97,12 +168,37 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:minWidth="40dp"
+                    android:minWidth="30dp"
                     android:text="@{updateViewModel.bagString.toString()}"
                     android:textColor="@{updateViewModel.bagColor}"
                     android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/bagSizeTV"
                     app:layout_constraintStart_toEndOf="@+id/bagSizeTV"
+                    app:layout_constraintTop_toTopOf="@+id/bagSizeTV" />
+
+                <ImageView
+                    android:id="@+id/bagSizeElementTV"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/bagelement"
+                    app:layout_constraintBottom_toBottomOf="@+id/itemChanceTV"
+                    app:layout_constraintStart_toEndOf="@+id/bagUsedShowTV"
+                    app:layout_constraintTop_toTopOf="@+id/itemChanceTV" />
+
+                <TextView
+                    android:id="@+id/bagUsedElementShowTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:elevation="1dp"
+                    android:minWidth="30dp"
+                    android:text="@{updateViewModel.bagStringElement.toString()}"
+                    android:textColor="@{updateViewModel.bagColorElement}"
+                    android:textSize="@{updateViewModel.textStats}"
+                    app:layout_constraintBottom_toBottomOf="@+id/bagSizeTV"
+                    app:layout_constraintStart_toEndOf="@+id/bagSizeElementTV"
                     app:layout_constraintTop_toTopOf="@+id/bagSizeTV" />
 
 

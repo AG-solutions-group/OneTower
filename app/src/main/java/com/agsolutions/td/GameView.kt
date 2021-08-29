@@ -11,8 +11,6 @@ import com.agsolutions.td.Companion.Companion.autoSpawn
 import com.agsolutions.td.Companion.Companion.build
 import com.agsolutions.td.Companion.Companion.day
 import com.agsolutions.td.Companion.Companion.dmgDisplayList
-import com.agsolutions.td.Companion.Companion.earthArmorSmasher
-import com.agsolutions.td.Companion.Companion.end
 import com.agsolutions.td.Companion.Companion.enemyClick
 import com.agsolutions.td.Companion.Companion.enemyCount
 import com.agsolutions.td.Companion.Companion.enemyList
@@ -33,13 +31,10 @@ import com.agsolutions.td.Companion.Companion.lvlXp
 import com.agsolutions.td.Companion.Companion.manaShieldBool
 import com.agsolutions.td.Companion.Companion.mapMode
 import com.agsolutions.td.Companion.Companion.mapPick
-import com.agsolutions.td.Companion.Companion.markOfTheButterfly
 import com.agsolutions.td.Companion.Companion.midnightMadnessExtraSpawn
 import com.agsolutions.td.Companion.Companion.poisonCloud
 import com.agsolutions.td.Companion.Companion.readLockEnemy
 import com.agsolutions.td.Companion.Companion.refresh
-import com.agsolutions.td.Companion.Companion.rotateShotBounce
-import com.agsolutions.td.Companion.Companion.rotateShotMulti
 import com.agsolutions.td.Companion.Companion.rotateTornado
 import com.agsolutions.td.Companion.Companion.rotationBulletX
 import com.agsolutions.td.Companion.Companion.rotationBulletY
@@ -55,19 +50,17 @@ import com.agsolutions.td.Companion.Companion.shootListIce
 import com.agsolutions.td.Companion.Companion.shootListMine
 import com.agsolutions.td.Companion.Companion.shootListPoison
 import com.agsolutions.td.Companion.Companion.shootListTornado
-import com.agsolutions.td.Companion.Companion.shotBounce
 import com.agsolutions.td.Companion.Companion.spawnDoubleClick
 import com.agsolutions.td.Companion.Companion.spawnDoubleClickCounter
 import com.agsolutions.td.Companion.Companion.spawnEnemy
-import com.agsolutions.td.Companion.Companion.splashRange
 import com.agsolutions.td.Companion.Companion.startScreenTimerTower
 import com.agsolutions.td.Companion.Companion.startScreenTowerBool
 import com.agsolutions.td.Companion.Companion.tankBool
 import com.agsolutions.td.Companion.Companion.timer
 import com.agsolutions.td.Companion.Companion.timerEliteMob
-import com.agsolutions.td.Companion.Companion.tornadoRadius
 import com.agsolutions.td.Companion.Companion.towerClick
 import com.agsolutions.td.Companion.Companion.towerClickBool
+import com.agsolutions.td.Companion.Companion.towerClickID
 import com.agsolutions.td.Companion.Companion.towerList
 import com.agsolutions.td.Companion.Companion.towerStatsClick
 import com.agsolutions.td.Companion.Companion.wizardMagicArmorSmasher
@@ -145,6 +138,11 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     var paintManaShield = Paint()
     var paintShield = Paint()
     var paintText = Paint ()
+
+    var towerGunBasic: Bitmap? = null
+    var towerGunBlue: Bitmap? = null
+    var towerGunOrange: Bitmap? = null
+    var towerGunPurple: Bitmap? = null
 
 
 
@@ -227,10 +225,10 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
         towerBase = BitmapFactory.decodeResource(context.resources, R.drawable.towerbasesmall)
         towerFalling = BitmapFactory.decodeResource(context.resources, R.drawable.towerfalling)
-        val towerTower1 = BitmapFactory.decodeResource(context.resources, R.drawable.towergunbig)
-        val towerTower2 = BitmapFactory.decodeResource(context.resources, R.drawable.towergunbig2)
-        val towerTower3 = BitmapFactory.decodeResource(context.resources, R.drawable.towergunbig3)
-        towerTowerArray = arrayListOf<Bitmap>(towerTower1, towerTower2, towerTower3)
+        towerGunBasic = BitmapFactory.decodeResource(context.resources, R.drawable.towergunbasic)
+        towerGunBlue = BitmapFactory.decodeResource(context.resources, R.drawable.towergunblue)
+        towerGunOrange = BitmapFactory.decodeResource(context.resources, R.drawable.towergunorange)
+        towerGunPurple = BitmapFactory.decodeResource(context.resources, R.drawable.towergunbig)
             backgroundMap1DayBmp = BitmapFactory.decodeResource(context.resources, R.drawable.map1blur)
             backgroundMap1NightBmp = BitmapFactory.decodeResource(context.resources, R.drawable.map1blurnight)
             backgroundMap1Mode2DayBmp = BitmapFactory.decodeResource(context.resources, R.drawable.map2blur)
@@ -390,6 +388,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             if (squaredDistance <= sumOfRadius * sumOfRadius) {
                 it.selected = true
                 towerClick = true
+                towerClickID = towerList.indexOf(it)
                 build = false
                 enemyClick = false
                 towerClickBool = true
@@ -424,7 +423,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
                 if (startScreenTowerBool) {
                     startScreenTowerBool = false
-                    towerList.add(Tower(10f, 45f, 1f, 2f))
+                    towerList.add(Tower(10f, 0f, 0f, 45f, 1f, 2f))
                 }
 
                 if (MainActivity.firstDisplayScale != 1) {
@@ -457,18 +456,13 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                 var rectBaseX =
                                     Rect(100.toInt(), ((((2160 / 2)) - 75).toInt()), (250).toInt(), ((((2160 / 2)) + 75).toInt()))
                                 canvas.drawBitmap(towerBase!!, null, rectBaseX, null)
-                                if (!it.multishot) {
-                                    it.towerTowerNextPicPlace++
-                                    if (it.towerTowerNextPicPlace >= 5) {
-                                        it.towerTowerNextPicPlace = 0
-                                        it.towerTowerNextPic++
-                                        if (it.towerTowerNextPic >= 3) it.towerTowerNextPic = 0
-                                    }
+                                if (it.towerPrimaryElement == "wind") {
+                                }else {
                                     canvas.save()
-                                    canvas.rotate(getAngle(), (175f), (2160 / 2f))
+                                    canvas.rotate(getAngle(it), (175f), (2160 / 2f))
                                     var rectTowerX =
                                         Rect((85).toInt(), (((2160 / 2) - 75).toInt()), (385).toInt(), (((2160 / 2) + 75).toInt()))
-                                    canvas.drawBitmap(towerTowerArray!![it.towerTowerNextPic], null, rectTowerX, null)
+                                    canvas.drawBitmap(towerGunPurple!!, null, rectTowerX, null)
                                     canvas.restore()
                                 }
                             }
@@ -636,46 +630,43 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
                 //draw tower
 
-                writeLockTower.lock()
-                try {
-                var towerListIterator = towerList.listIterator()
-                while (towerListIterator.hasNext()) {
-                    var it = towerListIterator.next()
-
-                    if (level > 0) {
-                        if (it.towerFallingCount > 0) {
-                            it.towerFallingCount += 8
-                            var rectBaseS =
-                                Rect((it.towerRange.x - 80).toInt(), it.towerFallingCount, it.towerRange.x.toInt() + 80, it.towerFallingCount + 200)
-                            canvas.drawBitmap(towerFalling!!, null, rectBaseS, null)
-                            if (it.towerFallingCount > it.towerRange.y.toInt()) it.towerFallingCount = 0
-                        } else {
-                            var rectBase = Rect ((it.towerRange.x - 80).toInt(), (it.towerRange.y - 80).toInt(), it.towerRange.x.toInt() + 80, it.towerRange.y.toInt() + 80)
-                            canvas.drawBitmap(towerBase!!, null, rectBase, null)
-                            if (!it.multishot) {
-                                it.towerTowerNextPicPlace++
-                                if (it.towerTowerNextPicPlace >= 5) {
-                                    it.towerTowerNextPicPlace = 0
-                                    it.towerTowerNextPic++
-                                    if (it.towerTowerNextPic >= 3) it.towerTowerNextPic = 0
-                                }
-                                canvas.save()
-                                canvas.rotate(getAngle(), it.towerRange.x + 64f, it.towerRange.y + 64f)
-                                var rectTower = Rect((it.towerRange.x + 64).toInt(), (it.towerRange.y + 64).toInt(), it.towerRange.x.toInt() +192, it.towerRange.y.toInt() + 64)
-                                canvas.drawBitmap(towerTowerArray!![it.towerTowerNextPic], null, rectTower, null)
-                                canvas.restore()
+                if (towerList.size > 0) {
+                    writeLockTower.lock()
+                    try {
+                        var towerListIterator = towerList.listIterator()
+                        while (towerListIterator.hasNext()) {
+                            var it = towerListIterator.next()
+                            if (it.towerFallingCount > 0) {
+                                if (refresh) it.towerFallingCount += 8
+                                var rectBaseS =
+                                    Rect((it.towerRange.x - 80).toInt(), it.towerFallingCount, it.towerRange.x.toInt() + 80, it.towerFallingCount + 160)
+                                canvas.drawBitmap(towerFalling!!, null, rectBaseS, null)
+                                if (it.towerFallingCount > it.towerRange.y.toInt() - 80) it.towerFallingCount = 0
+                            } else {
+                                var rectBase =
+                                    Rect((it.towerRange.x - 80).toInt(), (it.towerRange.y - 80).toInt(), (it.towerRange.x + 80).toInt(), (it.towerRange.y + 80).toInt())
+                                canvas.drawBitmap(towerBase!!, null, rectBase, null)
+                                    canvas.save()
+                                    canvas.rotate(getAngle(it), it.towerRange.x, it.towerRange.y)
+                                    var rectTower =
+                                        Rect((it.towerRange.x - 84).toInt(), (it.towerRange.y - 64).toInt(), it.towerRange.x.toInt() + 172, it.towerRange.y.toInt() + 64)
+                                    when (it.towerLevel ){
+                                        in 1..4 -> canvas.drawBitmap(towerGunBasic!!, null, rectTower, null)
+                                        in 5..9 -> canvas.drawBitmap(towerGunBlue!!, null, rectTower, null)
+                                        in 10..14 -> canvas.drawBitmap(towerGunOrange!!, null, rectTower, null)
+                                        in 15..999 -> canvas.drawBitmap(towerGunPurple!!, null, rectTower, null)
+                                    }
+                                    canvas.restore()
                             }
+                            if (towerClick && it.selected) canvas.drawCircle(it.towerRange.x, it.towerRange.y, it.towerR, paintRange)
+                            if (towerClick && it.selected && it.itemListBag.contains(Items.eutils)) canvas.drawCircle(it.towerRange.x, it.towerRange.y, 150f, paintRange)
                         }
-                    }
-                    if (towerClick && it.selected) canvas.drawCircle(it.towerRange.x, it.towerRange.y, it.towerR, paintRange)
-                    }
-                    } finally {
-                            writeLockTower.unlock()
-                    }
+                } finally {
+                    writeLockTower.unlock()
+                }
+                }
 
 
-
-                if (!GameActivity.paused && end == 0) {
 
                     //draw poison talent
                     if (poisonCloud > 0 && shootListPoison.isNotEmpty()) {
@@ -705,7 +696,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
 
                     //draw tornado talent
-                    if (tornadoRadius > 0) {
+                    if (shootListTornado.size > 0) {
                         writeLockTornado.lock()
                         try {
                             var shootListTornadoIterator = shootListTornado.listIterator()
@@ -740,7 +731,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                 var it = shootListMineIterator.next()
                                 if (it.broken) shootListMineIterator.remove()
                                 else {
-                                    it.update()
+                                    if (refresh) it.update()
                                     var baseMine =
                                         Rect((it.mineRadius.x - (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.y - (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.x + (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.y + (it.mineRadius.r * 1.25)).toInt())
                                     it.minePicCounter++
@@ -758,125 +749,104 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
 
                         //draw enemy
-                        writeLockEnemy.lock()
-                        writeLockDisplay.lock()
-                        try {
+
                             if (level > 0) level()
+                            if (enemyList.size > 0) {
 
-                            var enemyListIterator = enemyList.listIterator()
-                            while (enemyListIterator.hasNext()) {
-                                var it = enemyListIterator.next()
-                                // enemy out of screen
-                                if (it.dead == 1) {
-
-                                    if (dmgDisplayList.isNotEmpty()) {
-                                        var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                        while (dmgDisplayListIterator.hasNext()) {
-                                            var display = dmgDisplayListIterator.next()
-                                            if (display.indexx == it) {
-                                                display.displayDmgDelete = true
-                                            }
+                                writeLockEnemy.lock()
+                                try {
+                                    var enemyListIterator = enemyList.listIterator()
+                                    while (enemyListIterator.hasNext()) {
+                                        var it = enemyListIterator.next()
+                                        // enemy out of screen
+                                        if (refresh && it.dead != 1) {
+                                            it.update()
                                         }
-                                    }
-                                    writeLockTower.lock()
-                                    try {
-                                        var towerListIterator = towerList.listIterator()
-                                        while (towerListIterator.hasNext()) {
-                                            var tower = towerListIterator.next()
+                                        // draw
+                                        it.draw(canvas)
 
-                                            if (it == tower.randomEnemyForShot) tower.randomEnemyForShotSticky = true
-                                            tower.crossesAllList.remove(it)
-                                            tower.crossesNoneList.remove(it)
+                                        canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 42).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 18).toFloat(), paintHpBarBack)
+                                        if (day) canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 40).toFloat(), (it.circle!!.x.toFloat() - it.enemyRight + 35.0F), (it.circle!!.y - 20).toFloat(), paintHpBar)
+                                        else canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 40).toFloat(), (it.circle!!.x.toFloat() - it.enemyRight + 35.0F), (it.circle!!.y - 20).toFloat(), paintHpBarNight)
 
+                                        if (it.manaShield > 0) {
+                                            canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 54).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 44).toFloat(), paintHpBarBack)
+                                            canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 52).toFloat(), (it.circle!!.x.toFloat() - it.enemyRightManaShield + 35.0F), (it.circle!!.y - 42).toFloat(), paintManaShield)
+                                        }
+                                        if (it.shield > 0) {
+                                            canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 54).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 44).toFloat(), paintHpBarBack)
+                                            canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 52).toFloat(), (it.circle!!.x.toFloat() - it.enemyRightShield + 35.0F), (it.circle!!.y - 42).toFloat(), paintShield)
+                                        }
+
+                                        if (it.hit) {
+                                            it.explosionCounter ++
+                                            when (it.explosionCounter) {
+                                                in 1..4 -> {
+                                                    var rectExplosion = Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
+                                                    canvas.drawBitmap(explosion!!, null, rectExplosion, null)
                                                 }
-                                             } finally {
-                                    writeLockTower.unlock()
-                                    }
-                                    enemyListIterator.remove()
-
-                                } else {
-                                    if (refresh) {
-                                        it.update()
-                                    }
-                                    // draw
-                                    it.draw(canvas)
-                                    //      creepRect = Rect(((it.circle!!.x - (it.circle!!.r /2))-20).toInt(), ((it.circle!!.y - (it.circle!!.r /2))-20).toInt(), ((it.circle!!.x + (it.circle!!.r /2))+20).toInt(), ((it.circle!!.y + (it.circle!!.r /2))+20).toInt())
-                                    canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 42).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 18).toFloat(), paintHpBarBack)
-                                    if (day) canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 40).toFloat(), (it.circle!!.x.toFloat() - it.enemyRight + 35.0F), (it.circle!!.y - 20).toFloat(), paintHpBar)
-                                    else canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 40).toFloat(), (it.circle!!.x.toFloat() - it.enemyRight + 35.0F), (it.circle!!.y - 20).toFloat(), paintHpBarNight)
-
-                                    canvas.drawBitmap(creepOutline!!, null, creepRect, null)
-                                    if (it.manaShield > 0) {
-                                        canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 54).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 44).toFloat(), paintHpBarBack)
-                                        canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 52).toFloat(), (it.circle!!.x.toFloat() - it.enemyRightManaShield + 35.0F), (it.circle!!.y - 42).toFloat(), paintManaShield)
-                                    }
-                                    if (it.shield > 0) {
-                                        canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 54).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 44).toFloat(), paintHpBarBack)
-                                        canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 52).toFloat(), (it.circle!!.x.toFloat() - it.enemyRightShield + 35.0F), (it.circle!!.y - 42).toFloat(), paintShield)
-                                    }
-                                    if (it.hit) {
-                                        it.explosionCounter += 1
-                                        when (it.explosionCounter) {
-                                            in 1..4 -> {
-                                                rectExplosion.set((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
-                                                canvas.drawBitmap(explosion!!, null, rectExplosion, null)
-                                            }
-                                            in 5..10 -> {
-                                                rectExplosion.set((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
-                                                canvas.drawBitmap(explosion2!!, null, rectExplosion, null)
-                                            }
-                                            in 11..999 -> {
-                                                it.explosionCounter = 0
-                                                it.hit = false
-                                            }
-                                        }
-                                    }
-
-                                    if (it.fireDebuff > 0) it.drawBurn(canvas)
-                                    if (it.poisonDebuff > 0) it.drawPoisonDebuff(canvas)
-                                    if (it.poisonTalentPestDamage > 0) it.drawPoisonTalentPest(canvas)
-                                    if (it.iceDebuff > 0 || it.itemFrostAlreadyAffected > 0 || it.iceNovaAlreadyAffected) it.drawIceSlow(canvas)
-                                    if (it.entangled) it.drawEntangle(canvas)
-                                    if (it.feared) it.drawFear(canvas)
-                                    if (it.darkSlowAlreadyAffected) it.draw5(canvas)
-                                    if (it.talentMoonlightDraw > 0) it.drawMoonlight(canvas)
-                                    if (it.markOfTheButterflyCounter > 0) it.drawButterfly(canvas)
-                                    if (it.wizardBombActive > 0) it.drawBomb(canvas)
-                                    if (it.markOfTheButterflySlow > 0) it.drawButterflySlow(canvas)
-                                    if (it.wizardMissedLightningActiveHit >= 1) it.drawLightning(canvas)
-                                    if (it.mineAlreadyAffected) it.drawMine(canvas)
-                                    if (it.throwBoulderHitAlreadyEffected) it.drawBoulder(canvas)
-                                    if (it.itemLassoAlreadyAffected > 0) canvas.drawLine(towerList[it.itemLassoAlreadyAffectedTowerId].towerRange.x, towerList[it.itemLassoAlreadyAffectedTowerId].towerRange.y, it.circle!!.x, it.circle!!.y, paintLasso)
-                                    if (it.darkTalentLaserAlreadyAffected > 0) canvas.drawLine(towerList[it.darkTalentLaserTowerId].towerRange.x, towerList[it.darkTalentLaserTowerId].towerRange.y, it.circle!!.x, it.circle!!.y, paintLaser)
-
-                                    if (dmgDisplayList.isNotEmpty()) {
-                                        //  coroutineScope {
-                                        //      launch {
-                                        var dmgDisplayListIterator = dmgDisplayList.listIterator()
-                                        while (dmgDisplayListIterator.hasNext()) {
-                                            var display = dmgDisplayListIterator.next()
-
-                                            //        for (display in dmgDisplayList) {
-                                            //            Log.d("thread", Thread.currentThread().name)
-                                            if (display.indexx == it) {
-                                                display.dmgCount++
-                                                if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
-                                                else display.dmgCountPosition -= 2
-                                                if (it.passed == 0.toByte() || it.passed == 2.toByte() || it.passed == 4.toByte()) canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x + display.dmgCountPosition)), (it.circle!!.y - (it.circle!!.r / 2) + display.positionY), display.paint)
-                                                else canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x - (it.circle!!.r / 2)) + display.positionX), (it.circle!!.y - display.dmgCountPosition), display.paint)
-                                                if (display.dmgCount > 25) {
-                                                    //   display.burnDmgDelete = fireDmgDisplay.indexOf(display)
-                                                    display.displayDmgDelete = true
+                                                in 5..10 -> {
+                                                    var rectExplosion = Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
+                                                    canvas.drawBitmap(explosion2!!, null, rectExplosion, null)
+                                                }
+                                                in 11..999 -> {
+                                                    it.explosionCounter = 0
+                                                    it.hit = false
                                                 }
                                             }
                                         }
+
+                                        if (it.fireDebuff > 0) it.drawBurn(canvas)
+                                        if (it.poisonDebuff > 0) it.drawPoisonDebuff(canvas)
+                                        if (it.poisonTalentPestDamage > 0) it.drawPoisonTalentPest(canvas)
+                                        if (it.iceDebuff > 0 || it.itemFrostAlreadyAffected > 0 || it.iceNovaAlreadyAffected) it.drawIceSlow(canvas)
+                                        if (it.entangled) it.drawEntangle(canvas)
+                                        if (it.feared) it.drawFear(canvas)
+                                        if (it.darkSlowAlreadyAffected) it.draw5(canvas)
+                                        if (it.talentMoonlightDraw > 0) it.drawMoonlight(canvas)
+                                        if (it.markOfTheButterflyCounter > 0) it.drawButterfly(canvas)
+                                        if (it.wizardBombActive > 0) it.drawBomb(canvas)
+                                        if (it.markOfTheButterflySlow > 0) it.drawButterflySlow(canvas)
+                                        if (it.wizardMissedLightningActiveHit >= 1) it.drawLightning(canvas)
+                                        if (it.mineAlreadyAffected) it.drawMine(canvas)
+                                        if (it.throwBoulderHitAlreadyEffected) it.drawBoulder(canvas)
+                                        if (it.itemLassoAlreadyAffected > 0) canvas.drawLine(towerList[it.itemLassoAlreadyAffectedTowerId].towerRange.x, towerList[it.itemLassoAlreadyAffectedTowerId].towerRange.y, it.circle!!.x, it.circle!!.y, paintLasso)
+                                        if (it.darkTalentLaserAlreadyAffected > 0) canvas.drawLine(towerList[it.darkTalentLaserTowerId].towerRange.x, towerList[it.darkTalentLaserTowerId].towerRange.y, it.circle!!.x, it.circle!!.y, paintLaser)
+
+                                        if (dmgDisplayList.isNotEmpty()) {
+                                            //  coroutineScope {
+                                            //      launch {
+                                            writeLockDisplay.lock()
+                                            try {
+                                                var dmgDisplayListIterator =
+                                                    dmgDisplayList.listIterator()
+                                                while (dmgDisplayListIterator.hasNext()) {
+                                                    var display = dmgDisplayListIterator.next()
+
+                                                    //        for (display in dmgDisplayList) {
+                                                    //            Log.d("thread", Thread.currentThread().name)
+                                                    if (display.indexx == it) {
+                                                        display.dmgCount++
+                                                        if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
+                                                        else display.dmgCountPosition -= 2
+                                                        if (it.passed == 0.toByte() || it.passed == 2.toByte() || it.passed == 4.toByte()) canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x + display.dmgCountPosition)), (it.circle!!.y - (it.circle!!.r / 2) + display.positionY), display.paint)
+                                                        else canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x - (it.circle!!.r / 2)) + display.positionX), (it.circle!!.y - display.dmgCountPosition), display.paint)
+                                                        if (display.dmgCount > 25) {
+                                                            //   display.burnDmgDelete = fireDmgDisplay.indexOf(display)
+                                                            display.displayDmgDelete = true
+                                                        }
+                                                    }
+                                                }
+                                            } finally {
+                                                writeLockDisplay.unlock()
+                                            }
+                                        }
+
                                     }
+                                } finally {
+                                    writeLockEnemy.unlock()
                                 }
                             }
-                        } finally {
-                            writeLockEnemy.unlock()
-                            writeLockDisplay.unlock()
-                        }
 
                         // dmg display
                         writeLockDisplay.lock()
@@ -892,97 +862,103 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                             writeLockDisplay.unlock()
                         }
 
+
                         //draw shot
-                        writeLockShot.lock()
-                        readLockEnemy.lock()
-                        try {
-                            var shootListIterator = shootList.listIterator()
-                            while (shootListIterator.hasNext()) {
-                                var it = shootListIterator.next()
-                                if (it.broken == 1) {
-                                    shootListIterator.remove()
-                                } else {
-                                    if (refresh) {
-                                        it.update()
-                                    }
-                                    if (it.sniper) {
-                                        if (!crossTowerBullet(it)) {
-                                            canvas.save()
-                                            canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                            var baseShootBullet =
-                                                Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                            canvas.drawBitmap(shootBulletPic!!, null, baseShootBullet, null)
-                                            canvas.restore()
-                                        }
-                                    } else if (it.chainLightning) {
-                                        canvas.save()
-                                        canvas.rotate(getAngleBullet(it) - 75, it.bullet.x, it.bullet.y)
-                                        var baseShootChain =
-                                            Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
-                                        canvas.drawBitmap(shootChainLightningPic!!, null, baseShootChain, null)
-                                        canvas.restore()
-                                    } else if (shotBounce && towerList[it.towerId].itemListBag.contains(Items.emoon)) {
-                                        if (!crossTowerBullet(it)) {
-                                            rotateShotBounce += 30
-                                            if (rotateShotBounce >= 360) rotateShotBounce = 0f
-                                            canvas.save()
-                                            canvas.rotate(rotateShotBounce, it.bullet.x, it.bullet.y)
-                                            var baseShootBounce =
-                                                Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                            canvas.drawBitmap(shootBouncePic!!, null, baseShootBounce, null)
-                                            canvas.restore()
-                                        }
-                                    } else if (it.multiShotBullet && towerList[it.towerId].itemListBag.contains(Items.ewind)) {
-                                        rotateShotMulti += 5
-                                        if (rotateShotMulti >= 360) rotateShotMulti = 0f
-                                        canvas.save()
-                                        canvas.rotate(rotateShotMulti, it.bullet.x, it.bullet.y)
-                                        var baseShootMulti =
-                                            Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
-                                        if (day) canvas.drawBitmap(shootMultiPicDay!!, null, baseShootMulti, null)
-                                        else canvas.drawBitmap(shootMultiPic!!, null, baseShootMulti, null)
-                                        canvas.restore()
-                                    } else if (splashRange > 0 && towerList[it.towerId].itemListBag.contains(Items.eearth)) {
-                                        if (!crossTowerBullet(it)) {
-                                            canvas.save()
-                                            canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                            var baseShootSplash =
-                                                Rect((it.bullet.x - (it.bullet.r * 8)).toInt(), (it.bullet.y - (it.bullet.r * 8)).toInt(), (it.bullet.x + (it.bullet.r * 8)).toInt(), (it.bullet.y + (it.bullet.r * 8)).toInt())
-                                            canvas.drawBitmap(shootSplashPic!!, null, baseShootSplash, null)
-                                            canvas.restore()
-                                        }
-                                    } else if (markOfTheButterfly > 1 && towerList[it.towerId].itemListBag.contains(Items.ebutterfly)) {
-                                        if (!crossTowerBullet(it)) {
-                                            canvas.save()
-                                            canvas.rotate(getAngleBullet(it) - 90, it.bullet.x, it.bullet.y)
-                                            var baseShootButterfly =
-                                                Rect((it.bullet.x - (it.bullet.r * 7)).toInt(), (it.bullet.y - (it.bullet.r * 7)).toInt(), (it.bullet.x + (it.bullet.r * 7)).toInt(), (it.bullet.y + (it.bullet.r * 7)).toInt())
-                                            it.butterflyPicCounter++
-                                            if (it.butterflyPicCounter > 2) {
-                                                it.butterflyPicCounter = 0
-                                                it.butterflyNextPic++
-                                                if (it.butterflyNextPic >= 4) it.butterflyNextPic =
-                                                    0
-                                            }
-                                            canvas.drawBitmap(shootButterflyArray!![it.butterflyNextPic], null, baseShootButterfly, null)
-                                            canvas.restore()
-                                        }
-                                    } else {
-                                        if (!crossTowerBullet(it)) {
-                                            canvas.save()
-                                            canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                            var baseShootBullet =
-                                                Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                            canvas.drawBitmap(shootBulletPic!!, null, baseShootBullet, null)
-                                            canvas.restore()
-                                        }
+                        if (shootList.size > 0) {
+                            writeLockShot.lock()
+                            try {
+                                var shootListIteratorZ = shootList.listIterator()
+                                while (shootListIteratorZ.hasNext()) {
+                                    var itZ = shootListIteratorZ.next()
+                                    if (itZ.broken == 1) {
+                                        shootListIteratorZ.remove()
                                     }
                                 }
+                                var shootListIterator = shootList.listIterator()
+                                while (shootListIterator.hasNext()) {
+                                    var it = shootListIterator.next()
+                                        if (refresh) {
+                                            it.update()
+                                        }
+                                        if (it.sniper) {
+                                            if (!crossTowerBullet(it)) {
+                                                canvas.save()
+                                                canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
+                                                var baseShootBullet =
+                                                    Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
+                                                canvas.drawBitmap(shootBulletPic!!, null, baseShootBullet, null)
+                                                canvas.restore()
+                                            }
+                                        } else if (it.chainLightning) {
+                                            canvas.save()
+                                            canvas.rotate(getAngleBullet(it) - 75, it.bullet.x, it.bullet.y)
+                                            var baseShootChain =
+                                                Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
+                                            canvas.drawBitmap(shootChainLightningPic!!, null, baseShootChain, null)
+                                            canvas.restore()
+                                        } else if (towerList[it.towerId].towerPrimaryElement == "moon") {
+                                            if (!crossTowerBullet(it)) {
+                                                com.agsolutions.td.Companion.rotateShotBounce += 30
+                                                if (com.agsolutions.td.Companion.rotateShotBounce >= 360) com.agsolutions.td.Companion.rotateShotBounce = 0f
+                                                canvas.save()
+                                                canvas.rotate(com.agsolutions.td.Companion.rotateShotBounce, it.bullet.x, it.bullet.y)
+                                                var baseShootBounce =
+                                                    Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
+                                                canvas.drawBitmap(shootBouncePic!!, null, baseShootBounce, null)
+                                                canvas.restore()
+                                            }
+                                        } else if (it.multiShotBullet && towerList[it.towerId].towerPrimaryElement == "wind") {
+                                            com.agsolutions.td.Companion.rotateShotMulti += 5
+                                            if (com.agsolutions.td.Companion.rotateShotMulti >= 360) com.agsolutions.td.Companion.rotateShotMulti = 0f
+                                            canvas.save()
+                                            canvas.rotate(com.agsolutions.td.Companion.rotateShotMulti, it.bullet.x, it.bullet.y)
+                                            var baseShootMulti =
+                                                Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
+                                            if (day) canvas.drawBitmap(shootMultiPicDay!!, null, baseShootMulti, null)
+                                            else canvas.drawBitmap(shootMultiPic!!, null, baseShootMulti, null)
+                                            canvas.restore()
+                                        } else if (towerList[it.towerId].towerPrimaryElement == "earth") {
+                                            if (!crossTowerBullet(it)) {
+                                                canvas.save()
+                                                canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
+                                                var baseShootSplash =
+                                                    Rect((it.bullet.x - (it.bullet.r * 8)).toInt(), (it.bullet.y - (it.bullet.r * 8)).toInt(), (it.bullet.x + (it.bullet.r * 8)).toInt(), (it.bullet.y + (it.bullet.r * 8)).toInt())
+                                                canvas.drawBitmap(shootSplashPic!!, null, baseShootSplash, null)
+                                                canvas.restore()
+                                            }
+                                        } else if (towerList[it.towerId].towerPrimaryElement == "butterfly") {
+                                            if (!crossTowerBullet(it)) {
+                                                canvas.save()
+                                                canvas.rotate(getAngleBullet(it) - 90, it.bullet.x, it.bullet.y)
+                                                var baseShootButterfly =
+                                                    Rect((it.bullet.x - (it.bullet.r * 7)).toInt(), (it.bullet.y - (it.bullet.r * 7)).toInt(), (it.bullet.x + (it.bullet.r * 7)).toInt(), (it.bullet.y + (it.bullet.r * 7)).toInt())
+                                                it.butterflyPicCounter++
+                                                if (it.butterflyPicCounter > 2) {
+                                                    it.butterflyPicCounter = 0
+                                                    it.butterflyNextPic++
+                                                    if (it.butterflyNextPic >= 4) it.butterflyNextPic =
+                                                        0
+                                                }
+                                                canvas.drawBitmap(shootButterflyArray!![it.butterflyNextPic], null, baseShootButterfly, null)
+                                                canvas.restore()
+                                            }
+                                        } else {
+                                            if (!crossTowerBullet(it)) {
+                                                canvas.save()
+                                                canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
+                                                var baseShootBullet =
+                                                    Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
+                                                canvas.drawBitmap(shootBulletPic!!, null, baseShootBullet, null)
+                                                canvas.restore()
+                                            }
+                                        }
+                                }
+                            } finally {
+                                writeLockShot.unlock()
                             }
-                        } finally {
-                            writeLockShot.unlock()
-                            readLockEnemy.unlock()
                         }
+
+
 
 
                     //draw ice talent
@@ -992,7 +968,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                             var shootListIceIterator = shootListIce.listIterator()
                             while (shootListIceIterator.hasNext()) {
                                 var it = shootListIceIterator.next()
-                                it.update()
+                                if (refresh) it.update()
                                 it.draw(canvas)
                             }
                         } finally {
@@ -1001,7 +977,6 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
                     refresh = false
                 }
-        }
     }
 
     fun crossTowerBullet (it: Shoot): Boolean {
@@ -1023,7 +998,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
                 val squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
 
-                val sumOfRadius = 75
+                val sumOfRadius = 95
 
                 if (squaredDistance <= sumOfRadius * sumOfRadius) {
                     check = true
@@ -1036,7 +1011,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 }
     }
 
-    fun getAngle(): Float {
+    fun getAngle(it:Tower): Float {
         if (MainActivity.startScreenBool) {
             var angle =
                 Math.toDegrees(atan2((rotationTowerY - (2160 /2)).toDouble(), (rotationTowerX - 175f).toDouble()))
@@ -1047,7 +1022,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             return angle
         } else {
             var angle =
-                Math.toDegrees(atan2((rotationTowerY - 750f).toDouble(), (rotationTowerX - 600f).toDouble()))
+                Math.toDegrees(atan2((rotationTowerY - it.towerRange.y).toDouble(), (rotationTowerX - it.towerRange.x).toDouble()))
                     .toFloat()
             if (angle < 0) {
                 angle += 360f
@@ -1199,10 +1174,10 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 if (shieldBool) shield = (hp / 10f) * shieldBrakerItem
 
                 var x: Enemy =
-                    Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, (armor * 10f) * earthArmorSmasher, magicArmor * 0.5f,
+                    Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, (armor * 10f), magicArmor * 0.5f,
                         evade * 0.5f, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#566573"))
                 if (level > 50) x =
-                    Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, (armor * 15f) * earthArmorSmasher, magicArmor * 0.5f,
+                    Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, (armor * 15f), magicArmor * 0.5f,
                         evade * 0.5f, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#566573"))
                 if (eliteMob == 2) x.eliteMob = true
                 x.name = "armor"

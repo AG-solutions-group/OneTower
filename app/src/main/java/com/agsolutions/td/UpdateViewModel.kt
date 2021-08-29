@@ -14,7 +14,6 @@ import com.agsolutions.td.Companion.Companion.dayNightMinute
 import com.agsolutions.td.Companion.Companion.diamondsGain
 import com.agsolutions.td.Companion.Companion.endlessNight
 import com.agsolutions.td.Companion.Companion.enemyList
-import com.agsolutions.td.Companion.Companion.evadeGlobal
 import com.agsolutions.td.Companion.Companion.goldGain
 import com.agsolutions.td.Companion.Companion.hintsBool
 import com.agsolutions.td.Companion.Companion.hitGain
@@ -31,7 +30,7 @@ import com.agsolutions.td.Companion.Companion.multiCritGain
 import com.agsolutions.td.Companion.Companion.phyDamageGain
 import com.agsolutions.td.Companion.Companion.spdGain
 import com.agsolutions.td.Companion.Companion.talentGainCountRed
-import com.agsolutions.td.Companion.Companion.talentsGain
+import com.agsolutions.td.Companion.Companion.towerList
 import com.agsolutions.td.Companion.Companion.upgradePointsGain
 import com.agsolutions.td.Utils.round
 import kotlin.math.ceil
@@ -203,6 +202,22 @@ class UpdateViewModel : ViewModel() {
     val towerHitColor: LiveData<Int>
         get() = _towerHitColor
 
+    private val _towerLevel = MutableLiveData<Int> ()
+    val towerLevel: LiveData<Int>
+        get() = _towerLevel
+
+    private val _towerLevelXp = MutableLiveData<Int> ()
+    val towerLevelXp: LiveData<Int>
+        get() = _towerLevelXp
+
+    private val _towerLevelXpMin = MutableLiveData<Int> ()
+    val towerLevelXpMin: LiveData<Int>
+        get() = _towerLevelXpMin
+
+    private val _towerLevelXpProg = MutableLiveData<Int> ()
+    val towerLevelXpProg: LiveData<Int>
+        get() = _towerLevelXpProg
+
     private val _lvlHp = MutableLiveData<String> ()
     val lvlHp: LiveData<String>
         get() = _lvlHp
@@ -291,6 +306,18 @@ class UpdateViewModel : ViewModel() {
     val bagColor: LiveData<Int>
         get() = _bagColor
 
+    private val _bagStringElement = MutableLiveData<String> ()
+    val bagStringElement: LiveData<String>
+        get() = _bagStringElement
+
+    private val _bagElement = MutableLiveData<Int> ()
+    val bagElement: LiveData<Int>
+        get() = _bagElement
+
+    private val _bagColorElement = MutableLiveData<Int> ()
+    val bagColorElement: LiveData<Int>
+        get() = _bagColorElement
+
     private val _itemChance = MutableLiveData<Float> ()
     val itemChance: LiveData<Float>
         get() = _itemChance
@@ -363,6 +390,14 @@ class UpdateViewModel : ViewModel() {
     val pictureColor: LiveData<Int>
         get() = _pictureColor
 
+    private val _towerRarity = MutableLiveData<String> ()
+    val towerRarity: LiveData<String>
+        get() = _towerRarity
+
+    private val _towerRarityMultiplier = MutableLiveData<String> ()
+    val towerRarityMultiplier: LiveData<String>
+        get() = _towerRarityMultiplier
+
     init {
         _pictureColor.value = Color.WHITE
         _goldColor.value = Color.WHITE
@@ -372,7 +407,12 @@ class UpdateViewModel : ViewModel() {
         _itemPointsColor.value = Color.WHITE
         _itemChanceColor.value = Color.WHITE
         _itemQualityColor.value = Color.WHITE
+        _bagString.value = "4"
+        _bag.value = 5
         _bagColor.value = Color.WHITE
+        _bagStringElement.value = "4"
+        _bagElement.value = 5
+        _bagColorElement.value = Color.WHITE
         _towerDmgColor.value = Color.WHITE
         _towerPhyDmgColor.value = Color.WHITE
         _towerMgcDmgColor.value = Color.WHITE
@@ -404,6 +444,10 @@ class UpdateViewModel : ViewModel() {
         _towerSpd.value = 0.0f
         _towerCrtDmg.value = 0f
         _towerMultiCrt.value = 1
+        _towerLevel.value = 0
+        _towerLevelXp.value = 0
+        _towerLevelXpMin.value = 0
+        _towerLevelXpProg.value = 0
         _lvlHp.value = "0.0"
         _lvlMaxHp.value = "0.0"
         _lvlShield.value = "0.0"
@@ -423,8 +467,6 @@ class UpdateViewModel : ViewModel() {
         _lvlEvade.value = ""
         _lvlHpReg.value = 0.0f
         _lvlSpd.value = 0.0f
-        _bagString.value = "4"
-        _bag.value = 5
         _towerHit.value = 100
         _towerArmPen.value = 0f
         _towerMgcPen.value = 0f
@@ -441,6 +483,8 @@ class UpdateViewModel : ViewModel() {
         _textButton.value= 11.0f
         _textBig.value= 11.0f
         _pictureDmg.value = 0
+        _towerRarity.value = ""
+        _towerRarityMultiplier.value = ""
     }
 
     fun update () {
@@ -473,36 +517,36 @@ class UpdateViewModel : ViewModel() {
                         _towerDmg.postValue(tower.overallTowerDmg)
 
                         // physical damage
-                        if (tower.towerPhysicalDmg > _towerPhyDmg.value!! || phyDamageGain) {
+                        if (tower.overallTowerPhysicalDmg > _towerPhyDmg.value!! || phyDamageGain) {
                             phyDamageGain = true
                             _towerPhyDmgColor.postValue(Color.GREEN)
                         } else _towerPhyDmgColor.postValue(Color.WHITE)
 
-                        when (tower.towerPhysicalDmg.toInt()) {
-                            in 0..999 -> _towerPhyDmgString.postValue(tower.towerPhysicalDmg.toInt()
+                        when (tower.overallTowerPhysicalDmg.toInt()) {
+                            in 0..999 -> _towerPhyDmgString.postValue(tower.overallTowerPhysicalDmg.toInt()
                                 .toString())
-                            in 1000..999999 -> _towerPhyDmgString.postValue((tower.towerPhysicalDmg / 1000).round(1)
+                            in 1000..999999 -> _towerPhyDmgString.postValue((tower.overallTowerPhysicalDmg / 1000).round(1)
                                 .toString() + "k")
-                            in 1000000..999999999 -> _towerPhyDmgString.postValue((tower.towerPhysicalDmg / 1000000).round(1)
+                            in 1000000..999999999 -> _towerPhyDmgString.postValue((tower.overallTowerPhysicalDmg / 1000000).round(1)
                                 .toString() + "M")
                         }
-                        _towerPhyDmg.postValue(tower.towerPhysicalDmg)
+                        _towerPhyDmg.postValue(tower.overallTowerPhysicalDmg)
 
                         // spell damage
-                        if (tower.overallSpellDmg > _towerMgcDmg.value!! || mgcDamageGain) {
+                        if (tower.overallTowerSpellDmg > _towerMgcDmg.value!! || mgcDamageGain) {
                             mgcDamageGain = true
                             _towerMgcDmgColor.postValue(Color.GREEN)
                         } else _towerMgcDmgColor.postValue(Color.WHITE)
 
-                        when (tower.overallSpellDmg.toInt()) {
-                            in 0..999 -> _towerMgcDmgString.postValue(tower.overallSpellDmg.toInt()
+                        when (tower.overallTowerSpellDmg.toInt()) {
+                            in 0..999 -> _towerMgcDmgString.postValue(tower.overallTowerSpellDmg.toInt()
                                 .toString())
-                            in 1000..999999 -> _towerMgcDmgString.postValue((tower.overallSpellDmg / 1000).round(1)
+                            in 1000..999999 -> _towerMgcDmgString.postValue((tower.overallTowerSpellDmg / 1000).round(1)
                                 .toString() + "k")
-                            in 1000000..999999999 -> _towerMgcDmgString.postValue((tower.overallSpellDmg / 1000000).round(1)
+                            in 1000000..999999999 -> _towerMgcDmgString.postValue((tower.overallTowerSpellDmg / 1000000).round(1)
                                 .toString() + "M")
                         }
-                        _towerMgcDmg.postValue(tower.overallSpellDmg)
+                        _towerMgcDmg.postValue(tower.overallTowerSpellDmg)
 
                         // tower speed
                         if ((tower.towerAttackSpeedShow * 20).round(1) < _towerSpd.value!! || spdGain) {
@@ -574,12 +618,54 @@ class UpdateViewModel : ViewModel() {
                         _itemQuality.postValue(tower.overallItemQuality.round(1))
 
                         // bag size
-                        if (tower.itemListBag.size == tower.bagSize + 1) {
+                        if ((tower.itemListBag.size - tower.bagSizeElementCount) == tower.bagSize + 1) {
                             _bagColor.postValue(Color.RED)
                         } else _bagColor.postValue(Color.WHITE)
                         _bag.postValue((tower.itemListBag.size))
-                        _bagString.postValue((tower.itemListBag.size).toString() + " / " + (tower.bagSize + 1).toString())
+                        _bagString.postValue((tower.itemListBag.size - tower.bagSizeElementCount).toString() + "/" + (tower.bagSize + 1).toString())
+                        _bagStringElement.postValue((tower.bagSizeElementCount).toString() + "/" + (tower.bagSizeElement + 1).toString())
 
+                        // talent points
+                        if (towerList.size == 0) _talents.postValue(0)
+                        else {
+                            if (tower.talentPoints > _talents.value!!) {
+                                _talentsColor.postValue(Color.GREEN)
+                            } else if (tower.talentPoints > 1) {
+                                if (hintsBool) {
+                                    talentGainCountRed++
+                                    if (talentGainCountRed > 40) talentGainCountRed = 0
+                                    else if (talentGainCountRed > 20) _talentsColor.postValue(Color.WHITE)
+                                    else _talentsColor.postValue(Color.RED)
+                                } else _talentsColor.postValue(Color.RED)
+                            } else _talentsColor.postValue(Color.WHITE)
+                            _talents.postValue(tower.talentPoints)
+                        }
+
+                        // xp
+                        _towerLevel.postValue(tower.towerLevel)
+                        _towerLevelXp.postValue(tower.xpGoal2.toInt())
+                        _towerLevelXpMin.postValue(tower.xpGoal1.toInt())
+                        _towerLevelXpProg.postValue((tower.xpTower).toInt())
+
+                        // rarity
+                        when (tower.towerRarity){
+                            "basic" -> {
+                                _towerRarity.postValue(("Basic"))
+                                _towerRarityMultiplier.postValue("(* ${tower.towerRarityMultiplier.round(2)})")
+                            }
+                            "rare" -> {
+                                _towerRarity.postValue(("Rare"))
+                                _towerRarityMultiplier.postValue("(* ${tower.towerRarityMultiplier.round(2)})")
+                            }
+                            "epic" -> {
+                                _towerRarity.postValue(("Epic"))
+                                _towerRarityMultiplier.postValue("(* ${tower.towerRarityMultiplier.round(2)})")
+                            }
+                            "legendary" -> {
+                                _towerRarity.postValue(("Legendary"))
+                                _towerRarityMultiplier.postValue("(* ${tower.towerRarityMultiplier.round(2)})")
+                            }
+                        }
                         break
                     }
                 }
@@ -594,20 +680,6 @@ class UpdateViewModel : ViewModel() {
             _diamondsColor.postValue(Color.GREEN)
         } else _diamondsColor.postValue(Color.WHITE)
         _diamonds.postValue(com.agsolutions.td.Companion.diamonds)
-
-        // talent points
-        if (com.agsolutions.td.Companion.talentPoints > _talents.value!! || talentsGain) {
-            talentsGain = true
-            _talentsColor.postValue(Color.GREEN)
-        } else if (com.agsolutions.td.Companion.talentPoints > 1) {
-            if (hintsBool) {
-                talentGainCountRed++
-                if (talentGainCountRed > 40) talentGainCountRed = 0
-                else if (talentGainCountRed > 20) _talentsColor.postValue(Color.WHITE)
-                else _talentsColor.postValue(Color.RED)
-            } else _talentsColor.postValue(Color.RED)
-        } else _talentsColor.postValue(Color.WHITE)
-        _talents.postValue(com.agsolutions.td.Companion.talentPoints)
 
         // interest
         if (com.agsolutions.td.Companion.interest > _interest.value!! || interestGain) {
@@ -682,9 +754,9 @@ class UpdateViewModel : ViewModel() {
         _lvlArmorRating.postValue("(" + com.agsolutions.td.Companion.enemyArmor.toInt().toString() + "/")
         _lvlMagicArmor.postValue(com.agsolutions.td.Companion.enemyMagicArmorReduction.round(1).toString() + "%)")
         _lvlMagicArmorRating.postValue("(" + com.agsolutions.td.Companion.enemyMagicArmor.toInt().toString() + "/")
-        if (!day && endlessNight > 0) _lvlEvade.postValue((100 - (100 - ((((100 + (3f* endlessNight)) * (((com.agsolutions.td.Companion.enemyEvade + com.agsolutions.td.Companion.Companion.evadeGlobal + (com.agsolutions.td.Companion.evadeNight - (3f * endlessNight))) * 0.06f) / (1f + (0.06f * (com.agsolutions.td.Companion.enemyEvade + com.agsolutions.td.Companion.Companion.evadeGlobal+(com.agsolutions.td.Companion.evadeNight - (3f * endlessNight))))))))))).round(1).toString() + "%")
+        if (!day && endlessNight > 0) _lvlEvade.postValue((100 - (100 - ((((100 + (3f* endlessNight)) * (((com.agsolutions.td.Companion.enemyEvade + (com.agsolutions.td.Companion.evadeNight - (3f * endlessNight))) * 0.06f) / (1f + (0.06f * (com.agsolutions.td.Companion.enemyEvade +(com.agsolutions.td.Companion.evadeNight - (3f * endlessNight))))))))))).round(1).toString() + "%")
         else {
-            var x = (100 - ((((100) * (((com.agsolutions.td.Companion.enemyEvade + com.agsolutions.td.Companion.evadeGlobal + com.agsolutions.td.Companion.evadeNight) * 0.06f) / (1f + (0.06f * (com.agsolutions.td.Companion.enemyEvade + evadeGlobal + com.agsolutions.td.Companion.evadeNight))))))))
+            var x = (100 - ((((100) * (((com.agsolutions.td.Companion.enemyEvade + com.agsolutions.td.Companion.evadeNight) * 0.06f) / (1f + (0.06f * (com.agsolutions.td.Companion.enemyEvade + com.agsolutions.td.Companion.evadeNight))))))))
             if (x > 100) x = 100f
             _lvlEvade.postValue(((100 - x)).round(1).toString() + "%")
         }
@@ -706,17 +778,17 @@ class UpdateViewModel : ViewModel() {
     }
 
     fun updateXp () {
-        if (com.agsolutions.td.Companion.xp.toInt() > _xp.value!! || goldGain) {
+        if (com.agsolutions.td.Companion.gold.toInt() > _xp.value!! || goldGain) {
             goldGain = true
             _goldColor.postValue(Color.GREEN)
         } else _goldColor.postValue(Color.WHITE)
 
-        when (com.agsolutions.td.Companion.xp.toInt()){
-            in 0..999 -> _xpString.postValue(com.agsolutions.td.Companion.xp.toInt().toString())
-            in 1000..999999 -> _xpString.postValue((com.agsolutions.td.Companion.xp/1000).round(1).toString() + "k")
-            in 1000000..999999999 -> _xpString.postValue((com.agsolutions.td.Companion.xp/1000000).round(1).toString() + "M")
+        when (com.agsolutions.td.Companion.gold.toInt()){
+            in 0..999 -> _xpString.postValue(com.agsolutions.td.Companion.gold.toInt().toString())
+            in 1000..999999 -> _xpString.postValue((com.agsolutions.td.Companion.gold/1000).round(1).toString() + "k")
+            in 1000000..999999999 -> _xpString.postValue((com.agsolutions.td.Companion.gold/1000000).round(1).toString() + "M")
         }
-        _xp.postValue(com.agsolutions.td.Companion.xp)
+        _xp.postValue(com.agsolutions.td.Companion.gold)
     }
 
     fun updateLvlStatus () {

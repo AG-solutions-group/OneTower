@@ -14,9 +14,6 @@ import com.agsolutions.td.Companion.Companion.rotationEnemyX
 import com.agsolutions.td.Companion.Companion.rotationEnemyY
 import com.agsolutions.td.Companion.Companion.rotationTowerX
 import com.agsolutions.td.Companion.Companion.rotationTowerY
-import com.agsolutions.td.Companion.Companion.shotBounceTargets
-import com.agsolutions.td.Companion.Companion.splashRange
-import com.agsolutions.td.Companion.Companion.talentMultishot
 import com.agsolutions.td.Companion.Companion.towerList
 import com.agsolutions.td.Main.MainActivity
 
@@ -26,7 +23,7 @@ class Shoot () {
     var paint: Paint
     var bullet = TowerRadius(600.0f, 750.0f, 5.0f)
     var broken = 0
-    var bounceLeft = shotBounceTargets
+    var bounceLeft = 0
     var alreadyBounced = 0
     var alreadyBouncedReset = false
     var id = -1
@@ -59,15 +56,19 @@ class Shoot () {
 
     fun update() {
 
-        if (splashRange > 0) bulletSpeed = 6f
-        if (Companion.markOfTheButterfly > 1) bulletSpeed = 8f
-        if (sniper && gameSpeedAdjuster == 2f ) bulletSpeed = 10f
-        else if (sniper && gameSpeedAdjuster == 1.5f) bulletSpeed = 15f
-        else if (sniper && gameSpeedAdjuster == 1f) bulletSpeed = 20f
+          com.agsolutions.td.Companion.readLockEnemy.lock()
+          try {
 
-        com.agsolutions.td.Companion.writeLockShot.lock()
-        com.agsolutions.td.Companion.readLockEnemy.lock()
-        try {
+
+          if (MainActivity.startScreenBool) {
+
+          }
+          else if (sniper && gameSpeedAdjuster == 2f ) bulletSpeed = 10f
+          else if (sniper && gameSpeedAdjuster == 1.5f) bulletSpeed = 15f
+          else if (sniper && gameSpeedAdjuster == 1f) bulletSpeed = 20f
+          else if (towerList[towerId].towerPrimaryElement == "earth")  bulletSpeed = 6f
+          else if (towerList[towerId].towerPrimaryElement == "butterfly")  bulletSpeed = 8f
+
 
             //   var crossesAllListIteratorX = crossesAllList.listIterator()
             //   while (crossesAllListIteratorX.hasNext()) {
@@ -84,7 +85,7 @@ class Shoot () {
                     bullet.y = towerList[towerId].towerRange.y
                     broken = 1
                 }
-            } else if (talentMultishot && multiShotBullet) {
+            } else if (towerList[towerId].towerPrimaryElement == "wind" && multiShotBullet) {
                 if (firstEnemyMultiBool && enemyList!!.contains(firstEnemyMulti)){
                     movementMulti(firstEnemyMulti!!)
                 }
@@ -105,7 +106,7 @@ class Shoot () {
                         }
                     }
                 }
-            } else if (alreadyBounced > 0) {
+            } else if (alreadyBounced > 0 && towerList[towerId].towerPrimaryElement == "moon") {
                 if (id >= 0 && id < enemyList.size && alreadyBouncedReset) {
                     movement(enemyList[id])
                 } else {
@@ -393,7 +394,6 @@ class Shoot () {
                 }
             }
         } finally {
-            com.agsolutions.td.Companion.writeLockShot.unlock()
             com.agsolutions.td.Companion.readLockEnemy.unlock()
         }
     }
@@ -528,7 +528,7 @@ class Shoot () {
                         bullet.y = towerList[towerId].towerRange.y
                         broken = 1
                     }
-                } else if (alreadyBounced > 0) {
+                } else if (alreadyBounced > 0 && towerList[towerId].towerPrimaryElement == "moon") {
                     rotationEnemyX = enemy.circle!!.x
                     rotationEnemyY = enemy.circle!!.y
                     if (enemyList.contains(enemy)) {

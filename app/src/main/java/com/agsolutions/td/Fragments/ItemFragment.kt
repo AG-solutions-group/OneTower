@@ -12,8 +12,6 @@ import com.agsolutions.td.*
 import com.agsolutions.td.Companion.Companion.fragmentItemCurrentItem
 import com.agsolutions.td.Companion.Companion.itemFragmentEnemyList
 import com.agsolutions.td.Companion.Companion.itemList
-import com.agsolutions.td.Companion.Companion.scrollOldPositionX
-import com.agsolutions.td.Companion.Companion.scrollOldPositionY
 import com.agsolutions.td.Utils.round
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.fragment_item.*
@@ -29,8 +27,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [StatsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ItemFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener,
-    View.OnScrollChangeListener {
+class ItemFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener{
 
     val itemFragmentAdapter = ItemFragmentAdapter(com.agsolutions.td.Companion.itemFragmentEnemyList, this )
 
@@ -52,7 +49,6 @@ class ItemFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        itemFragmentRecycler.setOnScrollChangeListener(this)
         itemFragmentRecycler.adapter = itemFragmentAdapter
 
         val spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -83,41 +79,35 @@ class ItemFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener,
             if (itemList[fragmentItemCurrentItem].diaCost > 0) Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.diamondicon, (itemList[fragmentItemCurrentItem].diaCost.toString() + " / " + Companion.diamonds.toInt()
                 .toString())))
             if (!Companion.day && Companion.moonTalentItemCost > 0) {
-                if (itemList[fragmentItemCurrentItem].xpCost > 0) {
-                    when (itemList[fragmentItemCurrentItem].xpCost.toInt()) {
-                        in 0..999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].xpCost - (itemList[fragmentItemCurrentItem].xpCost * Companion.moonTalentItemCost)).toInt()
-                            .toString() + " / " + Companion.xp.toInt().toString()))
-                        in 1000..999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].xpCost - (itemList[fragmentItemCurrentItem].xpCost * Companion.moonTalentItemCost) / 1000).round(1)
-                            .toString() + "k" + " / " + (Companion.xp / 1000).round(1)
+                if (itemList[fragmentItemCurrentItem].goldCost > 0) {
+                    when (itemList[fragmentItemCurrentItem].goldCost.toInt()) {
+                        in 0..999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].goldCost - (itemList[fragmentItemCurrentItem].goldCost * Companion.moonTalentItemCost)).toInt()
+                            .toString()))
+                        in 1000..999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].goldCost - (itemList[fragmentItemCurrentItem].goldCost * Companion.moonTalentItemCost) / 1000).round(1)
                             .toString() + "k"))
-                        in 1000000..999999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].xpCost - (itemList[fragmentItemCurrentItem].xpCost * Companion.moonTalentItemCost) / 1000000).round(1)
-                            .toString() + "M" + " / " + (Companion.xp / 1000000).round(1)
+                        in 1000000..999999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].goldCost - (itemList[fragmentItemCurrentItem].goldCost * Companion.moonTalentItemCost) / 1000000).round(1)
                             .toString() + "M"))
                     }
                 }
             } else if (Companion.midnightMadnessMidasGoldCost > 0) {
-                if (itemList[fragmentItemCurrentItem].xpCost > 0) {
-                    when (itemList[fragmentItemCurrentItem].xpCost.toInt()) {
-                        in 0..999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].xpCost + (itemList[fragmentItemCurrentItem].xpCost * Companion.midnightMadnessMidasGoldCost)).toInt()
-                            .toString() + " / " + Companion.xp.toInt().toString()))
-                        in 1000..999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].xpCost + (itemList[fragmentItemCurrentItem].xpCost * Companion.midnightMadnessMidasGoldCost) / 1000).round(1)
-                            .toString() + "k" + " / " + (Companion.xp / 1000).round(1)
+                if (itemList[fragmentItemCurrentItem].goldCost > 0) {
+                    when (itemList[fragmentItemCurrentItem].goldCost.toInt()) {
+                        in 0..999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].goldCost + (itemList[fragmentItemCurrentItem].goldCost * Companion.midnightMadnessMidasGoldCost)).toInt()
+                            .toString()))
+                        in 1000..999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].goldCost + (itemList[fragmentItemCurrentItem].goldCost * Companion.midnightMadnessMidasGoldCost) / 1000).round(1)
                             .toString() + "k"))
-                        in 1000000..999999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].xpCost + (itemList[fragmentItemCurrentItem].xpCost * Companion.midnightMadnessMidasGoldCost) / 1000000).round(1)
-                            .toString() + "M" + " / " + (Companion.xp / 1000000).round(1)
+                        in 1000000..999999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].goldCost + (itemList[fragmentItemCurrentItem].goldCost * Companion.midnightMadnessMidasGoldCost) / 1000000).round(1)
                             .toString() + "M"))
                     }
                 }
             } else {
-                if (itemList[fragmentItemCurrentItem].xpCost > 0) {
-                    when (itemList[fragmentItemCurrentItem].xpCost.toInt()) {
-                        in 0..999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].xpCost).toInt()
-                            .toString() + " / " + Companion.xp.toInt().toString()))
-                        in 1000..999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].xpCost / 1000).round(1)
-                            .toString() + "k" + " / " + (Companion.xp / 1000).round(1)
+                if (itemList[fragmentItemCurrentItem].goldCost > 0) {
+                    when (itemList[fragmentItemCurrentItem].goldCost.toInt()) {
+                        in 0..999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].goldCost).toInt()
+                            .toString()))
+                        in 1000..999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].goldCost / 1000).round(1)
                             .toString() + "k"))
-                        in 1000000..999999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].xpCost / 1000000).round(1)
-                            .toString() + "M" + " / " + (Companion.xp / 1000000).round(1)
+                        in 1000000..999999999 -> Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.goldicon, (itemList[fragmentItemCurrentItem].goldCost / 1000000).round(1)
                             .toString() + "M"))
                     }
                 }
@@ -169,13 +159,26 @@ class ItemFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener,
                 if (itemList[fragmentItemCurrentItem].specialFloat2 != 0f) Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, itemList[fragmentItemCurrentItem].specialFloat2.round(2)
                     .toString()))
             }
+            if (itemList[fragmentItemCurrentItem].id == 2000 || itemList[fragmentItemCurrentItem].id == 2001 || itemList[fragmentItemCurrentItem].id == 2002 || itemList[fragmentItemCurrentItem].id == 2003 || itemList[fragmentItemCurrentItem].id == 2004 || itemList[fragmentItemCurrentItem].id == 2005 || itemList[fragmentItemCurrentItem].id == 2006 || itemList[fragmentItemCurrentItem].id == 2007 || itemList[fragmentItemCurrentItem].id == 2008 || itemList[fragmentItemCurrentItem].id == 2009) {
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 0.85"))
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 0.85"))
+            }
+            if (itemList[fragmentItemCurrentItem].id == 2100 || itemList[fragmentItemCurrentItem].id == 2101 || itemList[fragmentItemCurrentItem].id == 2102 || itemList[fragmentItemCurrentItem].id == 2103 || itemList[fragmentItemCurrentItem].id == 2104 || itemList[fragmentItemCurrentItem].id == 2105 || itemList[fragmentItemCurrentItem].id == 2106 || itemList[fragmentItemCurrentItem].id == 2107 || itemList[fragmentItemCurrentItem].id == 2108 || itemList[fragmentItemCurrentItem].id == 2109){
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 1.0"))
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 1.0"))
+            }
+            if (itemList[fragmentItemCurrentItem].id == 2200 || itemList[fragmentItemCurrentItem].id == 2201 || itemList[fragmentItemCurrentItem].id == 2202 || itemList[fragmentItemCurrentItem].id == 2203 || itemList[fragmentItemCurrentItem].id == 2204 || itemList[fragmentItemCurrentItem].id == 2205 || itemList[fragmentItemCurrentItem].id == 2206 || itemList[fragmentItemCurrentItem].id == 2207 || itemList[fragmentItemCurrentItem].id == 2208 || itemList[fragmentItemCurrentItem].id == 2209){
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 1.15"))
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 1.15"))
+            }
+            if (itemList[fragmentItemCurrentItem].id == 2300 || itemList[fragmentItemCurrentItem].id == 2301 || itemList[fragmentItemCurrentItem].id == 2302 || itemList[fragmentItemCurrentItem].id == 2303 || itemList[fragmentItemCurrentItem].id == 2304 || itemList[fragmentItemCurrentItem].id == 2305 || itemList[fragmentItemCurrentItem].id == 2306 || itemList[fragmentItemCurrentItem].id == 2307 || itemList[fragmentItemCurrentItem].id == 2308 || itemList[fragmentItemCurrentItem].id == 2309){
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 1.4"))
+                Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 1.4"))
+            }
             Companion.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.overlaytransparent, "                ".toString()))
 
         if (supportFragmentManager.findFragmentById(R.id.fragment) == fragmentItem) itemFragmentAdapter.notifyDataSetChanged()
 
-        if (supportFragmentManager.findFragmentById(R.id.fragment) == fragmentItem) {
-            itemFragmentRecycler.smoothScrollBy(scrollOldPositionX, scrollOldPositionY)
-        }
     }
 
 
@@ -236,13 +239,7 @@ class ItemFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener,
             com.agsolutions.td.Companion.toastText = "Armor Penetration - rating to reduce enemies armor, making them more vulnerable to physical attacks"
         }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.magicpenicon) {
             com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText =
-                "Magic Armor Penetration - rating to reduce enemies magic armor, making them more vulnerable to physical attacks"
+            com.agsolutions.td.Companion.toastText = "Magic Armor Penetration - rating to reduce enemies magic armor, making them more vulnerable to physical attacks"
         }
-    }
-
-    override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
-        scrollOldPositionX = scrollX
-        scrollOldPositionY = scrollY
     }
 }

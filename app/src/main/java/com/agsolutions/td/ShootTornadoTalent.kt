@@ -5,8 +5,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import com.agsolutions.td.Companion.Companion.enemyList
 import com.agsolutions.td.Companion.Companion.gameSpeedAdjuster
-import com.agsolutions.td.Companion.Companion.randomEnemyTornado
-import com.agsolutions.td.Companion.Companion.randomEnemyTornadoBool
 
 class ShootTornadoTalent {
     companion object {
@@ -15,9 +13,11 @@ class ShootTornadoTalent {
 
     }
     var paint: Paint
-    var tornadoRadius = TowerRadius(600.0f, 750.0f, com.agsolutions.td.Companion.tornadoRadius)
+    var tornadoRadius = TowerRadius(600.0f, 750.0f, 5f)
     var tornadoRadiusPosition = 0
     var broken = 0
+    var randomEnemyTornadoBool = true
+    var randomEnemyTornado = Enemy (0.0f,0.0f, 0.0f, 0.0f, 0.0f, 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0)
 
     init {
         paint = Paint()

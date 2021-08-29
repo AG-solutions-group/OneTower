@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.agsolutions.td.*
 import com.agsolutions.td.Companion.Companion.itemFragmentEnemyList
+import com.agsolutions.td.Companion.Companion.towerClick
 import com.agsolutions.td.Companion.Companion.upgradePoints
 import com.agsolutions.td.Utils.round
 import kotlinx.android.synthetic.main.fragment_item.*
@@ -46,7 +47,6 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
         super.onViewCreated(view, savedInstanceState)
 
         upBTN.visibility = View.INVISIBLE
-        upIV.visibility = View.INVISIBLE
 
         itemBagFragmentRecycler.adapter = itemFragmentAdapter
 
@@ -77,353 +77,354 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
 
     fun refresh (position: Int) {
 
-        Companion.readLockTower.lock ()
-        try {
-            var towerListIterator = Companion.towerList.listIterator()
-            while (towerListIterator.hasNext()) {
-                var tower = towerListIterator.next()
-                if (tower.selected) {
+        if (!towerClick){
 
-                    if (tower.itemListBag[position].upgrade < 1 || upgradePoints <= 0) {
-                        upBTN.visibility = View.INVISIBLE
-                        upIV.visibility = View.INVISIBLE
-                    } else {
-                        upBTN.visibility = View.VISIBLE
-                        upIV.visibility = View.VISIBLE
-                    }
+        }else {
 
-                    upBTN.setOnClickListener() {
-
-                        itemFragmentEnemyList.removeAll(itemFragmentEnemyList)
-
-                        if (tower.itemListBag[position].upgrade > 0 && upgradePoints > 0) {
-                            tower.itemListBag[position].upgrade -= 1
-                            upgradePoints -= 1
-
-                            if (tower.itemListBag[position].dmg > 0) {
-                                when ((0..99).random()) {
-                                    in 0..65 -> {
-                                        tower.bonusTowerDmg += (tower.itemListBag[position].dmg * 0.1f)
-                                        tower.itemListBag[position].dmg += (tower.itemListBag[position].dmg * 0.1f)
-
-                                    }
-                                    in 66..88 -> {
-                                        tower.bonusTowerDmg += (tower.itemListBag[position].dmg * 0.15f)
-                                        tower.itemListBag[position].dmg += (tower.itemListBag[position].dmg * 0.15f)
-
-                                    }
-                                    in 89..99 -> {
-                                        tower.bonusTowerDmg += (tower.itemListBag[position].dmg * 0.2f)
-                                        tower.itemListBag[position].dmg += (tower.itemListBag[position].dmg * 0.2f)
-
-                                    }
-                                }
-                            }
-                            if (tower.itemListBag[position].atkDmg > 0) {
-                                when ((0..99).random()) {
-                                    in 0..65 -> {
-                                        tower.bonusPhysicalDmg += (tower.itemListBag[position].atkDmg * 0.1f)
-                                        tower.itemListBag[position].atkDmg += (tower.itemListBag[position].atkDmg * 0.1f)
-
-                                    }
-                                    in 66..88 -> {
-                                        tower.bonusPhysicalDmg += (tower.itemListBag[position].atkDmg * 0.15f)
-                                        tower.itemListBag[position].atkDmg += (tower.itemListBag[position].atkDmg * 0.15f)
-
-                                    }
-                                    in 89..99 -> {
-                                        tower.bonusPhysicalDmg += (tower.itemListBag[position].atkDmg * 0.2f)
-                                        tower.itemListBag[position].atkDmg += (tower.itemListBag[position].atkDmg * 0.2f)
-
-                                    }
-                                }
-                            }
-                            if (tower.itemListBag[position].mgcDmg > 0) {
-                                when ((0..99).random()) {
-                                    in 0..65 -> {
-                                        tower.bonusSpellDamage += (tower.itemListBag[position].mgcDmg * 0.1f)
-                                        tower.itemListBag[position].mgcDmg += (tower.itemListBag[position].mgcDmg * 0.1f)
-
-                                    }
-                                    in 66..88 -> {
-                                        tower.bonusSpellDamage += (tower.itemListBag[position].mgcDmg * 0.15f)
-                                        tower.itemListBag[position].mgcDmg += (tower.itemListBag[position].mgcDmg * 0.15f)
-
-                                    }
-                                    in 89..99 -> {
-                                        tower.bonusSpellDamage += (tower.itemListBag[position].mgcDmg * 0.2f)
-                                        tower.itemListBag[position].mgcDmg += (tower.itemListBag[position].mgcDmg * 0.2f)
-
-                                    }
-                                }
-                            }
-                            if (tower.itemListBag[position].speed > 0) {
-                                when ((0..99).random()) {
-                                    in 0..65 -> {
-                                        tower.bonusTowerSpeed += (tower.itemListBag[position].speed * 0.1f)
-                                        tower.itemListBag[position].speed += (tower.itemListBag[position].speed * 0.1f)
-
-                                    }
-                                    in 66..88 -> {
-                                        tower.bonusTowerSpeed += (tower.itemListBag[position].speed * 0.15f)
-                                        tower.itemListBag[position].speed += (tower.itemListBag[position].speed * 0.15f)
-
-                                    }
-
-                                    in 89..99 -> {
-                                        tower.bonusTowerSpeed += (tower.itemListBag[position].speed * 0.2f)
-                                        tower.itemListBag[position].speed += (tower.itemListBag[position].speed * 0.2f)
-
-                                    }
-
-                                }
-                            }
-                            if (tower.itemListBag[position].crit > 0) {
-                                when ((0..99).random()) {
-                                    in 0..65 -> {
-                                        tower.bonusCrit += (tower.itemListBag[position].crit * 0.1f)
-                                        tower.itemListBag[position].crit += (tower.itemListBag[position].crit * 0.1f)
-
-                                    }
-                                    in 66..88 -> {
-                                        tower.bonusCrit += (tower.itemListBag[position].crit * 0.15f)
-                                        tower.itemListBag[position].crit += (tower.itemListBag[position].crit * 0.15f)
-
-                                    }
-                                    in 89..99 -> {
-                                        tower.bonusCrit += (tower.itemListBag[position].crit * 0.2f)
-                                        tower.itemListBag[position].crit += (tower.itemListBag[position].crit * 0.2f)
-
-                                    }
-
-                                }
-                            }
-                            if (tower.itemListBag[position].critDmg > 0) {
-                                when ((0..99).random()) {
-                                    in 0..65 -> {
-                                        tower.bonusCritDmg += (tower.itemListBag[position].critDmg * 0.1f)
-                                        tower.itemListBag[position].critDmg += (tower.itemListBag[position].critDmg * 0.1f)
-
-                                    }
-                                    in 66..88 -> {
-                                        tower.bonusCritDmg += (tower.itemListBag[position].critDmg * 0.15f)
-                                        tower.itemListBag[position].critDmg += (tower.itemListBag[position].critDmg * 0.15f)
-
-                                    }
-                                    in 89..99 -> {
-                                        tower.bonusCritDmg += (tower.itemListBag[position].critDmg * 0.2f)
-                                        tower.itemListBag[position].critDmg += (tower.itemListBag[position].critDmg * 0.2f)
-                                    }
-                                }
-                            }
-                            if (tower.itemListBag[position].specialFloat > 0) {
-                                when ((0..99).random()) {
-                                    in 0..65 -> {
-                                        if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "armor penetration") {
-                                            tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.1f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
-                                        } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "magic penetration") {
-                                            tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.1f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
-                                        } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "hit chance") {
-                                            tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.1f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
-                                        }
-                                        if (tower.itemListBag[position].id == 212) {
-                                            tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.1f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
-                                        }
-                                        if (tower.itemListBag[position].id == 215) {
-                                            tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.1f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
-                                        }
-                                        if (tower.itemListBag[position].id == 216) {
-                                            tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.1f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
-                                        }
-                                        if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "anti-heal") {
-                                            com.agsolutions.td.Companion.antiHeal += ((tower.itemListBag[position].specialFloat / 100) * 0.1f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
-                                        } else if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "extra dmg immune") {
-                                            com.agsolutions.td.Companion.dmgImmune += ((tower.itemListBag[position].specialFloat / 100) * 0.1f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
-                                        }
-                                    }
-                                    in 66..88 -> {
-                                        if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "armor penetration") {
-                                            tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.15f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
-                                        } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "magic penetration") {
-                                            tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.15f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
-                                        } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "hit chance") {
-                                            tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.15f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
-                                        }
-                                        if (tower.itemListBag[position].id == 212) {
-                                            tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.15f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
-                                        }
-                                        if (tower.itemListBag[position].id == 215) {
-                                            tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.15f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
-                                        }
-                                        if (tower.itemListBag[position].id == 216) {
-                                            tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.15f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
-                                        }
-                                        if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "anti-heal") {
-                                            com.agsolutions.td.Companion.antiHeal += ((tower.itemListBag[position].specialFloat / 100) * 0.15f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
-                                        } else if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "extra dmg immune") {
-                                            com.agsolutions.td.Companion.dmgImmune += ((tower.itemListBag[position].specialFloat / 100) * 0.15f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
-                                        }
-                                    }
-                                    in 89..99 -> {
-                                        if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "armor penetration") {
-                                            tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.2f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
-                                        } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "magic penetration") {
-                                            tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.2f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
-                                        } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "hit chance") {
-                                            tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.2f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
-                                        }
-                                        if (tower.itemListBag[position].id == 212) {
-                                            tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.2f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
-                                        }
-                                        if (tower.itemListBag[position].id == 215) {
-                                            tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.2f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
-                                        }
-                                        if (tower.itemListBag[position].id == 216) {
-                                            tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.2f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
-                                        }
-                                        if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "anti-heal") {
-                                            com.agsolutions.td.Companion.antiHeal += ((tower.itemListBag[position].specialFloat / 100) * 0.2f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
-                                        } else if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "extra dmg immune") {
-                                            com.agsolutions.td.Companion.dmgImmune += ((tower.itemListBag[position].specialFloat / 100) * 0.2f)
-                                            tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
-                                        }
-                                    }
-                                }
-                            }
-                            if (tower.itemListBag[position].specialFloat2 > 0) {
-                                when ((0..99).random()) {
-                                    in 0..65 -> {
-                                        if (tower.itemListBag[position].id == 4) {
-                                            tower.bonusItemChance += (tower.itemListBag[position].specialFloat2 * 0.1f)
-                                            tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.1f)
-                                        }
-                                        if (tower.itemListBag[position].special2 == "item find") {
-                                            tower.bonusItemChance += (tower.itemListBag[position].specialFloat2) * 0.1f
-                                            tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.1f)
-                                        } else if (tower.itemListBag[position].special2 == "item quality") {
-                                            tower.bonusItemQuality += ((tower.itemListBag[position].specialFloat2 * 0.1f))
-                                            tower.itemListBag[position].specialFloat2 += ((tower.itemListBag[position].specialFloat2 * 0.1f))
-                                        }
-                                    }
-                                    in 66..88 -> {
-                                        if (tower.itemListBag[position].id == 4) {
-                                            tower.bonusItemChance += (tower.itemListBag[position].specialFloat2 * 0.15f)
-                                            tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.15f)
-                                        }
-                                        if (tower.itemListBag[position].special2 == "item find") {
-                                            tower.bonusItemChance += (tower.itemListBag[position].specialFloat2) * 0.15f
-                                            tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.15f)
-                                        }
-                                        if (tower.itemListBag[position].special2 == "item quality") {
-                                            tower.bonusItemQuality += ((tower.itemListBag[position].specialFloat2 * 0.15f))
-                                            tower.itemListBag[position].specialFloat2 += ((tower.itemListBag[position].specialFloat2 * 0.15f))
-                                        }
-                                    }
-                                    in 89..99 -> {
-                                        if (tower.itemListBag[position].id == 4) {
-                                            tower.bonusItemChance += (tower.itemListBag[position].specialFloat2 * 0.2f)
-                                            tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.2f)
-                                        }
-                                        if (tower.itemListBag[position].special2 == "item find") {
-                                            tower.bonusItemChance += (tower.itemListBag[position].specialFloat2) * 0.2f
-                                            tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.2f)
-                                        }
-                                        if (tower.itemListBag[position].special2 == "item quality") {
-                                            tower.bonusItemQuality += ((tower.itemListBag[position].specialFloat2 * 0.2f))
-                                            tower.itemListBag[position].specialFloat2 += ((tower.itemListBag[position].specialFloat2 * 0.2f))
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.nameicon, tower.itemListBag[position].name.toString()))
-                        if (tower.itemListBag[position].upgrade > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.upgradepointsicon, tower.itemListBag[position].upgrade.toString()))
-                        if (tower.itemListBag[position].dmg > 0) {
-                            when (tower.itemListBag[position].dmg.toInt()) {
-                                in 0..999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, tower.itemListBag[position].dmg.round(2)
-                                    .toString()))
-                                in 1000..999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, (tower.itemListBag[position].dmg / 1000).round(2)
-                                    .toString() + "k"))
-                                in 1000000..999999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, (tower.itemListBag[position].dmg / 1000000).round(2)
-                                    .toString() + "M"))
-                            }
-                        }
-                        if (tower.itemListBag[position].atkDmg > 0) {
-                            when (tower.itemListBag[position].atkDmg.toInt()) {
-                                in 0..999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, tower.itemListBag[position].atkDmg.round(2)
-                                    .toString()))
-                                in 1000..999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, (tower.itemListBag[position].atkDmg / 1000).round(2)
-                                    .toString() + "k"))
-                                in 1000000..999999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, (tower.itemListBag[position].atkDmg / 1000000).round(2)
-                                    .toString() + "M"))
-                            }
-                        }
-                        if (tower.itemListBag[position].mgcDmg > 0) {
-                            when (tower.itemListBag[position].mgcDmg.toInt()) {
-                                in 0..999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, tower.itemListBag[position].mgcDmg.round(2)
-                                    .toString()))
-                                in 1000..999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, (tower.itemListBag[position].mgcDmg / 1000).round(2)
-                                    .toString() + "k"))
-                                in 1000000..999999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, (tower.itemListBag[position].mgcDmg / 1000000).round(2)
-                                    .toString() + "M"))
-                            }
-                        }
-                        if (tower.itemListBag[position].crit > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.criticon, tower.itemListBag[position].crit.round(2)
-                            .toString()))
-                        if (tower.itemListBag[position].critDmg > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.critdmgicon, tower.itemListBag[position].critDmg.round(2)
-                            .toString()))
-                        if (tower.itemListBag[position].speed > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.bowicon, tower.itemListBag[position].speed.round(2)
-                            .toString()))
-                        if (tower.itemListBag[position].special.isNotBlank()) {
-                            itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].special.toString()))
-                            if (tower.itemListBag[position].specialFloat != 0f) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].specialFloat.round(2)
-                                .toString()))
-                        }
-                        if (tower.itemListBag[position].special2.isNotBlank()) {
-                            itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].special2.toString()))
-                            if (tower.itemListBag[position].specialFloat2 != 0f) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].specialFloat2.round(2)
-                                .toString()))
-                        }
-
-                        itemFragmentAdapter.notifyDataSetChanged()
+            Companion.readLockTower.lock()
+            try {
+                var towerListIterator = Companion.towerList.listIterator()
+                while (towerListIterator.hasNext()) {
+                    var tower = towerListIterator.next()
+                    if (tower.selected) {
 
                         if (tower.itemListBag[position].upgrade < 1 || upgradePoints <= 0) {
                             upBTN.visibility = View.INVISIBLE
-                            upIV.visibility = View.INVISIBLE
                         } else {
                             upBTN.visibility = View.VISIBLE
-                            upIV.visibility = View.VISIBLE
+                        }
+
+                        upBTN.setOnClickListener() {
+
+                            itemFragmentEnemyList.removeAll(itemFragmentEnemyList)
+
+                            if (tower.itemListBag[position].upgrade > 0 && upgradePoints > 0) {
+                                tower.itemListBag[position].upgrade -= 1
+                                upgradePoints -= 1
+
+                                if (tower.itemListBag[position].dmg > 0) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                            tower.bonusTowerDmg += (tower.itemListBag[position].dmg * 0.1f)
+                                            tower.itemListBag[position].dmg += (tower.itemListBag[position].dmg * 0.1f)
+
+                                        }
+                                        in 66..88 -> {
+                                            tower.bonusTowerDmg += (tower.itemListBag[position].dmg * 0.15f)
+                                            tower.itemListBag[position].dmg += (tower.itemListBag[position].dmg * 0.15f)
+
+                                        }
+                                        in 89..99 -> {
+                                            tower.bonusTowerDmg += (tower.itemListBag[position].dmg * 0.2f)
+                                            tower.itemListBag[position].dmg += (tower.itemListBag[position].dmg * 0.2f)
+
+                                        }
+                                    }
+                                }
+                                if (tower.itemListBag[position].atkDmg > 0) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                            tower.bonusPhysicalDmg += (tower.itemListBag[position].atkDmg * 0.1f)
+                                            tower.itemListBag[position].atkDmg += (tower.itemListBag[position].atkDmg * 0.1f)
+
+                                        }
+                                        in 66..88 -> {
+                                            tower.bonusPhysicalDmg += (tower.itemListBag[position].atkDmg * 0.15f)
+                                            tower.itemListBag[position].atkDmg += (tower.itemListBag[position].atkDmg * 0.15f)
+
+                                        }
+                                        in 89..99 -> {
+                                            tower.bonusPhysicalDmg += (tower.itemListBag[position].atkDmg * 0.2f)
+                                            tower.itemListBag[position].atkDmg += (tower.itemListBag[position].atkDmg * 0.2f)
+
+                                        }
+                                    }
+                                }
+                                if (tower.itemListBag[position].mgcDmg > 0) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                            tower.bonusSpellDamage += (tower.itemListBag[position].mgcDmg * 0.1f)
+                                            tower.itemListBag[position].mgcDmg += (tower.itemListBag[position].mgcDmg * 0.1f)
+
+                                        }
+                                        in 66..88 -> {
+                                            tower.bonusSpellDamage += (tower.itemListBag[position].mgcDmg * 0.15f)
+                                            tower.itemListBag[position].mgcDmg += (tower.itemListBag[position].mgcDmg * 0.15f)
+
+                                        }
+                                        in 89..99 -> {
+                                            tower.bonusSpellDamage += (tower.itemListBag[position].mgcDmg * 0.2f)
+                                            tower.itemListBag[position].mgcDmg += (tower.itemListBag[position].mgcDmg * 0.2f)
+
+                                        }
+                                    }
+                                }
+                                if (tower.itemListBag[position].speed > 0) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                            tower.bonusTowerSpeed += (tower.itemListBag[position].speed * 0.1f)
+                                            tower.itemListBag[position].speed += (tower.itemListBag[position].speed * 0.1f)
+
+                                        }
+                                        in 66..88 -> {
+                                            tower.bonusTowerSpeed += (tower.itemListBag[position].speed * 0.15f)
+                                            tower.itemListBag[position].speed += (tower.itemListBag[position].speed * 0.15f)
+
+                                        }
+
+                                        in 89..99 -> {
+                                            tower.bonusTowerSpeed += (tower.itemListBag[position].speed * 0.2f)
+                                            tower.itemListBag[position].speed += (tower.itemListBag[position].speed * 0.2f)
+
+                                        }
+
+                                    }
+                                }
+                                if (tower.itemListBag[position].crit > 0) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                            tower.bonusCrit += (tower.itemListBag[position].crit * 0.1f)
+                                            tower.itemListBag[position].crit += (tower.itemListBag[position].crit * 0.1f)
+
+                                        }
+                                        in 66..88 -> {
+                                            tower.bonusCrit += (tower.itemListBag[position].crit * 0.15f)
+                                            tower.itemListBag[position].crit += (tower.itemListBag[position].crit * 0.15f)
+
+                                        }
+                                        in 89..99 -> {
+                                            tower.bonusCrit += (tower.itemListBag[position].crit * 0.2f)
+                                            tower.itemListBag[position].crit += (tower.itemListBag[position].crit * 0.2f)
+
+                                        }
+
+                                    }
+                                }
+                                if (tower.itemListBag[position].critDmg > 0) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                            tower.bonusCritDmg += (tower.itemListBag[position].critDmg * 0.1f)
+                                            tower.itemListBag[position].critDmg += (tower.itemListBag[position].critDmg * 0.1f)
+
+                                        }
+                                        in 66..88 -> {
+                                            tower.bonusCritDmg += (tower.itemListBag[position].critDmg * 0.15f)
+                                            tower.itemListBag[position].critDmg += (tower.itemListBag[position].critDmg * 0.15f)
+
+                                        }
+                                        in 89..99 -> {
+                                            tower.bonusCritDmg += (tower.itemListBag[position].critDmg * 0.2f)
+                                            tower.itemListBag[position].critDmg += (tower.itemListBag[position].critDmg * 0.2f)
+                                        }
+                                    }
+                                }
+                                if (tower.itemListBag[position].specialFloat > 0) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                            if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "armor penetration") {
+                                                tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.1f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
+                                            } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "magic penetration") {
+                                                tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.1f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
+                                            } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "hit chance") {
+                                                tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.1f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
+                                            }
+                                            if (tower.itemListBag[position].id == 212) {
+                                                tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.1f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
+                                            }
+                                            if (tower.itemListBag[position].id == 215) {
+                                                tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.1f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
+                                            }
+                                            if (tower.itemListBag[position].id == 216) {
+                                                tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.1f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
+                                            }
+                                            if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "anti-heal") {
+                                                tower.bonusAntiHeal += ((tower.itemListBag[position].specialFloat / 100) * 0.1f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
+                                            } else if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "extra dmg immune") {
+                                                tower.bonusDmgImmune += ((tower.itemListBag[position].specialFloat / 100) * 0.1f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.1f)
+                                            }
+                                        }
+                                        in 66..88 -> {
+                                            if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "armor penetration") {
+                                                tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.15f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
+                                            } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "magic penetration") {
+                                                tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.15f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
+                                            } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "hit chance") {
+                                                tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.15f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
+                                            }
+                                            if (tower.itemListBag[position].id == 212) {
+                                                tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.15f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
+                                            }
+                                            if (tower.itemListBag[position].id == 215) {
+                                                tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.15f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
+                                            }
+                                            if (tower.itemListBag[position].id == 216) {
+                                                tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.15f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
+                                            }
+                                            if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "anti-heal") {
+                                                tower.bonusAntiHeal += ((tower.itemListBag[position].specialFloat / 100) * 0.15f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
+                                            } else if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "extra dmg immune") {
+                                                tower.bonusDmgImmune += ((tower.itemListBag[position].specialFloat / 100) * 0.15f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.15f)
+                                            }
+                                        }
+                                        in 89..99 -> {
+                                            if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "armor penetration") {
+                                                tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.2f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
+                                            } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "magic penetration") {
+                                                tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.2f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
+                                            } else if ((tower.itemListBag[position].id == 200 || tower.itemListBag[position].id == 202 || tower.itemListBag[position].id == 203) && tower.itemListBag[position].special == "hit chance") {
+                                                tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.2f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
+                                            }
+                                            if (tower.itemListBag[position].id == 212) {
+                                                tower.itemBonusHitChance += (tower.itemListBag[position].specialFloat * 0.2f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
+                                            }
+                                            if (tower.itemListBag[position].id == 215) {
+                                                tower.bonusArmorPen += (tower.itemListBag[position].specialFloat * 0.2f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
+                                            }
+                                            if (tower.itemListBag[position].id == 216) {
+                                                tower.bonusMagicPen += (tower.itemListBag[position].specialFloat * 0.2f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
+                                            }
+                                            if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "anti-heal") {
+                                                tower.bonusAntiHeal += ((tower.itemListBag[position].specialFloat / 100) * 0.2f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
+                                            } else if ((tower.itemListBag[position].id == 300 || tower.itemListBag[position].id == 302 || tower.itemListBag[position].id == 303) && tower.itemListBag[position].special == "extra dmg immune") {
+                                                tower.bonusDmgImmune += ((tower.itemListBag[position].specialFloat / 100) * 0.2f)
+                                                tower.itemListBag[position].specialFloat += (tower.itemListBag[position].specialFloat * 0.2f)
+                                            }
+                                        }
+                                    }
+                                }
+                                if (tower.itemListBag[position].specialFloat2 > 0) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                            if (tower.itemListBag[position].id == 4) {
+                                                tower.bonusItemChance += (tower.itemListBag[position].specialFloat2 * 0.1f)
+                                                tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.1f)
+                                            }
+                                            if (tower.itemListBag[position].special2 == "item find") {
+                                                tower.bonusItemChance += (tower.itemListBag[position].specialFloat2) * 0.1f
+                                                tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.1f)
+                                            } else if (tower.itemListBag[position].special2 == "item quality") {
+                                                tower.bonusItemQuality += ((tower.itemListBag[position].specialFloat2 * 0.1f))
+                                                tower.itemListBag[position].specialFloat2 += ((tower.itemListBag[position].specialFloat2 * 0.1f))
+                                            }
+                                        }
+                                        in 66..88 -> {
+                                            if (tower.itemListBag[position].id == 4) {
+                                                tower.bonusItemChance += (tower.itemListBag[position].specialFloat2 * 0.15f)
+                                                tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.15f)
+                                            }
+                                            if (tower.itemListBag[position].special2 == "item find") {
+                                                tower.bonusItemChance += (tower.itemListBag[position].specialFloat2) * 0.15f
+                                                tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.15f)
+                                            }
+                                            if (tower.itemListBag[position].special2 == "item quality") {
+                                                tower.bonusItemQuality += ((tower.itemListBag[position].specialFloat2 * 0.15f))
+                                                tower.itemListBag[position].specialFloat2 += ((tower.itemListBag[position].specialFloat2 * 0.15f))
+                                            }
+                                        }
+                                        in 89..99 -> {
+                                            if (tower.itemListBag[position].id == 4) {
+                                                tower.bonusItemChance += (tower.itemListBag[position].specialFloat2 * 0.2f)
+                                                tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.2f)
+                                            }
+                                            if (tower.itemListBag[position].special2 == "item find") {
+                                                tower.bonusItemChance += (tower.itemListBag[position].specialFloat2) * 0.2f
+                                                tower.itemListBag[position].specialFloat2 += (tower.itemListBag[position].specialFloat2 * 0.2f)
+                                            }
+                                            if (tower.itemListBag[position].special2 == "item quality") {
+                                                tower.bonusItemQuality += ((tower.itemListBag[position].specialFloat2 * 0.2f))
+                                                tower.itemListBag[position].specialFloat2 += ((tower.itemListBag[position].specialFloat2 * 0.2f))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.nameicon, tower.itemListBag[position].name.toString()))
+                            if (tower.itemListBag[position].upgrade > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.upgradepointsicon, tower.itemListBag[position].upgrade.toString()))
+                            if (tower.itemListBag[position].dmg > 0) {
+                                when (tower.itemListBag[position].dmg.toInt()) {
+                                    in 0..999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, tower.itemListBag[position].dmg.round(2)
+                                        .toString()))
+                                    in 1000..999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, (tower.itemListBag[position].dmg / 1000).round(2)
+                                        .toString() + "k"))
+                                    in 1000000..999999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, (tower.itemListBag[position].dmg / 1000000).round(2)
+                                        .toString() + "M"))
+                                }
+                            }
+                            if (tower.itemListBag[position].atkDmg > 0) {
+                                when (tower.itemListBag[position].atkDmg.toInt()) {
+                                    in 0..999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, tower.itemListBag[position].atkDmg.round(2)
+                                        .toString()))
+                                    in 1000..999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, (tower.itemListBag[position].atkDmg / 1000).round(2)
+                                        .toString() + "k"))
+                                    in 1000000..999999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, (tower.itemListBag[position].atkDmg / 1000000).round(2)
+                                        .toString() + "M"))
+                                }
+                            }
+                            if (tower.itemListBag[position].mgcDmg > 0) {
+                                when (tower.itemListBag[position].mgcDmg.toInt()) {
+                                    in 0..999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, tower.itemListBag[position].mgcDmg.round(2)
+                                        .toString()))
+                                    in 1000..999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, (tower.itemListBag[position].mgcDmg / 1000).round(2)
+                                        .toString() + "k"))
+                                    in 1000000..999999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, (tower.itemListBag[position].mgcDmg / 1000000).round(2)
+                                        .toString() + "M"))
+                                }
+                            }
+                            if (tower.itemListBag[position].crit > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.criticon, tower.itemListBag[position].crit.round(2)
+                                .toString()))
+                            if (tower.itemListBag[position].critDmg > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.critdmgicon, tower.itemListBag[position].critDmg.round(2)
+                                .toString()))
+                            if (tower.itemListBag[position].speed > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.bowicon, tower.itemListBag[position].speed.round(2)
+                                .toString()))
+                            if (tower.itemListBag[position].special.isNotBlank()) {
+                                itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].special.toString()))
+                                if (tower.itemListBag[position].specialFloat != 0f) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].specialFloat.round(2)
+                                    .toString()))
+                            }
+                            if (tower.itemListBag[position].special2.isNotBlank()) {
+                                itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].special2.toString()))
+                                if (tower.itemListBag[position].specialFloat2 != 0f) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].specialFloat2.round(2)
+                                    .toString()))
+                            }
+
+                            itemFragmentAdapter.notifyDataSetChanged()
+
+                            if (tower.itemListBag[position].upgrade < 1 || upgradePoints <= 0) {
+                                upBTN.visibility = View.INVISIBLE
+                            } else {
+                                upBTN.visibility = View.VISIBLE
+                            }
                         }
                     }
                 }
+            } finally {
+                Companion.readLockTower.unlock()
             }
-                }finally {
-                    Companion.readLockTower.unlock()
-                }
+        }
     }
 
     override fun onDestroy() {

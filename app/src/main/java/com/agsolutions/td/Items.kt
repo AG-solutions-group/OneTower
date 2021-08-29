@@ -4,9 +4,26 @@ import com.agsolutions.td.Companion.Companion.level
 import com.agsolutions.td.Companion.Companion.lvlScaler
 import java.io.Serializable
 
-class Items (val id: Int, val minLvl: Short, val maxLvl: Short, var lvlAqu: Int, var xpCost: Float, var diaCost: Short, var ipCost: Float, var mpCost: Short, val name: String, var image: Int, var imageOverlay: Int, var dmg: Float, var atkDmg: Float, var mgcDmg: Float, var speed: Float, var crit: Float, var critDmg: Float, var upgrade: Int, var special: String, var specialFloat: Float, var special2: String, var specialFloat2: Float) : Serializable {
+class Items (val id: Int, val minLvl: Short, val maxLvl: Short, var lvlAqu: Int, var goldCost: Float, var diaCost: Short, var ipCost: Float, var mpCost: Short, val name: String, var image: Int, var imageOverlay: Int, var dmg: Float, var atkDmg: Float, var mgcDmg: Float, var speed: Float, var crit: Float, var critDmg: Float, var upgrade: Int, var special: String, var specialFloat: Float, var special2: String, var specialFloat2: Float) : Serializable {
+
+    var element = false
 
     companion object {
+
+
+
+        var stt0 = Items(2100, 0, 999,0,0f, 0, 0f, 0, "Rare Earth Tower", R.drawable.talentsearth, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+        var stt1 = Items(2101, 0, 999,0,0f, 0, 0f, 0, "Rare Wizard Tower", R.drawable.talentswizard, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+        var stt2 = Items(2102, 0, 999,0,0f, 0, 0f, 0, "Rare Ice Tower", R.drawable.talentsice, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f,0, "bagspace", 3.0f, "bagspace element", 2f)
+        var stt3 = Items(2103, 0, 999,0,0f, 0, 0f, 0, "Rare Butterfly Tower", R.drawable.talentsbutterfly, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+        var stt4 = Items(2104, 0, 999,0,0f, 0, 0f, 0, "Rare Poison Tower", R.drawable.talentspoison, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+        var stt5 = Items(2105, 0, 999,0,0f, 0, 0f, 0, "Rare Moon Tower", R.drawable.moon, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+        var stt6 = Items(2106, 0, 999,0,0f, 0, 0f, 0, "Rare Wind Tower", R.drawable.talentswind, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f,0, "bagspace", 3.0f, "bagspace element", 2f)
+        var stt7 = Items(2107, 0, 999,0,0f, 0, 0f, 0, "Rare Utils Tower", R.drawable.talentsutils, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f,0,"bagspace", 3.0f, "bagspace element", 2f)
+        var stt8 = Items(2108, 0, 999,0,0f, 0, 0f, 0, "Rare Fire Tower", R.drawable.talentsfire, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0,"bagspace", 3.0f, "bagspace element", 2f)
+        var stt9 = Items(2109, 0, 999,0,0f, 0, 0f, 0, "Rare Dark Tower", R.drawable.talentsdark, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+
+        var startTowerList = mutableListOf<Items>(stt0, stt1, stt2, stt3, stt4, stt5, stt6, stt7, stt8, stt9)
 
         var itemListNormal = mutableListOf<Int>()
         var itemListRare = mutableListOf<Int>()
@@ -45,6 +62,7 @@ class Items (val id: Int, val minLvl: Short, val maxLvl: Short, var lvlAqu: Int,
          var id3 = Items(3, 1, 25,0,0f, 0,0f, 0, "Magic Box", R.drawable.ic_launcher_background, R.drawable.overlaytransparent,1.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f, 0, "no use cost", 0f, "", 0f)
          var id4 = Items(4, 1, 999,0,(20f), 0, 0f, 0,"Sword", R.drawable.pdoubleswordsgrey, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, (3.0f), 0.0f, 0, "", 0f, "", 0f)
          var id5 = Items(5, 1, 999, 0, 0f, 0, 0f, 0,"Bomb", R.drawable.bombgrey, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0f, 0.0f, 0, "Detonate on Remove: 20% dmg to all enemies", 0f, "", 0f)
+         var id6 = Items(6, 1, 999, 0, 0f, 0, 0f, 0, "Experiencer", R.drawable.xpgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: gain xp", 0f, "", 0f)
         // rare items
 
          var id100 = Items(100, 1, 999,0,30f, 0,0f, 0, "Rare Sword", R.drawable.pdoubleswordsgrey, R.drawable.overlaytransparent,3.0f, 0.0f,0.0f,0.0f, 1.0f, 0.0f, 1, "", 0f, "", 0f)
@@ -137,27 +155,17 @@ class Items (val id: Int, val minLvl: Short, val maxLvl: Short, var lvlAqu: Int,
         var towerListEpic = mutableListOf<Int>()
         var towerListLegendary = mutableListOf<Int>()
 
-        var t0 = Items(2000, 0, 999,0,0f, 0, 0f, 0, "Earth", R.drawable.talentsearth, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Enables Earth Talent", 0.0f, "", 0f)
-        var t1 = Items(2001, 1, 999,0,0f, 0, 0f, 0, "Wizard", R.drawable.talentswizard, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Enables Wizard Talent", 0.0f, "", 0f)
-        var t2 = Items(2002, 2, 999,0,0f, 0, 0f, 0, "Ice", R.drawable.talentsice, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Enables Ice Talent", 0.0f, "", 0f)
-        var t3 = Items(2003, 3, 999,0,0f, 0, 0f, 0, "Butterfly", R.drawable.talentsbutterfly, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Enables Butterfly Talent", 0.0f, "", 0f)
-        var t4 = Items(2004, 4, 999,0,0f, 0, 0f, 0, "Poison", R.drawable.talentspoison, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Enables Poison Talent", 0.0f, "", 0f)
-        var t5 = Items(2005, 5, 999,0,0f, 0, 0f, 0, "Moon", R.drawable.moon, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Enables Moon Talent", 0.0f, "", 0f)
-        var t6 = Items(2006, 6, 999,0,0f, 0, 0f, 0, "Wind", R.drawable.talentswind, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Enables Wind Talent", 0.0f, "", 0f)
-        var t7 = Items(2007, 7, 999,0,0f, 0, 0f, 0, "Utils", R.drawable.talentsutils, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Enables Utils Talent", 0.0f, "", 0f)
-        var t8 = Items(2008, 8, 999,0,0f, 0, 0f, 0, "Fire", R.drawable.talentsfire, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Enables Fire Talent", 0.0f, "", 0f)
-        var t9 = Items(2009, 9, 999,0,0f, 0, 0f, 0, "Dark", R.drawable.talentsdark, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Enables Dark Talent", 0.0f, "", 0f)
 
-        var eearth = Items(3000, 0, 999, 0, 0f, 0, 0f, 0, "Earth Element", R.drawable.talentsearth, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Earth Abilities", 0.0f, "", 0f)
-        var ewizard = Items(3001, 0, 999, 0, 0f, 0, 0f, 0, "Wizard Element", R.drawable.talentswizard, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wizard Abilities", 0.0f, "", 0f)
-        var eice = Items(3002, 0, 999, 0, 0f, 0, 0f, 0, "Ice Element", R.drawable.talentsice, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Ice Abilities", 0.0f, "", 0f)
-        var ebutterfly = Items(3003, 0, 999, 0, 0f, 0, 0f, 0, "Butterfly Element", R.drawable.talentsbutterfly, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Butterfly Abilities", 0.0f, "", 0f)
-        var epoison = Items(3004, 0, 999, 0, 0f, 0, 0f, 0, "Poison Element", R.drawable.talentspoison, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Poison Abilities", 0.0f, "", 0f)
-        var emoon = Items(3005, 0, 999, 0, 0f, 0, 0f, 0, "Moon Element", R.drawable.moon, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Moon Abilities", 0.0f, "", 0f)
-        var ewind = Items(3006, 0, 999, 0, 0f, 0, 0f, 0, "Wind Element", R.drawable.talentswind, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wind Abilities", 0.0f, "", 0f)
-        var eutils = Items(3007, 0, 999, 0, 0f, 0, 0f, 0, "Utils Element", R.drawable.talentsutils, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Utils Abilities", 0.0f, "", 0f)
-        var efire = Items(3008, 0, 999, 0, 0f, 0, 0f, 0, "Fire Element", R.drawable.talentsfire, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Fire Abilities", 0.0f, "", 0f)
-        var edark = Items(3009, 0, 999, 0, 0f, 0, 0f, 0, "Dark Element", R.drawable.talentsdark, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Dark Abilities", 0.0f, "", 0f)
+        var eearth = Items(3000, 0, 999, 0, 0f, 1, 0f, 0, "Earth Element", R.drawable.talentsearth, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Earth Abilities", 0.0f, "Adds a medium aoe to all hits.", 0f)
+        var ewizard = Items(3001, 0, 999, 0, 0f, 1, 0f, 0, "Wizard Element", R.drawable.talentswizard, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wizard Abilities", 0.0f, "Places a bomb on a random target that deals aoe dmg.", 0f)
+        var eice = Items(3002, 0, 999, 0, 0f, 1, 0f, 0, "Ice Element", R.drawable.talentsice, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Ice Abilities", 0.0f, "Ice Nova. Blasts the area each 4.5 seconds and slows enemies for a short duration.", 0f)
+        var ebutterfly = Items(3003, 0, 999, 0, 0f, 1, 0f, 0, "Butterfly Element", R.drawable.talentsbutterfly, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Butterfly Abilities", 0.0f, "Target receives 150% damage at the 3rd consecutive hit.", 0f)
+        var epoison = Items(3004, 0, 999, 0, 0f, 1, 0f, 0, "Poison Element", R.drawable.talentspoison, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Poison Abilities", 0.0f, "Applies a stackable poison debuff that deals magic damage over time.", 0f)
+        var emoon = Items(3005, 0, 999, 0, 0f, 1, 0f, 0, "Moon Element", R.drawable.moon, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Moon Abilities", 0.0f, "Bullets bounce to 1 additional targets dealing -50% damage each bounce.", 0f)
+        var ewind = Items(3006, 0, 999, 0, 0f, 1, 0f, 0, "Wind Element", R.drawable.talentswind, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Wind Abilities", 0.0f, "Multishot hits all targets. Damage is divided by target count + 2.", 0f)
+        var eutils = Items(3007, 0, 999, 0, 0f, 1, 0f, 0, "Utils Element", R.drawable.talentsutils, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Utils Abilities", 0.0f, "Increases dmg and spd of nearby towers by 10%", 0f)
+        var efire = Items(3008, 0, 999, 0, 0f, 1, 0f, 0, "Fire Element", R.drawable.talentsfire, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Fire Abilities", 0.0f, "Crit dmg + 0.5. Crit chance + 10. Burns enemies critically hit for 4% of max hp as magic damage.", 0f)
+        var edark = Items(3009, 0, 999, 0, 0f, 1, 0f, 0, "Dark Element", R.drawable.talentsdark, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "Enables Dark Abilities", 0.0f, "Each hit has a 1.5% chance to instantly kill the target.", 0f)
 
     }
     var bonusCritDmgLevel = 0f
