@@ -563,6 +563,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
             companionList = itemListPlace[0] as com.agsolutions.td.Companion
             companionList.towerClick = false
+            companionList.build = true
 
             adapter = ItemAdapter(companionList.itemList, this)
             bagAdapter = ItemBagAdapter(companionList.itemListBagInserter, this, this)
