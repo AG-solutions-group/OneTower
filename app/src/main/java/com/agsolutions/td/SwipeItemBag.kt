@@ -2,7 +2,7 @@ package com.agsolutions.td
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.agsolutions.td.Companion.Companion.towerClick
+
 
 class SwipeItemBag (var adapter: ItemBagAdapter) : ItemTouchHelper.SimpleCallback (0, ItemTouchHelper.UP) {
 
@@ -10,11 +10,11 @@ class SwipeItemBag (var adapter: ItemBagAdapter) : ItemTouchHelper.SimpleCallbac
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        if (towerClick) {
+        if (GameActivity.companionList.towerClick) {
             var pos = viewHolder.bindingAdapterPosition
 
-            if (Companion.towerList[Companion.towerClickID].itemListBag[pos] == Companion.towerList[Companion.towerClickID].itemListBag[0]) return 0
-            if (Companion.towerList[Companion.towerClickID].itemListBag[pos].crossedOut) return 0
+            if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] == GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[0]) return 0
+            if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos].crossedOut) return 0
 
             return super.getMovementFlags(recyclerView, viewHolder)
         } else {
@@ -31,8 +31,8 @@ class SwipeItemBag (var adapter: ItemBagAdapter) : ItemTouchHelper.SimpleCallbac
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        if (!Companion.build) {
-            var pos = viewHolder.adapterPosition
+        if (!GameActivity.companionList.build) {
+            var pos = viewHolder.bindingAdapterPosition
             adapter.deleteItem(pos)
         }
 

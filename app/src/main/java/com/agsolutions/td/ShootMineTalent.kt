@@ -3,7 +3,7 @@ package com.agsolutions.td
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.agsolutions.td.Companion.Companion.mapPick
+
 
 class ShootMineTalent {
     companion object {
@@ -32,7 +32,7 @@ class ShootMineTalent {
 
     fun update() {
 
-        if (mapPick == 1) {
+        if (GameActivity.companionList.mapPick == 1) {
             if (!newMine){
 
             }else {

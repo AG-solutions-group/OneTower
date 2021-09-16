@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.R
 import com.agsolutions.td.UpdateViewModel
 import com.agsolutions.td.databinding.FragmentStatsTowerBinding
@@ -62,144 +63,144 @@ class StatsTowerFragment (var updateViewModel: UpdateViewModel) : Fragment() {
 
         var scalePics = 1.5
 
-        rarityTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        rarityTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        dmgTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        dmgTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        phyDmgTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        phyDmgTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        spellDmgTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        spellDmgTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        speedTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        speedTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        critTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        critTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        critDmgTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        critDmgTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        multiCrtTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        multiCrtTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        hitTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        hitTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        armorPenTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        armorPenTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        magicPenTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        magicPenTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        itemChanceTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        itemChanceTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        bonusItemQualityTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        bonusItemQualityTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        bagSizeTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        bagSizeTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        bagSizeElementTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        bagSizeElementTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
+        rarityTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        rarityTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        dmgTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        dmgTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        phyDmgTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        phyDmgTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        spellDmgTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        spellDmgTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        speedTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        speedTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        critTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        critTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        critDmgTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        critDmgTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        multiCrtTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        multiCrtTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        hitTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        hitTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        armorPenTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        armorPenTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        magicPenTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        magicPenTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        itemChanceTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        itemChanceTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        bonusItemQualityTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        bonusItemQualityTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        bagSizeTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        bagSizeTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        bagSizeElementTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        bagSizeElementTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
 
         rarityTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Rarity - rarity of tower"
+            companionList.toastGlobal = true
+            companionList.toastText = "Rarity - rarity of tower"
         }
         dmgTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Damage - bonus physical and spell damage"
+            companionList.toastGlobal = true
+            companionList.toastText = "Damage - bonus physical and spell damage"
         }
         dmgShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Damage - bonus physical and spell damage"
+            companionList.toastGlobal = true
+            companionList.toastText = "Damage - bonus physical and spell damage"
         }
         phyDmgTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Physical Damage - bonus physical damage"
+            companionList.toastGlobal = true
+            companionList.toastText = "Physical Damage - bonus physical damage"
         }
         phyDmgShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Physical Damage - bonus physical damage"
+            companionList.toastGlobal = true
+            companionList.toastText = "Physical Damage - bonus physical damage"
         }
         spellDmgTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Spell Damage - bonus spell damage"
+            companionList.toastGlobal = true
+            companionList.toastText = "Spell Damage - bonus spell damage"
         }
         spellDmgShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Spell Damage - bonus spell damage"
+            companionList.toastGlobal = true
+            companionList.toastText = "Spell Damage - bonus spell damage"
         }
         speedTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Attack Speed - frequency of tower attacks"
+            companionList.toastGlobal = true
+            companionList.toastText = "Attack Speed - frequency of tower attacks"
         }
         speedShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Attack Speed - frequency of tower attacks"
+            companionList.toastGlobal = true
+            companionList.toastText = "Attack Speed - frequency of tower attacks"
         }
         critTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Critical Damage Chance - chance of hitting a critical attack"
+            companionList.toastGlobal = true
+            companionList.toastText = "Critical Damage Chance - chance of hitting a critical attack"
         }
         critShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Critical Damage Chance - chance of hitting a critical attack"
+            companionList.toastGlobal = true
+            companionList.toastText = "Critical Damage Chance - chance of hitting a critical attack"
         }
         critDmgTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Critical Damage - damage multiplier of critical hits"
+            companionList.toastGlobal = true
+            companionList.toastText = "Critical Damage - damage multiplier of critical hits"
         }
         critDmgShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Critical Damage - damage multiplier of critical hits"
+            companionList.toastGlobal = true
+            companionList.toastText = "Critical Damage - damage multiplier of critical hits"
         }
         multiCrtTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Multi Crit - gives critical hits the chance to multiply critical damage"
+            companionList.toastGlobal = true
+            companionList.toastText = "Multi Crit - gives critical hits the chance to multiply critical damage"
         }
         multiCrtShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Multi Crit - gives critical hits the chance to multiply critical damage"
+            companionList.toastGlobal = true
+            companionList.toastText = "Multi Crit - gives critical hits the chance to multiply critical damage"
         }
         hitTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Hit Chance - chance to hit enemies in percent"
+            companionList.toastGlobal = true
+            companionList.toastText = "Hit Chance - chance to hit enemies in percent"
         }
         hitShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Hit Chance - chance to hit enemies in percent"
+            companionList.toastGlobal = true
+            companionList.toastText = "Hit Chance - chance to hit enemies in percent"
         }
         armorPenTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Armor Penetration - rating to reduce enemies armor, making them more vulnerable to physical attacks"
+            companionList.toastGlobal = true
+            companionList.toastText = "Armor Penetration - rating to reduce enemies armor, making them more vulnerable to physical attacks"
         }
         armorPenShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Armor Penetration - rating to reduce enemies armor, making them more vulnerable to physical attacks"
+            companionList.toastGlobal = true
+            companionList.toastText = "Armor Penetration - rating to reduce enemies armor, making them more vulnerable to physical attacks"
         }
         magicPenTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Magic Armor Penetration - rating to reduce enemies magic armor, making them more vulnerable to physical attacks"
+            companionList.toastGlobal = true
+            companionList.toastText = "Magic Armor Penetration - rating to reduce enemies magic armor, making them more vulnerable to physical attacks"
         }
         magicPenShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Magic Armor Penetration - rating to reduce enemies magic armor, making them more vulnerable to physical attacks"
+            companionList.toastGlobal = true
+            companionList.toastText = "Magic Armor Penetration - rating to reduce enemies magic armor, making them more vulnerable to physical attacks"
         }
         itemChanceTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Item Find - chance to find items in percent"
+            companionList.toastGlobal = true
+            companionList.toastText = "Item Find - chance to find items in percent"
         }
         itemChanceShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Item Find - chance to find items in percent"
+            companionList.toastGlobal = true
+            companionList.toastText = "Item Find - chance to find items in percent"
         }
         bonusItemQualityTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Item Quality - rating to find better items"
+            companionList.toastGlobal = true
+            companionList.toastText = "Item Quality - rating to find better items"
         }
         bonusItemQualityShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Item Quality - rating to find better items"
+            companionList.toastGlobal = true
+            companionList.toastText = "Item Quality - rating to find better items"
         }
         bagSizeTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Bag Size - number of items you can use"
+            companionList.toastGlobal = true
+            companionList.toastText = "Bag Size - number of items you can use"
         }
         bagUsedShowTV.setOnClickListener(){
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Bag Size - number of items you can use"
+            companionList.toastGlobal = true
+            companionList.toastText = "Bag Size - number of items you can use"
         }
 
     }

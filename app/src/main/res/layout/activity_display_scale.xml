@@ -301,54 +301,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@android:drawable/ic_media_previous" />
 
-        <TextView
-            android:id="@+id/textButtonTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:text="Text Button"
-            android:shadowColor="#000000"
-            android:shadowDx="1.5"
-            android:shadowDy="1.3"
-            android:shadowRadius="1.6"
-            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextStats"
-            app:layout_constraintEnd_toStartOf="@+id/minusButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/plusButtonTextButton" />
 
-        <ImageButton
-            android:id="@+id/plusButtonTextButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextStats"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
-            app:layout_constraintStart_toEndOf="@+id/minusButton"
-            app:srcCompat="@android:drawable/ic_media_next" />
-
-        <TextView
-            android:id="@+id/showTextButtonScaleTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:shadowColor="#000000"
-            android:shadowDx="1.5"
-            android:shadowDy="1.3"
-            android:shadowRadius="1.6"
-            android:text="Number"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextStats"
-            app:layout_constraintEnd_toStartOf="@+id/plusButton"
-            app:layout_constraintStart_toEndOf="@+id/minusButton"
-            app:layout_constraintTop_toTopOf="@+id/plusButtonTextButton" />
-
-        <ImageButton
-            android:id="@+id/minusButtonTextButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:layout_constraintBottom_toTopOf="@+id/minusButtonTextStats"
-            app:layout_constraintEnd_toStartOf="@+id/plusButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@android:drawable/ic_media_previous" />
 
 
 
@@ -366,7 +319,7 @@
             android:layout_gravity="center"
             android:layout_width="@dimen/itemSizeMargin"
             android:layout_height="@dimen/itemSizeMargin"
-            app:srcCompat="@drawable/bagicon3" />
+            app:srcCompat="@drawable/overlaytransparent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
@@ -387,7 +340,8 @@
             android:layout_gravity="center"
             >
 
-            <Button
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/saveBTN"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
@@ -396,13 +350,10 @@
                 android:textAllCaps="false"
                 android:text="SAVE"
                 android:textColor="#ffffff"
+                app:backgroundTint="@null"
                 android:background="@drawable/button_bg"
                 />
 
-            <androidx.constraintlayout.widget.Barrier
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="top" />
         </FrameLayout>
 
     </LinearLayout>
@@ -800,31 +751,6 @@
 
         </FrameLayout>
 
-        <LinearLayout
-            android:layout_width="40dp"
-            android:layout_height="80dp"
-            android:orientation="vertical"
-            android:elevation="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/fragment"
-            app:layout_constraintTop_toTopOf="@+id/fragment"
-            android:background="@drawable/marmorright">
-
-            <ImageView
-                android:id="@+id/coinIV"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:src="@drawable/goldicon" />
-
-
-            <ImageView
-                android:id="@+id/dmgIV"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:src="@drawable/swordandwandicon"
-                />
-
-        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

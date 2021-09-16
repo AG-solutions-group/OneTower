@@ -2,21 +2,21 @@ package com.agsolutions.td
 
 import android.graphics.Color
 import android.graphics.Paint
+import java.io.Serializable
 import kotlin.random.Random
 
-class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Float, var crit: Float, var critDmg: Float) {
+class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Float, var crit: Float, var critDmg: Float) :
+    Serializable {
+
+    // Normal
 
     var towerRange = TowerRadius (600.0f, 750.0f, 300.0f)
     var towerR = 0f
     var towerBonusRange = 0f
     var towerRarity = "grey"
     var towerRarityMultiplier = 0f
-    var paint: Paint
-    var paint2 : Paint
-    var paint3 : Paint
     var selected = false
     var towerPrimaryElement = "none"
-    var isSingleTarget = true
     var towerLevelBool = false
 
     var particleDmg = 0f
@@ -72,42 +72,20 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
 
     var randomEnemyForShot = Enemy (0.0f,0.0f, 0.0f, 0.0f, 0.0f, 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0)
     var randomEnemyForShotBool = true
+    var randomEnemyForShotChain = Enemy (0.0f,0.0f, 0.0f, 0.0f, 0.0f, 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0)
+    var randomEnemyChainBool = true
     var randomEnemyForShotSticky = true
-    var firstLastRandom = 0
+    var firstLastRandom = 3
+    var firstLastRandomText = "first"
     var towerFallingCount = 50
-    var towerTowerNextPic = 0
-    var towerTowerNextPicPlace = 0
 
 
     // talent
-    var talentPoints = 1
+    var talentPoints = 60
     var xpTower = 0f
     var xpGoal1 = 0f
-    var xpGoal2 = 8f
+    var xpGoal2 = 6f
     var towerLevel = 1
-
-    // ice
-    var iceNovaCounter = 0
-
-    // earth
-    var throwBoulderCounter = 0
-
-    // poison
-    var poisonOverloadActive = false
-    var poisonOverloadCounter = 0
-    var poisonOverloadDuration = 0
-
-    // wind
-    var bonusSpeedWindTalentPercent = 0.0f
-
-    // fire
-    var critCounter = 0
-
-    // wizard
-    var wizardMissedLightningActive = false
-    var wizardBombCounter = 0
-
-
 
     // items
     var itemListBag = mutableListOf<Items>()
@@ -126,7 +104,13 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var itemSlowDeath = 0.0f
     var itemPiggyBank = 1f
 
+    var itemLassoCount = 0
     var itemStartPoison = false
+    var itemSniperPro = false
+    var randomEnemyForSniper = Enemy (0.0f,0.0f, 0.0f, 0.0f, 0.0f, 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0)
+    var itemFastDraw = false
+    var itemBoring = false
+
 
     // xp
 
@@ -206,7 +190,9 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var earthTalentBonusHitChance = 0f
     var throwBoulder = 0.0f
     var throwBoulderTimer = 0
-    var earthTalentPhyDmgMultiplier = 1.0f
+    var earthTalentPhyDmgMultiplier = 0.5f
+    var throwBoulderCounter = 0
+    var earthDmgImmune = 1f
 
     // fire
     var fireRow1Item1 = 0
@@ -221,6 +207,8 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var fireBurnTalentDmg = 0.004f
     var fireUltimateMulticritBonus = 0
     var bonusCritFire = 0.0f
+    var critCounter = 0
+
 
     //ice
     var iceRow1Item1 = 0
@@ -238,6 +226,8 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var slowExtra = 0.0f
     var slowExtraChance = 0
     var slowAura = 0.0f
+    var slowExtraMgcDmg = false
+    var iceNovaCounter = 0
 
     // moon
     var moonRow1Item1 = 0
@@ -248,9 +238,10 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var moonRow3Item2 = 0
     var moonRow4Item1 = 0
     var moonLightCount = 0
-    var moonLight = 0
+    var moonLight = 1f
     var shotBounceTargets = 2
     var damageMultiplyerNight = 1f
+    var experienceMoonNight = false
 
     // poison
     var poisonRow1Item1 = 0
@@ -263,17 +254,24 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var stackablePoison = 0.1f
     var poisonOverload = 0
     var entangle = 0
+    var poisonOverloadActive = false
+    var poisonOverloadCounter = 0
+    var poisonOverloadDuration = 0
+    var poisonDmgMultiplier = false
 
     // utils
     var utilsRow1Item1 = 0
     var utilsRow1Item2 = 0
     var utilsRow2Item1 = 0
     var utilsRow2Item2 = 0
+    var utilsRow2Item3 = 0
     var utilsRow3Item1 = 0
     var utilsRow3Item2 = 0
     var utilsRow4Item1 = 0
     var itemQualityAura = 0f
     var itemChanceAura = 0f
+    var utilsUltimate = 1f
+    var utilsUpgrader = 0f
 
     // wind
     var windRow1Item1 = 0
@@ -292,6 +290,8 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var tornadoCounter = 0
     var bonusSpeedWindTalent = 0.0f
     var windUltimatePercent = 0f
+    var bonusSpeedWindTalentPercent = 0.0f
+    var tornadoTimer = 1000
 
     // wizard
     var wizardRow1Item1 = 0
@@ -308,6 +308,8 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var spellCastCDCounterHeap = 0
     var spellCastCDBool = false
     var wizardMissedLightningDmgBoost = 1f
+    var wizardMissedLightningActive = false
+    var wizardBombCounter = 0
 
     var wizardBombTimer = 360
     var wizardBombDmg = 10.0f
@@ -318,25 +320,6 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var chainLightningTimer= 0f
     var chainLightningBonusDmg = 0f
 
- //   var tower: Tower = Tower(10.0f, 45.0f, 1.0f, 2.0f)
-
-    init {
-        paint = Paint()
-        paint.isAntiAlias
-        paint.isFilterBitmap
-        paint.color = Color.BLACK
-        paint2 = Paint()
-        paint2.isAntiAlias
-        paint2.isFilterBitmap
-        paint2.strokeWidth = 2f
-        paint2.color = (Color.parseColor("#9EEC5B"))
-        paint3 = Paint()
-        paint3.isAntiAlias
-        paint3.isFilterBitmap
-        paint3.strokeWidth = 2f
-        paint3.color = Color. BLACK
-
-    }
 }
 
 

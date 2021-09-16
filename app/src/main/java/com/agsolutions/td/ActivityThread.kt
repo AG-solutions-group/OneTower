@@ -1,6 +1,5 @@
 package com.agsolutions.td
 
-import com.agsolutions.td.Companion.Companion.gameSpeedAdjuster
 import com.agsolutions.td.Fragments.EarthTalentFragment
 
 
@@ -12,7 +11,7 @@ class ActivityThread(private val gameActivity: GameActivity) : Thread() {
     var talentsEarth = EarthTalentFragment()
 
     private val targetFPS =
-        60  * gameSpeedAdjuster// frames per second, the rate at which you would like to refresh the Canvas
+        60  * GameActivity.companionList.gameSpeedAdjuster// frames per second, the rate at which you would like to refresh the Canvas
 
     override fun run() {
         var startTime: Long
@@ -21,7 +20,7 @@ class ActivityThread(private val gameActivity: GameActivity) : Thread() {
         var targetTime: Long
 
         while (runningActivity) {
-            targetTime = (1000 / (targetFPS * gameSpeedAdjuster)).toLong()
+            targetTime = (1000 / (targetFPS * GameActivity.companionList.gameSpeedAdjuster)).toLong()
             startTime = System.nanoTime()
 
 

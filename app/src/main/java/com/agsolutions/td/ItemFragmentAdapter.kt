@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item.view.*
 import kotlinx.android.synthetic.main.stats.view.*
+import java.io.Serializable
 
 
 class ItemFragmentAdapter (
@@ -55,7 +55,7 @@ class ItemFragmentAdapter (
 }
 
 
-class ItemFragmentStrings (var name: Int, var stats: String)
+class ItemFragmentStrings (var name: Int, var stats: String) : Serializable
 
 /*
 holder.itemView.setOnLongClickListener  {

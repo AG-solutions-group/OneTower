@@ -6,12 +6,6 @@ import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnLayout
-import com.agsolutions.td.Companion.Companion.focusMainWindow
-import com.agsolutions.td.Companion.Companion.focusTalentWindow
-import com.agsolutions.td.Companion.Companion.showHelpTalent
-import com.agsolutions.td.Companion.Companion.towerClick
-import com.agsolutions.td.Companion.Companion.towerClickID
-import com.agsolutions.td.Companion.Companion.towerList
 import com.agsolutions.td.Fragments.*
 import kotlinx.android.synthetic.main.talents.*
 
@@ -42,8 +36,8 @@ class Talents : AppCompatActivity() {
         window.setLayout((screenwidth).toInt(), (screenheight).toInt())
         window.setElevation(10F)
 
-        com.agsolutions.td.Companion.focusTalentWindow = true
-        focusMainWindow = false
+        GameActivity.companionList.focusTalentWindow = true
+        GameActivity.companionList.focusMainWindow = false
 
         earthTalentBTN.doOnLayout {
             UiViewTalent.talentX = earthTalentBTN.x
@@ -67,9 +61,9 @@ class Talents : AppCompatActivity() {
 
     fun update () {
 
-        if (com.agsolutions.td.Companion.focusEarthFragment) {
-        }else if(focusTalentWindow) {
-            if ( com.agsolutions.td.Companion.hintsBool) {
+        if (GameActivity.companionList.focusEarthFragment) {
+        }else if(GameActivity.companionList.focusTalentWindow) {
+            if ( GameActivity.companionList.hintsBool) {
                     //     var point = IntArray(2)
                     //     earthTalentBTN.getLocationInWindow(point)
                     //     UiViewTalent.talentX = point[0].toFloat()
@@ -98,26 +92,26 @@ class Talents : AppCompatActivity() {
         darkTalentBTN.visibility = View.INVISIBLE
 
 
-        if (towerClick){
-            if (towerList[towerClickID].bagSizeElementCount > 0){
-                if (towerList[towerClickID].itemListBag.contains(Items.eearth)) earthTalentBTN.visibility = View.VISIBLE
-                if (towerList[towerClickID].itemListBag.contains(Items.ewizard)) wizardTalentBTN.visibility = View.VISIBLE
-                if (towerList[towerClickID].itemListBag.contains(Items.eice)) iceTalentBTN.visibility = View.VISIBLE
-                if (towerList[towerClickID].itemListBag.contains(Items.ebutterfly)) butterflyTalentBTN.visibility = View.VISIBLE
-                if (towerList[towerClickID].itemListBag.contains(Items.epoison)) poisonTalentBTN.visibility = View.VISIBLE
-                if (towerList[towerClickID].itemListBag.contains(Items.emoon)) moonTalentBTN.visibility = View.VISIBLE
-                if (towerList[towerClickID].itemListBag.contains(Items.ewind)) windTalentBTN.visibility = View.VISIBLE
-                if (towerList[towerClickID].itemListBag.contains(Items.eutils)) utilsTalentBTN.visibility = View.VISIBLE
-                if (towerList[towerClickID].itemListBag.contains(Items.efire)) fireTalentBTN.visibility = View.VISIBLE
-                if (towerList[towerClickID].itemListBag.contains(Items.edark)) darkTalentBTN.visibility = View.VISIBLE
+        if (GameActivity.companionList.towerClick){
+            if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].bagSizeElementCount > 0){
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.eearth)) earthTalentBTN.visibility = View.VISIBLE
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.ewizard)) wizardTalentBTN.visibility = View.VISIBLE
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.eice)) iceTalentBTN.visibility = View.VISIBLE
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.ebutterfly)) butterflyTalentBTN.visibility = View.VISIBLE
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.epoison)) poisonTalentBTN.visibility = View.VISIBLE
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.emoon)) moonTalentBTN.visibility = View.VISIBLE
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.ewind)) windTalentBTN.visibility = View.VISIBLE
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.eutils)) utilsTalentBTN.visibility = View.VISIBLE
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.efire)) fireTalentBTN.visibility = View.VISIBLE
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.edark)) darkTalentBTN.visibility = View.VISIBLE
             }
         }
 
         saveTalentsBTN.setOnClickListener() {
-            com.agsolutions.td.Companion.focusTalentWindow = false
-            focusMainWindow = true
-            com.agsolutions.td.Companion.focusEarthFragment = false
-            showHelpTalent = false
+            GameActivity.companionList.focusTalentWindow = false
+            GameActivity.companionList.focusMainWindow = true
+            GameActivity.companionList.focusEarthFragment = false
+            GameActivity.companionList.showHelpTalent = false
             GameActivity.paused = false
             mHandler.postDelayed({
                 finish()
@@ -164,7 +158,7 @@ class Talents : AppCompatActivity() {
         }
         earthTalentBTN.setOnClickListener() {
             supportFragmentManager.beginTransaction().apply {
-                com.agsolutions.td.Companion.focusTalentWindow = false
+                GameActivity.companionList.focusTalentWindow = false
                 uiViewTalent.invalidate()
                 replace(R.id.talentsFragment, earthFragment)
                 commit()

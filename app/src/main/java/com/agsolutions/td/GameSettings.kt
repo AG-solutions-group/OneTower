@@ -5,9 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-import com.agsolutions.td.Companion.Companion.globalSoundEffects
-import com.agsolutions.td.Companion.Companion.globalSoundMusic
-import com.agsolutions.td.Companion.Companion.hintsBool
 import kotlinx.android.synthetic.main.game_settings.*
 
 
@@ -23,16 +20,16 @@ class GameSettings : AppCompatActivity() {
         setContentView(R.layout.game_settings)
 
 
-        window.setLayout((400.0f * ((com.agsolutions.td.Companion.scaleScreen) /10)).toInt(), (1000.0f * ((com.agsolutions.td.Companion.scaleScreen) /10)).toInt())
+        window.setLayout((400.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
         sharedPref = getSharedPreferences("Global", PRIVATE_MODE)
-        soundEffectsBar.progress = (globalSoundEffects /10).toInt()
-        soundMusicBar.progress = (globalSoundMusic /10).toInt()
+        soundEffectsBar.progress = (GameActivity.companionList.globalSoundEffects /10).toInt()
+        soundMusicBar.progress = (GameActivity.companionList.globalSoundMusic /10).toInt()
 
-        soundEffectsNumberTV.text = (globalSoundEffects.toInt()).toString()
-        soundMusicNumberTV.text = (globalSoundMusic.toInt()).toString()
-        if (hintsBool) {
+        soundEffectsNumberTV.text = (GameActivity.companionList.globalSoundEffects.toInt()).toString()
+        soundMusicNumberTV.text = (GameActivity.companionList.globalSoundMusic.toInt()).toString()
+        if (GameActivity.companionList.hintsBool) {
             hintsNumberTV.text = "ON"
             hintsBar.isChecked = true
         }
@@ -47,7 +44,7 @@ class GameSettings : AppCompatActivity() {
                 // Display the current progress of SeekBar
                 soundEffectsBar.progress = i
                 soundEffectsNumberTV.text = (i * 10).toString()
-                globalSoundEffects = i*10.toFloat()
+                GameActivity.companionList.globalSoundEffects = i*10.toFloat()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -65,7 +62,7 @@ class GameSettings : AppCompatActivity() {
                 // Display the current progress of SeekBar
                 soundMusicBar.progress = i
                 soundMusicNumberTV.text = (i * 10).toString()
-                globalSoundMusic = i*10.toFloat()
+                GameActivity.companionList.globalSoundMusic = i*10.toFloat()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -78,20 +75,20 @@ class GameSettings : AppCompatActivity() {
         })
 
         hintsBar.setOnCheckedChangeListener { _, isChecked ->
-            hintsBool = isChecked
+            GameActivity.companionList.hintsBool = isChecked
             if (isChecked) hintsNumberTV.text = "ON"
             else hintsNumberTV.text = "OFF"
 
             var editor = sharedPref!!.edit()
-            editor.putBoolean("Global Hints", hintsBool)
+            editor.putBoolean("Global Hints", GameActivity.companionList.hintsBool)
             editor.apply()
         }
 
 
         returnBtn.setOnClickListener(){
             var editor = sharedPref!!.edit()
-            editor.putFloat("Global Music", globalSoundMusic)
-            editor.putFloat("Global Effects", globalSoundEffects)
+            editor.putFloat("Global Music", GameActivity.companionList.globalSoundMusic)
+            editor.putFloat("Global Effects", GameActivity.companionList.globalSoundEffects)
             editor.apply()
 
             mHandler.postDelayed({

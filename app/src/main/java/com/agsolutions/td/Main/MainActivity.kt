@@ -3,14 +3,18 @@ package com.agsolutions.td.Main
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.*
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.SurfaceHolder
+import android.view.SurfaceView
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.*
-import com.agsolutions.td.Companion.Companion.overallXp
 import com.agsolutions.td.LogIn.HttpTask
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_display_scale.*
@@ -18,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.quitBTN
 import kotlinx.android.synthetic.main.activity_start_items_menu.*
 import kotlinx.android.synthetic.main.game_end.*
+import kotlinx.coroutines.InternalCoroutinesApi
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -25,6 +30,8 @@ import java.io.FileInputStream
 import java.io.ObjectInputStream
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.atan2
+import kotlin.random.Random
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +40,19 @@ class MainActivity : AppCompatActivity() {
         var userLevel = 0
         var startScreenBool = false
         var firstDisplayScale = 0
+        var screenDensity = 0f
+        var scaleScreen = 0f
+        var overallXp = 0f
+        var startScreenTowerBool = true
+        var startScreenTimerTower = 0
+        var towerList = mutableListOf<Tower>()
+        var enemyCount = 0
+        var enemyList = mutableListOf<EnemyStartScreen>()
+        var shootList = mutableListOf<ShootStartScreen>()
+        var rotationTowerX = 0f
+        var rotationTowerY = 0f
+        var rotationEnemyX = 0f
+        var rotationEnemyY = 0f
     }
 
     var sharedPrefZ: SharedPreferences? = null
@@ -43,10 +63,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         startScreenBool = true
-        com.agsolutions.td.Companion.screenDensity = getResources().getDisplayMetrics().density
+        screenDensity = resources.displayMetrics.density
 
         sharedPrefZ = getSharedPreferences("Global", PRIVATE_MODE)
-        com.agsolutions.td.Companion.scaleScreen = sharedPrefZ!!.getFloat("ScaleBackground", 10f)
+        scaleScreen = sharedPrefZ!!.getFloat("ScaleBackground", 10f)
 
         var id = intent.getIntExtra("id", 0)
         if (id > 0) {
@@ -454,4 +474,615 @@ class MainActivity : AppCompatActivity() {
         }
         return false
     }
+}
+
+
+// start screen -------------------------------------------------------------------------------------------------------------
+// start screen -------------------------------------------------------------------------------------------------------------
+// start screen -------------------------------------------------------------------------------------------------------------
+// start screen -------------------------------------------------------------------------------------------------------------
+
+class GameViewStartScreen(context: Context, attributes: AttributeSet) : SurfaceView(context, attributes),
+    SurfaceHolder.Callback {
+
+    companion object {
+
+    }
+
+    private var thread: GameThreadStartScreen
+    val enemy = EnemyStartScreen(0f, 0f, 0)
+    var firstBoot = true
+    var backgroundStartScreen: Bitmap? = null
+    var towerGunPurple: Bitmap? = null
+    var shootBulletPic: Bitmap? = null
+    var towerBase: Bitmap? = null
+
+
+    //initialize items----------------------------------------------------------------------------
+
+    init {
+
+        towerGunPurple = BitmapFactory.decodeResource(context.resources, R.drawable.towergunbig)
+        backgroundStartScreen = BitmapFactory.decodeResource(context.resources, R.drawable.backgroundstartscreen)
+        shootBulletPic = BitmapFactory.decodeResource(context.resources, R.drawable.bulletbig)
+        towerBase = BitmapFactory.decodeResource(context.resources, R.drawable.towerbasesmall)
+
+        // add callback
+        holder.addCallback(this)
+
+        // instantiate the game thread
+        thread = GameThreadStartScreen(holder, this)
+
+    }
+
+    //surface holder things-----------------------------------------------------------------------
+
+    override fun surfaceCreated(surfaceHolder: SurfaceHolder) {
+
+        if (firstBoot) {
+            GameThreadStartScreen.running = true
+            firstBoot = false
+            thread.start()
+        } else if (!GameThreadStartScreen.running) {
+            GameThreadStartScreen.running = true
+        } else if (thread.state == Thread.State.TERMINATED) {
+            thread.start()
+            GameThreadStartScreen.running = true
+        }
+    }
+
+    override fun surfaceChanged(surfaceHolder: SurfaceHolder, i: Int, i1: Int, i2: Int) {
+        thread.interrupt()
+    }
+
+    override fun surfaceDestroyed(surfaceHolder: SurfaceHolder) {
+        thread.interrupt()
+    }
+
+    @InternalCoroutinesApi
+    override fun draw(canvas: Canvas) {
+        super.draw(canvas)
+
+        if (MainActivity.firstDisplayScale != 1) {
+
+            if (MainActivity.startScreenTowerBool) {
+                MainActivity.startScreenTowerBool = false
+                var towerPlace = Tower(10f, 0f, 0f, 60f, 1f, 2f)
+                towerPlace.towerRange = TowerRadius(175f, ((2160 / 2)).toFloat(), 300f)
+                towerPlace.towerR = 300f
+                MainActivity.towerList.add(towerPlace)
+            }
+
+            canvas.scale(
+                (MainActivity.scaleScreen / 10), (MainActivity.scaleScreen / 10)
+            )
+
+            var rectBackgroundStartScreen = Rect(0, 0, 1200, 2160)
+            canvas.drawBitmap(backgroundStartScreen!!, null, rectBackgroundStartScreen, null)
+
+            //draw tower
+
+            var rectBaseX =
+                Rect(100.toInt(), ((((2160 / 2)) - 75).toInt()), (250).toInt(), ((((2160 / 2)) + 75).toInt()))
+            canvas.drawBitmap(towerBase!!, null, rectBaseX, null)
+            if (MainActivity.towerList[0].towerPrimaryElement == "wind") {
+            } else {
+                canvas.save()
+                canvas.rotate(getAngle(MainActivity.towerList[0]), (175f), (2160 / 2f))
+                var rectTowerX =
+                    Rect((85).toInt(), (((2160 / 2) - 75).toInt()), (385).toInt(), (((2160 / 2) + 75).toInt()))
+                canvas.drawBitmap(towerGunPurple!!, null, rectTowerX, null)
+                canvas.restore()
+            }
+
+
+        // draw enemy
+
+        MainActivity.enemyCount++
+        if (MainActivity.enemyCount > (10..100).random()) {
+            MainActivity.enemyCount = 0
+            val color =
+                Color.argb(255, Random.nextInt(0, 255), Random.nextInt(0, 255), Random.nextInt(0, 255))
+            var x: EnemyStartScreen =
+                EnemyStartScreen(1f, 1f, color)
+
+            when ((0..1).random()) {
+                0 -> {
+                    x.circle!!.x = 405f
+                    x.circle!!.y = 0f
+                    x.passed = 4.toByte()
+                }
+                1 -> {
+                    x.circle!!.x = 405f
+                    x.circle!!.y = 2160f
+                    x.passed = 2.toByte()
+                }
+            }
+            var enemyListIterator = MainActivity.enemyList.listIterator()
+            enemyListIterator.add(x)
+            // enemy out of screen
+
+        }
+
+        var enemyListIterator = MainActivity.enemyList.listIterator()
+        while (enemyListIterator.hasNext()) {
+            var it = enemyListIterator.next()
+            if (it.circle!!.y > (2160).toFloat() || it.circle!!.y < 0f || it.dead == 7) {
+                EnemyStartScreen.crossesAllListStartScreen.remove(it)
+                EnemyStartScreen.crossesNoneListStartScreen.remove(it)
+                enemyListIterator.remove()
+            } else {
+                when (it.passed) {
+                    2.toByte() ->
+                        it.circle!!.y -= 3f
+                    4.toByte() ->
+                        it.circle!!.y += 3f
+                }
+                it.draw(canvas)
+            }
+        }
+
+        // crosses
+
+        var enemyListIteratorX = MainActivity.enemyList.listIterator()
+        while (enemyListIteratorX.hasNext()) {
+            var it = enemyListIteratorX.next()
+
+            val distanceX =
+                (MainActivity.towerList[0].towerRange.x) - (it.circle!!.x)
+            val distanceY =
+                (MainActivity.towerList[0].towerRange.y) - (it.circle!!.y)
+            val squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
+            val sumOfRadius =
+                MainActivity.towerList[0].towerR + ((it.circle!!.r) - 20)
+            if (squaredDistance <= sumOfRadius * sumOfRadius) {
+
+                if (EnemyStartScreen.crossesAllListStartScreen.contains(it)) {
+                } else {
+                    //if (firstLastRandom == 1) crossesAllList.add(0, it)     // last
+                    //else crossesAllList.add(crossesAllList.size, it)      // first
+                    EnemyStartScreen.crossesAllListStartScreen.add(0, it)
+                    if (EnemyStartScreen.crossesNoneListStartScreen.contains(it)) EnemyStartScreen.crossesNoneListStartScreen.remove(it)
+                }
+            } else {
+                if (EnemyStartScreen.crossesAllListStartScreen.contains(it)) EnemyStartScreen.crossesAllListStartScreen.remove(it)
+                if (EnemyStartScreen.crossesNoneListStartScreen.contains(it)) {
+                } else EnemyStartScreen.crossesNoneListStartScreen.add(0, it)
+            }
+        }
+
+        // draw bullet
+
+        var shootListIteratorZ = MainActivity.shootList.listIterator()
+        while (shootListIteratorZ.hasNext()) {
+            var bullet = shootListIteratorZ.next()
+            var enemyListIteratorZ = MainActivity.enemyList.listIterator()
+            while (enemyListIteratorZ.hasNext()) {
+                var it = enemyListIteratorZ.next()
+
+                val distanceX = (bullet.bullet.x) - (it.circle!!.x)
+                val distanceY = (bullet.bullet.y) - (it.circle!!.y)
+
+                val squaredDistance =
+                    (distanceX * distanceX) + (distanceY * distanceY)
+
+                val sumOfRadius = bullet.bullet.r + ((it.circle!!.r) - (20.0))
+
+                if (squaredDistance <= sumOfRadius * sumOfRadius) {
+                    bullet.broken = 1
+                    MainActivity.towerList[0].randomEnemyForShotBool = true
+                    it.dead = 7
+
+                }
+            }
+        }
+
+        var shootListIterator = MainActivity.shootList.listIterator()
+        while (shootListIterator.hasNext()) {
+            var bullet = shootListIterator.next()
+            if (bullet.broken == 1) {
+                shootListIterator.remove()
+            } else {
+                bullet.update()
+                if (bullet.bullet.x > ((175 + 60))) {
+                    canvas.save()
+                    canvas.rotate(getAngleBullet(bullet), bullet.bullet.x, bullet.bullet.y)
+                    var baseShootBullet =
+                        Rect((bullet.bullet.x - (bullet.bullet.r * 4)).toInt(), (bullet.bullet.y - (bullet.bullet.r * 4)).toInt(), (bullet.bullet.x + (bullet.bullet.r * 4)).toInt(), (bullet.bullet.y + (bullet.bullet.r * 4)).toInt())
+                    canvas.drawBitmap(shootBulletPic!!, null, baseShootBullet, null)
+                    canvas.restore()
+                }
+            }
+        }
+
+        MainActivity.startScreenTimerTower++
+        if (MainActivity.startScreenTimerTower >= 60f && EnemyStartScreen.crossesAllListStartScreen.isNotEmpty()) {
+            var shootListIteratorX = MainActivity.shootList.listIterator()
+            var x = ShootStartScreen()
+            x.bullet.x = MainActivity.towerList[0].towerRange.x
+            x.bullet.y = MainActivity.towerList[0].towerRange.y
+            x.towerId = 0
+            shootListIteratorX.add(x)   // add new shoot
+            MainActivity.startScreenTimerTower = 0
+        }
+    } else {
+            var rectBackgroundStartScreen = Rect(0, 0, DisplayMetrics().widthPixels, DisplayMetrics().heightPixels)
+            canvas.drawBitmap(backgroundStartScreen!!, null, rectBackgroundStartScreen, null)
+        }
+    }
+
+
+    fun getAngle(it:Tower): Float {
+            var angle =
+                Math.toDegrees(atan2((MainActivity.rotationTowerY - (2160 /2)).toDouble(), (MainActivity.rotationTowerX - 175f).toDouble()))
+                    .toFloat()
+            if (angle < 0) {
+                angle += 360f
+            }
+            return angle
+    }
+
+    fun getAngleBullet(bullet: ShootStartScreen): Float {
+            var angle =
+                Math.toDegrees(atan2((MainActivity.rotationEnemyY - MainActivity.towerList[bullet.towerId].towerRange.y).toDouble(), (MainActivity.rotationEnemyX - MainActivity.towerList[bullet.towerId].towerRange.x).toDouble()))
+                    .toFloat()
+            if (angle < 0) {
+                angle += 360f
+            }
+            return angle
+    }
+
+}
+
+class GameThreadStartScreen(private val surfaceHolder: SurfaceHolder, private val gameView: GameViewStartScreen) :
+    Thread() {
+    companion object {
+        var running: Boolean = false
+        private var canvas: Canvas? = null
+    }
+    private val targetFPS =
+        60 // frames per second, the rate at which you would like to refresh the Canvas
+
+    @InternalCoroutinesApi
+    override fun run() {
+        var startTime: Long
+        var timeMillis: Long
+        var waitTime: Long
+        var targetTime: Long
+
+        while (running) {
+            targetTime = (1000 / (targetFPS)).toLong()
+            startTime = System.nanoTime()
+
+            try {
+                canvas = null
+                if (running && surfaceHolder.surface.isValid){ //&& activityThreadBool) {
+                    // locking the canvas allows us to draw on to it
+                    canvas = this.surfaceHolder.lockCanvas()
+                    if (canvas != null) {
+                        this.gameView.draw(canvas!!)
+                        //        this.gameView.update()
+
+                        surfaceHolder.unlockCanvasAndPost(canvas)
+                        //        activityThreadBool = false
+                        //        gameThreadBool = true
+
+                    }
+
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                running = false
+            }
+
+            timeMillis = (System.nanoTime() - startTime) / 1000000
+            waitTime = targetTime - timeMillis
+
+            try {
+                if (waitTime > 0) sleep(waitTime)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+}
+class EnemyStartScreen(var hp: Float, var maxHp: Float, var color: Int){
+    companion object {
+        // StartScreen
+        var crossesAllListStartScreen = mutableListOf<EnemyStartScreen>()
+        var crossesNoneListStartScreen = mutableListOf<EnemyStartScreen>()
+        var randomEnemyForShotStartScreen = EnemyStartScreen (0.0f,0.0f, 0)
+    }
+
+    var circle: TowerRadius? = null
+
+    var passed: Byte = 0
+    var dead = 0
+    var random1 = 0
+    var random2 = 0
+    var random3 = 0
+    var random4 = 0
+    var random5 = 0
+    var random6 = 0
+    var random7 = 0
+    var random8 = 0
+    var random9 = 0
+    var random10 = 0
+    var random11 = 0
+    var random12 = 0
+    var randomAngle = 0f
+    var paint: Painter
+    var paintBlack: Painter
+    var enemyPathBool = 0
+
+
+    init {
+        circle = TowerRadius(0.0f, 0.0f, 30.0f)
+        paint = Painter()
+        paintBlack = Painter()
+    }
+
+    fun draw(canvas: Canvas) {
+        if (enemyPathBool == 0) randomizer ()
+        paintShader ()
+                drawPolygonOutline(canvas, circle!!.x, circle!!.y, circle!!.r, paintBlack)
+                drawPolygonBase(canvas, circle!!.x, circle!!.y, circle!!.r, paint)
+
+    }
+
+    fun randomizer (){
+        random1 = (10..25).random()
+        random2 = (10..25).random()
+        random3 = (10..25).random()
+        random4 = (10..25).random()
+        random5 = (10..25).random()
+        random6 = (10..25).random()
+        random7 = (10..25).random()
+        random8 = (10..25).random()
+        random9 = (10..25).random()
+        random10 = (10..25).random()
+        random11 = (0..45).random()
+        random12 = (10..25).random()
+        enemyPathBool = (1..3).random()
+        randomAngle = (0..360).random().toFloat()
+
+    }
+
+    private fun drawPolygonBase(mCanvas: Canvas, x: Float, y: Float, r: Float, paint: Paint) {
+            when (enemyPathBool) {
+                1 -> {
+                    val path = Path()
+                    var b = x + random1
+                    var c = y + random8
+                    mCanvas.save()
+                    mCanvas.rotate(randomAngle, x, y)
+                    path.moveTo(b, c)
+                    path.lineTo(x - random2, y + random3)
+                    path.lineTo(x - random4, y - random5)
+                    path.lineTo(b, c)
+                    path.close()
+                    mCanvas.drawPath(path, paint)
+                    mCanvas.restore()
+
+                }
+                2 -> {
+                    val path = Path()
+                    var b = x + random1
+                    var c = y + random8
+                    mCanvas.save()
+                    mCanvas.rotate(randomAngle, x, y)
+                    path.moveTo(b, c)
+                    path.lineTo(x - random2, y + random3)
+                    path.lineTo(x - random4, y - random5)
+                    path.lineTo(x + random6, y - random7)
+                    path.lineTo(b, c)
+                    path.close()
+                    mCanvas.drawPath(path, paint)
+                    mCanvas.restore()
+                }
+                3 -> {
+                    val path = Path()
+                    var b = x + random1
+                    var c = y + random8
+                    mCanvas.save()
+                    mCanvas.rotate(randomAngle, x, y)
+                    path.moveTo(b, c)
+                    path.lineTo(x, y + random11)
+                    path.lineTo(x - random2, y + random3)
+                    path.lineTo(x - random4, y - random5)
+                    path.lineTo(x + random6, y - random7)
+                    path.lineTo(b, c)
+                    path.close()
+                    mCanvas.drawPath(path, paint)
+                    mCanvas.restore()
+                }
+            }
+        }
+    private fun drawPolygonOutline(mCanvas: Canvas, x: Float, y: Float,  r: Float, paint: Paint) {
+            when (enemyPathBool) {
+                1 -> {
+
+                    val path = Path()
+                    var b = x + (random1 + 1)
+                    var c = y + (random8 + 1)
+                    mCanvas.save()
+                    mCanvas.rotate(randomAngle, x, y)
+                    path.moveTo(b, c)
+                    path.lineTo(x - (random2 + 1), y + (random3 + 1))
+                    path.lineTo(x - (random4 + 1), y - (random5 + 1))
+                    path.lineTo(b, c)
+                    path.close()
+                    mCanvas.drawPath(path, paint)
+                    mCanvas.restore()
+                }
+                2 -> {
+                    val path = Path()
+                    var b = x + (random1 + 1)
+                    var c = y + (random8 + 1)
+                    mCanvas.save()
+                    mCanvas.rotate(randomAngle, x, y)
+                    path.moveTo(b, c)
+                    path.lineTo(x - (random2 + 1), y + (random3 + 1))
+                    path.lineTo(x - (random4 + 1), y - (random5 + 1))
+                    path.lineTo(x + (random6 + 1), y - (random7 + 1))
+                    path.lineTo(b, c)
+                    path.close()
+                    mCanvas.drawPath(path, paint)
+                    mCanvas.restore()
+                }
+                3 -> {
+                    val path = Path()
+                    var b = x + (random1 + 1)
+                    var c = y + (random8 + 1)
+                    mCanvas.save()
+                    mCanvas.rotate(randomAngle, x, y)
+                    path.moveTo(b, c)
+                    path.lineTo(x, y + (random11 + 1))
+                    path.lineTo(x - (random2 + 1), y + (random3 + 1))
+                    path.lineTo(x - (random4 + 1), y - (random5 + 1))
+                    path.lineTo(x + (random6 + 1), y - (random7 + 1))
+                    path.lineTo(b, c)
+                    path.close()
+                    mCanvas.drawPath(path, paint)
+                    mCanvas.restore()
+                }
+            }
+        }
+    fun paintShader () {
+        if (passed != 5.toByte()) {
+            var gradient: LinearGradient? = null
+                when (passed) {
+                    0.toByte(), 2.toByte() ->
+                        gradient =
+                            LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, color, Color.LTGRAY, Shader.TileMode.CLAMP)
+                    1.toByte() ->
+                        gradient =
+                            LinearGradient(circle!!.x - circle!!.r, 0f, circle!!.x + circle!!.r, 0f, color, Color.LTGRAY, Shader.TileMode.CLAMP)
+                    3.toByte() ->
+                        gradient =
+                            LinearGradient(circle!!.x - circle!!.r, 0f, circle!!.x + circle!!.r, 0f, Color.LTGRAY, color, Shader.TileMode.CLAMP)
+                    4.toByte() ->
+                        gradient =
+                            LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, Color.LTGRAY, color, Shader.TileMode.CLAMP)
+                }
+            var gradientMatrix = Matrix()
+            gradientMatrix!!.preRotate((360 - randomAngle), circle!!.x, circle!!.y)
+            gradient!!.setLocalMatrix(gradientMatrix)
+            paint.shader = gradient!!
+        }
+    }
+
+}
+class ShootStartScreen () {
+
+    var bulletSpeed: Float = 10.0F
+    var paint: Paint
+    var bullet = TowerRadius(600.0f, 750.0f, 5.0f)
+    var broken = 0
+    var id = -1
+    var color = Color.YELLOW
+    var towerId = 0
+    var hitEnemyId = -1
+
+
+    init {
+        paint = Paint()
+        paint.isAntiAlias
+        paint.isFilterBitmap
+        paint.color = color
+
+    }
+
+    fun draw(canvas: Canvas) {
+
+        //    canvas.drawCircle(bullet.x.toFloat(), bullet.y.toFloat(), bullet.r.toFloat(), paint)
+
+
+    }
+
+    fun update() {
+
+                if (EnemyStartScreen.crossesAllListStartScreen.isNotEmpty()) {
+
+                            if (MainActivity.towerList[0].randomEnemyForShotBool) {
+                                EnemyStartScreen.randomEnemyForShotStartScreen = EnemyStartScreen.crossesAllListStartScreen.random()
+                                movement(EnemyStartScreen.randomEnemyForShotStartScreen)
+                                MainActivity.towerList[0].randomEnemyForShotBool = false
+                            }  // random
+                            else movement(EnemyStartScreen.randomEnemyForShotStartScreen)
+                } else {
+                    if (MainActivity.enemyList.contains(EnemyStartScreen.randomEnemyForShotStartScreen)) {
+                        movement(EnemyStartScreen.randomEnemyForShotStartScreen)
+                    } else {
+                        MainActivity.towerList[0].randomEnemyForShotBool = true
+                            bullet.x = 200.0f
+                            bullet.y = 750.0f
+                        broken = 1
+                    }
+                }
+
+    }
+
+    fun movement(enemy: EnemyStartScreen) {
+
+        fun xSpeed(): Int {
+            var speed = 0
+            when (enemy.passed) {
+                0.toByte() -> speed = 0
+                1.toByte() -> speed = (3) * (-1)
+                2.toByte() -> speed = 0
+                3.toByte() -> speed = (3)
+                4.toByte() -> speed = 0
+            }
+            return speed
+        }
+
+        fun ySpeed(): Int {
+            var speed = 0
+            when (enemy.passed) {
+                0.toByte() -> speed = (3) * (-1)
+                1.toByte() -> speed = 0
+                2.toByte() -> speed = (3) * (-1)
+                3.toByte() -> speed = 0
+                4.toByte() -> speed = (3)
+            }
+            return speed
+        }
+
+        var nx =
+            if (bullet.x > (enemy.circle!!.x + xSpeed())) ((bullet.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed ))
+            else (((enemy.circle!!.x + xSpeed().toFloat()) - bullet.x) / (bulletSpeed ))
+        var ny =
+            if (bullet.y > (enemy.circle!!.y + xSpeed())) ((bullet.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed ))
+            else (((enemy.circle!!.y + ySpeed().toFloat()) - bullet.y) / (bulletSpeed ))
+
+        var n =
+            if (nx > ny) (bulletSpeed ) / nx
+            else (bulletSpeed ) / ny
+
+
+            if ( MainActivity.enemyList.contains(enemy)) {
+                MainActivity.rotationTowerX = enemy.circle!!.x
+                MainActivity.rotationTowerY = enemy.circle!!.y
+                MainActivity.rotationEnemyX = enemy.circle!!.x
+                MainActivity.rotationEnemyY = enemy.circle!!.y
+                if (bullet.x > (enemy.circle!!.x + xSpeed())) {
+                    bullet.x -= nx * n
+                } else {
+                    bullet.x += nx * n
+                }
+
+                if (bullet.y > (enemy.circle!!.y + ySpeed())) {
+                    bullet.y -= ny * n
+                } else {
+                    bullet.y += ny * n
+                }
+                //    break
+            } else {
+                MainActivity.towerList[0].randomEnemyForShotBool = true
+                    bullet.x = 200.0f
+                    bullet.y = 750.0f
+                broken = 1
+            }
+        }
 }

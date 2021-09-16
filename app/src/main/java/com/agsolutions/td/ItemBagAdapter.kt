@@ -13,9 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.agsolutions.td.Companion.Companion.buildListBag
-import com.agsolutions.td.Companion.Companion.maceCount
-import com.agsolutions.td.Companion.Companion.towerClick
+import com.agsolutions.td.GameActivity.Companion.companionList
 import kotlinx.android.synthetic.main.item.view.*
 
 class ItemBagAdapter (
@@ -41,9 +39,9 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
     fun deleteItem (pos: Int) {
 
 
-        if (Companion.towerClick) {
+        if (companionList.towerClick) {
 
-            var towerListIterator = Companion.towerList.listIterator()
+            var towerListIterator = companionList.towerList.listIterator()
             while (towerListIterator.hasNext()) {
                 var it = towerListIterator.next()
                 if (it.selected) {
@@ -56,11 +54,11 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
                         it.bonusSpellDamage -= itemList2[pos].mgcDmg
                         it.bonusCrit -= itemList2[pos].crit
                         it.bonusCritDmg -= itemList2[pos].critDmg
-                        if (itemList2[pos].id == 3 || itemList2[pos].id == 101 || itemList2[pos].id == 201 || itemList2[pos].id == 301) Companion.magicBoxCount -= 1
-                        if (itemList2[pos].id == 0 || itemList2[pos].id == 100 || itemList2[pos].id == 200 || itemList2[pos].id == 300) maceCount -= 1
-                        if (itemList2[pos].id == 1 || itemList2[pos].id == 102 || itemList2[pos].id == 202 || itemList2[pos].id == 302) Companion.bowCount -= 1
-                        if (itemList2[pos].id == 2 || itemList2[pos].id == 103 || itemList2[pos].id == 203 || itemList2[pos].id == 303) Companion.swordCount -= 1
-                        if (itemList2[pos].id == 4 || itemList2[pos].id == 104 || itemList2[pos].id == 204) Companion.luckyCharmCount -= 1
+                        if (itemList2[pos].id == 3 || itemList2[pos].id == 101 || itemList2[pos].id == 201 || itemList2[pos].id == 301) companionList.magicBoxCount -= 1
+                        if (itemList2[pos].id == 0 || itemList2[pos].id == 100 || itemList2[pos].id == 200 || itemList2[pos].id == 300) companionList.maceCount -= 1
+                        if (itemList2[pos].id == 1 || itemList2[pos].id == 102 || itemList2[pos].id == 202 || itemList2[pos].id == 302) companionList.bowCount -= 1
+                        if (itemList2[pos].id == 2 || itemList2[pos].id == 103 || itemList2[pos].id == 203 || itemList2[pos].id == 303) companionList.swordCount -= 1
+                        if (itemList2[pos].id == 4 || itemList2[pos].id == 104 || itemList2[pos].id == 204) companionList.luckyCharmCount -= 1
                         if (itemList2[pos].id == 4) it.bonusItemChance -= itemList2[pos].specialFloat2
 
                         if ((itemList2[pos].id == 100 || itemList2[pos].id == 102 || itemList2[pos].id == 103) && itemList2[pos].special2 == "item find") it.bonusItemChance -= itemList2[pos].specialFloat2
@@ -76,7 +74,7 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
                         if (itemList2[pos].id == 207 && itemList2[pos].special == "+ X spd/round") it.bonusTowerSpeed -= itemList2[pos].specialFloat
                         if (itemList2[pos].id == 207 && itemList2[pos].special == "+ X crit/round") it.bonusCrit -= itemList2[pos].specialFloat
                         if (itemList2[pos].id == 208 || itemList2[pos].id == 308) it.itemFrost -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 209) Companion.interest -= itemList2[pos].specialFloat
+                        if (itemList2[pos].id == 209) companionList.interest -= itemList2[pos].specialFloat
                         if (itemList2[pos].id == 210 || itemList2[pos].id == 309) it.itemLasso -= itemList2[pos].specialFloat.toInt()
                         if (itemList2[pos].id == 212) it.itemBonusHitChance -= itemList2[pos].specialFloat.toInt()
                         if (itemList2[pos].id == 312) it.itemSlowDeath -= itemList2[pos].specialFloat
@@ -86,6 +84,7 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
                         if (itemList2[pos].id == 215) it.bonusArmorPen -= itemList2[pos].specialFloat.toInt()
                         if (itemList2[pos].id == 216) it.bonusMagicPen -= itemList2[pos].specialFloat.toInt()
                         if (itemList2[pos].id == 217) it.slowEach -= 10.0f
+                        if (itemList2[pos].id == 218) it.bonusDamageMultiplyer -= (itemList2[pos].specialFloat * 0.01f)
 
                         if ((itemList2[pos].id == 300 || itemList2[pos].id == 302 || itemList2[pos].id == 303) && itemList2[pos].special == "anti-heal") it.bonusAntiHeal -= itemList2[pos].specialFloat / 100
                         if ((itemList2[pos].id == 300 || itemList2[pos].id == 302 || itemList2[pos].id == 303) && itemList2[pos].special == "extra dmg immune") it.bonusDmgImmune -= itemList2[pos].specialFloat / 100
@@ -99,36 +98,36 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
                         if (itemList2[pos].id == 310) it.bonusmultiCrit -= itemList2[pos].specialFloat.toInt()
                         if (itemList2[pos].id == 314) it.armorPenPerHit -= itemList2[pos].specialFloat
                         if (itemList2[pos].id == 315) it.magicPenPerHit -= itemList2[pos].specialFloat
-
+                        if (itemList2[pos].id == 316) it.bonusDamageMultiplyer -= itemList2[pos].specialFloat
 
                         if (itemList2[pos].id == 1004) it.particleDmgBool = false
                         if (itemList2[pos].id == 1005) {
                             it.itemSniper -= 1
-                            Companion.itemSniperPro = false
+                            it.itemSniperPro = false
                         }
-                        if (itemList2[pos].id == 1100 || itemList2[pos].id == 1101 || itemList2[pos].id == 1102 || itemList2[pos].id == 1103 || itemList2[pos].id == 1104 || itemList2[pos].id == 1105) Companion.pirateItemCount -= 1
+                        if (itemList2[pos].id == 1100 || itemList2[pos].id == 1101 || itemList2[pos].id == 1102 || itemList2[pos].id == 1103 || itemList2[pos].id == 1104 || itemList2[pos].id == 1105) companionList.pirateItemCount -= 1
                         if (itemList2[pos].id == 1100 || itemList2[pos].id == 1101 || itemList2[pos].id == 1102 || itemList2[pos].id == 1103 || itemList2[pos].id == 1104 || itemList2[pos].id == 1105 || itemList2[pos].id == 1007) it.bagSize -= 1
                         if (itemList2[pos].id == 1100) {
                             it.towerRange.r -= 15
                         }
                         if (itemList2[pos].id == 1104) {
                             it.bonusDamageMultiplyer -= 0.2f
-                            Companion.overallSpdMultiplier += 10
+                            companionList.overallSpdMultiplier += 10
                         }
                         if (itemList2[pos].id == 1105) {
                             it.bonusDamageMultiplyer += 0.1f
-                            Companion.overallSpdMultiplier -= 20
+                            companionList.overallSpdMultiplier -= 20
                         }
-                        if (itemList2[pos].id == 1006) Companion.itemFastDraw = false
+                        if (itemList2[pos].id == 1006) it.itemFastDraw = false
                         if (itemList2[pos].id == 1007) {
-                            Companion.activeAbilityList.remove(ActiveAbility.aAid2)
-                            Companion.insertSpell += 1
+                            companionList.activeAbilityList.remove(ActiveAbility.aAid2)
+                            companionList.insertSpell += 1
                         }
 
                         if (itemList2[pos].id == 1008) {
                             it.bonusDamageMultiplyer -= 0.2f
-                            Companion.overallSpdMultiplier -= 20
-                            Companion.itemBoring = false
+                            companionList.overallSpdMultiplier -= 20
+                            it.itemBoring = false
                         }
 
                         if (itemList2[pos].id == 5000) it.bonusTowerDmg -= itemList2[pos].specialFloat
@@ -153,30 +152,30 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
                         }
                         if (itemList2[pos].id == 5007) {
                             it.bagSize -= 2
-                            Companion.interest -= 0.01f
+                            companionList.interest -= 0.01f
                             it.bonusItemChance -= 10f
                         }
-                        if (itemList2[pos].id == 5008) Companion.shieldBrakerItem = 1
+                        if (itemList2[pos].id == 5008) companionList.shieldBrakerItem = 1
                         if (itemList2[pos].id == 5009) {
                             it.poisonRow2Item1 -= 1
                             it.stackablePoison -= 0.1f
                             it.itemStartPoison = false
                         }
                         if (itemList2[pos].id == 5011) {
-                            Companion.activeAbilityList.remove(ActiveAbility.aAid3)
-                            Companion.insertSpell += 1
+                            companionList.activeAbilityList.remove(ActiveAbility.aAid3)
+                            companionList.insertSpell += 1
                         }
                         if (itemList2[pos].id == 5012) {
-                            if (Companion.mapMode == 2) Companion.bombDamage -= 0.025f
-                            else Companion.bombDamage -= 0.1f
-                            Companion.bombCost = false
+                            if (companionList.mapMode == 2) companionList.bombDamage -= 0.025f
+                            else companionList.bombDamage -= 0.1f
+                            companionList.bombCost = false
                         }
                         if (itemList2[pos].id == 5013) {
                            // TODO  itemStartTalentPoints = false
                         }
                         if (itemList2[pos].id == 5015) {
-                            Companion.wizardBombStartItemDmg -= 0.4f
-                            Companion.wizardLightningStartItemTargets -= 1
+                            companionList.wizardBombStartItemDmg -= 0.4f
+                            companionList.wizardLightningStartItemTargets -= 1
                         }
                        // TODO
                         /*
@@ -199,8 +198,8 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
                             it.bonusTowerDmg -= itemList2[pos].specialFloat
                         }
 
-                        if ((itemList2[pos] == Items.eearth || itemList2[pos] == Items.ebutterfly || itemList2[pos] == Items.ewind || itemList2[pos] == Items.emoon)) {
-                            if (it.itemListBag[0] == Items.eearth || it.itemListBag[0] == Items.ebutterfly || it.itemListBag[0] == Items.ewind || it.itemListBag[0] == Items.emoon ){
+                        if ((itemList2[pos] == companionList.eearth || itemList2[pos] == companionList.ebutterfly || itemList2[pos] == companionList.ewind || itemList2[pos] == companionList.emoon)) {
+                            if (it.itemListBag[0] == companionList.eearth || it.itemListBag[0] == companionList.ebutterfly || it.itemListBag[0] == companionList.ewind || it.itemListBag[0] == companionList.emoon ){
 
                             }else {
                                 it.towerPrimaryElement = "none"
@@ -219,7 +218,7 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
 
     fun replaceCrossedOut (pos: Int) {
 
-        var towerListIterator = Companion.towerList.listIterator()
+        var towerListIterator = companionList.towerList.listIterator()
         while (towerListIterator.hasNext()) {
             var it = towerListIterator.next()
 
@@ -229,11 +228,11 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
             it.bonusSpellDamage -= it.itemListBag[pos].mgcDmg
             it.bonusCrit -= it.itemListBag[pos].crit
             it.bonusCritDmg -= it.itemListBag[pos].critDmg
-        if (it.itemListBag[pos].id == 3 || it.itemListBag[pos].id == 101 || it.itemListBag[pos].id == 201 || it.itemListBag[pos].id == 301) Companion.magicBoxCount -= 1
-        if (it.itemListBag[pos].id == 0 || it.itemListBag[pos].id == 100 || it.itemListBag[pos].id == 200 || it.itemListBag[pos].id == 300) maceCount -= 1
-        if (it.itemListBag[pos].id == 1 || it.itemListBag[pos].id == 102 || it.itemListBag[pos].id == 202 || it.itemListBag[pos].id == 302) Companion.bowCount -= 1
-        if (it.itemListBag[pos].id == 2 || it.itemListBag[pos].id == 103 || it.itemListBag[pos].id == 203 || it.itemListBag[pos].id == 303) Companion.swordCount -= 1
-        if (it.itemListBag[pos].id == 4 || it.itemListBag[pos].id == 104 || it.itemListBag[pos].id == 204) Companion.luckyCharmCount -= 1
+        if (it.itemListBag[pos].id == 3 || it.itemListBag[pos].id == 101 || it.itemListBag[pos].id == 201 || it.itemListBag[pos].id == 301) companionList.magicBoxCount -= 1
+        if (it.itemListBag[pos].id == 0 || it.itemListBag[pos].id == 100 || it.itemListBag[pos].id == 200 || it.itemListBag[pos].id == 300) companionList.maceCount -= 1
+        if (it.itemListBag[pos].id == 1 || it.itemListBag[pos].id == 102 || it.itemListBag[pos].id == 202 || it.itemListBag[pos].id == 302) companionList.bowCount -= 1
+        if (it.itemListBag[pos].id == 2 || it.itemListBag[pos].id == 103 || it.itemListBag[pos].id == 203 || it.itemListBag[pos].id == 303) companionList.swordCount -= 1
+        if (it.itemListBag[pos].id == 4 || it.itemListBag[pos].id == 104 || it.itemListBag[pos].id == 204) companionList.luckyCharmCount -= 1
         if (it.itemListBag[pos].id == 4) it.bonusItemChance -= it.itemListBag[pos].specialFloat
 
         if ((it.itemListBag[pos].id == 100 || it.itemListBag[pos].id == 102 || it.itemListBag[pos].id == 103) && it.itemListBag[pos].special == "item find") it.bonusItemChance -= it.itemListBag[pos].specialFloat
@@ -250,7 +249,7 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
         if (it.itemListBag[pos].id == 207 && it.itemListBag[pos].special == "+ X spd/round") it.bonusTowerSpeed -= it.itemListBag[pos].specialFloat
         if (it.itemListBag[pos].id == 207 && it.itemListBag[pos].special == "+ X crit/round") it.bonusCrit -= it.itemListBag[pos].specialFloat
         if (it.itemListBag[pos].id == 208 || it.itemListBag[pos].id == 308) it.itemFrost -= it.itemListBag[pos].specialFloat
-        if (it.itemListBag[pos].id == 209) Companion.interest -= it.itemListBag[pos].specialFloat
+        if (it.itemListBag[pos].id == 209) companionList.interest -= it.itemListBag[pos].specialFloat
         if (it.itemListBag[pos].id == 210 || it.itemListBag[pos].id == 309) it.itemLasso -= it.itemListBag[pos].specialFloat.toInt()
         if (it.itemListBag[pos].id == 212) it.itemBonusHitChance -= it.itemListBag[pos].specialFloat.toInt()
         if (it.itemListBag[pos].id == 312) it.itemSlowDeath -= it.itemListBag[pos].specialFloat
@@ -270,34 +269,35 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
         }
         if (it.itemListBag[pos].id == 310) it.bonusmultiCrit -= it.itemListBag[pos].specialFloat.toInt()
 
+
         if (it.itemListBag[pos].id == 1004) it.particleDmgBool = false
         if (it.itemListBag[pos].id == 1005) {
             it.itemSniper -= 1
-            Companion.itemSniperPro = false
+            it.itemSniperPro = false
         }
-        if (it.itemListBag[pos].id == 1100 || it.itemListBag[pos].id == 1101 || it.itemListBag[pos].id == 1102 || it.itemListBag[pos].id == 1103 || it.itemListBag[pos].id == 1104 || it.itemListBag[pos].id == 1105) Companion.pirateItemCount -= 1
+        if (it.itemListBag[pos].id == 1100 || it.itemListBag[pos].id == 1101 || it.itemListBag[pos].id == 1102 || it.itemListBag[pos].id == 1103 || it.itemListBag[pos].id == 1104 || it.itemListBag[pos].id == 1105) companionList.pirateItemCount -= 1
         if (it.itemListBag[pos].id == 1100 || it.itemListBag[pos].id == 1101 || it.itemListBag[pos].id == 1102 || it.itemListBag[pos].id == 1103 || it.itemListBag[pos].id == 1104 || it.itemListBag[pos].id == 1105 || it.itemListBag[pos].id == 1007) it.bagSize -= 1
             if (it.itemListBag[pos].id == 1100) {
                 it.towerBonusRange -= 15
             }
             if (it.itemListBag[pos].id == 1104) {
             it.bonusDamageMultiplyer -= 0.2f
-            Companion.overallSpdMultiplier += 10
+                companionList.overallSpdMultiplier += 10
         }
         if (it.itemListBag[pos].id == 1105) {
             it.bonusDamageMultiplyer += 0.1f
-            Companion.overallSpdMultiplier -= 30
+            companionList.overallSpdMultiplier -= 30
         }
-        if (it.itemListBag[pos].id == 1006) Companion.itemFastDraw = false
+        if (it.itemListBag[pos].id == 1006) it.itemFastDraw = false
         if (it.itemListBag[pos].id == 1007) {
-            Companion.activeAbilityList.remove(ActiveAbility.aAid2)
-            Companion.insertSpell += 1
+            companionList.activeAbilityList.remove(ActiveAbility.aAid2)
+            companionList.insertSpell += 1
         }
 
         if (it.itemListBag[pos].id == 1008) {
             it.bonusDamageMultiplyer -= 0.2f
-            Companion.overallSpdMultiplier -= 20
-            Companion.itemBoring = false
+            companionList.overallSpdMultiplier -= 20
+            it.itemBoring = false
         }
 
         if (it.itemListBag[pos].id == 5000) it.bonusTowerDmg -= it.itemListBag[pos].specialFloat
@@ -322,11 +322,10 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
         }
         if (it.itemListBag[pos].id == 5007) {
             it.bagSize -= 2
-            Companion.interest -= 0.01f
+            companionList.interest -= 0.01f
             it.bonusItemChance -= 10f
         }
-        if (it.itemListBag[pos].id == 5008) Companion.shieldBrakerItem = 1
-        if (it.itemListBag[pos].id == 5017) // TODO Companion.upgraderBool = false
+        if (it.itemListBag[pos].id == 5008) companionList.shieldBrakerItem = 1
 
         if (it.itemListBag[pos].id == 6666) {
             it.bonusTowerDmg -= it.itemListBag[pos].specialFloat
@@ -349,16 +348,16 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
         }
 
         override fun onLongClick(v: View?):Boolean {
-            if (!towerClick) {
+            if (!companionList.towerClick) {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     listener2.onBagLongClick(position, v)
                 }
 
-                val item = ClipData.Item(buildListBag[position] as? CharSequence?)
+                val item = ClipData.Item(companionList.buildListBag[position] as? CharSequence?)
 
                 val dragData = ClipData(
-                    buildListBag[position].name as CharSequence?,
+                    companionList.buildListBag[position].name as CharSequence?,
                     arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
                     item
                 )

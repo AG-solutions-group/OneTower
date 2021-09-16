@@ -3,8 +3,7 @@ package com.agsolutions.td
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.agsolutions.td.Companion.Companion.enemyList
-import com.agsolutions.td.Companion.Companion.gameSpeedAdjuster
+
 
 class ShootPoisonTalent {
     companion object {
@@ -36,9 +35,9 @@ class ShootPoisonTalent {
 
     fun update() {
 
-        com.agsolutions.td.Companion.readLockEnemy.lock ()
+        GameActivity.companionList.readLockEnemy.lock ()
         try {
-            var enemyListIterator = enemyList.listIterator()
+            var enemyListIterator = GameActivity.companionList.enemyList.listIterator()
             while (enemyListIterator.hasNext()) {
                 var enemy = enemyListIterator.next()
 
@@ -65,15 +64,15 @@ class ShootPoisonTalent {
                 }
 
                 var nx =
-                    if (poisonCloud.x > (enemy.circle!!.x + xSpeed())) ((poisonCloud.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * gameSpeedAdjuster))
-                    else (((enemy.circle!!.x + xSpeed().toFloat()) - poisonCloud.x) / (bulletSpeed * gameSpeedAdjuster))
+                    if (poisonCloud.x > (enemy.circle!!.x + xSpeed())) ((poisonCloud.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                    else (((enemy.circle!!.x + xSpeed().toFloat()) - poisonCloud.x) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
                 var ny =
-                    if (poisonCloud.y > (enemy.circle!!.y + xSpeed())) ((poisonCloud.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * gameSpeedAdjuster))
-                    else (((enemy.circle!!.y + ySpeed().toFloat()) - poisonCloud.y) / (bulletSpeed * gameSpeedAdjuster))
+                    if (poisonCloud.y > (enemy.circle!!.y + xSpeed())) ((poisonCloud.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                    else (((enemy.circle!!.y + ySpeed().toFloat()) - poisonCloud.y) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
 
                 var n =
-                    if (nx > ny) (bulletSpeed * gameSpeedAdjuster) / nx
-                    else (bulletSpeed * gameSpeedAdjuster) / ny
+                    if (nx > ny) (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / nx
+                    else (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / ny
 
 
                 if (cross(enemy)){
@@ -99,7 +98,7 @@ class ShootPoisonTalent {
                 }
             }
         }finally {
-            com.agsolutions.td.Companion.readLockEnemy.unlock()
+            GameActivity.companionList.readLockEnemy.unlock()
         }
     }
 

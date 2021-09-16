@@ -3,8 +3,7 @@ package com.agsolutions.td
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.agsolutions.td.Companion.Companion.enemyList
-import com.agsolutions.td.Companion.Companion.gameSpeedAdjuster
+
 
 class ShootTornadoTalent {
     companion object {
@@ -15,6 +14,7 @@ class ShootTornadoTalent {
     var paint: Paint
     var tornadoRadius = TowerRadius(600.0f, 750.0f, 5f)
     var tornadoRadiusPosition = 0
+    var tornadoCount = 0
     var broken = 0
     var randomEnemyTornadoBool = true
     var randomEnemyTornado = Enemy (0.0f,0.0f, 0.0f, 0.0f, 0.0f, 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0)
@@ -34,17 +34,20 @@ class ShootTornadoTalent {
 
     fun update() {
 
-        com.agsolutions.td.Companion.readLockEnemy.lock()
+        GameActivity.companionList.readLockEnemy.lock()
         try {
-            if (randomEnemyTornadoBool) {
+            if (tornadoRadiusPosition == 2) {
+                tornadoRadius.x += 0
+                tornadoRadius.y += 0
+            } else if (randomEnemyTornadoBool) {
                 randomEnemyTornadoBool = false
-                randomEnemyTornado = enemyList.random()
+                randomEnemyTornado = GameActivity.companionList.enemyList.random()
                 movement(randomEnemyTornado)
-            } else if (!randomEnemyTornadoBool && enemyList.isNotEmpty()) movement(randomEnemyTornado)
+            } else if (!randomEnemyTornadoBool && GameActivity.companionList.enemyList.isNotEmpty()) movement(randomEnemyTornado)
             else broken = 1
 
         } finally {
-            com.agsolutions.td.Companion.readLockEnemy.unlock()
+            GameActivity.companionList.readLockEnemy.unlock()
         }
     }
 
@@ -74,22 +77,19 @@ class ShootTornadoTalent {
                 }
 
                 var nx =
-                    if (tornadoRadius.x > (enemy.circle!!.x + xSpeed())) ((tornadoRadius.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * gameSpeedAdjuster))
-                    else (((enemy.circle!!.x + xSpeed().toFloat()) - tornadoRadius.x) / (bulletSpeed * gameSpeedAdjuster))
+                    if (tornadoRadius.x > (enemy.circle!!.x + xSpeed())) ((tornadoRadius.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                    else (((enemy.circle!!.x + xSpeed().toFloat()) - tornadoRadius.x) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
                 var ny =
-                    if (tornadoRadius.y > (enemy.circle!!.y + xSpeed())) ((tornadoRadius.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * gameSpeedAdjuster))
-                    else (((enemy.circle!!.y + ySpeed().toFloat()) - tornadoRadius.y) / (bulletSpeed * gameSpeedAdjuster))
+                    if (tornadoRadius.y > (enemy.circle!!.y + xSpeed())) ((tornadoRadius.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                    else (((enemy.circle!!.y + ySpeed().toFloat()) - tornadoRadius.y) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
 
                 var n =
-                    if (nx > ny) (bulletSpeed * gameSpeedAdjuster) / nx
-                    else (bulletSpeed * gameSpeedAdjuster) / ny
+                    if (nx > ny) (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / nx
+                    else (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / ny
 
 
 
-                 if (tornadoRadiusPosition == 2){
-                    tornadoRadius.x += 0
-                    tornadoRadius.y += 0
-                 }else if (cross(enemy)){
+                if (cross(enemy)){
                     tornadoRadiusPosition = 2
                 }else {
                     if (tornadoRadius.x > (enemy.circle!!.x + xSpeed())) {
@@ -113,7 +113,7 @@ class ShootTornadoTalent {
 
         var squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
 
-        val sumOfRadius = 5
+        val sumOfRadius = 10
 
         if (squaredDistance <= sumOfRadius * sumOfRadius) {
             x = true

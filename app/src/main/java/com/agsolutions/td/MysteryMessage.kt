@@ -2,8 +2,8 @@ package com.agsolutions.td
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.agsolutions.td.Companion.Companion.mysteryPoints
-import com.agsolutions.td.GameActivity.PlayPause.paused
+import com.agsolutions.td.GameActivity.Companion.companionList
+
 import kotlinx.android.synthetic.main.game_end.endGameBTN
 import kotlinx.android.synthetic.main.mystery_message.*
 
@@ -13,20 +13,20 @@ class MysteryMessage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.mystery_message)
 
-        window.setLayout((600.0f * ((Companion.scaleScreen) /10)).toInt(), (900.0f * ((Companion.scaleScreen) /10)).toInt())
+        window.setLayout((600.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (900.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
         titleMysteryTV.text = intent.getStringExtra("Title")
         descriptionTVY.text = intent.getStringExtra("Description")
 
-        titleTVY.setTextSize(( Companion.scaleTextMain / Companion.screenDensity).toFloat())
-        titleMysteryTV.setTextSize(( Companion.scaleTextMain * 1.5f / Companion.screenDensity).toFloat())
-        descriptionTVY.setTextSize(( Companion.scaleTextMain / Companion.screenDensity).toFloat())
+        titleTVY.setTextSize(( GameActivity.companionList.scaleTextMain / GameActivity.companionList.screenDensity).toFloat())
+        titleMysteryTV.setTextSize(( GameActivity.companionList.scaleTextMain * 1.5f / GameActivity.companionList.screenDensity).toFloat())
+        descriptionTVY.setTextSize(( GameActivity.companionList.scaleTextMain / GameActivity.companionList.screenDensity).toFloat())
 
 
         endGameBTN.setOnClickListener() {
-            paused = false
-            mysteryPoints += 1
+            GameActivity.paused = false
+            companionList.mysteryPoints += 1
                 finish()
         }
     }

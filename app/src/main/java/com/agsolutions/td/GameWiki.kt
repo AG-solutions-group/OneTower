@@ -3,7 +3,7 @@ package com.agsolutions.td
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import com.agsolutions.td.Companion.Companion.scaleScreen
+import com.agsolutions.td.GameActivity.Companion.companionList
 import kotlinx.android.synthetic.main.tutorial_items.*
 
 
@@ -16,7 +16,7 @@ class GameWiki : AppCompatActivity() {
         setContentView(R.layout.game_wiki)
 
 
-        window.setLayout((1000.0f * ((scaleScreen) /10)).toInt(), (1400.0f * ((scaleScreen) /10)).toInt())
+        window.setLayout((1000.0f * ((companionList.scaleScreen) /10)).toInt(), (1400.0f * ((companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
        okayBTN.setOnClickListener() {

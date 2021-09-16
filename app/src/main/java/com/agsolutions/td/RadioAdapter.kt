@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.agsolutions.td.Companion.Companion.scaleTextNews
-import com.agsolutions.td.Companion.Companion.screenDensity
+import com.agsolutions.td.GameActivity.Companion.companionList
 
 
 class RadioAdapter (
@@ -24,7 +23,7 @@ class RadioAdapter (
         override fun onBindViewHolder(holder: ExampleViewHolder, position: Int) {
             val currentItem = radioList[position]
             holder.itemView.findViewById<TextView>(R.id.radio_view).text = currentItem
-            holder.itemView.findViewById<TextView>(R.id.radio_view).setTextSize(scaleTextNews / screenDensity)
+            holder.itemView.findViewById<TextView>(R.id.radio_view).setTextSize(companionList.scaleTextNews / companionList.screenDensity)
         }
 
         override fun getItemCount() = radioList.size

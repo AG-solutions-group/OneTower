@@ -5,33 +5,7 @@ import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.agsolutions.td.Companion.Companion.armorPenGain
-import com.agsolutions.td.Companion.Companion.critChanceGain
-import com.agsolutions.td.Companion.Companion.critDamageGain
-import com.agsolutions.td.Companion.Companion.damageGain
-import com.agsolutions.td.Companion.Companion.day
-import com.agsolutions.td.Companion.Companion.dayNightMinute
-import com.agsolutions.td.Companion.Companion.diamondsGain
-import com.agsolutions.td.Companion.Companion.endlessNight
-import com.agsolutions.td.Companion.Companion.enemyList
-import com.agsolutions.td.Companion.Companion.goldGain
-import com.agsolutions.td.Companion.Companion.hintsBool
-import com.agsolutions.td.Companion.Companion.hitGain
-import com.agsolutions.td.Companion.Companion.interestGain
-import com.agsolutions.td.Companion.Companion.itemChanceGain
-import com.agsolutions.td.Companion.Companion.itemPointsGain
-import com.agsolutions.td.Companion.Companion.itemQualityGain
-import com.agsolutions.td.Companion.Companion.levelCount
-import com.agsolutions.td.Companion.Companion.levelCountPlace
-import com.agsolutions.td.Companion.Companion.levelStatus
-import com.agsolutions.td.Companion.Companion.magicArmorPenGain
-import com.agsolutions.td.Companion.Companion.mgcDamageGain
-import com.agsolutions.td.Companion.Companion.multiCritGain
-import com.agsolutions.td.Companion.Companion.phyDamageGain
-import com.agsolutions.td.Companion.Companion.spdGain
-import com.agsolutions.td.Companion.Companion.talentGainCountRed
-import com.agsolutions.td.Companion.Companion.towerList
-import com.agsolutions.td.Companion.Companion.upgradePointsGain
+import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.Utils.round
 import kotlin.math.ceil
 
@@ -489,20 +463,20 @@ class UpdateViewModel : ViewModel() {
 
     fun update () {
 
-        if (com.agsolutions.td.Companion.mapMode != 2) _lives.postValue(com.agsolutions.td.Companion.lives.toString())
-        else _lives.postValue(com.agsolutions.td.Companion.lives.toString() + " / " + com.agsolutions.td.Companion.livesMode2.toString())
+        if (GameActivity.companionList.mapMode != 2) _lives.postValue(GameActivity.companionList.lives.toString())
+        else _lives.postValue(companionList.lives.toString() + " / " + GameActivity.companionList.livesMode2.toString())
 
-        com.agsolutions.td.Companion.readLockTower.lock ()
+        GameActivity.companionList.readLockTower.lock ()
         try {
-            if (com.agsolutions.td.Companion.towerClick) {
-                var towerListIterator = com.agsolutions.td.Companion.towerList.listIterator()
+            if (GameActivity.companionList.towerClick) {
+                var towerListIterator = GameActivity.companionList.towerList.listIterator()
                 while (towerListIterator.hasNext()) {
                     var tower = towerListIterator.next()
                     if (tower.selected) {
 
                         // tower damage
-                        if (tower.overallTowerDmg > _towerDmg.value!! || damageGain) {
-                            damageGain = true
+                        if (tower.overallTowerDmg > _towerDmg.value!! || GameActivity.companionList.damageGain) {
+                            GameActivity.companionList.damageGain = true
                             _towerDmgColor.postValue(Color.GREEN)
                         } else _towerDmgColor.postValue(Color.WHITE)
 
@@ -517,8 +491,8 @@ class UpdateViewModel : ViewModel() {
                         _towerDmg.postValue(tower.overallTowerDmg)
 
                         // physical damage
-                        if (tower.overallTowerPhysicalDmg > _towerPhyDmg.value!! || phyDamageGain) {
-                            phyDamageGain = true
+                        if (tower.overallTowerPhysicalDmg > _towerPhyDmg.value!! || GameActivity.companionList.phyDamageGain) {
+                            GameActivity.companionList.phyDamageGain = true
                             _towerPhyDmgColor.postValue(Color.GREEN)
                         } else _towerPhyDmgColor.postValue(Color.WHITE)
 
@@ -533,8 +507,8 @@ class UpdateViewModel : ViewModel() {
                         _towerPhyDmg.postValue(tower.overallTowerPhysicalDmg)
 
                         // spell damage
-                        if (tower.overallTowerSpellDmg > _towerMgcDmg.value!! || mgcDamageGain) {
-                            mgcDamageGain = true
+                        if (tower.overallTowerSpellDmg > _towerMgcDmg.value!! || GameActivity.companionList.mgcDamageGain) {
+                            GameActivity.companionList.mgcDamageGain = true
                             _towerMgcDmgColor.postValue(Color.GREEN)
                         } else _towerMgcDmgColor.postValue(Color.WHITE)
 
@@ -549,16 +523,16 @@ class UpdateViewModel : ViewModel() {
                         _towerMgcDmg.postValue(tower.overallTowerSpellDmg)
 
                         // tower speed
-                        if ((tower.towerAttackSpeedShow * 20).round(1) < _towerSpd.value!! || spdGain) {
-                            spdGain = true
+                        if ((tower.towerAttackSpeedShow * 20).round(1) < _towerSpd.value!! || GameActivity.companionList.spdGain) {
+                            GameActivity.companionList.spdGain = true
                             _towerSpdColor.postValue(Color.GREEN)
                         } else _towerSpdColor.postValue(Color.WHITE)
 
                         _towerSpd.postValue((tower.towerAttackSpeedShow * 20).round(1))
 
                         // crit chance
-                        if (tower.overallCrit > _towerCrt.value!! || critChanceGain) {
-                            critChanceGain = true
+                        if (tower.overallCrit > _towerCrt.value!! || GameActivity.companionList.critChanceGain) {
+                            GameActivity.companionList.critChanceGain = true
                             _towerCrtColor.postValue(Color.GREEN)
                         } else _towerCrtColor.postValue(Color.WHITE)
 
@@ -566,53 +540,53 @@ class UpdateViewModel : ViewModel() {
                         _towerCrt.postValue(tower.overallCrit)
 
                         // crit damage
-                        if (tower.overallCritDmg.round(1) > _towerCrtDmg.value!! || critDamageGain) {
-                            critDamageGain = true
+                        if (tower.overallCritDmg.round(1) > _towerCrtDmg.value!! || GameActivity.companionList.critDamageGain) {
+                            GameActivity.companionList.critDamageGain = true
                             _towerCrtDmgColor.postValue(Color.GREEN)
                         } else _towerCrtDmgColor.postValue(Color.WHITE)
 
                         _towerCrtDmg.postValue(tower.overallCritDmg.round(1))
 
                         // multi crit
-                        if ((tower.overallMulticrit - 1) > _towerCrt.value!! || multiCritGain) {
-                            multiCritGain = true
+                        if ((tower.overallMulticrit - 1) > _towerCrt.value!! || GameActivity.companionList.multiCritGain) {
+                            GameActivity.companionList.multiCritGain = true
                             _towerMultiCrtColor.postValue(Color.GREEN)
                         } else _towerMultiCrtColor.postValue(Color.WHITE)
 
                         _towerMultiCrt.postValue((tower.overallMulticrit - 1))
 
                         // tower hit
-                        if ((tower.hitChance.toInt()) > _towerHit.value!! || hitGain) {
-                            hitGain = true
+                        if ((tower.hitChance.toInt()) > _towerHit.value!! || GameActivity.companionList.hitGain) {
+                            GameActivity.companionList.hitGain = true
                             _towerHitColor.postValue(Color.GREEN)
                         } else _towerHitColor.postValue(Color.WHITE)
 
                         _towerHit.postValue(tower.hitChance.toInt())
 
                         // armor pen
-                        if ((tower.overallBonusArmorPen.round(1)) > _towerArmPen.value!! || armorPenGain) {
-                            armorPenGain = true
+                        if ((tower.overallBonusArmorPen.round(1)) > _towerArmPen.value!! || GameActivity.companionList.armorPenGain) {
+                            GameActivity.companionList.armorPenGain = true
                             _towerArmPenColor.postValue(Color.GREEN)
                         } else _towerArmPenColor.postValue(Color.WHITE)
                         _towerArmPen.postValue(tower.overallBonusArmorPen.round(1))
 
                         // magic pen
-                        if ((tower.overallBonusMagicPen.round(1)) > _towerMgcPen.value!! || magicArmorPenGain) {
-                            magicArmorPenGain = true
+                        if ((tower.overallBonusMagicPen.round(1)) > _towerMgcPen.value!! || GameActivity.companionList.magicArmorPenGain) {
+                            GameActivity.companionList.magicArmorPenGain = true
                             _towerMgcPenColor.postValue(Color.GREEN)
                         } else _towerMgcPenColor.postValue(Color.WHITE)
                         _towerMgcPen.postValue(tower.overallBonusMagicPen.round(1))
 
                         // item chance
-                        if (tower.overallItemChance.round(1) > _itemChance.value!! || itemChanceGain) {
-                            itemChanceGain = true
+                        if (tower.overallItemChance.round(1) > _itemChance.value!! || GameActivity.companionList.itemChanceGain) {
+                            GameActivity.companionList.itemChanceGain = true
                             _itemChanceColor.postValue(Color.GREEN)
                         } else _itemChanceColor.postValue(Color.WHITE)
                         _itemChance.postValue(tower.overallItemChance.round(1))
 
                         // item quality
-                        if (tower.overallItemQuality.round(1) > _itemQuality.value!! || itemQualityGain) {
-                            itemQualityGain = true
+                        if (tower.overallItemQuality.round(1) > _itemQuality.value!! || GameActivity.companionList.itemQualityGain) {
+                            GameActivity.companionList.itemQualityGain = true
                             _itemQualityColor.postValue(Color.GREEN)
                         } else _itemQualityColor.postValue(Color.WHITE)
                         _itemQuality.postValue(tower.overallItemQuality.round(1))
@@ -626,15 +600,15 @@ class UpdateViewModel : ViewModel() {
                         _bagStringElement.postValue((tower.bagSizeElementCount).toString() + "/" + (tower.bagSizeElement + 1).toString())
 
                         // talent points
-                        if (towerList.size == 0) _talents.postValue(0)
+                        if (GameActivity.companionList.towerList.size == 0) _talents.postValue(0)
                         else {
                             if (tower.talentPoints > _talents.value!!) {
                                 _talentsColor.postValue(Color.GREEN)
                             } else if (tower.talentPoints > 1) {
-                                if (hintsBool) {
-                                    talentGainCountRed++
-                                    if (talentGainCountRed > 40) talentGainCountRed = 0
-                                    else if (talentGainCountRed > 20) _talentsColor.postValue(Color.WHITE)
+                                if (GameActivity.companionList.hintsBool) {
+                                    GameActivity.companionList.talentGainCountRed++
+                                    if (GameActivity.companionList.talentGainCountRed > 40) GameActivity.companionList.talentGainCountRed = 0
+                                    else if (GameActivity.companionList.talentGainCountRed > 20) _talentsColor.postValue(Color.WHITE)
                                     else _talentsColor.postValue(Color.RED)
                                 } else _talentsColor.postValue(Color.RED)
                             } else _talentsColor.postValue(Color.WHITE)
@@ -643,9 +617,9 @@ class UpdateViewModel : ViewModel() {
 
                         // xp
                         _towerLevel.postValue(tower.towerLevel)
-                        _towerLevelXp.postValue(tower.xpGoal2.toInt())
-                        _towerLevelXpMin.postValue(tower.xpGoal1.toInt())
-                        _towerLevelXpProg.postValue((tower.xpTower).toInt())
+                        _towerLevelXp.postValue((tower.xpGoal2 * 10).toInt())
+                        _towerLevelXpMin.postValue((tower.xpGoal1 * 10).toInt())
+                        _towerLevelXpProg.postValue((tower.xpTower * 10).toInt())
 
                         // rarity
                         when (tower.towerRarity){
@@ -662,7 +636,7 @@ class UpdateViewModel : ViewModel() {
                                 _towerRarityMultiplier.postValue("(* ${tower.towerRarityMultiplier.round(2)})")
                             }
                             "legendary" -> {
-                                _towerRarity.postValue(("Legendary"))
+                                _towerRarity.postValue(("Legend"))
                                 _towerRarityMultiplier.postValue("(* ${tower.towerRarityMultiplier.round(2)})")
                             }
                         }
@@ -671,166 +645,131 @@ class UpdateViewModel : ViewModel() {
                 }
                 }
                 }finally {
-                    com.agsolutions.td.Companion.readLockTower.unlock()
+            GameActivity.companionList.readLockTower.unlock()
                 }
 
         // diamonds
-        if (com.agsolutions.td.Companion.diamonds > _diamonds.value!! || diamondsGain) {
-            diamondsGain = true
+        if (GameActivity.companionList.diamonds > _diamonds.value!! || GameActivity.companionList.diamondsGain) {
+            GameActivity.companionList.diamondsGain = true
             _diamondsColor.postValue(Color.GREEN)
         } else _diamondsColor.postValue(Color.WHITE)
-        _diamonds.postValue(com.agsolutions.td.Companion.diamonds)
+        _diamonds.postValue(GameActivity.companionList.diamonds)
 
         // interest
-        if (com.agsolutions.td.Companion.interest > _interest.value!! || interestGain) {
-            interestGain = true
+        if (GameActivity.companionList.interest > _interest.value!! || GameActivity.companionList.interestGain) {
+            GameActivity.companionList.interestGain = true
             _interestColor.postValue(Color.GREEN)
         } else _interestColor.postValue(Color.WHITE)
 
-        _interest.postValue(com.agsolutions.td.Companion.interest)
-        _interestString.postValue((ceil((com.agsolutions.td.Companion.interest - 1) * 100)).toInt().toString() + "%")
+        _interest.postValue(GameActivity.companionList.interest)
+        _interestString.postValue((ceil((GameActivity.companionList.interest - 1) * 100)).toInt().toString() + "%")
 
         // upgrade points
-        if (com.agsolutions.td.Companion.upgradePoints > _upgradePoints.value!! || upgradePointsGain) {
-            upgradePointsGain = true
+        if (GameActivity.companionList.upgradePoints > _upgradePoints.value!! || GameActivity.companionList.upgradePointsGain) {
+            GameActivity.companionList.upgradePointsGain = true
             _upgradePointsColor.postValue(Color.GREEN)
-        } else if (com.agsolutions.td.Companion.upgradePoints > 5) _upgradePointsColor.postValue(Color.RED)
+        } else if (GameActivity.companionList.upgradePoints > 5) _upgradePointsColor.postValue(Color.RED)
         else _upgradePointsColor.postValue(Color.WHITE)
-        _upgradePoints.postValue(com.agsolutions.td.Companion.upgradePoints)
+        _upgradePoints.postValue(GameActivity.companionList.upgradePoints)
 
         // item points
-        if (com.agsolutions.td.Companion.itemPoints.toInt() > _itemPoints.value!! || itemPointsGain) {
-            itemPointsGain = true
+        if (GameActivity.companionList.itemPoints.toInt() > _itemPoints.value!! || GameActivity.companionList.itemPointsGain) {
+            GameActivity.companionList.itemPointsGain = true
             _itemPointsColor.postValue(Color.GREEN)
         } else _itemPointsColor.postValue(Color.WHITE)
-        _itemPoints.postValue(com.agsolutions.td.Companion.itemPoints.toInt())
+        _itemPoints.postValue(GameActivity.companionList.itemPoints.toInt())
 
-        if (dayNightMinute < 10) _dayNight.postValue(com.agsolutions.td.Companion.dayNightHour.toString() + ":0" + com.agsolutions.td.Companion.dayNightMinute.toString())
-        else _dayNight.postValue(com.agsolutions.td.Companion.dayNightHour.toString() + ":" + com.agsolutions.td.Companion.dayNightMinute.toString())
-        if (day) _dayNightPic.postValue(R.drawable.suntransparent)
+        if (GameActivity.companionList.dayNightMinute < 10) _dayNight.postValue(GameActivity.companionList.dayNightHour.toString() + ":0" + companionList.dayNightMinute.toString())
+        else _dayNight.postValue(GameActivity.companionList.dayNightHour.toString() + ":" + GameActivity.companionList.dayNightMinute.toString())
+        if (GameActivity.companionList.day) _dayNightPic.postValue(R.drawable.suntransparent)
         else _dayNightPic.postValue(R.drawable.moontransparent)
 
-        _textMain.postValue(com.agsolutions.td.Companion.scaleTextMain)
-        _textNews.postValue(com.agsolutions.td.Companion.scaleTextNews)
-        _textStats.postValue(com.agsolutions.td.Companion.scaleTextStats)
-        _textStatsPic.postValue((com.agsolutions.td.Companion.scaleTextStats * 0.6).toInt().toFloat())
-        _textButton.postValue(com.agsolutions.td.Companion.scaleTextButton)
-        _textBig.postValue(com.agsolutions.td.Companion.scaleTextBig)
+        _textMain.postValue(GameActivity.companionList.scaleTextMain)
+        _textNews.postValue(GameActivity.companionList.scaleTextNews)
+        _textStats.postValue(GameActivity.companionList.scaleTextStats)
+        _textStatsPic.postValue((GameActivity.companionList.scaleTextStats * 0.6).toInt().toFloat())
+        _textButton.postValue(GameActivity.companionList.scaleTextButton)
+        _textBig.postValue(GameActivity.companionList.scaleTextBig)
 
     }
 
     fun updateLvlStats () {
-        when (com.agsolutions.td.Companion.enemyHp.toInt()){
-            in 0..999 -> _lvlHp.postValue(com.agsolutions.td.Companion.Companion.enemyHp.toInt().toString()+ " /")
-            in 1000..999999 -> _lvlHp.postValue((com.agsolutions.td.Companion.Companion.enemyHp/1000).round(1).toString() + "k" + " /")
-            in 1000000..999999999 -> _lvlHp.postValue((com.agsolutions.td.Companion.Companion.enemyHp/1000000).round(1).toString() + "M"+ " /")
+        when (GameActivity.companionList.enemyHp.toInt()){
+            in 0..999 -> _lvlHp.postValue(GameActivity.companionList.enemyHp.toInt().toString()+ " /")
+            in 1000..999999 -> _lvlHp.postValue((GameActivity.companionList.enemyHp/1000).round(1).toString() + "k" + " /")
+            in 1000000..999999999 -> _lvlHp.postValue((GameActivity.companionList.enemyHp/1000000).round(1).toString() + "M"+ " /")
         }
-        when (com.agsolutions.td.Companion.enemyMaxHp.toInt()){
-            in 0..999 -> _lvlMaxHp.postValue(com.agsolutions.td.Companion.Companion.enemyMaxHp.toInt().toString())
-            in 1000..999999 -> _lvlMaxHp.postValue((com.agsolutions.td.Companion.Companion.enemyMaxHp/1000).round(1).toString() + "k")
-            in 1000000..999999999 -> _lvlMaxHp.postValue((com.agsolutions.td.Companion.Companion.enemyMaxHp/1000000).round(1).toString() + "M")
+        when (GameActivity.companionList.enemyMaxHp.toInt()){
+            in 0..999 -> _lvlMaxHp.postValue(GameActivity.companionList.enemyMaxHp.toInt().toString())
+            in 1000..999999 -> _lvlMaxHp.postValue((GameActivity.companionList.enemyMaxHp/1000).round(1).toString() + "k")
+            in 1000000..999999999 -> _lvlMaxHp.postValue((GameActivity.companionList.enemyMaxHp/1000000).round(1).toString() + "M")
         }
-        when (com.agsolutions.td.Companion.enemyShield.toInt()){
-            in 0..999 -> _lvlShield.postValue(com.agsolutions.td.Companion.Companion.enemyShield.toInt().toString()+ " /")
-            in 1000..999999 -> _lvlShield.postValue((com.agsolutions.td.Companion.Companion.enemyShield/1000).round(1).toString() + "k" + " /")
-            in 1000000..999999999 -> _lvlShield.postValue((com.agsolutions.td.Companion.Companion.enemyShield/1000000).round(1).toString() + "M"+ " /")
+        when (GameActivity.companionList.enemyShield.toInt()){
+            in 0..999 -> _lvlShield.postValue(companionList.enemyShield.toInt().toString()+ " /")
+            in 1000..999999 -> _lvlShield.postValue((GameActivity.companionList.enemyShield/1000).round(1).toString() + "k" + " /")
+            in 1000000..999999999 -> _lvlShield.postValue((GameActivity.companionList.enemyShield/1000000).round(1).toString() + "M"+ " /")
         }
-        when (com.agsolutions.td.Companion.enemyShieldMax.toInt()){
-            in 0..999 -> _lvlMaxShield.postValue(com.agsolutions.td.Companion.Companion.enemyShieldMax.toInt().toString())
-            in 1000..999999 -> _lvlMaxShield.postValue((com.agsolutions.td.Companion.Companion.enemyShieldMax/1000).round(1).toString() + "k")
-            in 1000000..999999999 -> _lvlMaxShield.postValue((com.agsolutions.td.Companion.Companion.enemyShieldMax/1000000).round(1).toString() + "M")
+        when (GameActivity.companionList.enemyShieldMax.toInt()){
+            in 0..999 -> _lvlMaxShield.postValue(GameActivity.companionList.enemyShieldMax.toInt().toString())
+            in 1000..999999 -> _lvlMaxShield.postValue((GameActivity.companionList.enemyShieldMax/1000).round(1).toString() + "k")
+            in 1000000..999999999 -> _lvlMaxShield.postValue((GameActivity.companionList.enemyShieldMax/1000000).round(1).toString() + "M")
         }
-        when (com.agsolutions.td.Companion.enemyManaShield.toInt()){
-            in 0..999 -> _lvlManaShield.postValue(com.agsolutions.td.Companion.Companion.enemyManaShield.toInt().toString()+ " /")
-            in 1000..999999 -> _lvlManaShield.postValue((com.agsolutions.td.Companion.Companion.enemyManaShield/1000).round(1).toString() + "k" + " /")
-            in 1000000..999999999 -> _lvlManaShield.postValue((com.agsolutions.td.Companion.Companion.enemyManaShield/1000000).round(1).toString() + "M"+ " /")
+        when (GameActivity.companionList.enemyManaShield.toInt()){
+            in 0..999 -> _lvlManaShield.postValue(GameActivity.companionList.enemyManaShield.toInt().toString()+ " /")
+            in 1000..999999 -> _lvlManaShield.postValue((GameActivity.companionList.enemyManaShield/1000).round(1).toString() + "k" + " /")
+            in 1000000..999999999 -> _lvlManaShield.postValue((GameActivity.companionList.enemyManaShield/1000000).round(1).toString() + "M"+ " /")
         }
-        when (com.agsolutions.td.Companion.enemyManaShieldMax.toInt()){
-            in 0..999 -> _lvlMaxManaShield.postValue(com.agsolutions.td.Companion.Companion.enemyManaShieldMax.toInt().toString())
-            in 1000..999999 -> _lvlMaxManaShield.postValue((com.agsolutions.td.Companion.Companion.enemyManaShieldMax/1000).round(1).toString() + "k")
-            in 1000000..999999999 -> _lvlMaxManaShield.postValue((com.agsolutions.td.Companion.Companion.enemyManaShieldMax/1000000).round(1).toString() + "M")
+        when (GameActivity.companionList.enemyManaShieldMax.toInt()){
+            in 0..999 -> _lvlMaxManaShield.postValue(companionList.enemyManaShieldMax.toInt().toString())
+            in 1000..999999 -> _lvlMaxManaShield.postValue((companionList.enemyManaShieldMax/1000).round(1).toString() + "k")
+            in 1000000..999999999 -> _lvlMaxManaShield.postValue((companionList.enemyManaShieldMax/1000000).round(1).toString() + "M")
         }
-        _lvlArmor.postValue(com.agsolutions.td.Companion.enemyArmorReduction.round(1).toString() + "%)")
-        _lvlArmorRating.postValue("(" + com.agsolutions.td.Companion.enemyArmor.toInt().toString() + "/")
-        _lvlMagicArmor.postValue(com.agsolutions.td.Companion.enemyMagicArmorReduction.round(1).toString() + "%)")
-        _lvlMagicArmorRating.postValue("(" + com.agsolutions.td.Companion.enemyMagicArmor.toInt().toString() + "/")
-        if (!day && endlessNight > 0) _lvlEvade.postValue((100 - (100 - ((((100 + (3f* endlessNight)) * (((com.agsolutions.td.Companion.enemyEvade + (com.agsolutions.td.Companion.evadeNight - (3f * endlessNight))) * 0.06f) / (1f + (0.06f * (com.agsolutions.td.Companion.enemyEvade +(com.agsolutions.td.Companion.evadeNight - (3f * endlessNight))))))))))).round(1).toString() + "%")
+        _lvlArmor.postValue(companionList.enemyArmorReduction.round(1).toString() + "%)")
+        _lvlArmorRating.postValue("(" + companionList.enemyArmor.toInt().toString() + "/")
+        _lvlMagicArmor.postValue(companionList.enemyMagicArmorReduction.round(1).toString() + "%)")
+        _lvlMagicArmorRating.postValue("(" + companionList.enemyMagicArmor.toInt().toString() + "/")
+        if (!companionList.day && companionList.endlessNight > 0) _lvlEvade.postValue((100 - (100 - ((((100 + (3f* companionList.endlessNight)) * (((companionList.enemyEvade + (companionList.evadeNight - (3f * companionList.endlessNight))) * 0.06f) / (1f + (0.06f * (companionList.enemyEvade +(companionList.evadeNight - (3f * companionList.endlessNight))))))))))).round(1).toString() + "%")
         else {
-            var x = (100 - ((((100) * (((com.agsolutions.td.Companion.enemyEvade + com.agsolutions.td.Companion.evadeNight) * 0.06f) / (1f + (0.06f * (com.agsolutions.td.Companion.enemyEvade + com.agsolutions.td.Companion.evadeNight))))))))
+            var x = (100 - ((((100) * (((companionList.enemyEvade + companionList.evadeNight) * 0.06f) / (1f + (0.06f * (companionList.enemyEvade + companionList.evadeNight))))))))
             if (x > 100) x = 100f
             _lvlEvade.postValue(((100 - x)).round(1).toString() + "%")
         }
-        _lvlHpReg.postValue(com.agsolutions.td.Companion.enemyHpReg.round(1))
-        _lvlSpd.postValue(com.agsolutions.td.Companion.enemySpd.round(1))
-        _lvlHpBar.postValue((com.agsolutions.td.Companion.Companion.enemyHp).toInt())
-        _lvlMaxHpBar.postValue(com.agsolutions.td.Companion.Companion.enemyMaxHp.toInt())
-        _lvlShieldBar.postValue((com.agsolutions.td.Companion.Companion.enemyShield).toInt())
-        _lvlMaxShieldBar.postValue(com.agsolutions.td.Companion.Companion.enemyShieldMax.toInt())
-        _lvlManaShieldBar.postValue((com.agsolutions.td.Companion.Companion.enemyManaShield).toInt())
-        _lvlMaxManaShieldBar.postValue(com.agsolutions.td.Companion.Companion.enemyManaShieldMax.toInt())
-        _enemyTypeSpecific.postValue(com.agsolutions.td.Companion.enemyType)
+        _lvlHpReg.postValue(companionList.enemyHpReg.round(1))
+        _lvlSpd.postValue(companionList.enemySpd.round(1))
+        _lvlHpBar.postValue((companionList.enemyHp).toInt())
+        _lvlMaxHpBar.postValue(companionList.enemyMaxHp.toInt())
+        _lvlShieldBar.postValue((companionList.enemyShield).toInt())
+        _lvlMaxShieldBar.postValue(companionList.enemyShieldMax.toInt())
+        _lvlManaShieldBar.postValue((companionList.enemyManaShield).toInt())
+        _lvlMaxManaShieldBar.postValue(companionList.enemyManaShieldMax.toInt())
+        _enemyTypeSpecific.postValue(companionList.enemyType)
     }
 
     fun updateCounter () {
 
-        if (enemyList.isEmpty()) _lvlCounter.postValue(((levelCountPlace - levelCount) / 60).toString())
+        if (companionList.enemyList.isEmpty()) _lvlCounter.postValue(((companionList.levelCountPlace - companionList.levelCount) / 60).toString())
         else _lvlCounter.postValue("")
     }
 
     fun updateXp () {
-        if (com.agsolutions.td.Companion.gold.toInt() > _xp.value!! || goldGain) {
-            goldGain = true
+        if (companionList.gold.toInt() > _xp.value!! || companionList.goldGain) {
+            companionList.goldGain = true
             _goldColor.postValue(Color.GREEN)
         } else _goldColor.postValue(Color.WHITE)
 
-        when (com.agsolutions.td.Companion.gold.toInt()){
-            in 0..999 -> _xpString.postValue(com.agsolutions.td.Companion.gold.toInt().toString())
-            in 1000..999999 -> _xpString.postValue((com.agsolutions.td.Companion.gold/1000).round(1).toString() + "k")
-            in 1000000..999999999 -> _xpString.postValue((com.agsolutions.td.Companion.gold/1000000).round(1).toString() + "M")
+        when (companionList.gold.toInt()){
+            in 0..999 -> _xpString.postValue(companionList.gold.toInt().toString())
+            in 1000..999999 -> _xpString.postValue((companionList.gold/1000).round(1).toString() + "k")
+            in 1000000..999999999 -> _xpString.postValue((companionList.gold/1000000).round(1).toString() + "M")
         }
-        _xp.postValue(com.agsolutions.td.Companion.gold)
+        _xp.postValue(companionList.gold)
     }
 
     fun updateLvlStatus () {
-        _enemyType.postValue(levelStatus)
+        _enemyType.postValue(companionList.levelStatus)
     }
 
     fun onLvlUp () {
-        _level.postValue(com.agsolutions.td.Companion.level)
+        _level.postValue(companionList.level)
     }
-
 }
-
-/*
-if (towerPhysicalDmg > overallSpellDmg && towerPhysicalDmg > overallTowerDmg * 1.25){
-            _pictureDmg.postValue(R.drawable.swordicon)
-            if (com.agsolutions.td.Companion.towerPhysicalDmg > _towerPhyDmg.value!! || phyDamageGain) {
-                _pictureColor.postValue(Color.GREEN)
-            } else _pictureColor.postValue(Color.WHITE)
-            when (towerPhysicalDmg.toInt()){
-                in 0..999 -> _pictureValue.postValue(towerPhysicalDmg.toInt().toString())
-                in 1000..999999 -> _pictureValue.postValue((towerPhysicalDmg/1000).round(1).toString() + "k")
-                in 1000000..999999999 -> _pictureValue.postValue((towerPhysicalDmg/1000000).round(1).toString() + "M")
-            }
-        } else if (overallSpellDmg > towerPhysicalDmg && overallSpellDmg > overallTowerDmg * 1.25) {
-            _pictureDmg.postValue(R.drawable.wandicon)
-            if (com.agsolutions.td.Companion.overallSpellDmg > _towerMgcDmg.value!! || mgcDamageGain) {
-                _pictureColor.postValue(Color.GREEN)
-            } else _pictureColor.postValue(Color.WHITE)
-            when (com.agsolutions.td.Companion.overallSpellDmg.toInt()){
-                in 0..999 -> _pictureValue.postValue(com.agsolutions.td.Companion.overallSpellDmg.toInt().toString())
-                in 1000..999999 -> _pictureValue.postValue((com.agsolutions.td.Companion.overallSpellDmg /1000).round(1).toString() + "k")
-                in 1000000..999999999 -> _pictureValue.postValue((com.agsolutions.td.Companion.overallSpellDmg /1000000).round(1).toString() + "M")
-            }
-        } else {
-            _pictureDmg.postValue(R.drawable.swordandwandicon)
-            if (com.agsolutions.td.Companion.overallTowerDmg > _towerDmg.value!! || damageGain) {
-                _pictureColor.postValue(Color.GREEN)
-            } else _pictureColor.postValue(Color.WHITE)
-            when (overallTowerDmg.toInt()){
-                in 0..999 -> _pictureValue.postValue(overallTowerDmg.toInt().toString())
-                in 1000..999999 -> _pictureValue.postValue((overallTowerDmg/1000).round(1).toString() + "k")
-                in 1000000..999999999 -> _pictureValue.postValue((overallTowerDmg/1000000).round(1).toString() + "M")
-            }
-        }
- */

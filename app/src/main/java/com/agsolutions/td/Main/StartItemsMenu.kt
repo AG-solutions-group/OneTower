@@ -31,13 +31,13 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
 
     private var PRIVATE_MODE = 0
     var sharedPref: SharedPreferences? = null
-    private val adapter = StartItemAdapter(Items.startItemList, this) {
+    private val adapter = StartItemAdapter(GameActivity.companionList.startItemList, this) {
 
     }
-    private val adapterHidden = StartItemAdapter2(Items.startItemHiddenList, this) {
+    private val adapterHidden = StartItemAdapter2(GameActivity.companionList.startItemHiddenList, this) {
 
     }
-    private val showAdapter = ItemFragmentAdapter(com.agsolutions.td.Companion.menuItemItems, this)
+    private val showAdapter = ItemFragmentAdapter(GameActivity.companionList.menuItemItems, this)
 
     var userlevel = 0
     var newItem = 0
@@ -86,14 +86,14 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
                         var itemlist = jsonArray.getJSONObject(i)
                         var itemid = itemlist.getInt("itemid")
                         Log.d("item", itemid.toString() )
-                        Items.startItemHiddenList.forEach() {
+                        GameActivity.companionList.startItemHiddenList.forEach() {
                             if (itemid == it.id) {
-                                Items.startItemList.add(it)
+                                GameActivity.companionList.startItemList.add(it)
                                 startItemHiddenListRemove.add(it)
                             }
                         }
                     }
-                    Items.startItemHiddenList.removeAll(startItemHiddenListRemove)
+                    GameActivity.companionList.startItemHiddenList.removeAll(startItemHiddenListRemove)
 
                     adapterHidden.notifyDataSetChanged()
                     adapter.notifyDataSetChanged()
@@ -109,14 +109,14 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
             var ois = ObjectInputStream(fis)
             var itemListPlace = ois.readObject() as ArrayList<Int>
             for (itemid in itemListPlace) {
-                Items.startItemHiddenList.forEach() {
+                GameActivity.companionList.startItemHiddenList.forEach() {
                     if (itemid == it.id) {
-                        Items.startItemList.add(it)
+                        GameActivity.companionList.startItemList.add(it)
                         startItemHiddenListRemove.add(it)
                     }
                 }
             }
-            Items.startItemHiddenList.removeAll(startItemHiddenListRemove)
+            GameActivity.companionList.startItemHiddenList.removeAll(startItemHiddenListRemove)
             adapterHidden.notifyDataSetChanged()
             adapter.notifyDataSetChanged()
         }
@@ -132,29 +132,29 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
     override fun onClick(position: Int) {
         buyItemBTN.visibility = View.INVISIBLE
 
-        com.agsolutions.td.Companion.menuItemItems.removeAll(com.agsolutions.td.Companion.menuItemItems)
+        GameActivity.companionList.menuItemItems.removeAll(GameActivity.companionList.menuItemItems)
 
 
-        com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.nameicon, Items.startItemList[position].name.toString()))
-        if (Items.startItemList[position].dmg > 0) com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.swordandwandicon, Items.startItemList[position].dmg.round(2).toString()))
-        if (Items.startItemList[position].crit > 0) com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.criticon, Items.startItemList[position].crit.round(2).toString()))
-        if (Items.startItemList[position].critDmg > 0) com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.critdmgicon, Items.startItemList[position].critDmg.round(2).toString()))
-        if (Items.startItemList[position].speed > 0) com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.bowicon, Items.startItemList[position].speed.round(2).toString()))
-        if (Items.startItemList[position].special.isNotBlank()) {
-            com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.specialicon, Items.startItemList[position].special.toString()))
-            if (Items.startItemHiddenList[position].specialFloat != 0f) com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.specialicon, Items.startItemList[position].specialFloat.round(2).toString()))
+        GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.nameicon, GameActivity.companionList.startItemList[position].name.toString()))
+        if (GameActivity.companionList.startItemList[position].dmg > 0) GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.swordandwandicon, GameActivity.companionList.startItemList[position].dmg.round(2).toString()))
+        if (GameActivity.companionList.startItemList[position].crit > 0) GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.criticon, GameActivity.companionList.startItemList[position].crit.round(2).toString()))
+        if (GameActivity.companionList.startItemList[position].critDmg > 0) GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.critdmgicon, GameActivity.companionList.startItemList[position].critDmg.round(2).toString()))
+        if (GameActivity.companionList.startItemList[position].speed > 0) GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.bowicon, GameActivity.companionList.startItemList[position].speed.round(2).toString()))
+        if (GameActivity.companionList.startItemList[position].special.isNotBlank()) {
+            GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.specialicon, GameActivity.companionList.startItemList[position].special.toString()))
+            if (GameActivity.companionList.startItemHiddenList[position].specialFloat != 0f) GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.specialicon, GameActivity.companionList.startItemList[position].specialFloat.round(2).toString()))
         }
 
         showAdapter.notifyDataSetChanged()
     }
 
     override fun onHiddenClick(position: Int) {
-        if (Items.startItemHiddenList[position].minLvl <= userlevel) {
+        if (GameActivity.companionList.startItemHiddenList[position].minLvl <= userlevel) {
         buyItemBTN.visibility = View.VISIBLE
         buyItemBTN.setOnClickListener() {
-            Items.startItemList.add(Items.startItemHiddenList[position])
-            newItem = Items.startItemHiddenList[position].id
-            Items.startItemHiddenList.remove(Items.startItemHiddenList[position])
+            GameActivity.companionList.startItemList.add(GameActivity.companionList.startItemHiddenList[position])
+            newItem = GameActivity.companionList.startItemHiddenList[position].id
+            GameActivity.companionList.startItemHiddenList.remove(GameActivity.companionList.startItemHiddenList[position])
             buyItemBTN.visibility = View.INVISIBLE
 
             adapter.notifyDataSetChanged()
@@ -165,18 +165,18 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
             }
         }else buyItemBTN.visibility = View.INVISIBLE
 
-        com.agsolutions.td.Companion.menuItemItems.removeAll(com.agsolutions.td.Companion.menuItemItems)
+        GameActivity.companionList.menuItemItems.removeAll(GameActivity.companionList.menuItemItems)
 
 
-        com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.nameicon, Items.startItemHiddenList[position].name.toString()))
-        com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.lvlicon, Items.startItemHiddenList[position].minLvl.toString()))
-        if (Items.startItemHiddenList[position].dmg > 0) com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.swordandwandicon, Items.startItemHiddenList[position].dmg.round(2).toString()))
-        if (Items.startItemHiddenList[position].crit > 0) com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.criticon, Items.startItemHiddenList[position].crit.round(2).toString()))
-        if (Items.startItemHiddenList[position].critDmg > 0) com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.critdmgicon, Items.startItemHiddenList[position].critDmg.round(2).toString()))
-        if (Items.startItemHiddenList[position].speed > 0) com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.bowicon, Items.startItemHiddenList[position].speed.round(2).toString()))
-        if (Items.startItemHiddenList[position].special.isNotBlank()) {
-            com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.specialicon, Items.startItemHiddenList[position].special.toString()))
-            if (Items.startItemHiddenList[position].specialFloat != 0f) com.agsolutions.td.Companion.menuItemItems.add(ItemFragmentStrings(R.drawable.specialicon, Items.startItemHiddenList[position].specialFloat.round(2).toString()))
+        GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.nameicon, GameActivity.companionList.startItemHiddenList[position].name.toString()))
+        GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.lvlicon, GameActivity.companionList.startItemHiddenList[position].minLvl.toString()))
+        if (GameActivity.companionList.startItemHiddenList[position].dmg > 0) GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.swordandwandicon, GameActivity.companionList.startItemHiddenList[position].dmg.round(2).toString()))
+        if (GameActivity.companionList.startItemHiddenList[position].crit > 0) GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.criticon, GameActivity.companionList.startItemHiddenList[position].crit.round(2).toString()))
+        if (GameActivity.companionList.startItemHiddenList[position].critDmg > 0) GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.critdmgicon, GameActivity.companionList.startItemHiddenList[position].critDmg.round(2).toString()))
+        if (GameActivity.companionList.startItemHiddenList[position].speed > 0) GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.bowicon, GameActivity.companionList.startItemHiddenList[position].speed.round(2).toString()))
+        if (GameActivity.companionList.startItemHiddenList[position].special.isNotBlank()) {
+            GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.specialicon, GameActivity.companionList.startItemHiddenList[position].special.toString()))
+            if (GameActivity.companionList.startItemHiddenList[position].specialFloat != 0f) GameActivity.companionList.menuItemItems.add(ItemFragmentStrings(R.drawable.specialicon, GameActivity.companionList.startItemHiddenList[position].specialFloat.round(2).toString()))
         }
 
         showAdapter.notifyDataSetChanged()
@@ -214,7 +214,7 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
 
         var theItemsList = ArrayList<Int>()
 
-        if (Items.startItemList.size > 3) {
+        if (GameActivity.companionList.startItemList.size > 3) {
             var textFile = File("$filesDir/itemList.dat")
             var fis = FileInputStream(textFile)
             var ois = ObjectInputStream(fis)

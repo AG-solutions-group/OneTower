@@ -9,10 +9,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.agsolutions.td.Companion.Companion.level
-import com.agsolutions.td.Companion.Companion.mapMode
-import com.agsolutions.td.Companion.Companion.overallXp
-import com.agsolutions.td.Companion.Companion.screenDensity
+import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.LogIn.HttpTask
 import kotlinx.android.synthetic.main.game_end.*
 import org.json.JSONArray
@@ -32,15 +29,15 @@ class GameEnd : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_end)
 
-        titleTVX.setTextSize(Companion.scaleTextMain/ screenDensity)
-        lvlTV.setTextSize(Companion.scaleTextMain * 1.5f/ screenDensity)
+        titleTVX.setTextSize(companionList.scaleTextMain/ companionList.screenDensity)
+        lvlTV.setTextSize(companionList.scaleTextMain * 1.5f/ companionList.screenDensity)
 
-        window.setLayout((600.0f * ((Companion.scaleScreen) /10)).toInt(), (400.0f * ((Companion.scaleScreen) /10)).toInt())
+        window.setLayout((600.0f * ((companionList.scaleScreen) /10)).toInt(), (400.0f * ((companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
         sharedPref = getSharedPreferences("Global", PRIVATE_MODE)
 
 
-        lvlTV.text = level.toString()
+        lvlTV.text = companionList.level.toString()
 
         endGameBTN.setOnClickListener() {
             var editor = sharedPref!!.edit()
@@ -63,22 +60,22 @@ class GameEnd : AppCompatActivity() {
                 Calendar.DAY_OF_MONTH).toString() + "." +(Calendar.getInstance().get(Calendar.MONTH)+1).toString() + "." + Calendar.getInstance().get(Calendar.YEAR).toString()
             var usernameX = sharedPref!!.getString("username", "user")
 
-            if (mapMode == 1){
+            if (companionList.mapMode == 1){
                 var levelOld = sharedPref!!.getInt("GetHighscoreMap11", 0)
-                if (level > levelOld){
+                if (companionList.level > levelOld){
                     var editor = sharedPref!!.edit()
                     editor.putBoolean("wasOffline", true)
-                    editor.putInt("GetHighscoreMap11", level)
+                    editor.putInt("GetHighscoreMap11", companionList.level)
                     editor.putString("GetHighscoreMap11Username", usernameX)
                     editor.putString("GetHighscoreMap11Date", date)
                     editor.apply()
                 }
-            }else if (mapMode == 2){
+            }else if (companionList.mapMode == 2){
                 var levelOld = sharedPref!!.getInt("GetHighscoreMap12", 0)
-                if (level > levelOld){
+                if (companionList.level > levelOld){
                     var editor = sharedPref!!.edit()
                     editor.putBoolean("wasOffline", true)
-                    editor.putInt("GetHighscoreMap12", level)
+                    editor.putInt("GetHighscoreMap12", companionList.level)
                     editor.putString("GetHighscoreMap12Username", usernameX)
                     editor.putString("GetHighscoreMap12Date", date)
                     editor.apply()
@@ -86,7 +83,7 @@ class GameEnd : AppCompatActivity() {
             }
 
             var editor = sharedPref!!.edit()
-            editor.putFloat("overallxp", (sharedPref!!.getFloat("overallxp", 0f) + overallXp))
+            editor.putFloat("overallxp", (sharedPref!!.getFloat("overallxp", 0f) + companionList.overallXp))
             editor.apply()
         }
     }
@@ -107,12 +104,12 @@ class GameEnd : AppCompatActivity() {
             Calendar.DAY_OF_MONTH).toString() + "." +(Calendar.getInstance().get(Calendar.MONTH)+1).toString() + "." + Calendar.getInstance().get(Calendar.YEAR).toString()
         var mapModeX = 0
         var usernameX = sharedPref!!.getString("username", "user")
-        if (mapMode == 1) mapModeX = 11
+        if (companionList.mapMode == 1) mapModeX = 11
         else mapModeX = 12
             val json = JSONObject()
             json.put("date", date)
             json.put("username", usernameX)
-            json.put("highscore", level.toString())
+            json.put("highscore", companionList.level.toString())
             json.put("map", mapModeX.toString())
 
             gameEndProgressBar.visibility = View.VISIBLE
@@ -137,7 +134,7 @@ class GameEnd : AppCompatActivity() {
         var usernameX = sharedPref!!.getString("username", "user")
         val json = JSONObject()
         json.put("username", usernameX)
-        json.put("xp", (sharedPref!!.getFloat("overallxp", 0f) + overallXp).toString())
+        json.put("xp", (sharedPref!!.getFloat("overallxp", 0f) + companionList.overallXp).toString())
 
         gameEndProgressBar.visibility = View.VISIBLE
         HttpTask {

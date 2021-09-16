@@ -5,10 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.agsolutions.td.Companion.Companion.globalBonusTowerRange
-import com.agsolutions.td.Companion.Companion.itemList
-import com.agsolutions.td.Companion.Companion.towerClickID
-import com.agsolutions.td.Companion.Companion.towerList
+import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.Items
 import com.agsolutions.td.R
 import kotlinx.android.synthetic.main.fragment_wind_talent.*
@@ -32,232 +29,284 @@ class WindTalentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        windRow1Item1ShowTV.text = towerList[towerClickID].windRow1Item1.toString()
-        windRow1Item1ShowTV.text = towerList[towerClickID].windRow1Item2.toString()
-        windRow2Item1ShowTV.text = towerList[towerClickID].windRow2Item1.toString()
-        windRow2Item2ShowTV.text = towerList[towerClickID].windRow2Item2.toString()
-        windRow3Item1ShowTV.text = towerList[towerClickID].windRow3Item1.toString()
-        windRow3Item2ShowTV.text = towerList[towerClickID].windRow3Item2.toString()
-        windRow4Item1ShowTV.text = towerList[towerClickID].windRow4Item1.toString()
+        windRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].windRow1Item1.toString()
+        windRow1Item2ShowTV.text = companionList.towerList[companionList.towerClickID].windRow1Item2.toString()
+        windRow2Item1ShowTV.text = companionList.towerList[companionList.towerClickID].windRow2Item1.toString()
+        windRow2Item2ShowTV.text = companionList.towerList[companionList.towerClickID].windRow2Item2.toString()
+        windRow3Item1ShowTV.text = companionList.towerList[companionList.towerClickID].windRow3Item1.toString()
+        windRow3Item2ShowTV.text = companionList.towerList[companionList.towerClickID].windRow3Item2.toString()
+        windRow3Item3ShowTV.text = companionList.towerList[companionList.towerClickID].windRow3Item3.toString()
+        windRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].windRow4Item1.toString()
 
-        if (towerList[towerClickID].windRow1Item1 == 1 || towerList[towerClickID].windRow1Item2 == 1) backgroundWindRow2.setBackgroundResource(R.drawable.backgroundplankslight)
-        if (towerList[towerClickID].windRow2Item1 + towerList[towerClickID].windRow2Item2 >= 3) backgroundWindRow3.setBackgroundResource(R.drawable.backgroundplankslight)
-        if (towerList[towerClickID].windRow3Item1 + towerList[towerClickID].windRow3Item2 + towerList[towerClickID].windRow3Item2>= 3) backgroundWindRow4.setBackgroundResource(R.drawable.backgroundplankslight)
+        if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) backgroundWindRow2.setBackgroundResource(R.drawable.backgroundplankslight)
+        if (companionList.towerList[companionList.towerClickID].windRow2Item1 + companionList.towerList[companionList.towerClickID].windRow2Item2 >= 3) backgroundWindRow3.setBackgroundResource(R.drawable.backgroundplankslight)
+        if (companionList.towerList[companionList.towerClickID].windRow3Item1 + companionList.towerList[companionList.towerClickID].windRow3Item2 + companionList.towerList[companionList.towerClickID].windRow3Item3 >= 3) backgroundWindRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
         windRow1Item1IB.setOnClickListener() {
+
+            setImagePick(11)
+
             windNameDisplayTalentTV.text = "Speedy Recovery "
             windDisplayTalentTV.text = "Gain experience for each hit (3% of enemy)."
             windUpgradeBTN.isClickable = true
 
             windUpgradeBTN.setOnClickListener() {
 
-                if (towerList[towerClickID].windRow1Item1 + towerList[towerClickID].windRow1Item2 < 1 && towerList[towerClickID].talentPoints > 0) {
-                    towerList[towerClickID].windRow1Item1 += 1
+                if (companionList.towerList[companionList.towerClickID].windRow1Item1 + companionList.towerList[companionList.towerClickID].windRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
+                    companionList.towerList[companionList.towerClickID].windRow1Item1 += 1
 
-                    if (towerList[towerClickID].windRow1Item1 == 1) towerList[towerClickID].experienceEachHit = true
+                    if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1) companionList.towerList[companionList.towerClickID].experienceEachHit = true
 
-                    if (towerList[towerClickID].windRow1Item1 == 1 || towerList[towerClickID].windRow1Item2 == 1) backgroundWindRow2.setBackgroundResource(R.drawable.backgroundplankslight)
+                    if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) backgroundWindRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                    windRow1Item1ShowTV.text = towerList[towerClickID].windRow1Item1.toString()
-                    towerList[towerClickID].talentPoints -= 1
+                    windRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].windRow1Item1.toString()
+                    companionList.towerList[companionList.towerClickID].talentPoints -= 1
                 }
             }
         }
 
         windRow1Item2IB.setOnClickListener() {
+
+            setImagePick(12)
+
             windNameDisplayTalentTV.text = "Air Drop"
             windDisplayTalentTV.text = "Each hit has a chance to drop an item that grants experience"
             windUpgradeBTN.isClickable = true
 
             windUpgradeBTN.setOnClickListener() {
 
-                if (towerList[towerClickID].windRow1Item1 + towerList[towerClickID].windRow1Item2 < 1 && towerList[towerClickID].talentPoints > 0) {
-                    towerList[towerClickID].windRow1Item2 += 1
+                if (companionList.towerList[companionList.towerClickID].windRow1Item1 + companionList.towerList[companionList.towerClickID].windRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
+                    companionList.towerList[companionList.towerClickID].windRow1Item2 += 1
 
-                    if (towerList[towerClickID].windRow1Item2 == 1) towerList[towerClickID].experienceDrop = true
+                    if (companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) companionList.towerList[companionList.towerClickID].experienceDrop = true
 
-                    if (towerList[towerClickID].windRow1Item1 == 1 || towerList[towerClickID].windRow1Item2 == 1) backgroundWindRow2.setBackgroundResource(R.drawable.backgroundplankslight)
+                    if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) backgroundWindRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                    windRow1Item2ShowTV.text = towerList[towerClickID].windRow1Item2.toString()
-                    towerList[towerClickID].talentPoints -= 1
+                    windRow1Item2ShowTV.text = companionList.towerList[companionList.towerClickID].windRow1Item2.toString()
+                    companionList.towerList[companionList.towerClickID].talentPoints -= 1
                 }
             }
         }
 
         windRow2Item1IB.setOnClickListener() {
+
+            setImagePick(21)
+
             windNameDisplayTalentTV.text = "Multishot"
             windDisplayTalentTV.text = "Debuff damage increased permanently by 10/20/30% after hit."
             windUpgradeBTN.isClickable = false
 
-            if (towerList[towerClickID].windRow1Item1 == 1 || towerList[towerClickID].windRow1Item2 == 1) {
+            if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) {
                 windUpgradeBTN.isClickable = true
 
                 windUpgradeBTN.setOnClickListener() {
-                    if (towerList[towerClickID].windRow2Item1 <= 2 && towerList[towerClickID].talentPoints > 0) {
-                        towerList[towerClickID].windRow2Item1 += 1
+                    if (companionList.towerList[companionList.towerClickID].windRow2Item1 <= 2 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
+                        companionList.towerList[companionList.towerClickID].windRow2Item1 += 1
 
-                        if (towerList[towerClickID].windRow2Item1 == 1) {
-                            towerList[towerClickID].windTalentDebuff += 0.1f
+                        if (companionList.towerList[companionList.towerClickID].windRow2Item1 == 1) {
+                            companionList.towerList[companionList.towerClickID].windTalentDebuff += 0.1f
                         }
-                        if (towerList[towerClickID].windRow2Item1 == 2) {
-                            towerList[towerClickID].windTalentDebuff += 0.1f
+                        if (companionList.towerList[companionList.towerClickID].windRow2Item1 == 2) {
+                            companionList.towerList[companionList.towerClickID].windTalentDebuff += 0.1f
                         }
-                        if (towerList[towerClickID].windRow2Item1 == 3) {
-                            towerList[towerClickID].windTalentDebuff += 0.1f
+                        if (companionList.towerList[companionList.towerClickID].windRow2Item1 == 3) {
+                            companionList.towerList[companionList.towerClickID].windTalentDebuff += 0.1f
                         }
 
-                        if (towerList[towerClickID].windRow2Item1 + towerList[towerClickID].windRow2Item2 >= 3) backgroundWindRow3.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].windRow2Item1 + companionList.towerList[companionList.towerClickID].windRow2Item2 >= 3) backgroundWindRow3.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                            windRow2Item1ShowTV.text = towerList[towerClickID].windRow2Item1.toString()
-                        towerList[towerClickID].talentPoints -= 1
+                            windRow2Item1ShowTV.text = companionList.towerList[companionList.towerClickID].windRow2Item1.toString()
+                        companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
             }
         }
 
         windRow2Item2IB.setOnClickListener() {
+
+            setImagePick(22)
+
             windNameDisplayTalentTV.text = "High Ground"
             windDisplayTalentTV.text = "Increases Wind tower range by 15/30/45 units and all towers by 5/10/15."
             windUpgradeBTN.isClickable = false
 
-            if (towerList[towerClickID].windRow1Item1 == 1 || towerList[towerClickID].windRow1Item2 == 1) {
+            if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) {
                 windUpgradeBTN.isClickable = true
 
                 windUpgradeBTN.setOnClickListener() {
-                    if (towerList[towerClickID].windRow2Item2 <= 2 && towerList[towerClickID].talentPoints > 0) {
-                        towerList[towerClickID].windRow2Item2 += 1
+                    if (companionList.towerList[companionList.towerClickID].windRow2Item2 <= 2 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
+                        companionList.towerList[companionList.towerClickID].windRow2Item2 += 1
 
-                        if (towerList[towerClickID].windRow2Item2 == 1) {
-                            globalBonusTowerRange += 5
-                            towerList[towerClickID].windTowerBonusTowerRange += 15
+                        if (companionList.towerList[companionList.towerClickID].windRow2Item2 == 1) {
+                            companionList.globalBonusTowerRange += 5
+                            companionList.towerList[companionList.towerClickID].windTowerBonusTowerRange += 15
                         }
-                        if (towerList[towerClickID].windRow2Item2 == 2) {
-                            globalBonusTowerRange += 5
-                            towerList[towerClickID].windTowerBonusTowerRange += 15
+                        if (companionList.towerList[companionList.towerClickID].windRow2Item2 == 2) {
+                            companionList.globalBonusTowerRange += 5
+                            companionList.towerList[companionList.towerClickID].windTowerBonusTowerRange += 15
                         }
-                        if (towerList[towerClickID].windRow2Item2 == 3) {
-                            globalBonusTowerRange += 5
-                            towerList[towerClickID].windTowerBonusTowerRange += 15
+                        if (companionList.towerList[companionList.towerClickID].windRow2Item2 == 3) {
+                            companionList.globalBonusTowerRange += 5
+                            companionList.towerList[companionList.towerClickID].windTowerBonusTowerRange += 15
                         }
 
-                        if (towerList[towerClickID].windRow2Item1 + towerList[towerClickID].windRow2Item2 >= 3) backgroundWindRow3.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].windRow2Item1 + companionList.towerList[companionList.towerClickID].windRow2Item2 + companionList.towerList[companionList.towerClickID].windRow3Item3 >= 3) backgroundWindRow3.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                        windRow2Item2ShowTV.text = towerList[towerClickID].windRow2Item2.toString()
-                        towerList[towerClickID].talentPoints -= 1
+                        windRow2Item2ShowTV.text = companionList.towerList[companionList.towerClickID].windRow2Item2.toString()
+                        companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
             }
         }
 
         windRow3Item1IB.setOnClickListener() {
+
+            setImagePick(31)
+
             windNameDisplayTalentTV.text = "Pushback"
             windDisplayTalentTV.text = "Pushes enemies back 80/120/160 units."
             windUpgradeBTN.isClickable = false
 
-            if (towerList[towerClickID].windRow2Item1 + towerList[towerClickID].windRow2Item2 >= 3) {
+            if (companionList.towerList[companionList.towerClickID].windRow2Item1 + companionList.towerList[companionList.towerClickID].windRow2Item2 >= 3) {
                 windUpgradeBTN.isClickable = true
 
                 windUpgradeBTN.setOnClickListener() {
-                    if (towerList[towerClickID].windRow3Item1 <= 2 && towerList[towerClickID].talentPoints > 0) {
-                        towerList[towerClickID].windRow3Item1 += 1
+                    if (companionList.towerList[companionList.towerClickID].windRow3Item1 <= 2 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
+                        companionList.towerList[companionList.towerClickID].windRow3Item1 += 1
 
-                        if (towerList[towerClickID].windRow3Item1 == 1) towerList[towerClickID].pushBack = 80.0f
-                        if (towerList[towerClickID].windRow3Item1 == 2) towerList[towerClickID].pushBack = 120.0f
-                        if (towerList[towerClickID].windRow3Item1 == 3) towerList[towerClickID].pushBack = 160.0f
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item1 == 1) companionList.towerList[companionList.towerClickID].pushBack = 80.0f
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item1 == 2) companionList.towerList[companionList.towerClickID].pushBack = 120.0f
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item1 == 3) companionList.towerList[companionList.towerClickID].pushBack = 160.0f
 
-                        if (towerList[towerClickID].windRow3Item1 + towerList[towerClickID].windRow3Item2 + towerList[towerClickID].windRow3Item3 >= 3) backgroundWindRow4.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item1 + companionList.towerList[companionList.towerClickID].windRow3Item2 + companionList.towerList[companionList.towerClickID].windRow3Item3 >= 3) backgroundWindRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                        windRow3Item1ShowTV.text = towerList[towerClickID].windRow3Item1.toString()
-                        towerList[towerClickID].talentPoints -= 1
+                        windRow3Item1ShowTV.text = companionList.towerList[companionList.towerClickID].windRow3Item1.toString()
+                        companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
             }
         }
 
         windRow3Item2IB.setOnClickListener() {
+
+            setImagePick(32)
+
             windNameDisplayTalentTV.text = "Tornado"
             windDisplayTalentTV.text = "Summons a tornado."
             windUpgradeBTN.isClickable = false
 
-            if (towerList[towerClickID].windRow2Item1 + towerList[towerClickID].windRow2Item2 >= 3) {
+            if (companionList.towerList[companionList.towerClickID].windRow2Item1 + companionList.towerList[companionList.towerClickID].windRow2Item2 >= 3) {
                 windUpgradeBTN.isClickable = true
 
                 windUpgradeBTN.setOnClickListener() {
-                    if (towerList[towerClickID].windRow3Item2 <= 2 && towerList[towerClickID].talentPoints > 0) {
-                        towerList[towerClickID].windRow3Item2 += 1
+                    if (companionList.towerList[companionList.towerClickID].windRow3Item2 <= 2 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
+                        companionList.towerList[companionList.towerClickID].windRow3Item2 += 1
 
-                        if (towerList[towerClickID].windRow3Item2 == 1) towerList[towerClickID].tornadoRadius = 60.0f
-                        if (towerList[towerClickID].windRow3Item2 == 2) towerList[towerClickID].tornadoRadius = 70.0f
-                        if (towerList[towerClickID].windRow3Item2 == 3) towerList[towerClickID].tornadoRadius = 80.0f
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item2 == 1) companionList.towerList[companionList.towerClickID].tornadoRadius = 60.0f
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item2 == 2) {
+                            companionList.towerList[companionList.towerClickID].tornadoRadius = 70.0f
+                            companionList.towerList[companionList.towerClickID].tornadoTimer -= 150
+                        }
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item2 == 3) {
+                            companionList.towerList[companionList.towerClickID].tornadoRadius = 80.0f
+                            companionList.towerList[companionList.towerClickID].tornadoTimer -= 150
+                        }
 
-                        if (towerList[towerClickID].windRow3Item1 + towerList[towerClickID].windRow3Item2 + towerList[towerClickID].windRow3Item3 >= 3) backgroundWindRow4.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item1 + companionList.towerList[companionList.towerClickID].windRow3Item2 + companionList.towerList[companionList.towerClickID].windRow3Item3 >= 3) backgroundWindRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                        windRow3Item2ShowTV.text = towerList[towerClickID].windRow3Item2.toString()
-                        towerList[towerClickID].talentPoints -= 1
+                        windRow3Item2ShowTV.text = companionList.towerList[companionList.towerClickID].windRow3Item2.toString()
+                        companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
             }
         }
 
         windRow3Item3IB.setOnClickListener() {
+
+            setImagePick(33)
+
             windNameDisplayTalentTV.text = "Winds of Change"
             windDisplayTalentTV.text = "Increases attack speed of nearby towers by an additional 5/10/15%"
             windUpgradeBTN.isClickable = false
 
-            if (towerList[towerClickID].windRow2Item1 + towerList[towerClickID].windRow2Item2 >= 3) {
+            if (companionList.towerList[companionList.towerClickID].windRow2Item1 + companionList.towerList[companionList.towerClickID].windRow2Item2 >= 3) {
                 windUpgradeBTN.isClickable = true
 
                 windUpgradeBTN.setOnClickListener() {
-                    if (towerList[towerClickID].windRow3Item3 <= 2 && towerList[towerClickID].talentPoints > 0) {
-                        towerList[towerClickID].windRow3Item3 += 1
+                    if (companionList.towerList[companionList.towerClickID].windRow3Item3 <= 2 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
+                        companionList.towerList[companionList.towerClickID].windRow3Item3 += 1
 
-                        if (towerList[towerClickID].windRow3Item3 == 1) towerList[towerClickID].windExtraTowerSpd += 5f
-                        if (towerList[towerClickID].windRow3Item3 == 2) towerList[towerClickID].windExtraTowerSpd += 5f
-                        if (towerList[towerClickID].windRow3Item3 == 3) towerList[towerClickID].windExtraTowerSpd += 5f
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item3 == 1) companionList.towerList[companionList.towerClickID].windExtraTowerSpd += 5f
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item3 == 2) companionList.towerList[companionList.towerClickID].windExtraTowerSpd += 5f
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item3 == 3) companionList.towerList[companionList.towerClickID].windExtraTowerSpd += 5f
 
-                        if (towerList[towerClickID].windRow3Item1 + towerList[towerClickID].windRow3Item2 + towerList[towerClickID].windRow3Item3 >= 3) backgroundWindRow4.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item1 + companionList.towerList[companionList.towerClickID].windRow3Item2 + companionList.towerList[companionList.towerClickID].windRow3Item3 >= 3) backgroundWindRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                        windRow3Item3ShowTV.text = towerList[towerClickID].windRow3Item3.toString()
-                        towerList[towerClickID].talentPoints -= 1
+                        windRow3Item3ShowTV.text = companionList.towerList[companionList.towerClickID].windRow3Item3.toString()
+                        companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
             }
         }
 
         windRow4Item1IB.setOnClickListener() {
+
+            setImagePick(41)
+
             windNameDisplayTalentTV.text = "Speed of Light"
             windDisplayTalentTV.text = "Increases attack speed by 0.5%/1%/1.5% each hit until there is no target in range (Max 100%). Burns 1/2/3% max HP each hit as magic damage. +1 bag space item at 3/3."
             windUpgradeBTN.isClickable = false
 
-            if (towerList[towerClickID].windRow3Item1 + towerList[towerClickID].windRow3Item2 + towerList[towerClickID].windRow3Item3 >= 3) {
+            if (companionList.towerList[companionList.towerClickID].windRow3Item1 + companionList.towerList[companionList.towerClickID].windRow3Item2 + companionList.towerList[companionList.towerClickID].windRow3Item3 >= 3) {
                 windUpgradeBTN.isClickable = true
 
                 windUpgradeBTN.setOnClickListener() {
-                    if (towerList[towerClickID].windRow4Item1 <= 2 && towerList[towerClickID].talentPoints > 0) {
-                        towerList[towerClickID].windRow4Item1 += 1
+                    if (companionList.towerList[companionList.towerClickID].windRow4Item1 <= 2 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
+                        companionList.towerList[companionList.towerClickID].windRow4Item1 += 1
 
-                        if (towerList[towerClickID].windRow4Item1 == 1) {
-                            towerList[towerClickID].bonusSpeedWindTalent += 0.50f
-                            towerList[towerClickID].windUltimatePercent += 0.01f
+                        if (companionList.towerList[companionList.towerClickID].windRow4Item1 == 1) {
+                            companionList.towerList[companionList.towerClickID].bonusSpeedWindTalent += 0.50f
+                            companionList.towerList[companionList.towerClickID].windUltimatePercent += 0.01f
                         }
-                        if (towerList[towerClickID].windRow4Item1 == 2) {
-                            towerList[towerClickID].bonusSpeedWindTalent += 0.50f
-                            towerList[towerClickID].windUltimatePercent += 0.01f
+                        if (companionList.towerList[companionList.towerClickID].windRow4Item1 == 2) {
+                            companionList.towerList[companionList.towerClickID].bonusSpeedWindTalent += 0.50f
+                            companionList.towerList[companionList.towerClickID].windUltimatePercent += 0.01f
                         }
-                        if (towerList[towerClickID].windRow4Item1 == 3) {
-                            itemList.add(Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
-                            com.agsolutions.td.Companion.insertItem += 1
-                            towerList[towerClickID].bonusSpeedWindTalent += 0.50f
-                            towerList[towerClickID].windUltimatePercent += 0.01f
+                        if (companionList.towerList[companionList.towerClickID].windRow4Item1 == 3) {
+                            companionList.itemList.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
+                            companionList.insertItem += 1
+                            companionList.towerList[companionList.towerClickID].bonusSpeedWindTalent += 0.50f
+                            companionList.towerList[companionList.towerClickID].windUltimatePercent += 0.01f
                         }
 
-                        windRow4Item1ShowTV.text = towerList[towerClickID].windRow4Item1.toString()
-                        towerList[towerClickID].talentPoints -= 1
+                        windRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].windRow4Item1.toString()
+                        companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
             }
         }
 
     }
+    fun setImagePick (pick: Int) {
 
+        windRow1Item1IBPick.setImageResource(R.drawable.overlaytransparent)
+        windRow1Item2IBPick.setImageResource(R.drawable.overlaytransparent)
+        windRow2Item1IBPick.setImageResource(R.drawable.overlaytransparent)
+        windRow2Item2IBPick.setImageResource(R.drawable.overlaytransparent)
+        windRow3Item1IBPick.setImageResource(R.drawable.overlaytransparent)
+        windRow3Item2IBPick.setImageResource(R.drawable.overlaytransparent)
+        windRow3Item3IBPick.setImageResource(R.drawable.overlaytransparent)
+        windRow4Item1IBPick.setImageResource(R.drawable.overlaytransparent)
+
+        when(pick){
+            11 -> windRow1Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+            12 -> windRow1Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+            21 -> windRow2Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+            22 -> windRow2Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+            31 -> windRow3Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+            32 -> windRow3Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+            33 -> windRow3Item3IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+            41 -> windRow4Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+        }
+    }
 }

@@ -8,8 +8,7 @@
     android:background="@drawable/marmorlayout"
     tools:context=".Main.MainActivity">
 
-    <com.agsolutions.td.GameView
-
+    <com.agsolutions.td.Main.GameViewStartScreen
         android:id="@+id/gameViewStart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -67,7 +66,7 @@
         app:backgroundTint="@null"
         android:background="@drawable/button_bg"
         android:singleLine="true"
-        android:text="HighScore"
+        android:text="Score"
         android:textColor="#ffffff"
         app:layout_constraintBottom_toTopOf="@+id/wikiBTN"
         app:layout_constraintEnd_toEndOf="parent"

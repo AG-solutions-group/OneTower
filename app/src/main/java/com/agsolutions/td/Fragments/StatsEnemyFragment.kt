@@ -5,10 +5,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.agsolutions.td.Companion.Companion.enemyManaShield
-import com.agsolutions.td.Companion.Companion.enemyShield
-import com.agsolutions.td.Companion.Companion.toastGlobal
-import com.agsolutions.td.Companion.Companion.toastText
+import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.R
 import com.agsolutions.td.UpdateViewModel
 import com.agsolutions.td.databinding.FragmentStatsEnemyBinding
@@ -84,87 +81,87 @@ class StatsEnemyFragment (var updateViewModel: UpdateViewModel) : Fragment() {
 
         var scalePics = 1.5
 
-        lvlArmorTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        lvlArmorTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        lvlMagicArmorTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        lvlMagicArmorTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        lvlEvadeTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        lvlEvadeTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        lvlHpRegTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        lvlHpRegTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        lvlSpdTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
-        lvlSpdTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
+        lvlArmorTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        lvlArmorTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        lvlMagicArmorTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        lvlMagicArmorTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        lvlEvadeTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        lvlEvadeTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        lvlHpRegTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        lvlHpRegTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        lvlSpdTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        lvlSpdTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
 
         shieldBar.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Earth Shield - use physical dmg to break"
+            companionList.toastGlobal = true
+            companionList.toastText = "Earth Shield - use physical dmg to break"
         }
         manaShieldBar.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Mana Shield - use magic dmg to break"
+            companionList.toastGlobal = true
+            companionList.toastText = "Mana Shield - use magic dmg to break"
         }
         hpBar.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Hit Point Bar"
+            companionList.toastGlobal = true
+            companionList.toastText = "Hit Point Bar"
         }
         lvlTypeTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Enemy Type"
+            companionList.toastGlobal = true
+            companionList.toastText = "Enemy Type"
         }
         lvlArmorTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Armor - reduces physical damage done (Armor Rating / Physical Damage Reduction)"
+            companionList.toastGlobal = true
+            companionList.toastText = "Armor - reduces physical damage done (Armor Rating / Physical Damage Reduction)"
         }
         lvlArmorShowTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Armor - reduces physical damage done (Armor Rating / Physical Damage Reduction)"
+            companionList.toastGlobal = true
+            companionList.toastText = "Armor - reduces physical damage done (Armor Rating / Physical Damage Reduction)"
         }
         lvlArmorRatingShowTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Armor - reduces physical damage done (Armor Rating / Physical Damage Reduction)"
+            companionList.toastGlobal = true
+            companionList.toastText = "Armor - reduces physical damage done (Armor Rating / Physical Damage Reduction)"
         }
         lvlMagicArmorTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Magic Armor - reduces spell damage done (Magic Armor Rating / Spell Damage Reduction)"
+            companionList.toastGlobal = true
+            companionList.toastText = "Magic Armor - reduces spell damage done (Magic Armor Rating / Spell Damage Reduction)"
         }
         lvlMagicArmorShowTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Magic Armor - reduces spell damage done (Magic Armor Rating / Spell Damage Reduction)"
+            companionList.toastGlobal = true
+            companionList.toastText = "Magic Armor - reduces spell damage done (Magic Armor Rating / Spell Damage Reduction)"
         }
         lvlMagicArmorRatingShowTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Magic Armor - reduces spell damage done (Magic Armor Rating / Spell Damage Reduction)"
+            companionList.toastGlobal = true
+            companionList.toastText = "Magic Armor - reduces spell damage done (Magic Armor Rating / Spell Damage Reduction)"
         }
         lvlEvadeTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Evade chance - chance to evade attacks in percent"
+            companionList.toastGlobal = true
+            companionList.toastText = "Evade chance - chance to evade attacks in percent"
         }
         lvlEvadeShowTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Evade chance - chance to evade attacks in percent"
+            companionList.toastGlobal = true
+            companionList.toastText = "Evade chance - chance to evade attacks in percent"
         }
         lvlHpRegTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Hitpoint Regeneration per tick"
+            companionList.toastGlobal = true
+            companionList.toastText = "Hitpoint Regeneration per tick"
         }
         lvlHpRegShowTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Hitpoint Regeneration per tick"
+            companionList.toastGlobal = true
+            companionList.toastText = "Hitpoint Regeneration per tick"
         }
         lvlSpdTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Movement Speed"
+            companionList.toastGlobal = true
+            companionList.toastText = "Movement Speed"
         }
         lvlSpdShowTV.setOnClickListener(){
-            toastGlobal = true
-            toastText = "Movement Speed"
+            companionList.toastGlobal = true
+            companionList.toastText = "Movement Speed"
         }
 
     }
 
     fun refresh(){
 
-            if (enemyShield > 0) {
+            if (companionList.enemyShield > 0) {
                 shieldBar.visibility = View.VISIBLE
                 lvlShieldShowTV.visibility = View.VISIBLE
                 lvlMaxShieldShowTV.visibility = View.VISIBLE
@@ -174,7 +171,7 @@ class StatsEnemyFragment (var updateViewModel: UpdateViewModel) : Fragment() {
                 lvlMaxShieldShowTV.visibility = View.INVISIBLE
             }
 
-            if (enemyManaShield > 0) {
+            if (companionList.enemyManaShield > 0) {
                 manaShieldBar.visibility = View.VISIBLE
                 lvlmanaShieldShowTV.visibility = View.VISIBLE
                 lvlMaxManaShieldShowTV.visibility = View.VISIBLE

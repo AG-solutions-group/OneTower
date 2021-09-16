@@ -1,12 +1,7 @@
 package com.agsolutions.td
 
 import android.graphics.*
-import com.agsolutions.td.Companion.Companion.day
-import com.agsolutions.td.Companion.Companion.enemyClick
-import com.agsolutions.td.Companion.Companion.gameSpeedAdjuster
-import com.agsolutions.td.Companion.Companion.mapMode
-import com.agsolutions.td.Companion.Companion.mapPick
-import com.agsolutions.td.Companion.Companion.towerList
+import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.Main.MainActivity.Companion.startScreenBool
 import java.io.Serializable
 
@@ -23,6 +18,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     var squaredDistance = 0f
     var selected = false
     var eliteMob = false
+    var elementalMob = false
     var name = "normal"
     var pickEnemyID = 0
     var extraSpeed = 0f
@@ -121,7 +117,6 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     // talent moon
     var talentMoonlightAlreadyAffected = 0f
     var talentMoonlightDraw = 0
-    var talentMoonAlreadyHit = 0
 
     // talent wizard
     var wizardBombActive = 0
@@ -188,12 +183,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
 
     init {
 
-        if (mapPick == 0 || mapPick == 1) {
-            circle = TowerRadius(950.0f, 1199.0f, 30.0f)
-        } else if (mapPick == 2) {
-            circle = TowerRadius(800.0f, 1249.0f, 30.0f)
-        } else {
-        }
+        circle = TowerRadius(950.0f, 1199.0f, 30.0f)
 
         paint = Painter()
         paintSelected = Painter()
@@ -234,32 +224,32 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
         paintShader ()
         when (name) {
             "boss" -> {
-                if (selected && enemyClick) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y).toFloat(), (((circle!!.r - 8) * 1.5) + 4).toFloat(), paintSelected)
+                if (selected && companionList.enemyClick) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y).toFloat(), (((circle!!.r - 8) * 1.5) + 4).toFloat(), paintSelected)
                 canvas.drawCircle(circle!!.x.toFloat(), circle!!.y.toFloat(), (((circle!!.r - 8) * 1.5) + 2).toFloat(), paintBlack)
                 canvas.drawCircle(circle!!.x.toFloat(), circle!!.y.toFloat(), ((circle!!.r - 8) * 1.5).toFloat(), paint)
             }
             "splitter" -> {
-                if (selected && enemyClick) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y).toFloat(), (((circle!!.r - 8) * 0.5) + 4).toFloat(), paintSelected)
+                if (selected && companionList.enemyClick) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y).toFloat(), (((circle!!.r - 8) * 0.5) + 4).toFloat(), paintSelected)
                 canvas.drawCircle(circle!!.x.toFloat(), circle!!.y.toFloat(), (((circle!!.r - 8) * 0.5) + 2).toFloat(), paintBlack)
                 canvas.drawCircle(circle!!.x.toFloat(), circle!!.y.toFloat(), ((circle!!.r - 8) * 0.5).toFloat(), paint)
             }
             "healer" -> {
-                if (selected && enemyClick) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y).toFloat(), (((circle!!.r - 8) * 0.9) + 4).toFloat(), paintSelected)
+                if (selected && companionList.enemyClick) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y).toFloat(), (((circle!!.r - 8) * 0.9) + 4).toFloat(), paintSelected)
                 canvas.drawCircle(circle!!.x.toFloat(), circle!!.y.toFloat(), (((circle!!.r - 8) * 0.9) + 2).toFloat(), paintBlack)
                 canvas.drawCircle(circle!!.x.toFloat(), circle!!.y.toFloat(), ((circle!!.r - 8) * 0.9).toFloat(), paint)
             }
             "tank" -> {
-                if (selected && enemyClick) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y).toFloat(), (((circle!!.r - 8) * 1.1) + 4).toFloat(), paintSelected)
+                if (selected && companionList.enemyClick) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y).toFloat(), (((circle!!.r - 8) * 1.1) + 4).toFloat(), paintSelected)
                 canvas.drawCircle(circle!!.x.toFloat(), circle!!.y.toFloat(), (((circle!!.r - 8) * 1.1) + 2).toFloat(), paintBlack)
                 canvas.drawCircle(circle!!.x.toFloat(), circle!!.y.toFloat(), ((circle!!.r - 8) * 1.1).toFloat(), paint)
             }
             "challenge" -> {
-                if (selected && enemyClick) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y).toFloat(), (((circle!!.r - 8) * 2.0) + 4).toFloat(), paintSelected)
+                if (selected && companionList.enemyClick) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y).toFloat(), (((circle!!.r - 8) * 2.0) + 4).toFloat(), paintSelected)
                 canvas.drawCircle(circle!!.x.toFloat(), circle!!.y.toFloat(), (((circle!!.r - 8) * 2.0) + 2).toFloat(), paintBlack)
                 canvas.drawCircle(circle!!.x.toFloat(), circle!!.y.toFloat(), ((circle!!.r - 8) * 2.0).toFloat(), paint)
             }
             else -> {
-                    if (selected && enemyClick) drawPolygonSelected(canvas, circle!!.x, circle!!.y, circle!!.r, paintSelected)
+                    if (selected && companionList.enemyClick) drawPolygonSelected(canvas, circle!!.x, circle!!.y, circle!!.r, paintSelected)
                     drawPolygonOutline(canvas, circle!!.x, circle!!.y, circle!!.r, paintBlack)
                     drawPolygonBase(canvas, circle!!.x, circle!!.y, circle!!.r, paint)
             }
@@ -293,6 +283,23 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
             path.moveTo(x + (r -3).toFloat(), y + 0f)
             var i = 1
             while (i < 6) {
+                path.lineTo(x + (r -3) * Math.cos((a * i).toDouble())
+                    .toFloat(), y +(r - 3) * Math.sin((a * i).toDouble())
+                    .toFloat())
+                i++
+            }
+            path.close()
+            mCanvas.drawPath(path, paint)
+            mCanvas.restore()
+
+        } else if (elementalMob) {
+            val a: Float = (Math.PI.toFloat() * 2f) / 12f
+            mCanvas.save()
+
+            val path = Path()
+            path.moveTo(x + (r -3).toFloat(), y + 0f)
+            var i = 1
+            while (i < 12) {
                 path.lineTo(x + (r -3) * Math.cos((a * i).toDouble())
                     .toFloat(), y +(r - 3) * Math.sin((a * i).toDouble())
                     .toFloat())
@@ -370,6 +377,22 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
             path.close()
             mCanvas.drawPath(path, paint)
             mCanvas.restore()
+        } else if (elementalMob) {
+            val a: Float = Math.PI.toFloat() * 2 / 12
+            mCanvas.save()
+            mCanvas.translate(x, y)
+            val path = Path()
+            path.moveTo((r -2).toFloat(), 0f)
+            var i = 1
+            while (i < 12) {
+                path.lineTo((r -2) * Math.cos((a * i).toDouble())
+                    .toFloat(), (r -2) * Math.sin((a * i).toDouble())
+                    .toFloat())
+                i++
+            }
+            path.close()
+            mCanvas.drawPath(path, paint)
+            mCanvas.restore()
         } else {
             when (enemyPathBool) {
                 1 -> {
@@ -438,6 +461,22 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
             path.close()
             mCanvas.drawPath(path, paint)
             mCanvas.restore()
+        } else if (elementalMob) {
+            val a: Float = Math.PI.toFloat() * 2 / 12
+            mCanvas.save()
+            mCanvas.translate(x, y)
+            val path = Path()
+            path.moveTo((r + 0).toFloat(), 0f)
+            var i = 1
+            while (i < 12) {
+                path.lineTo((r + 0) * Math.cos((a * i).toDouble())
+                    .toFloat(), (r + 0) * Math.sin((a * i).toDouble())
+                    .toFloat())
+                i++
+            }
+            path.close()
+            mCanvas.drawPath(path, paint)
+            mCanvas.restore()
         } else {
             when (enemyPathBool) {
                 1 -> {
@@ -493,7 +532,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     fun paintShader () {
         if (passed != 5.toByte()) {
             var gradient: LinearGradient? = null
-            if (day) {
+            if (companionList.day) {
                 when (passed) {
                     0.toByte(), 2.toByte() ->
                         gradient =
@@ -525,7 +564,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
                 }
             }
             var gradientMatrix = Matrix()
-            if (eliteMob) gradientMatrix!!.preRotate((0f), circle!!.x, circle!!.y)
+            if (eliteMob || elementalMob) gradientMatrix!!.preRotate((0f), circle!!.x, circle!!.y)
             else gradientMatrix!!.preRotate((360 - randomAngle), circle!!.x, circle!!.y)
             gradient!!.setLocalMatrix(gradientMatrix)
             paint.shader = gradient!!
@@ -566,7 +605,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
 
 
     fun drawButterfly(canvas: Canvas) {
-        paintButterfly.color = towerList[markOfTheButterflyTowerId].markofTheBitterflyColor
+        paintButterfly.color = companionList.towerList[markOfTheButterflyTowerId].markofTheBitterflyColor
         if (markOfTheButterflyCounter == 1) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y - 50).toFloat(), 9.toFloat(), paintButterfly)
         else if (markOfTheButterflyCounter == 2) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y - 50).toFloat(), 15.toFloat(), paintButterfly)
         else if (markOfTheButterflyCounter >= 3) canvas.drawCircle((circle!!.x).toFloat(), (circle!!.y - 50).toFloat(), 21.toFloat(), paintButterfly)
@@ -592,7 +631,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
 
     fun update() {
 
-        if (mapPick == 0 || mapPick == 1) {
+        if (companionList.mapPick == 0 || companionList.mapPick == 1) {
 
             if (startScreenBool){
 
@@ -604,7 +643,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
 
                 if (circle!!.x <= 400 && passed == 1.toByte() && flag == 0 && name == "shortcut") {
                     flag = 1
-                } else if (circle!!.x <= 400 && passed == 1.toByte() && flag == 0 && Companion.levelList.contains("shortcut")) {
+                } else if (circle!!.x <= 400 && passed == 1.toByte() && flag == 0 && GameActivity.companionList.levelList.contains("shortcut")) {
                     when ((0..3).random()) {
                         0 -> flag = 1
                         in 1..3 -> flag = 2
@@ -628,7 +667,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
                     flag = 0
                     passed = 4
                 }
-                if (mapMode == 2 && circle!!.y >= 1000 && passed == 4.toByte()) passed = 1
+                if (companionList.mapMode == 2 && circle!!.y >= 1000 && passed == 4.toByte()) passed = 1
                 if (circle!!.y >= 1200 && passed == 4.toByte()) {
                     passed = 5
                 }
@@ -636,15 +675,15 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
 
             when (passed) {
                 0.toByte() ->
-                    circle!!.y -= ((speed  ) * gameSpeedAdjuster)
+                    circle!!.y -= ((speed  ) * companionList.gameSpeedAdjuster)
                 1.toByte() ->
-                    circle!!.x -= ((speed  ) * gameSpeedAdjuster)
+                    circle!!.x -= ((speed  ) * companionList.gameSpeedAdjuster)
                 2.toByte() ->
-                    circle!!.y -= ((speed  ) * gameSpeedAdjuster)
+                    circle!!.y -= ((speed  ) * companionList.gameSpeedAdjuster)
                 3.toByte() ->
-                    circle!!.x += ((speed  ) * gameSpeedAdjuster)
+                    circle!!.x += ((speed  ) * companionList.gameSpeedAdjuster)
                 4.toByte() ->
-                    circle!!.y += ((speed  ) * gameSpeedAdjuster)
+                    circle!!.y += ((speed  ) * companionList.gameSpeedAdjuster)
                 5.toByte() -> {
                     circle!!.y ++
                     circle!!.x
@@ -663,20 +702,3 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
         }
     }
 }
-
-/*
-if (circle.y <= 500 && passed == "B" && flag == 1) {
-                when ((0..1).random()) {
-                    0 -> flag = 3
-                    1 -> flag = 4
-                }
-            } else if (circle.y <= 500 && passed == "B" && flag == 0) passed = "C"
-
-            if (flag == 3) passed = "B"
-            if (flag == 4) passed = "C"
-
-            if (circle.y <= 300 && passed == "B") {
-                flag = 0
-                passed = "C"
-            }
- */

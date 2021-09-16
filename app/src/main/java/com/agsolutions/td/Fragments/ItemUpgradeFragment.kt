@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.agsolutions.td.*
-import com.agsolutions.td.Companion.Companion.itemFragmentEnemyList
-import com.agsolutions.td.Companion.Companion.towerClick
-import com.agsolutions.td.Companion.Companion.upgradePoints
+import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.Utils.round
 import kotlinx.android.synthetic.main.fragment_item.*
 import kotlinx.android.synthetic.main.fragment_upgrade_item.*
@@ -26,7 +24,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener {
 
-    val itemFragmentAdapter = ItemFragmentAdapter(itemFragmentEnemyList, this)
+    val itemFragmentAdapter = ItemFragmentAdapter(GameActivity.companionList.itemFragmentEnemyList, this)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +53,7 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
                 if (position == 0) {
                     return 2
                 } else {
-                    if (itemFragmentEnemyList[position].stats.length > 12) return 2
+                    if (GameActivity.companionList.itemFragmentEnemyList[position].stats.length > 12) return 2
                     else return 1
                 }
             }
@@ -77,18 +75,18 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
 
     fun refresh (position: Int) {
 
-        if (!towerClick){
+        if (!GameActivity.companionList.towerClick){
 
         }else {
 
-            Companion.readLockTower.lock()
+            GameActivity.companionList.readLockTower.lock()
             try {
-                var towerListIterator = Companion.towerList.listIterator()
+                var towerListIterator = GameActivity.companionList.towerList.listIterator()
                 while (towerListIterator.hasNext()) {
                     var tower = towerListIterator.next()
                     if (tower.selected) {
 
-                        if (tower.itemListBag[position].upgrade < 1 || upgradePoints <= 0) {
+                        if (tower.itemListBag[position].upgrade < 1 || GameActivity.companionList.upgradePoints <= 0) {
                             upBTN.visibility = View.INVISIBLE
                         } else {
                             upBTN.visibility = View.VISIBLE
@@ -96,11 +94,11 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
 
                         upBTN.setOnClickListener() {
 
-                            itemFragmentEnemyList.removeAll(itemFragmentEnemyList)
+                            GameActivity.companionList.itemFragmentEnemyList.removeAll(GameActivity.companionList.itemFragmentEnemyList)
 
-                            if (tower.itemListBag[position].upgrade > 0 && upgradePoints > 0) {
+                            if (tower.itemListBag[position].upgrade > 0 && GameActivity.companionList.upgradePoints > 0) {
                                 tower.itemListBag[position].upgrade -= 1
-                                upgradePoints -= 1
+                                GameActivity.companionList.upgradePoints -= 1
 
                                 if (tower.itemListBag[position].dmg > 0) {
                                     when ((0..99).random()) {
@@ -362,58 +360,58 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
                                 }
                             }
 
-                            itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.nameicon, tower.itemListBag[position].name.toString()))
-                            if (tower.itemListBag[position].upgrade > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.upgradepointsicon, tower.itemListBag[position].upgrade.toString()))
+                            GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.nameicon, tower.itemListBag[position].name.toString()))
+                            if (tower.itemListBag[position].upgrade > 0) GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.upgradepointsicon, tower.itemListBag[position].upgrade.toString()))
                             if (tower.itemListBag[position].dmg > 0) {
                                 when (tower.itemListBag[position].dmg.toInt()) {
-                                    in 0..999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, tower.itemListBag[position].dmg.round(2)
+                                    in 0..999 -> GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, tower.itemListBag[position].dmg.round(2)
                                         .toString()))
-                                    in 1000..999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, (tower.itemListBag[position].dmg / 1000).round(2)
+                                    in 1000..999999 -> GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, (tower.itemListBag[position].dmg / 1000).round(2)
                                         .toString() + "k"))
-                                    in 1000000..999999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, (tower.itemListBag[position].dmg / 1000000).round(2)
+                                    in 1000000..999999999 -> GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordandwandicon, (tower.itemListBag[position].dmg / 1000000).round(2)
                                         .toString() + "M"))
                                 }
                             }
                             if (tower.itemListBag[position].atkDmg > 0) {
                                 when (tower.itemListBag[position].atkDmg.toInt()) {
-                                    in 0..999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, tower.itemListBag[position].atkDmg.round(2)
+                                    in 0..999 -> GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, tower.itemListBag[position].atkDmg.round(2)
                                         .toString()))
-                                    in 1000..999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, (tower.itemListBag[position].atkDmg / 1000).round(2)
+                                    in 1000..999999 -> GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, (tower.itemListBag[position].atkDmg / 1000).round(2)
                                         .toString() + "k"))
-                                    in 1000000..999999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, (tower.itemListBag[position].atkDmg / 1000000).round(2)
+                                    in 1000000..999999999 -> GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.swordicon, (tower.itemListBag[position].atkDmg / 1000000).round(2)
                                         .toString() + "M"))
                                 }
                             }
                             if (tower.itemListBag[position].mgcDmg > 0) {
                                 when (tower.itemListBag[position].mgcDmg.toInt()) {
-                                    in 0..999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, tower.itemListBag[position].mgcDmg.round(2)
+                                    in 0..999 -> GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, tower.itemListBag[position].mgcDmg.round(2)
                                         .toString()))
-                                    in 1000..999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, (tower.itemListBag[position].mgcDmg / 1000).round(2)
+                                    in 1000..999999 -> GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, (tower.itemListBag[position].mgcDmg / 1000).round(2)
                                         .toString() + "k"))
-                                    in 1000000..999999999 -> itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, (tower.itemListBag[position].mgcDmg / 1000000).round(2)
+                                    in 1000000..999999999 -> GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.wandicon, (tower.itemListBag[position].mgcDmg / 1000000).round(2)
                                         .toString() + "M"))
                                 }
                             }
-                            if (tower.itemListBag[position].crit > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.criticon, tower.itemListBag[position].crit.round(2)
+                            if (tower.itemListBag[position].crit > 0) GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.criticon, tower.itemListBag[position].crit.round(2)
                                 .toString()))
-                            if (tower.itemListBag[position].critDmg > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.critdmgicon, tower.itemListBag[position].critDmg.round(2)
+                            if (tower.itemListBag[position].critDmg > 0) GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.critdmgicon, tower.itemListBag[position].critDmg.round(2)
                                 .toString()))
-                            if (tower.itemListBag[position].speed > 0) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.bowicon, tower.itemListBag[position].speed.round(2)
+                            if (tower.itemListBag[position].speed > 0) GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.bowicon, tower.itemListBag[position].speed.round(2)
                                 .toString()))
                             if (tower.itemListBag[position].special.isNotBlank()) {
-                                itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].special.toString()))
-                                if (tower.itemListBag[position].specialFloat != 0f) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].specialFloat.round(2)
+                                GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].special.toString()))
+                                if (tower.itemListBag[position].specialFloat != 0f) GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].specialFloat.round(2)
                                     .toString()))
                             }
                             if (tower.itemListBag[position].special2.isNotBlank()) {
-                                itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].special2.toString()))
-                                if (tower.itemListBag[position].specialFloat2 != 0f) itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].specialFloat2.round(2)
+                                GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].special2.toString()))
+                                if (tower.itemListBag[position].specialFloat2 != 0f) GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].specialFloat2.round(2)
                                     .toString()))
                             }
 
                             itemFragmentAdapter.notifyDataSetChanged()
 
-                            if (tower.itemListBag[position].upgrade < 1 || upgradePoints <= 0) {
+                            if (tower.itemListBag[position].upgrade < 1 || GameActivity.companionList.upgradePoints <= 0) {
                                 upBTN.visibility = View.INVISIBLE
                             } else {
                                 upBTN.visibility = View.VISIBLE
@@ -422,7 +420,7 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
                     }
                 }
             } finally {
-                Companion.readLockTower.unlock()
+                GameActivity.companionList.readLockTower.unlock()
             }
         }
     }
@@ -433,51 +431,51 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
     }
 
     override fun onStatsClick(position: Int) {
-        if (itemFragmentEnemyList[position].name == R.drawable.nameicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Item Name"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.swordandwandicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Damage - bonus physical and spell damage"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.swordicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Physical Damage - bonus physical damage"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.wandicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Spell Damage - bonus spell damage"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.bowicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Attack Speed - frequency of tower attacks"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.specialicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Special Attributes"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.upgradepointsicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Upgrade Points - used to upgrade items"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.itemfindicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Item Find - chance to find items in percent"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.itemqualityicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Item Quality - rating to find better items"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.criticon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Critical Damage Chance - chance of hitting a critical attack"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.critdmgicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Critical Damage - damage multiplier of critical hits"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.multicriticon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Multi Crit - gives critical hits the chance to multiply critical damage"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.hiticon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Hit Chance - chance to hit enemies in percent"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.armorpenicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText = "Armor Penetration - rating to reduce enemies armor, making them more vulnerable to physical attacks"
-        }else if (com.agsolutions.td.Companion.itemFragmentEnemyList[position].name == R.drawable.magicpenicon) {
-            com.agsolutions.td.Companion.toastGlobal = true
-            com.agsolutions.td.Companion.toastText =
+        if (GameActivity.companionList.itemFragmentEnemyList[position].name == R.drawable.nameicon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Item Name"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.swordandwandicon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Damage - bonus physical and spell damage"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.swordicon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Physical Damage - bonus physical damage"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.wandicon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Spell Damage - bonus spell damage"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.bowicon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Attack Speed - frequency of tower attacks"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.specialicon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Special Attributes"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.upgradepointsicon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Upgrade Points - used to upgrade items"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.itemfindicon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Item Find - chance to find items in percent"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.itemqualityicon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Item Quality - rating to find better items"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.criticon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Critical Damage Chance - chance of hitting a critical attack"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.critdmgicon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Critical Damage - damage multiplier of critical hits"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.multicriticon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Multi Crit - gives critical hits the chance to multiply critical damage"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.hiticon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Hit Chance - chance to hit enemies in percent"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.armorpenicon) {
+            companionList.toastGlobal = true
+            companionList.toastText = "Armor Penetration - rating to reduce enemies armor, making them more vulnerable to physical attacks"
+        }else if (companionList.itemFragmentEnemyList[position].name == R.drawable.magicpenicon) {
+            companionList.toastGlobal = true
+            companionList.toastText =
                 "Magic Armor Penetration - rating to reduce enemies magic armor, making them more vulnerable to physical attacks"
         }
     }

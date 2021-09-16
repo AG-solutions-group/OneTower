@@ -90,17 +90,17 @@ class DisplayScale : AppCompatActivity() {
             talentShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
             itemChanceShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
 
-            scaleTextButton =  10f * screenDensityX
-            showTextButtonScaleTV.text = scaleTextButton.toString()
-            saveBTN.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextButton.toFloat())
+       //     scaleTextButton =  10f * screenDensityX
+       //     showTextButtonScaleTV.text = scaleTextButton.toString()
+       //     saveBTN.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextButton.toFloat())
 
             radioAdapter.notifyDataSetChanged()
         }else {
-            scaleBackground = sharedPref!!.getFloat("ScaleBackground", 10f) / screenDensityX.toFloat()
+            scaleBackground = sharedPref!!.getFloat("ScaleBackground", 10f).toFloat()
             scaleTextMain = sharedPref!!.getFloat("ScaleTextMain", 9f) / screenDensityX.toFloat()
             scaleTextNews = sharedPref!!.getFloat("ScaleTextNews", 8f) / screenDensityX.toFloat()
             scaleTextStats = sharedPref!!.getFloat("ScaleTextStats", 8f) / screenDensityX.toFloat()
-            scaleTextButton = sharedPref!!.getFloat("ScaleTextButton", 8f) / screenDensityX.toFloat()
+
 
             showTextMainScaleTV.text = scaleTextMain.toString()
             levelTVX.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextMain.toFloat())
@@ -141,24 +141,25 @@ class DisplayScale : AppCompatActivity() {
             talentShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
             itemChanceShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
 
-            showTextButtonScaleTV.text = scaleTextButton.toString()
-            saveBTN.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextButton.toFloat())
+            //     scaleTextButton = sharedPref!!.getFloat("ScaleTextButton", 8f) / screenDensityX.toFloat()
+        //    showTextButtonScaleTV.text = scaleTextButton.toString()
+        //    saveBTN.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextButton.toFloat())
 
             radioAdapter.notifyDataSetChanged()
         }
         showBackgroundScaleTV.text = scaleBackground.toString()
 
         plusButton.setOnClickListener() {
-            scaleBackground += (1 * screenDensityX)
+            scaleBackground += 1
             showBackgroundScaleTV.text = scaleBackground.toString()
         }
         minusButton.setOnClickListener() {
-                scaleBackground -= (1 * screenDensityX)
+                scaleBackground -= 1
             showBackgroundScaleTV.text = scaleBackground.toString()
         }
 
         plusButtonTextMain.setOnClickListener() {
-            scaleTextMain += 0.5f
+            scaleTextMain += 1f
             showTextMainScaleTV.text = scaleTextMain.toString()
             levelTVX.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextMain.toFloat())
             levelShowTVX.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextMain.toFloat())
@@ -168,7 +169,7 @@ class DisplayScale : AppCompatActivity() {
         }
 
         minusButtonTextMain.setOnClickListener() {
-            scaleTextMain -= 0.5f
+            scaleTextMain -= 1f
             showTextMainScaleTV.text = scaleTextMain.toString()
             levelTVX.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextMain.toFloat())
             levelShowTVX.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextMain.toFloat())
@@ -177,23 +178,22 @@ class DisplayScale : AppCompatActivity() {
         }
 
         plusButtonTextNews.setOnClickListener() {
-            scaleTextNews += 0.5f
+            scaleTextNews += 1f
             showTextNewsScaleTV.text = scaleTextNews.toString()
 
             radioAdapter.notifyDataSetChanged()
         }
         minusButtonTextNews.setOnClickListener() {
-            scaleTextNews -= 0.5f
+            scaleTextNews -= 1f
             showTextNewsScaleTV.text = scaleTextNews.toString()
 
             radioAdapter.notifyDataSetChanged()
         }
 
         plusButtonTextStats.setOnClickListener() {
-            scaleTextStats += 0.5f
+            scaleTextStats += 1f
             showTextStatsScaleTV.text = scaleTextStats.toString()
 
-            showTextStatsScaleTV.text = scaleTextStats.toString()
             xpTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
             useNumberTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
             interestTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
@@ -227,23 +227,43 @@ class DisplayScale : AppCompatActivity() {
             radioAdapter.notifyDataSetChanged()
         }
         minusButtonTextStats.setOnClickListener() {
-            scaleTextStats -= 0.5f
+            scaleTextStats -= 1f
             showTextStatsScaleTV.text = scaleTextStats.toString()
 
             xpTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
+            useNumberTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
+            interestTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
+            upgradeNumberTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
+            unusedItemsTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
+            bonusItemQualityTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
+            bagSizeTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
             talentTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
             itemChanceTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
             xpTV.layoutParams.width = (scaleTextStats * scalePicPlace).toInt()
+            useNumberTV.layoutParams.width = (scaleTextStats * scalePicPlace).toInt()
+            interestTV.layoutParams.width = (scaleTextStats * scalePicPlace).toInt()
+            upgradeNumberTV.layoutParams.width = (scaleTextStats * scalePicPlace).toInt()
+            unusedItemsTV.layoutParams.width = (scaleTextStats * scalePicPlace).toInt()
+            bonusItemQualityTV.layoutParams.width = (scaleTextStats * scalePicPlace).toInt()
+            bagSizeTV.layoutParams.width = (scaleTextStats * scalePicPlace).toInt()
             talentTV.layoutParams.width = (scaleTextStats * scalePicPlace).toInt()
             itemChanceTV.layoutParams.width = (scaleTextStats * scalePicPlace).toInt()
 
+
             xpShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
+            useNumberShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
+            interestShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
+            upgradeNumberShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
+            unusedItemsShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
+            bonusItemQualityShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
+            bagUsedShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
             talentShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
             itemChanceShowTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextStats.toFloat())
 
             radioAdapter.notifyDataSetChanged()
         }
 
+        /*
         plusButtonTextButton.setOnClickListener() {
             scaleTextButton += 0.5f
             showTextButtonScaleTV.text = scaleTextButton.toString()
@@ -260,6 +280,8 @@ class DisplayScale : AppCompatActivity() {
 
             radioAdapter.notifyDataSetChanged()
         }
+
+         */
 
 
 
@@ -290,3 +312,55 @@ class DisplayScale : AppCompatActivity() {
         finish()
     }
 }
+
+/*
+ <TextView
+            android:id="@+id/textButtonTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="Text Button"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextStats"
+            app:layout_constraintEnd_toStartOf="@+id/minusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/plusButtonTextButton" />
+
+        <ImageButton
+            android:id="@+id/plusButtonTextButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextStats"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:srcCompat="@android:drawable/ic_media_next" />
+
+        <TextView
+            android:id="@+id/showTextButtonScaleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="#000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.3"
+            android:shadowRadius="1.6"
+            android:text="Number"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/plusButtonTextStats"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintStart_toEndOf="@+id/minusButton"
+            app:layout_constraintTop_toTopOf="@+id/plusButtonTextButton" />
+
+        <ImageButton
+            android:id="@+id/minusButtonTextButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/minusButtonTextStats"
+            app:layout_constraintEnd_toStartOf="@+id/plusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@android:drawable/ic_media_previous" />
+
+ */

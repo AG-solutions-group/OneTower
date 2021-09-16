@@ -71,6 +71,10 @@
             android:theme="@style/AppTheme.StartItems"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".Shop"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".MysteryMessage"
             android:theme="@style/AppTheme.StartItems"
             android:screenOrientation="portrait" />

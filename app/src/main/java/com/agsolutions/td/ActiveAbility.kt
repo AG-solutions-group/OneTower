@@ -1,6 +1,9 @@
 package com.agsolutions.td
 
-class ActiveAbility (val id: Int, val name: String, val image: Int, var cd: Float, var cdRemain: String) {
+import java.io.Serializable
+
+
+class ActiveAbility (val id: Int, val name: String, val image: Int, var cd: Float, var cdRemain: String) : Serializable {
 
     companion object {
 

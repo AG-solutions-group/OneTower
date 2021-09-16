@@ -18,7 +18,7 @@ class TutorialEnd : AppCompatActivity() {
         setContentView(R.layout.tutorial_end)
 
 
-        window.setLayout((1000.0f * ((Companion.scaleScreen) /10)).toInt(), (1400.0f * ((Companion.scaleScreen) /10)).toInt())
+        window.setLayout((1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1400.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
        okayBTN.setOnClickListener() {
@@ -43,7 +43,7 @@ class TutorialEnemies : AppCompatActivity() {
         setContentView(R.layout.tutorial_enemies)
 
 
-        window.setLayout((1000.0f * ((Companion.scaleScreen) /10)).toInt(), (1400.0f * ((Companion.scaleScreen) /10)).toInt())
+        window.setLayout((1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1400.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
         okayBTN.setOnClickListener() {
@@ -68,7 +68,7 @@ class TutorialItems : AppCompatActivity() {
         setContentView(R.layout.tutorial_items)
 
 
-        window.setLayout((1000.0f * ((Companion.scaleScreen) /10)).toInt(), (1400.0f * ((Companion.scaleScreen) /10)).toInt())
+        window.setLayout((1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1400.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setGravity(Gravity.TOP)
         window.setElevation(10F)
 
@@ -94,11 +94,11 @@ class TutorialStart : AppCompatActivity() {
         setContentView(R.layout.tutorial_start)
 
 
-        window.setLayout((600.0f * ((Companion.scaleScreen) /10)).toInt(), (900.0f * ((Companion.scaleScreen) /10)).toInt())
+        window.setLayout((600.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (900.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
         checkBoxHints.setOnCheckedChangeListener { _, isChecked ->
-            Companion.hintsBool = !isChecked
+            GameActivity.companionList.hintsBool = !isChecked
         }
 
         okayBTN.setOnClickListener() {
@@ -124,11 +124,11 @@ class TutorialTalents : AppCompatActivity() {
         setContentView(R.layout.tutorial_talents)
 
 
-        window.setLayout((600.0f * ((Companion.scaleScreen) /10)).toInt(), (900.0f * ((Companion.scaleScreen) /10)).toInt())
+        window.setLayout((600.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (900.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
         checkBoxHints.setOnCheckedChangeListener { _, isChecked ->
-            Companion.hintsBool = !isChecked
+            GameActivity.companionList.hintsBool = !isChecked
         }
 
         okayBTN.setOnClickListener() {
@@ -153,7 +153,7 @@ class TutorialTouchScreen : AppCompatActivity() {
         setContentView(R.layout.tutorial_touch_screen)
 
 
-        window.setLayout((1000.0f * ((Companion.scaleScreen) /10)).toInt(), (1400.0f * ((Companion.scaleScreen) /10)).toInt())
+        window.setLayout((1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1400.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setGravity(Gravity.TOP)
         window.setElevation(10F)
 

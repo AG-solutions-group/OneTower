@@ -6,11 +6,6 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.agsolutions.td.Companion.Companion.dragStatusCantBuild
-import com.agsolutions.td.Companion.Companion.focusMainWindow
-import com.agsolutions.td.Companion.Companion.hintsBool
-import com.agsolutions.td.Companion.Companion.scaleScreen
-import com.agsolutions.td.Companion.Companion.showHelpTalent
 import kotlinx.coroutines.InternalCoroutinesApi
 
 
@@ -48,7 +43,7 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
         paintText.color = Color.BLUE
         paintText.style = Paint.Style.FILL_AND_STROKE
         paintText.isAntiAlias = true
-        paintText.textSize = 48f * (com.agsolutions.td.Companion.scaleScreen / 10)
+        paintText.textSize = 48f * (GameActivity.companionList.scaleScreen / 10)
         paintText.setShadowLayer(10f, 0f, 0f, Color.WHITE)
 
         swipeDown = BitmapFactory.decodeResource(context.resources, R.drawable.fingerswipedowntouse)
@@ -89,15 +84,15 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
 
         super.draw(canvas)
 
-        paintText.textSize = 48f * (com.agsolutions.td.Companion.scaleScreen / 10)
+        paintText.textSize = 48f * (GameActivity.companionList.scaleScreen / 10)
 
-        if (com.agsolutions.td.Companion.focusTalentWindow) {
+        if (GameActivity.companionList.focusTalentWindow) {
 
-        } else if (focusMainWindow) {
+        } else if (GameActivity.companionList.focusMainWindow) {
 
-            if (com.agsolutions.td.Companion.globalItemListBag.isEmpty() && com.agsolutions.td.Companion.itemList.isNotEmpty() && com.agsolutions.td.Companion.hintsBool) {
+            if (GameActivity.companionList.towerClick && GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.isEmpty() && GameActivity.companionList.itemList.isNotEmpty() && GameActivity.companionList.hintsBool) {
                 var rect =
-                    Rect(xRecycler.toInt(), yRecycler.toInt(), (xRecycler + (300 * (scaleScreen / 10))).toInt(), (yRecycler + (150 * (scaleScreen / 10))).toInt())
+                    Rect(xRecycler.toInt(), yRecycler.toInt(), (xRecycler + (300 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yRecycler + (150 * (GameActivity.companionList.scaleScreen / 10))).toInt())
                 canvas.drawBitmap(swipeDown!!, null, rect, null)
             }
             // TODO
@@ -109,223 +104,223 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
             }
 
              */
-            if (com.agsolutions.td.Companion.globalItemListBag.isNotEmpty() && com.agsolutions.td.Companion.hintsBool && com.agsolutions.td.Companion.tutorialFirstUseItemBool) {
+            if (GameActivity.companionList.towerClick && GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.isNotEmpty() && GameActivity.companionList.hintsBool && GameActivity.companionList.tutorialFirstUseItemBool) {
                 var rect =
-                    Rect((xRecyclerBag + (20 * (scaleScreen / 10))).toInt(), (yRecyclerBag - (100 * (scaleScreen / 10))).toInt(), (xRecyclerBag + (320 * (scaleScreen / 10))).toInt(), (yRecyclerBag + (50 * (scaleScreen / 10))).toInt())
+                    Rect((xRecyclerBag + (20 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yRecyclerBag - (100 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (xRecyclerBag + (320 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yRecyclerBag + (50 * (GameActivity.companionList.scaleScreen / 10))).toInt())
                 canvas.drawBitmap(swipeUp!!, null, rect, null)
             }
 
-            if (!com.agsolutions.td.Companion.autoSpawn && com.agsolutions.td.Companion.autoSpawnCount > 180 && com.agsolutions.td.Companion.hintsBool && com.agsolutions.td.Companion.enemyList.isEmpty()) {
-                com.agsolutions.td.Companion.touchCountCounter++
+            if (!GameActivity.companionList.autoSpawn && GameActivity.companionList.autoSpawnCount > 180 && GameActivity.companionList.hintsBool && GameActivity.companionList.enemyList.isEmpty()) {
+                GameActivity.companionList.touchCountCounter++
                 var spawnRect =
-                    Rect(((950 - 225) * (scaleScreen / 10)).toInt(), ((1200 - 40) * (scaleScreen / 10)).toInt(), ((950 + 75) * (scaleScreen / 10)).toInt(), ((1200 + 110) * (scaleScreen / 10)).toInt())
-                if (com.agsolutions.td.Companion.touchCountCounter > 160) com.agsolutions.td.Companion.touchCountCounter =
+                    Rect(((950 - 225) * (GameActivity.companionList.scaleScreen / 10)).toInt(), ((1200 - 40) * (GameActivity.companionList.scaleScreen / 10)).toInt(), ((950 + 75) * (GameActivity.companionList.scaleScreen / 10)).toInt(), ((1200 + 110) * (GameActivity.companionList.scaleScreen / 10)).toInt())
+                if (GameActivity.companionList.touchCountCounter > 160) GameActivity.companionList.touchCountCounter =
                     -10
-                else if (com.agsolutions.td.Companion.touchCountCounter > 102) {
+                else if (GameActivity.companionList.touchCountCounter > 102) {
                     canvas.drawBitmap(fingerClickToToggle!!, null, spawnRect, null)
-                } else if (com.agsolutions.td.Companion.touchCountCounter > 100) {
+                } else if (GameActivity.companionList.touchCountCounter > 100) {
                     canvas.drawBitmap(fingerClickToToggle3!!, null, spawnRect, null)
-                } else if (com.agsolutions.td.Companion.touchCountCounter > 85) {
+                } else if (GameActivity.companionList.touchCountCounter > 85) {
                     canvas.drawBitmap(fingerClickToToggle2!!, null, spawnRect, null)
-                } else if (com.agsolutions.td.Companion.touchCountCounter > 75) {
-                } else if (com.agsolutions.td.Companion.touchCountCounter > 0) {
+                } else if (GameActivity.companionList.touchCountCounter > 75) {
+                } else if (GameActivity.companionList.touchCountCounter > 0) {
                     canvas.drawBitmap(fingerClickToSpawn!!, null, spawnRect, null)
                 }
             }
 
-            if (com.agsolutions.td.Companion.level == 0 && com.agsolutions.td.Companion.levelCount >= com.agsolutions.td.Companion.levelCountPlace - 1) {
+            if (GameActivity.companionList.level == 0 && GameActivity.companionList.levelCount >= GameActivity.companionList.levelCountPlace - 1) {
 
-            } else if (com.agsolutions.td.Companion.level == 0 && com.agsolutions.td.Companion.levelCount >= com.agsolutions.td.Companion.levelCountPlace - 60) {
+            } else if (GameActivity.companionList.level == 0 && GameActivity.companionList.levelCount >= GameActivity.companionList.levelCountPlace - 60) {
                 var rect =
-                    Rect((xLevelCount - (150 * (scaleScreen / 10))).toInt(), (yLevelCount - (400 * (scaleScreen / 10))).toInt(), (xLevelCount + (150 * (scaleScreen / 10))).toInt(), (yLevelCount - (100 * (scaleScreen / 10))).toInt())
+                    Rect((xLevelCount - (150 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (400 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (xLevelCount + (150 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (100 * (GameActivity.companionList.scaleScreen / 10))).toInt())
                 canvas.drawBitmap(one!!, null, rect, null)
                 paintText.color = Color.parseColor("#FFD700")
                 var xLevelCountA = xLevelCount - (paintText.measureText("Global") / 2)
                 var yLevelCountA =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Global ", xLevelCountA, yLevelCountA, paintText)
                 var xLevelCountB =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.highscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.highscore.toString()) / 2)
                 var yLevelCountB =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
                 paintText.color = Color.parseColor("#C0C0C0")
                 var xLevelCountC = xLevelCount - (paintText.measureText("Personal ") / 2)
                 var yLevelCountC =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Personal", xLevelCountC, yLevelCountC, paintText)
                 var xLevelCountD =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.personalHighscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.personalHighscore.toString()) / 2)
                 var yLevelCountD =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
-            } else if (com.agsolutions.td.Companion.level == 0 && com.agsolutions.td.Companion.levelCount >= com.agsolutions.td.Companion.levelCountPlace - 120) {
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
+            } else if (GameActivity.companionList.level == 0 && GameActivity.companionList.levelCount >= GameActivity.companionList.levelCountPlace - 120) {
                 var rect =
-                    Rect((xLevelCount - (150 * (scaleScreen / 10))).toInt(), (yLevelCount - (400 * (scaleScreen / 10))).toInt(), (xLevelCount + (150 * (scaleScreen / 10))).toInt(), (yLevelCount - (100 * (scaleScreen / 10))).toInt())
+                    Rect((xLevelCount - (150 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (400 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (xLevelCount + (150 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (100 * (GameActivity.companionList.scaleScreen / 10))).toInt())
                 canvas.drawBitmap(two!!, null, rect, null)
                 paintText.color = Color.parseColor("#FFD700")
                 var xLevelCountA = xLevelCount - (paintText.measureText("Global") / 2)
                 var yLevelCountA =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Global ", xLevelCountA, yLevelCountA, paintText)
                 var xLevelCountB =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.highscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.highscore.toString()) / 2)
                 var yLevelCountB =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
                 paintText.color = Color.parseColor("#C0C0C0")
                 var xLevelCountC = xLevelCount - (paintText.measureText("Personal ") / 2)
                 var yLevelCountC =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Personal", xLevelCountC, yLevelCountC, paintText)
                 var xLevelCountD =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.personalHighscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.personalHighscore.toString()) / 2)
                 var yLevelCountD =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
-            } else if (com.agsolutions.td.Companion.level == 0 && com.agsolutions.td.Companion.levelCount >= com.agsolutions.td.Companion.levelCountPlace - 180) {
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
+            } else if (GameActivity.companionList.level == 0 && GameActivity.companionList.levelCount >= GameActivity.companionList.levelCountPlace - 180) {
                 var rect =
-                    Rect((xLevelCount - (150 * (scaleScreen / 10))).toInt(), (yLevelCount - (400 * (scaleScreen / 10))).toInt(), (xLevelCount + (150 * (scaleScreen / 10))).toInt(), (yLevelCount - (100 * (scaleScreen / 10))).toInt())
+                    Rect((xLevelCount - (150 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (400 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (xLevelCount + (150 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (100 * (GameActivity.companionList.scaleScreen / 10))).toInt())
                 canvas.drawBitmap(three!!, null, rect, null)
                 paintText.color = Color.parseColor("#FFD700")
                 var xLevelCountA = xLevelCount - (paintText.measureText("Global") / 2)
                 var yLevelCountA =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Global ", xLevelCountA, yLevelCountA, paintText)
                 var xLevelCountB =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.highscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.highscore.toString()) / 2)
                 var yLevelCountB =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
                 paintText.color = Color.parseColor("#C0C0C0")
                 var xLevelCountC = xLevelCount - (paintText.measureText("Personal ") / 2)
                 var yLevelCountC =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Personal", xLevelCountC, yLevelCountC, paintText)
                 var xLevelCountD =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.personalHighscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.personalHighscore.toString()) / 2)
                 var yLevelCountD =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
-            } else if (com.agsolutions.td.Companion.level == 0 && com.agsolutions.td.Companion.levelCount >= com.agsolutions.td.Companion.levelCountPlace - 300) {
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
+            } else if (GameActivity.companionList.level == 0 && GameActivity.companionList.levelCount >= GameActivity.companionList.levelCountPlace - 300) {
                 paintText.color = Color.parseColor("#FFD700")
                 var xLevelCountA = xLevelCount - (paintText.measureText("Global") / 2)
                 var yLevelCountA =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Global ", xLevelCountA, yLevelCountA, paintText)
                 var xLevelCountB =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.highscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.highscore.toString()) / 2)
                 var yLevelCountB =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
                 paintText.color = Color.parseColor("#C0C0C0")
                 var xLevelCountC = xLevelCount - (paintText.measureText("Personal ") / 2)
                 var yLevelCountC =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Personal", xLevelCountC, yLevelCountC, paintText)
                 var xLevelCountD =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.personalHighscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.personalHighscore.toString()) / 2)
                 var yLevelCountD =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
-            } else if (com.agsolutions.td.Companion.level == 0 && com.agsolutions.td.Companion.levelCount >= com.agsolutions.td.Companion.levelCountPlace - 340) {
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
+            } else if (GameActivity.companionList.level == 0 && GameActivity.companionList.levelCount >= GameActivity.companionList.levelCountPlace - 340) {
                 var rect1 =
-                    Rect((xLevelCount - (300 * (scaleScreen / 10))).toInt(), (yLevelCount - (600 * (scaleScreen / 10))).toInt(), (xLevelCount + (300 * (scaleScreen / 10))).toInt(), (yLevelCount - (300 * (scaleScreen / 10))).toInt())
+                    Rect((xLevelCount - (300 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (600 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (xLevelCount + (300 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (300 * (GameActivity.companionList.scaleScreen / 10))).toInt())
                 canvas.drawBitmap(beat!!, null, rect1, null)
                 var rect2 =
-                    Rect((xLevelCount - (300 * (scaleScreen / 10))).toInt(), (yLevelCount - (400 * (scaleScreen / 10))).toInt(), (xLevelCount + (300 * (scaleScreen / 10))).toInt(), (yLevelCount - (100 * (scaleScreen / 10))).toInt())
+                    Rect((xLevelCount - (300 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (400 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (xLevelCount + (300 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (100 * (GameActivity.companionList.scaleScreen / 10))).toInt())
                 canvas.drawBitmap(the!!, null, rect2, null)
                 var rect3 =
-                    Rect((xLevelCount - (450 * (scaleScreen / 10))).toInt(), (yLevelCount - (200 * (scaleScreen / 10))).toInt(), (xLevelCount + (450 * (scaleScreen / 10))).toInt(), (yLevelCount + (100 * (scaleScreen / 10))).toInt())
+                    Rect((xLevelCount - (450 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (200 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (xLevelCount + (450 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount + (100 * (GameActivity.companionList.scaleScreen / 10))).toInt())
                 canvas.drawBitmap(highscore!!, null, rect3, null)
                 paintText.color = Color.parseColor("#FFD700")
                 var xLevelCountA = xLevelCount - (paintText.measureText("Global") / 2)
                 var yLevelCountA =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Global ", xLevelCountA, yLevelCountA, paintText)
                 var xLevelCountB =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.highscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.highscore.toString()) / 2)
                 var yLevelCountB =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
                 paintText.color = Color.parseColor("#C0C0C0")
                 var xLevelCountC = xLevelCount - (paintText.measureText("Personal ") / 2)
                 var yLevelCountC =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Personal", xLevelCountC, yLevelCountC, paintText)
                 var xLevelCountD =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.personalHighscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.personalHighscore.toString()) / 2)
                 var yLevelCountD =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
-            } else if (com.agsolutions.td.Companion.level == 0 && com.agsolutions.td.Companion.levelCount >= com.agsolutions.td.Companion.levelCountPlace - 380) {
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
+            } else if (GameActivity.companionList.level == 0 && GameActivity.companionList.levelCount >= GameActivity.companionList.levelCountPlace - 380) {
                 var rect1 =
-                    Rect((xLevelCount - (300 * (scaleScreen / 10))).toInt(), (yLevelCount - (600 * (scaleScreen / 10))).toInt(), (xLevelCount + (300 * (scaleScreen / 10))).toInt(), (yLevelCount - (300 * (scaleScreen / 10))).toInt())
+                    Rect((xLevelCount - (300 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (600 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (xLevelCount + (300 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (300 * (GameActivity.companionList.scaleScreen / 10))).toInt())
                 canvas.drawBitmap(beat!!, null, rect1, null)
                 var rect2 =
-                    Rect((xLevelCount - (300 * (scaleScreen / 10))).toInt(), (yLevelCount - (400 * (scaleScreen / 10))).toInt(), (xLevelCount + (300 * (scaleScreen / 10))).toInt(), (yLevelCount - (100 * (scaleScreen / 10))).toInt())
+                    Rect((xLevelCount - (300 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (400 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (xLevelCount + (300 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (100 * (GameActivity.companionList.scaleScreen / 10))).toInt())
                 canvas.drawBitmap(the!!, null, rect2, null)
                 paintText.color = Color.parseColor("#FFD700")
                 var xLevelCountA = xLevelCount - (paintText.measureText("Global") / 2)
                 var yLevelCountA =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Global ", xLevelCountA, yLevelCountA, paintText)
                 var xLevelCountB =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.highscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.highscore.toString()) / 2)
                 var yLevelCountB =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
                 paintText.color = Color.parseColor("#C0C0C0")
                 var xLevelCountC = xLevelCount - (paintText.measureText("Personal ") / 2)
                 var yLevelCountC =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Personal", xLevelCountC, yLevelCountC, paintText)
                 var xLevelCountD =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.personalHighscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.personalHighscore.toString()) / 2)
                 var yLevelCountD =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
-            } else if (com.agsolutions.td.Companion.level == 0 && com.agsolutions.td.Companion.levelCount >= com.agsolutions.td.Companion.levelCountPlace - 420) {
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
+            } else if (GameActivity.companionList.level == 0 && GameActivity.companionList.levelCount >= GameActivity.companionList.levelCountPlace - 420) {
                 var rect =
-                    Rect((xLevelCount - (300 * (scaleScreen / 10))).toInt(), (yLevelCount - (600 * (scaleScreen / 10))).toInt(), (xLevelCount + (300 * (com.agsolutions.td.Companion.scaleScreen / 10))).toInt(), (yLevelCount - (300 * (com.agsolutions.td.Companion.scaleScreen / 10))).toInt())
+                    Rect((xLevelCount - (300 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (600 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (xLevelCount + (300 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (yLevelCount - (300 * (GameActivity.companionList.scaleScreen / 10))).toInt())
                 canvas.drawBitmap(beat!!, null, rect, null)
                 paintText.color = Color.parseColor("#FFD700")
                 var xLevelCountA = xLevelCount - (paintText.measureText("Global") / 2)
                 var yLevelCountA =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (100 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Global ", xLevelCountA, yLevelCountA, paintText)
                 var xLevelCountB =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.highscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.highscore.toString()) / 2)
                 var yLevelCountB =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (175 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.highscore.toString(), xLevelCountB, yLevelCountB, paintText)
                 paintText.color = Color.parseColor("#C0C0C0")
                 var xLevelCountC = xLevelCount - (paintText.measureText("Personal ") / 2)
                 var yLevelCountC =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (scaleScreen / 10))
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (250 * (GameActivity.companionList.scaleScreen / 10))
                 canvas.drawText("Personal", xLevelCountC, yLevelCountC, paintText)
                 var xLevelCountD =
-                    xLevelCount - (paintText.measureText(com.agsolutions.td.Companion.personalHighscore.toString()) / 2)
+                    xLevelCount - (paintText.measureText(GameActivity.companionList.personalHighscore.toString()) / 2)
                 var yLevelCountD =
-                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (scaleScreen / 10))
-                canvas.drawText(com.agsolutions.td.Companion.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
+                    (yLevelCount - (paintText.descent() + paintText.ascent()) / 2) + (325 * (GameActivity.companionList.scaleScreen / 10))
+                canvas.drawText(GameActivity.companionList.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
             }
-            if (com.agsolutions.td.Companion.dragStatusDrag) {
+            if (GameActivity.companionList.dragStatusDrag) {
                 var xLvl = (Resources.getSystem().getDisplayMetrics().widthPixels / 2).toFloat()
                 var yLvl = (Resources.getSystem().getDisplayMetrics().heightPixels / 2).toFloat()
-                    if (dragStatusCantBuild){
-                    paintText.textSize = 72f * (com.agsolutions.td.Companion.scaleScreen / 10)
+                    if (GameActivity.companionList.dragStatusCantBuild){
+                    paintText.textSize = 72f * (GameActivity.companionList.scaleScreen / 10)
                     paintText.color = Color.parseColor("#EB1900")
                     var xLevelCountC = xLvl - (paintText.measureText("Can´t Build") / 2)
                     var yLevelCountC =
-                        (yLvl - (500 * (scaleScreen / 10)))
+                        (yLvl - (500 * (GameActivity.companionList.scaleScreen / 10)))
                     canvas.drawText("Can´t Build", xLevelCountC, yLevelCountC, paintText)
                 }else {
-                    paintText.textSize = 72f * (com.agsolutions.td.Companion.scaleScreen / 10)
+                    paintText.textSize = 72f * (GameActivity.companionList.scaleScreen / 10)
                     paintText.color = Color.parseColor("#009E11")
                     var xLevelCountA = xLvl - (paintText.measureText("Build Okay") / 2)
                     var yLevelCountA =
-                        (yLvl - (500 * (scaleScreen / 10)))
+                        (yLvl - (500 * (GameActivity.companionList.scaleScreen / 10)))
                     canvas.drawText("Build Okay ", xLevelCountA, yLevelCountA, paintText)
                 }
             }
@@ -361,7 +356,7 @@ class UiViewTalent(context: Context, attributes: AttributeSet) : View(context, a
         paintText.color = Color.BLUE
         paintText.style = Paint.Style.FILL_AND_STROKE
         paintText.isAntiAlias = true
-        paintText.textSize = 48f * (com.agsolutions.td.Companion.scaleScreen / 10)
+        paintText.textSize = 48f * (GameActivity.companionList.scaleScreen / 10)
         paintText.setShadowLayer(10f, 0f, 0f, Color.WHITE)
 
         swipeDown = BitmapFactory.decodeResource(context.resources, R.drawable.fingerswipedowntouse)
@@ -385,9 +380,9 @@ class UiViewTalent(context: Context, attributes: AttributeSet) : View(context, a
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
-        if (com.agsolutions.td.Companion.focusTalentWindow && hintsBool && showHelpTalent) {
+        if (GameActivity.companionList.focusTalentWindow && GameActivity.companionList.hintsBool && GameActivity.companionList.showHelpTalent) {
             var rect =
-                Rect((talentX).toInt(), (talentY + (15 * (scaleScreen / 10))).toInt(), (talentX + (150 * (scaleScreen / 10))).toInt(), (talentY + (165 * (scaleScreen / 10))).toInt())
+                Rect((talentX).toInt(), (talentY + (15 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (talentX + (150 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (talentY + (165 * (GameActivity.companionList.scaleScreen / 10))).toInt())
             canvas.drawBitmap(fingerClick!!, null, rect, null)
         }
     }
@@ -421,7 +416,7 @@ class UiViewTalentEarth(context: Context, attributes: AttributeSet) : View(conte
         paintText.color = Color.BLUE
         paintText.style = Paint.Style.FILL_AND_STROKE
         paintText.isAntiAlias = true
-        paintText.textSize = 48f * (com.agsolutions.td.Companion.scaleScreen / 10)
+        paintText.textSize = 48f * (GameActivity.companionList.scaleScreen / 10)
         paintText.setShadowLayer(10f, 0f, 0f, Color.WHITE)
 
         swipeDown = BitmapFactory.decodeResource(context.resources, R.drawable.fingerswipedowntouse)
@@ -445,9 +440,9 @@ class UiViewTalentEarth(context: Context, attributes: AttributeSet) : View(conte
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
-        if (com.agsolutions.td.Companion.focusEarthFragment && com.agsolutions.td.Companion.hintsBool && showHelpTalent) {
+        if (GameActivity.companionList.focusEarthFragment && GameActivity.companionList.hintsBool && GameActivity.companionList.showHelpTalent) {
             var rect =
-                Rect((talentEarthX).toInt(), (talentEarthY + (15 * (scaleScreen / 10))).toInt(), (talentEarthX + (150 * (scaleScreen / 10))).toInt(), (talentEarthY + (165 * (scaleScreen / 10))).toInt())
+                Rect((talentEarthX).toInt(), (talentEarthY + (15 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (talentEarthX + (150 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (talentEarthY + (165 * (GameActivity.companionList.scaleScreen / 10))).toInt())
             canvas.drawBitmap(fingerClick!!, null, rect, null)
         }
     }
@@ -481,7 +476,7 @@ class UiViewStartItems(context: Context, attributes: AttributeSet) : View(contex
         paintText.color = Color.BLUE
         paintText.style = Paint.Style.FILL_AND_STROKE
         paintText.isAntiAlias = true
-        paintText.textSize = 48f * (com.agsolutions.td.Companion.scaleScreen / 10)
+        paintText.textSize = 48f * (GameActivity.companionList.scaleScreen / 10)
         paintText.setShadowLayer(10f, 0f, 0f, Color.WHITE)
 
         swipeDown = BitmapFactory.decodeResource(context.resources, R.drawable.fingerswipedowntouse)
@@ -505,9 +500,9 @@ class UiViewStartItems(context: Context, attributes: AttributeSet) : View(contex
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
-        if (com.agsolutions.td.Companion.hintsBool) {
+        if (GameActivity.companionList.hintsBool) {
             var rect =
-                Rect((talentRecyclerX).toInt(), (talentRecyclerY + (15 * (scaleScreen / 10))).toInt(), (talentRecyclerX + (150 * (scaleScreen / 10))).toInt(), (talentRecyclerY + (165 * (scaleScreen / 10))).toInt())
+                Rect((talentRecyclerX).toInt(), (talentRecyclerY + (15 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (talentRecyclerX + (150 * (GameActivity.companionList.scaleScreen / 10))).toInt(), (talentRecyclerY + (165 * (GameActivity.companionList.scaleScreen / 10))).toInt())
             canvas.drawBitmap(fingerClick!!, null, rect, null)
         }
     }

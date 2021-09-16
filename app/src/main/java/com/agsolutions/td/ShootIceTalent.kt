@@ -3,9 +3,7 @@ package com.agsolutions.td
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.agsolutions.td.Companion.Companion.shardSpeed
-import com.agsolutions.td.Companion.Companion.shardStart
-import com.agsolutions.td.Companion.Companion.shootListIce
+
 
 class ShootIceTalent (var direction: Double) {
 
@@ -39,39 +37,39 @@ class ShootIceTalent (var direction: Double) {
         paint.color = color
 
         if (direction == 0.0) {
-            shard.y -= (shardSpeed * Companion.gameSpeedAdjuster)
+            shard.y -= (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
         }
         if (direction == 1.5) {
-            shard.x += (shardSpeed * Companion.gameSpeedAdjuster)
-            shard.y -= (shardSpeed * Companion.gameSpeedAdjuster)
+            shard.x += (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
+            shard.y -= (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
         }
         if (direction == 3.0) {
-            shard.x += (shardSpeed * Companion.gameSpeedAdjuster)
+            shard.x += (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
         }
         if (direction == 4.5) {
-            shard.x += (shardSpeed * Companion.gameSpeedAdjuster)
-            shard.y += (shardSpeed * Companion.gameSpeedAdjuster)
+            shard.x += (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
+            shard.y += (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
         }
         if (direction == 6.0) {
-            shard.y += (shardSpeed * Companion.gameSpeedAdjuster)
+            shard.y += (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
         }
         if (direction == 7.5) {
-            shard.x -= (shardSpeed * Companion.gameSpeedAdjuster)
-            shard.y += (shardSpeed * Companion.gameSpeedAdjuster)
+            shard.x -= (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
+            shard.y += (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
         }
         if (direction == 9.0) {
-            shard.x -= (shardSpeed * Companion.gameSpeedAdjuster)
+            shard.x -= (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
         }
         if (direction == 10.5) {
-            shard.x -= (shardSpeed * Companion.gameSpeedAdjuster)
-            shard.y -= (shardSpeed * Companion.gameSpeedAdjuster)
+            shard.x -= (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
+            shard.y -= (GameActivity.companionList.shardSpeed * GameActivity.companionList.gameSpeedAdjuster)
         }
 
 
-        shootListIce.forEach() {
-                if (it.shard.y > (shardStart.y + 400) || it.shard.y <= (shardStart.y - 400) || it.shard.x > (shardStart.x + 400) || it.shard.x <= (shardStart.x - 400)) {
-                    shard.x = shardStart.x
-                    shard.y = shardStart.y
+        GameActivity.companionList.shootListIce.forEach() {
+                if (it.shard.y > (GameActivity.companionList.shardStart.y + 400) || it.shard.y <= (GameActivity.companionList.shardStart.y - 400) || it.shard.x > (GameActivity.companionList.shardStart.x + 400) || it.shard.x <= (GameActivity.companionList.shardStart.x - 400)) {
+                    shard.x = GameActivity.companionList.shardStart.x
+                    shard.y = GameActivity.companionList.shardStart.y
                     hit = false
                     color = Color.WHITE
 

@@ -5,13 +5,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.agsolutions.td.Companion.Companion.level
-import com.agsolutions.td.Companion.Companion.mapPick
 import com.agsolutions.td.GameActivity
 import com.agsolutions.td.R
-import kotlinx.android.synthetic.main.game_menu.*
 import kotlinx.android.synthetic.main.pick_mode.*
 import kotlin.system.exitProcess
 
@@ -35,8 +31,6 @@ class PickMode : AppCompatActivity() {
         window.setLayout((600.0f * (scaleScreen / 10)).toInt(), (800.0f * (scaleScreen / 10)).toInt())
         window.setGravity(Gravity.RIGHT)
         window.setElevation(10F)
-
-        if (level > 0 && mapPick != 0) saveAndQuitBtn.visibility = View.VISIBLE
 
         normalBtn.setOnClickListener(){
             intent = Intent(this, GameActivity::class.java)

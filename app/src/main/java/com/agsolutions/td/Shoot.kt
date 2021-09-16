@@ -2,31 +2,20 @@ package com.agsolutions.td
 
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
-import com.agsolutions.td.Companion.Companion.advancedList1
-import com.agsolutions.td.Companion.Companion.advancedList2
-import com.agsolutions.td.Companion.Companion.advancedList3
-import com.agsolutions.td.Companion.Companion.advancedList4
-import com.agsolutions.td.Companion.Companion.enemyList
-import com.agsolutions.td.Companion.Companion.gameSpeedAdjuster
-import com.agsolutions.td.Companion.Companion.randomEnemyForSniper
-import com.agsolutions.td.Companion.Companion.rotationEnemyX
-import com.agsolutions.td.Companion.Companion.rotationEnemyY
-import com.agsolutions.td.Companion.Companion.rotationTowerX
-import com.agsolutions.td.Companion.Companion.rotationTowerY
-import com.agsolutions.td.Companion.Companion.towerList
 import com.agsolutions.td.Main.MainActivity
+import java.io.Serializable
 
-class Shoot () {
+class Shoot (): Serializable {
 
     var bulletSpeed: Float = 10.0F
-    var paint: Paint
     var bullet = TowerRadius(600.0f, 750.0f, 5.0f)
     var broken = 0
     var bounceLeft = 0
     var alreadyBounced = 0
     var alreadyBouncedReset = false
+    var alreadyBouncedResetChain = false
     var id = -1
+    var idchain = -1
     var sniper = false
     var butterflyUltimate = false
     var chainLightning = false
@@ -37,127 +26,191 @@ class Shoot () {
     var firstEnemyMulti: Enemy? = null
     var firstEnemyMultiBool = false
     var towerId = 0
-
-
-    init {
-        paint = Paint()
-        paint.isAntiAlias
-        paint.isFilterBitmap
-        paint.color = color
-
-    }
+    var hitEnemyId = -1
+    var hitEnemyIdChain = -1
 
     fun draw(canvas: Canvas) {
 
     //    canvas.drawCircle(bullet.x.toFloat(), bullet.y.toFloat(), bullet.r.toFloat(), paint)
 
-
     }
 
     fun update() {
 
-          com.agsolutions.td.Companion.readLockEnemy.lock()
-          try {
-
-
-          if (MainActivity.startScreenBool) {
-
-          }
-          else if (sniper && gameSpeedAdjuster == 2f ) bulletSpeed = 10f
-          else if (sniper && gameSpeedAdjuster == 1.5f) bulletSpeed = 15f
-          else if (sniper && gameSpeedAdjuster == 1f) bulletSpeed = 20f
-          else if (towerList[towerId].towerPrimaryElement == "earth")  bulletSpeed = 6f
-          else if (towerList[towerId].towerPrimaryElement == "butterfly")  bulletSpeed = 8f
-
+          if (sniper) bulletSpeed = 15f
 
             //   var crossesAllListIteratorX = crossesAllList.listIterator()
             //   while (crossesAllListIteratorX.hasNext()) {
             //       var enemy = crossesAllListIteratorX.next()
 
             if (sniper) {
-                if (towerList[towerId].crossesNoneList.contains(randomEnemyForSniper)) movement(randomEnemyForSniper)
-                else if (towerList[towerId].crossesNoneList.isNotEmpty()) {
-                    randomEnemyForSniper = towerList[towerId].crossesNoneList.random()
-                    movement(randomEnemyForSniper)
+                if (GameActivity.companionList.towerList[towerId].crossesNoneList.contains(GameActivity.companionList.towerList[towerId].randomEnemyForSniper)) movement(GameActivity.companionList.towerList[towerId].randomEnemyForSniper)
+                else if (GameActivity.companionList.towerList[towerId].crossesNoneList.isNotEmpty()) {
+                    GameActivity.companionList.towerList[towerId].randomEnemyForSniper = GameActivity.companionList.towerList[towerId].crossesNoneList.random()
+                    movement(GameActivity.companionList.towerList[towerId].randomEnemyForSniper)
                 }  // random
                 else {
-                    bullet.x = towerList[towerId].towerRange.x
-                    bullet.y = towerList[towerId].towerRange.y
+                    bullet.x = GameActivity.companionList.towerList[towerId].towerRange.x
+                    bullet.y = GameActivity.companionList.towerList[towerId].towerRange.y
                     broken = 1
                 }
-            } else if (towerList[towerId].towerPrimaryElement == "wind" && multiShotBullet) {
-                if (firstEnemyMultiBool && enemyList!!.contains(firstEnemyMulti)){
+            } else if (chainLightning) {
+                if(alreadyBounced > 0){
+                    if (idchain >= 0 && idchain < GameActivity.companionList.enemyList.size && alreadyBouncedResetChain && idchain != hitEnemyIdChain) {
+                        movement(GameActivity.companionList.enemyList[idchain])
+                    } else {
+                            var squaredDistancePlaceholder = 185f * 185f
+                            var squareDistanceList = mutableListOf<Enemy>()
+                        GameActivity.companionList.readLockEnemy.lock()
+                        try {
+                            var enemyListIterator = GameActivity.companionList.enemyList.listIterator()
+                            while (enemyListIterator.hasNext()) {
+                                var itX = enemyListIterator.next()
+                                if (GameActivity.companionList.enemyList.indexOf(itX) != hitEnemyIdChain) {
+
+                                    val distanceX = (bullet.x) - itX.circle!!.x
+                                    val distanceY = (bullet.y) - itX.circle!!.y
+
+                                    val squaredDistance =
+                                        (distanceX * distanceX) + (distanceY * distanceY)
+
+                                    val sumOfRadius = (bullet.r + 150) + (itX.circle!!.r)
+                                    val sumOfRadius2 = bullet.r + (itX.circle!!.r - 10.0)
+
+                                    if (squaredDistance <= sumOfRadius * sumOfRadius && squaredDistance >= sumOfRadius2 * sumOfRadius2) {
+
+                                        if (squaredDistance < squaredDistancePlaceholder) {
+                                            squareDistanceList.add(0, itX)
+                                            squaredDistancePlaceholder = squaredDistance
+                                        }
+                                    }
+                                }
+                            }
+                        } finally {
+                            GameActivity.companionList.readLockEnemy.unlock()
+                        }
+
+                            if (squareDistanceList.isNotEmpty()) {
+                                var enemm = squareDistanceList.random()
+
+                                if (enemm.circle!!.x > bullet.x){
+                                    bullet.x += 20
+                                }
+                                else if (enemm.circle!!.x < bullet.x){
+                                    bullet.x -= 20
+                                }
+                                if (enemm.circle!!.y > bullet.y){
+                                    bullet.y += 20
+                                }
+                                else if (enemm.circle!!.y < bullet.y){
+                                    bullet.y -= 20
+                                }
+
+                                movement(enemm)
+                                idchain = GameActivity.companionList.enemyList.indexOf(enemm)
+                                alreadyBouncedResetChain = true
+                                squareDistanceList.removeAll(squareDistanceList)
+                            } else {
+                                GameActivity.companionList.towerList[towerId].randomEnemyChainBool = true
+                                broken = 1
+                            }
+                    }
+                }else {
+                    if (GameActivity.companionList.towerList[towerId].randomEnemyChainBool && GameActivity.companionList.towerList[towerId].crossesAllList.isNotEmpty()) {
+                        GameActivity.companionList.towerList[towerId].randomEnemyChainBool = false
+                        GameActivity.companionList.towerList[towerId].randomEnemyForShotChain = GameActivity.companionList.towerList[towerId].crossesAllList.random()
+                        movement(GameActivity.companionList.towerList[towerId].randomEnemyForShotChain)
+                    } else if (!GameActivity.companionList.towerList[towerId].randomEnemyChainBool && GameActivity.companionList.enemyList.contains(GameActivity.companionList.towerList[towerId].randomEnemyForShotChain)) movement(GameActivity.companionList.towerList[towerId].randomEnemyForShotChain)
+                    else if (GameActivity.companionList.towerList[towerId].crossesAllList.isNotEmpty()) GameActivity.companionList.towerList[towerId].randomEnemyChainBool = true
+                    else {
+                        GameActivity.companionList.towerList[towerId].randomEnemyChainBool = true
+                        broken = 1
+                    }
+                }
+            }else if (GameActivity.companionList.towerList[towerId].towerPrimaryElement == "wind" && multiShotBullet) {
+                if (firstEnemyMultiBool && GameActivity.companionList.enemyList!!.contains(firstEnemyMulti)){
                     movementMulti(firstEnemyMulti!!)
                 }
                 else {
-                    if (id >= towerList[towerId].crossesAllList.size) {
-                        bullet.x = towerList[towerId].towerRange.x
-                        bullet.y = towerList[towerId].towerRange.y
+                    if (id >= GameActivity.companionList.towerList[towerId].crossesAllList.size) {
+                        bullet.x = GameActivity.companionList.towerList[towerId].towerRange.x
+                        bullet.y = GameActivity.companionList.towerList[towerId].towerRange.y
                         broken = 1
                     } else {
-                        if (towerList[towerId].crossesAllList.isNotEmpty()) {
-                            firstEnemyMulti = (towerList[towerId].crossesAllList[id])
+                        if (GameActivity.companionList.towerList[towerId].crossesAllList.isNotEmpty()) {
+                            firstEnemyMulti = (GameActivity.companionList.towerList[towerId].crossesAllList[id])
                             movementMulti(firstEnemyMulti!!)
                             firstEnemyMultiBool = true
                         } else {
-                            bullet.x = towerList[towerId].towerRange.x
-                            bullet.y = towerList[towerId].towerRange.y
+                            bullet.x = GameActivity.companionList.towerList[towerId].towerRange.x
+                            bullet.y = GameActivity.companionList.towerList[towerId].towerRange.y
                             broken = 1
                         }
                     }
                 }
-            } else if (alreadyBounced > 0 && towerList[towerId].towerPrimaryElement == "moon") {
-                if (id >= 0 && id < enemyList.size && alreadyBouncedReset) {
-                    movement(enemyList[id])
+            } else if (alreadyBounced > 0 && GameActivity.companionList.towerList[towerId].towerPrimaryElement == "moon") {
+                if (id >= 0 && id < GameActivity.companionList.enemyList.size && alreadyBouncedReset && id != hitEnemyId) {
+                    movement(GameActivity.companionList.enemyList[id])
                 } else {
                     var squaredDistancePlaceholder = 185f * 185f
                     var squareDistanceList = mutableListOf<Enemy>()
-                    var enemyListIterator = enemyList.listIterator()
+                    GameActivity.companionList.readLockEnemy.lock()
+                    try {
+                    var enemyListIterator = GameActivity.companionList.enemyList.listIterator()
                     while (enemyListIterator.hasNext()) {
                         var itX = enemyListIterator.next()
+                        if (GameActivity.companionList.enemyList.indexOf(itX) != hitEnemyId) {
 
-                        val distanceX = (bullet.x) - itX.circle!!.x
-                        val distanceY = (bullet.y) - itX.circle!!.y
+                            val distanceX = (bullet.x) - itX.circle!!.x
+                            val distanceY = (bullet.y) - itX.circle!!.y
 
-                        val squaredDistance =
-                            (distanceX * distanceX) + (distanceY * distanceY)
+                            val squaredDistance =
+                                (distanceX * distanceX) + (distanceY * distanceY)
 
-                        val sumOfRadius = (bullet.r + 150) + (itX.circle!!.r)
-                        val sumOfRadius2 = bullet.r + (itX.circle!!.r - 10.0)
+                            val sumOfRadius = (bullet.r + 150) + (itX.circle!!.r)
+                            val sumOfRadius2 = bullet.r + (itX.circle!!.r - 10.0)
 
-                        if (squaredDistance <= sumOfRadius * sumOfRadius && squaredDistance >= sumOfRadius2 * sumOfRadius2) {
+                            if (squaredDistance <= sumOfRadius * sumOfRadius && squaredDistance >= sumOfRadius2 * sumOfRadius2) {
 
-                            if (squaredDistance < squaredDistancePlaceholder) {
-                                squareDistanceList.add(0, itX)
-                                squaredDistancePlaceholder = squaredDistance
+                                if (squaredDistance < squaredDistancePlaceholder) {
+                                    squareDistanceList.add(0, itX)
+                                    squaredDistancePlaceholder = squaredDistance
+                                }
                             }
                         }
                     }
+                    } finally {
+                        GameActivity.companionList.readLockEnemy.unlock()
+                    }
 
                     if (squareDistanceList.isNotEmpty()) {
-                        if (squareDistanceList[0].circle!!.x > bullet.x){
-                            bullet.x += 10
+                        var enemm = squareDistanceList.random()
+
+                        if (enemm.circle!!.x > bullet.x){
+                            bullet.x += 20
                         }
-                        else if (squareDistanceList[0].circle!!.x < bullet.x){
-                            bullet.x -= 10
+                        else if (enemm.circle!!.x < bullet.x){
+                            bullet.x -= 20
                         }
-                        if (squareDistanceList[0].circle!!.y > bullet.y){
-                            bullet.y += 10
+                        if (enemm.circle!!.y > bullet.y){
+                            bullet.y += 20
                         }
-                        else if (squareDistanceList[0].circle!!.y < bullet.y){
-                            bullet.y -= 10
+                        else if (enemm.circle!!.y < bullet.y){
+                            bullet.y -= 20
                         }
 
-                        movement(squareDistanceList[0])
-                        id = enemyList.indexOf(squareDistanceList[0])
+                        movement(enemm)
+                        id = GameActivity.companionList.enemyList.indexOf(enemm)
                         alreadyBouncedReset = true
                         squareDistanceList.removeAll(squareDistanceList)
                     } else broken = 1
                 }
             } else {
-                if (towerList[towerId].crossesAllList.isNotEmpty()) {
+                if (GameActivity.companionList.towerList[towerId].crossesAllList.isNotEmpty()) {
                     var tank = false
-                    var crossesAllListIterator = towerList[towerId].crossesAllList.listIterator()
+                    GameActivity.companionList.readLockEnemy.lock()
+                    try {
+                    var crossesAllListIterator = GameActivity.companionList.towerList[towerId].crossesAllList.listIterator()
                     while (crossesAllListIterator.hasNext()) {
                         var it = crossesAllListIterator.next()
                         if (it.name == "tank") {
@@ -165,15 +218,20 @@ class Shoot () {
                             movement(it)
                         }
                     }
-                    if (tank == true) {
+                    } finally {
+                        GameActivity.companionList.readLockEnemy.unlock()
+                    }
+                    if (tank) {
                     } else {
-                            if (towerList[towerId].firstLastRandom == 3) {
-                                if (towerList[towerId].randomEnemyForShotBool) {
+                            if (GameActivity.companionList.towerList[towerId].firstLastRandom == 3) {
+                                if (GameActivity.companionList.towerList[towerId].randomEnemyForShotBool) {
                                     var use: Enemy? = null
                                     var place = 0f
                                     var place2 = 2000f
 
-                                    var crossesAllListIteratorZ = towerList[towerId].crossesAllList.listIterator()
+                                    GameActivity.companionList.readLockEnemy.lock()
+                                    try {
+                                    var crossesAllListIteratorZ = GameActivity.companionList.towerList[towerId].crossesAllList.listIterator()
                                     while (crossesAllListIteratorZ.hasNext()) {
                                         var it = crossesAllListIteratorZ.next()
                                         when (it.passed) {
@@ -182,114 +240,119 @@ class Shoot () {
                                                     Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                                 x.circle!!.x = it.circle!!.x
                                                 x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = enemyList.indexOf(it)
-                                                advancedList4.add(x)
+                                                x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
+                                                 GameActivity.companionList.advancedList4.add(x)
                                             }
                                             3.toByte() -> {
                                                 var x =
                                                     Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                                 x.circle!!.x = it.circle!!.x
                                                 x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = enemyList.indexOf(it)
-                                                advancedList3.add(x)
+                                                x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
+                                                GameActivity.companionList.advancedList3.add(x)
                                             }
                                             2.toByte() -> {
                                                 var x =
                                                     Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                                 x.circle!!.x = it.circle!!.x
                                                 x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = enemyList.indexOf(it)
-                                                advancedList2.add(x)
+                                                x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
+                                                GameActivity.companionList.advancedList2.add(x)
                                             }
                                             1.toByte() -> {
                                                 var x =
                                                     Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                                 x.circle!!.x = it.circle!!.x
                                                 x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = enemyList.indexOf(it)
-                                                advancedList1.add(x)
+                                                x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
+                                                GameActivity.companionList.advancedList1.add(x)
                                             }
                                         }
                                     }
-                                    if (advancedList4.isNotEmpty()) {
-                                        for (it in advancedList4) {
+                                    } finally {
+                                        GameActivity.companionList.readLockEnemy.unlock()
+                                    }
+                                    if (GameActivity.companionList.advancedList4.isNotEmpty()) {
+                                        for (it in GameActivity.companionList.advancedList4) {
                                             if (it.circle!!.y > place) {
                                                 place = it.circle!!.y
-                                                use = enemyList[it.pickEnemyID]
+                                                use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                             }
                                         }
-                                    } else if (advancedList3.isNotEmpty()) {
-                                        for (it in advancedList3) {
+                                    } else if (GameActivity.companionList.advancedList3.isNotEmpty()) {
+                                        for (it in GameActivity.companionList.advancedList3) {
                                             if (it.circle!!.x > place) {
                                                 place = it.circle!!.x
-                                                use = enemyList[it.pickEnemyID]
+                                                use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                             }
                                         }
-                                    } else if (advancedList2.isNotEmpty()) {
-                                        for (it in advancedList2) {
+                                    } else if (GameActivity.companionList.advancedList2.isNotEmpty()) {
+                                        for (it in GameActivity.companionList.advancedList2) {
                                             if (it.circle!!.y < place2) {
                                                 place2 = it.circle!!.y
-                                                use = enemyList[it.pickEnemyID]
+                                                use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                             }
                                         }
-                                    } else if (advancedList1.isNotEmpty()) {
-                                        for (it in advancedList1) {
+                                    } else if (GameActivity.companionList.advancedList1.isNotEmpty()) {
+                                        for (it in GameActivity.companionList.advancedList1) {
                                             if (it.circle!!.x < place2) {
                                                 place2 = it.circle!!.x
-                                                use = enemyList[it.pickEnemyID]
+                                                use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                             }
                                         }
                                     } else {
                                     }
                                     if (use != null) {
-                                        towerList[towerId].randomEnemyForShot = use!!
-                                        movement(towerList[towerId].randomEnemyForShot)
-                                        towerList[towerId].randomEnemyForShotBool = false
-                                        advancedList4.removeAll(advancedList4)
-                                        advancedList3.removeAll(advancedList3)
-                                        advancedList2.removeAll(advancedList2)
-                                        advancedList1.removeAll(advancedList1)
+                                        GameActivity.companionList.towerList[towerId].randomEnemyForShot = use!!
+                                        movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
+                                        GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = false
+                                        GameActivity.companionList.advancedList4.removeAll(GameActivity.companionList.advancedList4)
+                                        GameActivity.companionList.advancedList3.removeAll(GameActivity.companionList.advancedList3)
+                                        GameActivity.companionList.advancedList2.removeAll(GameActivity.companionList.advancedList2)
+                                        GameActivity.companionList.advancedList1.removeAll(GameActivity.companionList.advancedList1)
                                     } else {
                                     }
-                                } else movement(towerList[towerId].randomEnemyForShot)
-                            } else if (towerList[towerId].firstLastRandom == 1) {
-                                if (towerList[towerId].randomEnemyForShotBool){
-                                for (it in enemyList) {
+                                } else movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
+                            } else if (GameActivity.companionList.towerList[towerId].firstLastRandom == 1) {
+                                if (GameActivity.companionList.towerList[towerId].randomEnemyForShotBool){
+                                for (it in GameActivity.companionList.enemyList) {
                                     when {
-                                        it.passed == 1.toByte() && towerList[towerId].crossesAllList.contains(it) -> {
-                                            towerList[towerId].randomEnemyForShot = it
-                                            movement(towerList[towerId].randomEnemyForShot)
-                                            towerList[towerId].randomEnemyForShotBool = false
+                                        it.passed == 1.toByte() && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
+                                            GameActivity.companionList.towerList[towerId].randomEnemyForShot = it
+                                            movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
+                                            GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = false
                                             break
                                         }
-                                        it.passed == 2.toByte() && towerList[towerId].crossesAllList.contains(it) -> {
-                                            towerList[towerId].randomEnemyForShot = it
-                                            movement(towerList[towerId].randomEnemyForShot)
-                                            towerList[towerId].randomEnemyForShotBool = false
+                                        it.passed == 2.toByte() && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
+                                            GameActivity.companionList.towerList[towerId].randomEnemyForShot = it
+                                            movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
+                                            GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = false
                                             break
                                         }
-                                        it.passed == 3.toByte() && towerList[towerId].crossesAllList.contains(it) -> {
-                                            towerList[towerId].randomEnemyForShot = it
-                                            movement(towerList[towerId].randomEnemyForShot)
-                                            towerList[towerId].randomEnemyForShotBool = false
+                                        it.passed == 3.toByte() && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
+                                            GameActivity.companionList.towerList[towerId].randomEnemyForShot = it
+                                            movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
+                                            GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = false
                                             break
                                         }
-                                        it.passed == 4.toByte() && towerList[towerId].crossesAllList.contains(it) -> {
-                                            towerList[towerId].randomEnemyForShot = it
-                                            movement(towerList[towerId].randomEnemyForShot)
-                                            towerList[towerId].randomEnemyForShotBool = false
+                                        it.passed == 4.toByte() && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
+                                            GameActivity.companionList.towerList[towerId].randomEnemyForShot = it
+                                            movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
+                                            GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = false
                                             break
                                         }
                                     }
                                 }
-                                } else movement(towerList[towerId].randomEnemyForShot)
-                            } else if (towerList[towerId].firstLastRandom == 0) {
-                            if (towerList[towerId].randomEnemyForShotSticky) {
+                                } else movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
+                            } else if (GameActivity.companionList.towerList[towerId].firstLastRandom == 0) {
+                            if (GameActivity.companionList.towerList[towerId].randomEnemyForShotSticky) {
                                 var use: Enemy? = null
                                 var place = 0f
                                 var place2 = 2000f
 
-                                var crossesAllListIteratorZ = towerList[towerId].crossesAllList.listIterator()
+                                GameActivity.companionList.readLockEnemy.lock()
+                                try {
+                                var crossesAllListIteratorZ = GameActivity.companionList.towerList[towerId].crossesAllList.listIterator()
                                 while (crossesAllListIteratorZ.hasNext()) {
                                     var it = crossesAllListIteratorZ.next()
                                     when (it.passed) {
@@ -298,104 +361,104 @@ class Shoot () {
                                                 Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                             x.circle!!.x = it.circle!!.x
                                             x.circle!!.y = it.circle!!.y
-                                            x.pickEnemyID = enemyList.indexOf(it)
-                                            advancedList4.add(x)
+                                            x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
+                                            GameActivity.companionList.advancedList4.add(x)
                                         }
                                         3.toByte() -> {
                                             var x =
                                                 Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                             x.circle!!.x = it.circle!!.x
                                             x.circle!!.y = it.circle!!.y
-                                            x.pickEnemyID = enemyList.indexOf(it)
-                                            advancedList3.add(x)
+                                            x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
+                                            GameActivity.companionList.advancedList3.add(x)
                                         }
                                         2.toByte() -> {
                                             var x =
                                                 Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                             x.circle!!.x = it.circle!!.x
                                             x.circle!!.y = it.circle!!.y
-                                            x.pickEnemyID = enemyList.indexOf(it)
-                                            advancedList2.add(x)
+                                            x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
+                                            GameActivity.companionList.advancedList2.add(x)
                                         }
                                         1.toByte() -> {
                                             var x =
                                                 Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                             x.circle!!.x = it.circle!!.x
                                             x.circle!!.y = it.circle!!.y
-                                            x.pickEnemyID = enemyList.indexOf(it)
-                                            advancedList1.add(x)
+                                            x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
+                                            GameActivity.companionList.advancedList1.add(x)
                                         }
                                     }
                                 }
-                                if (advancedList4.isNotEmpty()) {
-                                    for (it in advancedList4) {
+                                } finally {
+                                    GameActivity.companionList.readLockEnemy.unlock()
+                                }
+                                if (GameActivity.companionList.advancedList4.isNotEmpty()) {
+                                    for (it in GameActivity.companionList.advancedList4) {
                                         if (it.circle!!.y > place) {
                                             place = it.circle!!.y
-                                            use = enemyList[it.pickEnemyID]
+                                            use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                         }
                                     }
-                                } else if (advancedList3.isNotEmpty()) {
-                                    for (it in advancedList3) {
+                                } else if (GameActivity.companionList.advancedList3.isNotEmpty()) {
+                                    for (it in GameActivity.companionList.advancedList3) {
                                         if (it.circle!!.x > place) {
                                             place = it.circle!!.x
-                                            use = enemyList[it.pickEnemyID]
+                                            use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                         }
                                     }
-                                } else if (advancedList2.isNotEmpty()) {
-                                    for (it in advancedList2) {
+                                } else if (GameActivity.companionList.advancedList2.isNotEmpty()) {
+                                    for (it in GameActivity.companionList.advancedList2) {
                                         if (it.circle!!.y < place2) {
                                             place2 = it.circle!!.y
-                                            use = enemyList[it.pickEnemyID]
+                                            use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                         }
                                     }
-                                } else if (advancedList1.isNotEmpty()) {
-                                    for (it in advancedList1) {
+                                } else if (GameActivity.companionList.advancedList1.isNotEmpty()) {
+                                    for (it in GameActivity.companionList.advancedList1) {
                                         if (it.circle!!.x < place2) {
                                             place2 = it.circle!!.x
-                                            use = enemyList[it.pickEnemyID]
+                                            use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                         }
                                     }
                                 } else {
                                 }
                                 if (use != null) {
-                                    towerList[towerId].randomEnemyForShot = use!!
-                                    movement(towerList[towerId].randomEnemyForShot)
-                                    towerList[towerId].randomEnemyForShotSticky = false
-                                    advancedList4.removeAll(advancedList4)
-                                    advancedList3.removeAll(advancedList3)
-                                    advancedList2.removeAll(advancedList2)
-                                    advancedList1.removeAll(advancedList1)
+                                    GameActivity.companionList.towerList[towerId].randomEnemyForShot = use!!
+                                    movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
+                                    GameActivity.companionList.towerList[towerId].randomEnemyForShotSticky = false
+                                    GameActivity.companionList.advancedList4.removeAll(GameActivity.companionList.advancedList4)
+                                    GameActivity.companionList.advancedList3.removeAll(GameActivity.companionList.advancedList3)
+                                    GameActivity.companionList.advancedList2.removeAll(GameActivity.companionList.advancedList2)
+                                    GameActivity.companionList.advancedList1.removeAll(GameActivity.companionList.advancedList1)
                                 } else {
                                 }
-                            } else movement(towerList[towerId].randomEnemyForShot)
+                            } else movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
                         } else {
-                                if (towerList[towerId].randomEnemyForShotBool) {
-                                    towerList[towerId].randomEnemyForShot = towerList[towerId].crossesAllList.random()
-                                    movement(towerList[towerId].randomEnemyForShot)
-                                    towerList[towerId].randomEnemyForShotBool = false
+                                if (GameActivity.companionList.towerList[towerId].randomEnemyForShotBool) {
+                                    GameActivity.companionList.towerList[towerId].randomEnemyForShot = GameActivity.companionList.towerList[towerId].crossesAllList.random()
+                                    movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
+                                    GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = false
                                 }  // random
-                                else movement(towerList[towerId].randomEnemyForShot)
+                                else movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
                             }
                         }
                 } else {
-                    if (enemyList.contains(towerList[towerId].randomEnemyForShot)) {
-                        movement(towerList[towerId].randomEnemyForShot)
+                    if (GameActivity.companionList.enemyList.contains(GameActivity.companionList.towerList[towerId].randomEnemyForShot)) {
+                        movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
                     } else {
-                        towerList[towerId].randomEnemyForShotBool = true
+                        GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = true
                         if (MainActivity.startScreenBool){
                             bullet.x = 200.0f
                             bullet.y = 750.0f
                         } else {
-                            bullet.x = towerList[towerId].towerRange.x
-                            bullet.y = towerList[towerId].towerRange.y
+                            bullet.x = GameActivity.companionList.towerList[towerId].towerRange.x
+                            bullet.y = GameActivity.companionList.towerList[towerId].towerRange.y
                         }
                             broken = 1
                     }
                 }
             }
-        } finally {
-            com.agsolutions.td.Companion.readLockEnemy.unlock()
-        }
     }
 
 
@@ -426,20 +489,20 @@ class Shoot () {
                     }
 
                     val nx =
-                        if (bullet.x > (enemy.circle!!.x + xSpeed())) ((bullet.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * Companion.gameSpeedAdjuster))
-                        else (((enemy.circle!!.x + xSpeed().toFloat()) - bullet.x) / (bulletSpeed * Companion.gameSpeedAdjuster))
+                        if (bullet.x > (enemy.circle!!.x + xSpeed())) ((bullet.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                        else (((enemy.circle!!.x + xSpeed().toFloat()) - bullet.x) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
                     val ny =
-                        if (bullet.y > (enemy.circle!!.y + xSpeed())) ((bullet.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * Companion.gameSpeedAdjuster))
-                        else (((enemy.circle!!.y + ySpeed().toFloat()) - bullet.y) / (bulletSpeed * Companion.gameSpeedAdjuster))
+                        if (bullet.y > (enemy.circle!!.y + xSpeed())) ((bullet.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                        else (((enemy.circle!!.y + ySpeed().toFloat()) - bullet.y) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
 
                     val n =
-                        if (nx > ny) (bulletSpeed * Companion.gameSpeedAdjuster) / nx
-                        else (bulletSpeed * Companion.gameSpeedAdjuster) / ny
+                        if (nx > ny) (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / nx
+                        else (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / ny
 
 
-                    if (enemyList.contains(enemy)) {
-                        rotationEnemyX = enemy.circle!!.x
-                        rotationEnemyY = enemy.circle!!.y
+                    if (GameActivity.companionList.enemyList.contains(enemy)) {
+                        GameActivity.companionList.rotationEnemyX = enemy.circle!!.x
+                        GameActivity.companionList.rotationEnemyY = enemy.circle!!.y
 
                         if (bullet.x > (enemy.circle!!.x + xSpeed())) {
                             bullet.x -= (nx * n)
@@ -461,8 +524,8 @@ class Shoot () {
                         //      it.broken = 1
                    // } else if (enemy.status != id) {
                     } else {
-                        bullet.x = towerList[towerId].towerRange.x
-                        bullet.y = towerList[towerId].towerRange.y
+                        bullet.x = GameActivity.companionList.towerList[towerId].towerRange.x
+                        bullet.y = GameActivity.companionList.towerList[towerId].towerRange.y
                         broken = 1
                     }
         }
@@ -495,20 +558,20 @@ class Shoot () {
                 }
 
                 var nx =
-                    if (bullet.x > (enemy.circle!!.x + xSpeed())) ((bullet.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * Companion.gameSpeedAdjuster))
-                    else (((enemy.circle!!.x + xSpeed().toFloat()) - bullet.x) / (bulletSpeed * Companion.gameSpeedAdjuster))
+                    if (bullet.x > (enemy.circle!!.x + xSpeed())) ((bullet.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                    else (((enemy.circle!!.x + xSpeed().toFloat()) - bullet.x) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
                 var ny =
-                    if (bullet.y > (enemy.circle!!.y + xSpeed())) ((bullet.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * Companion.gameSpeedAdjuster))
-                    else (((enemy.circle!!.y + ySpeed().toFloat()) - bullet.y) / (bulletSpeed * Companion.gameSpeedAdjuster))
+                    if (bullet.y > (enemy.circle!!.y + xSpeed())) ((bullet.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                    else (((enemy.circle!!.y + ySpeed().toFloat()) - bullet.y) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
 
                 var n =
-                    if (nx > ny) (bulletSpeed * Companion.gameSpeedAdjuster) / nx
-                    else (bulletSpeed * Companion.gameSpeedAdjuster) / ny
+                    if (nx > ny) (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / nx
+                    else (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / ny
 
                 if (sniper) {
-                    if (towerList[towerId].crossesNoneList.contains(enemy)) {
-                        rotationEnemyX = enemy.circle!!.x
-                        rotationEnemyY = enemy.circle!!.y
+                    if (GameActivity.companionList.towerList[towerId].crossesNoneList.contains(enemy)) {
+                        GameActivity.companionList.rotationEnemyX = enemy.circle!!.x
+                        GameActivity.companionList.rotationEnemyY = enemy.circle!!.y
 
                         if (bullet.x > (enemy.circle!!.x + xSpeed())) {
                             bullet.x -= (nx * n)
@@ -524,14 +587,12 @@ class Shoot () {
                         //    break
 
                     } else {
-                        bullet.x = towerList[towerId].towerRange.x
-                        bullet.y = towerList[towerId].towerRange.y
+                        bullet.x = GameActivity.companionList.towerList[towerId].towerRange.x
+                        bullet.y = GameActivity.companionList.towerList[towerId].towerRange.y
                         broken = 1
                     }
-                } else if (alreadyBounced > 0 && towerList[towerId].towerPrimaryElement == "moon") {
-                    rotationEnemyX = enemy.circle!!.x
-                    rotationEnemyY = enemy.circle!!.y
-                    if (enemyList.contains(enemy)) {
+                } else if (chainLightning) {
+                    if (GameActivity.companionList.enemyList.contains(enemy)) {
                         if (bullet.x > (enemy.circle!!.x + xSpeed())) {
                             bullet.x -= (nx * n)
                         } else {
@@ -546,17 +607,42 @@ class Shoot () {
                         //    break
 
                     } else {
-                        bullet.x = towerList[towerId].towerRange.x
-                        bullet.y = towerList[towerId].towerRange.y
+                        bullet.x = GameActivity.companionList.towerList[towerId].towerRange.x
+                        bullet.y = GameActivity.companionList.towerList[towerId].towerRange.y
+                        GameActivity.companionList.towerList[towerId].randomEnemyChainBool = true
+                        broken = 1
+                    }
+
+                } else if (alreadyBounced > 0 && (GameActivity.companionList.towerList[towerId].towerPrimaryElement == "moon" || chainLightning)) {
+                    GameActivity.companionList.rotationEnemyX = enemy.circle!!.x
+                    GameActivity.companionList.rotationEnemyY = enemy.circle!!.y
+                    if (GameActivity.companionList.enemyList.contains(enemy)) {
+                        if (bullet.x > (enemy.circle!!.x + xSpeed())) {
+                            bullet.x -= (nx * n)
+                        } else {
+                            bullet.x += (nx * n)
+                        }
+
+                        if (bullet.y > (enemy.circle!!.y + ySpeed())) {
+                            bullet.y -= (ny * n)
+                        } else {
+                            bullet.y += (ny * n)
+                        }
+                        //    break
+
+                    } else {
+                        bullet.x = GameActivity.companionList.towerList[towerId].towerRange.x
+                        bullet.y = GameActivity.companionList.towerList[towerId].towerRange.y
+                        GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = true
                         broken = 1
                     }
 
                 } else {
-                    if (enemyList.contains(enemy)) {
-                        rotationTowerX = enemy.circle!!.x
-                        rotationTowerY = enemy.circle!!.y
-                        rotationEnemyX = enemy.circle!!.x
-                        rotationEnemyY = enemy.circle!!.y
+                    if (GameActivity.companionList.enemyList.contains(enemy)) {
+                        GameActivity.companionList.rotationTowerX = enemy.circle!!.x
+                        GameActivity.companionList.rotationTowerY = enemy.circle!!.y
+                        GameActivity.companionList.rotationEnemyX = enemy.circle!!.x
+                        GameActivity.companionList.rotationEnemyY = enemy.circle!!.y
                         if (bullet.x > (enemy.circle!!.x + xSpeed())) {
                             bullet.x -= nx * n
                         } else {
@@ -570,339 +656,11 @@ class Shoot () {
                         }
                         //    break
                     } else {
-                        towerList[towerId].randomEnemyForShotBool = true
-                        if (MainActivity.startScreenBool){
-                            bullet.x = 200.0f
-                            bullet.y = 750.0f
-                        } else {
-                            bullet.x = towerList[towerId].towerRange.x
-                            bullet.y = towerList[towerId].towerRange.y
-                        }
+                        GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = true
+                            bullet.x = GameActivity.companionList.towerList[towerId].towerRange.x
+                            bullet.y = GameActivity.companionList.towerList[towerId].towerRange.y
                         broken = 1
                     }
                 }
         }
 }
-
-
-/*
-
-var mx =
-                    if (bullet.x > (enemy!!.circle.x + xSpeed())) (bulletSpeed * (-1))
-                    else bulletSpeed
-                var my =
-                    if (bullet.y > (enemy!!.circle.y + ySpeed())) (bulletSpeed * (-1))
-                    else bulletSpeed
-
-
-
-
-                     var x =
-                        if (bullet.x > (enemy!!.circle.x + xSpeed())) (ceil(((bullet.x.toDouble() - (enemy!!.circle.x + xSpeed()).toDouble()) ))).toInt()
-                        else (ceil((((enemy!!.circle.x+ xSpeed()).toDouble() - bullet.x.toDouble())))).toInt()
-
-                    var ny =
-                        if (bullet.y > (enemy!!.circle.y+ ySpeed())) (ceil(((bullet.y.toDouble() - (enemy!!.circle.y + ySpeed()).toDouble()) ))).toInt()
-                        else (ceil((((enemy!!.circle.y + ySpeed()).toDouble() - bullet.y.toDouble()) ))).toInt()
-
-
-                        if (bullet.x >= enemy!!.circle.x) {
-                            if (bullet.y >= enemy!!.circle.y) {
-                                bullet.y =
-                                    (enemy!!.circle.y + ySpeed() + ((bulletSpeed.toInt()) * (ny1 - 1)))
-                                bullet.x =
-                                    (enemy!!.circle.x + xSpeed() + ((bulletSpeed.toInt()) * (nx1 - 1)))
-                            } else if (bullet.y < enemy!!.circle.y) {
-                                bullet.y =
-                                    (enemy!!.circle.y + ySpeed() - ((bulletSpeed.toInt()) * (ny2 - 1)))
-                                bullet.x =
-                                    (enemy!!.circle.x + xSpeed() + ((bulletSpeed.toInt()) * (nx1 - 1)))
-                            }
-                        } else if (bullet.x < enemy!!.circle.x) {
-                            if (bullet.y >= enemy!!.circle.y) {
-                                bullet.y =
-                                    (enemy!!.circle.y + ySpeed() + ((bulletSpeed.toInt()) * (ny1 - 1)))
-                                bullet.x =
-                                    (enemy!!.circle.x + xSpeed() - ((bulletSpeed.toInt()) * (nx2 - 1)))
-                            } else if (bullet.y < enemy!!.circle.y) {
-                                bullet.y =
-                                    (enemy!!.circle.y + ySpeed() - ((bulletSpeed.toInt()) * (ny2 - 1)))
-                                bullet.x =
-                                    (enemy!!.circle.x + xSpeed() - ((bulletSpeed.toInt()) * (nx2 - 1)))
-                            }
-                        }
-
-
-
-
-                    //  } else if (GameView.enemyList[index]!!.status == 0 && GameView.enemyList[index]!!.hp <= 0) {
-                    //      bullet.x += 30
-
-                    //  }
-
-
-      for (enemy in GameView.enemyList) {
-
-            fun xSpeed () : Int {
-                var speed = 0
-                when (enemy!!.passed) {
-                    "A" -> speed = (Enemy.speed.toInt() /2) * (-1)
-                    "B" -> speed = 0
-                    "C" -> speed = (Enemy.speed.toInt() /2)
-                    "D" -> speed = 0
-                }
-                return speed
-            }
-
-            fun ySpeed () : Int {
-                var speed = 0
-                when (enemy!!.passed) {
-                    "A" -> speed = 0
-                    "B" -> speed = (Enemy.speed.toInt() /2) * (-1)
-                    "C" -> speed = 0
-                    "D" -> speed = (Enemy.speed.toInt() /2)
-                }
-                return speed
-            }
-
-            var nx1 =
-                (ceil(((bullet.x.toDouble() - enemy!!.circle.x.toDouble()) / bulletSpeed))).toInt()
-            var nx2 =
-                (ceil(((enemy!!.circle.x.toDouble() - bullet.x.toDouble()) / bulletSpeed))).toInt()
-            var ny1 =
-                (ceil(((bullet.y.toDouble() - enemy!!.circle.y.toDouble()) / bulletSpeed))).toInt()
-            var ny2 =
-                (ceil(((enemy!!.circle.y.toDouble() - bullet.y.toDouble()) / bulletSpeed))).toInt()
-
-
-                if (bullet.x >= enemy!!.circle.x) {
-                    if (bullet.y >= enemy!!.circle.y) {
-                        bullet.y =
-                            (enemy!!.circle.y + ySpeed() + ((bulletSpeed.toInt()) * (ny1 - 1)))
-                        bullet.x =
-                            (enemy!!.circle.x + xSpeed() + ((bulletSpeed.toInt()) * (nx1 - 1)))
-                    } else if (bullet.y < enemy!!.circle.y) {
-                        bullet.y =
-                            (enemy!!.circle.y + ySpeed() - ((bulletSpeed.toInt()) * (ny2 - 1)))
-                        bullet.x =
-                            (enemy!!.circle.x + xSpeed() + ((bulletSpeed.toInt()) * (nx1 - 1)))
-                    }
-                } else if (bullet.x < enemy!!.circle.x) {
-                    if (bullet.y >= enemy!!.circle.y) {
-                        bullet.y =
-                            (enemy!!.circle.y + ySpeed() + ((bulletSpeed.toInt()) * (ny1 - 1)))
-                        bullet.x =
-                            (enemy!!.circle.x + xSpeed() - ((bulletSpeed.toInt()) * (nx2 - 1)))
-                    } else if (bullet.y < enemy!!.circle.y) {
-                        bullet.y =
-                            (enemy!!.circle.y + ySpeed() - ((bulletSpeed.toInt()) * (ny2 - 1)))
-                        bullet.x =
-                            (enemy!!.circle.x + xSpeed() - ((bulletSpeed.toInt()) * (nx2 - 1)))
-                    }
-                }
-            }
-
-        if (bullet.x == enemyX -40) bullet.x = enemyX
-                else {
-                    bullet.x -= 30
-                    if (bullet.y > enemyY){
-                        bullet.y -= Enemy.speed.toInt()/(Tower.towerRange.y - enemyY)
-                    }else bullet.y += Enemy.speed.toInt()/(Tower.towerRange.y - enemyY)
-                }
-            } else if (bullet.x < enemyX) {
-                if (bullet.x == enemyX +40) bullet.x = enemyX
-                else bullet.x += 30
-                if (bullet.y > enemyY){
-                    bullet.y -= Enemy.speed.toInt()/(Tower.towerRange.y - enemyY)
-                }else bullet.y += Enemy.speed.toInt()/(Tower.towerRange.y - enemyY)
-            }
-
-            if (bullet.y > enemyY) {
-                if (bullet.y == enemyY -40) bullet.y = enemyY
-                else bullet.y -= 30
-            } else if (bullet.y < enemyY) {
-                if (bullet.y == enemyY +40) bullet.y = enemyY
-                else bullet.y += 30
-            }
-
-            if (bullet.x > enemyX) {
-                if (bullet.y > enemyY) {
-                    if (bullet.x - enemyX > bullet.y - enemyY) {
-                        bullet.x -= bulletSpeed
-                        bullet.y -= bulletSpeed / 2
-                    } else if (bullet.x - enemyX == bullet.y - enemyY) {
-                        bullet.x -= bulletSpeed
-                        bullet.y -= bulletSpeed
-                    } else {
-                        bullet.x -= bulletSpeed / 2
-                        bullet.y -= bulletSpeed
-                    }
-                } else if (bullet.y < enemyY) {
-                    if (bullet.x - enemyX > enemyY - bullet.y) {
-                        bullet.x -= bulletSpeed
-                        bullet.y += bulletSpeed / 2
-                    } else if (bullet.x - enemyX == enemyY - bullet.y) {
-                        bullet.x -= bulletSpeed
-                        bullet.y += bulletSpeed
-                    } else {
-                        bullet.x -= bulletSpeed / 2
-                        bullet.y += bulletSpeed
-                    }
-                }else if (bullet.y == enemyY) bullet.x -= bulletSpeed
-            } else if (bullet.x < enemyX) {
-                if (bullet.y > enemyY) {
-                    if (enemyX - bullet.x > bullet.y - enemyY) {
-                        bullet.x += bulletSpeed
-                        bullet.y -= bulletSpeed / 2
-                    } else if (enemyX - bullet.x == bullet.y - enemyY) {
-                        bullet.x += bulletSpeed
-                        bullet.y -= bulletSpeed
-                    } else {
-                        bullet.x += bulletSpeed / 2
-                        bullet.y -= bulletSpeed
-                    }
-                } else if (bullet.y < enemyY) {
-                    if (enemyX - bullet.x > enemyY - bullet.y) {
-                        bullet.x += bulletSpeed
-                        bullet.y += bulletSpeed / 2
-                    } else if (enemyX - bullet.x == enemyY - bullet.y) {
-                        bullet.x += bulletSpeed
-                        bullet.y += bulletSpeed
-                    } else {
-                        bullet.x += bulletSpeed / 2
-                        bullet.y += bulletSpeed
-                    }
-                }else if (bullet.y == enemyY) bullet.x += bulletSpeed
-
-            } else if (bullet.x == enemyX) {
-                if (bullet.y > enemyY) bullet.y -= bulletSpeed
-                else if (bullet.y < enemyX) bullet.y += bulletSpeed
-                }
-
- */
-/*
-// splash damage
-var x1 = (ceil(bullet.x.toDouble() - Shoot.enemyX.toDouble() / Shoot.bulletSpeed)).toInt()
-var x2 = (ceil(Shoot.enemyX.toDouble() - bullet.x.toDouble() / Shoot.bulletSpeed)).toInt()
-var y1 = (ceil(bullet.y.toDouble() - Shoot.enemyY.toDouble() / Shoot.bulletSpeed)).toInt()
-var y2 = (ceil(Shoot.enemyY.toDouble() - bullet.y.toDouble() / Shoot.bulletSpeed)).toInt()
-
-if (bullet.x > enemyX) bullet.x = enemyX + (bulletSpeed.toInt() * (x1-1))
-if (bullet.x < enemyX) bullet.x = enemyX - (bulletSpeed.toInt() * (x2-1))
-
-if (bullet.y > enemyY) bullet.y = enemyY + (bulletSpeed.toInt() * (y1-1))
-if (bullet.y < enemyY) bullet.y = enemyY - (bulletSpeed.toInt() * (y2-1))
-
-
-//
-
-var x1 =
-                (ceil(((bullet.x.toDouble() - enemy.circle.x.toDouble()) / bulletSpeed))).toInt()
-            var x2 =
-                (ceil(((enemy.circle.x.toDouble() - bullet.x.toDouble()) / bulletSpeed))).toInt()
-            var y1 =
-                (ceil(((bullet.y.toDouble() - enemy.circle.y.toDouble()) / bulletSpeed))).toInt()
-            var y2 =
-                (ceil(((enemy.circle.y.toDouble() - bullet.y.toDouble()) / bulletSpeed))).toInt()
-
-
-if (bullet.x >= enemy.circle.x) {
-                    if (bullet.y >= enemy.circle.y) {
-                        bullet.y = (enemy.circle.y + ((bulletSpeed.toInt()) * (y1 - 1)))
-                        bullet.x = (enemy.circle.x + ((bulletSpeed.toInt()) * (x1 - 1)))
-                    } else if (bullet.y < enemy.circle.y) {
-                        bullet.y = (enemy.circle.y - ((bulletSpeed.toInt()) * (y2 - 1)))
-                        bullet.x = (enemy.circle.x + ((bulletSpeed.toInt()) * (x1 - 1)))
-                    }
-                } else if (bullet.x < enemy.circle.x) {
-                    if (bullet.y >= enemy.circle.y) {
-                        bullet.y = (enemy.circle.y + ((bulletSpeed.toInt()) * (y1 - 1)))
-                        bullet.x = (enemy.circle.x - ((bulletSpeed.toInt()) * (x2 - 1)))
-                    } else if (bullet.y < enemy.circle.y) {
-                        bullet.y = (enemy.circle.y - ((bulletSpeed.toInt()) * (y2 - 1)))
-                        bullet.x = (enemy.circle.x - ((bulletSpeed.toInt()) * (x2 - 1)))
-                    }
-                }
-
-
-
-                 if (randomEnemyForShotBool) {
-                                    var use: Enemy? = null
-                                    var place = 0f
-                                    var place2 = 2000f
-
-                                    for (it in crossesAllList) {
-                                        when {
-                                            it.passed == 4.toByte() -> {
-                                                var x =
-                                                    Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
-                                                x.circle!!.x = it.circle!!.x
-                                                x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = enemyList.indexOf(it)
-                                                advancedList4.add(x)
-                                            }
-                                            it.passed == 3.toByte() -> {
-                                                var x =
-                                                    Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
-                                                x.circle!!.x = it.circle!!.x
-                                                x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = enemyList.indexOf(it)
-                                                advancedList3.add(x)
-                                            }
-                                            it.passed == 2.toByte() -> {
-                                                var x =
-                                                    Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
-                                                x.circle!!.x = it.circle!!.x
-                                                x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = enemyList.indexOf(it)
-                                                advancedList2.add(x)
-                                            }
-                                            it.passed == 1.toByte() -> {
-                                                var x =
-                                                    Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
-                                                x.circle!!.x = it.circle!!.x
-                                                x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = enemyList.indexOf(it)
-                                                advancedList1.add(x)
-                                            }
-                                        }
-                                    }
-                                    if (advancedList4.isNotEmpty()) {
-                                        for (it in advancedList4) {
-                                            if (it.circle!!.y > place) {
-                                                place = it.circle!!.y
-                                                use = enemyList[it.pickEnemyID]
-                                            }
-                                        }
-                                    } else if (advancedList3.isNotEmpty()) {
-                                        for (it in advancedList3) {
-                                            if (it.circle!!.x > place) {
-                                                place = it.circle!!.x
-                                                use = enemyList[it.pickEnemyID]
-                                            }
-                                        }
-                                    } else if (advancedList2.isNotEmpty()) {
-                                        for (it in advancedList2) {
-                                            if (it.circle!!.y < place2) {
-                                                place2 = it.circle!!.y
-                                                use = enemyList[it.pickEnemyID]
-                                            }
-                                        }
-                                    } else if (advancedList1.isNotEmpty()) {
-                                        for (it in advancedList1) {
-                                            if (it.circle!!.x < place2) {
-                                                place2 = it.circle!!.x
-                                                use = enemyList[it.pickEnemyID]
-                                            }
-                                        }
-                                    } else {
-                                    }
-                                    randomEnemyForShot = use!!
-                                    movement(randomEnemyForShot)
-                                    randomEnemyForShotBool = false
-                                    advancedList4.removeAll(advancedList4)
-                                    advancedList3.removeAll(advancedList3)
-                                    advancedList2.removeAll(advancedList2)
-                                    advancedList1.removeAll(advancedList1)
-                                } else movement(randomEnemyForShot)
- */

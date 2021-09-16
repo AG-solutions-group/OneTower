@@ -302,15 +302,22 @@
         android:background="@drawable/marmorrect22"
         >
 
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/buildBtn"
-            android:layout_gravity="center"
-            android:padding="5dp"
-            android:paddingEnd="0dp"
+        <FrameLayout
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:paddingTop="3dp"
+            android:paddingStart="3dp"
+            android:layout_gravity="center"
+            android:paddingBottom="3dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:id="@+id/buildBtn"
             android:background="@drawable/talentsutils" />
+
+        </FrameLayout>
 
         <FrameLayout
             android:layout_width="0dp"
@@ -378,60 +385,12 @@
             android:id="@+id/constraintLayout3"
             android:layout_width="40dp"
             android:layout_height="80dp"
-            android:elevation="2dp"
             android:background="@drawable/marmorleft"
+            android:elevation="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/fragment"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/dmgTV"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_marginStart="4dp"
-                android:elevation="1dp"
-                app:imageResource="@{updateViewModel.pictureDmg}"
-                app:layout_constraintBottom_toTopOf="@+id/speedTV"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/dmgShowTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:elevation="1dp"
-                android:text="@{updateViewModel.pictureValue.toString()}"
-                android:textColor="@{updateViewModel.pictureColor}"
-                android:textSize="@{updateViewModel.textStatsPic}"
-                app:layout_constraintBottom_toBottomOf="@+id/dmgTV"
-                app:layout_constraintStart_toEndOf="@+id/dmgTV"
-                app:layout_constraintTop_toTopOf="@+id/dmgTV"
-                />
-
-            <ImageView
-                android:id="@+id/speedTV"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_marginStart="4dp"
-                android:elevation="1dp"
-                android:src="@drawable/bowicon"
-                app:layout_constraintBottom_toTopOf="@+id/xpTV"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dmgTV" />
-
-            <TextView
-                android:id="@+id/speedShowTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:elevation="1dp"
-                android:text="@{updateViewModel.towerSpd.toString()}"
-                android:textColor="@{updateViewModel.towerSpdColor}"
-                android:textSize="@{updateViewModel.textStatsPic}"
-                app:layout_constraintBottom_toBottomOf="@+id/speedTV"
-                app:layout_constraintStart_toEndOf="@+id/speedTV"
-                app:layout_constraintTop_toTopOf="@+id/speedTV" />
 
             <ImageView
                 android:id="@+id/xpTV"
@@ -440,9 +399,9 @@
                 android:layout_marginStart="4dp"
                 android:elevation="1dp"
                 android:src="@drawable/goldicon"
-                app:layout_constraintBottom_toTopOf="@+id/talentTV"
+                app:layout_constraintBottom_toTopOf="@+id/diaTV"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/speedTV" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/xpShowTV"
@@ -458,52 +417,103 @@
                 app:layout_constraintTop_toTopOf="@+id/xpTV" />
 
             <ImageView
-                android:id="@+id/talentTV"
+                android:id="@+id/diaTV"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_marginStart="4dp"
                 android:elevation="1dp"
-                android:src="@drawable/talenticon"
-                app:layout_constraintBottom_toTopOf="@+id/itemChanceTV"
+                android:src="@drawable/diamondicon"
+                app:layout_constraintBottom_toTopOf="@+id/interestTV"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/xpTV" />
 
             <TextView
-                android:id="@+id/talentShowTV"
+                android:id="@+id/diaShowTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:elevation="1dp"
-                android:text="@{updateViewModel.talents.toString()}"
-                android:textColor="@{updateViewModel.talentsColor}"
+                android:text="@{updateViewModel.diamonds.toString()}"
+                android:textColor="@{updateViewModel.diamondsColor}"
                 android:textSize="@{updateViewModel.textStatsPic}"
-                app:layout_constraintBottom_toBottomOf="@+id/talentTV"
-                app:layout_constraintStart_toEndOf="@+id/talentTV"
-                app:layout_constraintTop_toTopOf="@+id/talentTV" />
+                app:layout_constraintBottom_toBottomOf="@+id/diaTV"
+                app:layout_constraintStart_toEndOf="@+id/diaTV"
+                app:layout_constraintTop_toTopOf="@+id/diaTV" />
 
             <ImageView
-                android:id="@+id/itemChanceTV"
+                android:id="@+id/interestTV"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_marginStart="4dp"
                 android:elevation="1dp"
-                android:src="@drawable/itemfindicon"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/interesticon"
+                app:layout_constraintBottom_toTopOf="@+id/upgradeNumberTV"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/talentTV" />
+                app:layout_constraintTop_toBottomOf="@+id/diaTV" />
 
             <TextView
-                android:id="@+id/itemChanceShowTV"
+                android:id="@+id/interestShowTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:elevation="1dp"
-                android:text="@{updateViewModel.itemChance.toString()}"
-                android:textColor="@{updateViewModel.itemChanceColor}"
+                android:text="@{updateViewModel.interestString.toString()}"
+                android:textColor="@{updateViewModel.interestColor}"
                 android:textSize="@{updateViewModel.textStatsPic}"
-                app:layout_constraintBottom_toBottomOf="@+id/itemChanceTV"
-                app:layout_constraintStart_toEndOf="@+id/itemChanceTV"
-                app:layout_constraintTop_toTopOf="@+id/itemChanceTV" />
+                app:layout_constraintBottom_toBottomOf="@+id/interestTV"
+                app:layout_constraintStart_toEndOf="@+id/interestTV"
+                app:layout_constraintTop_toTopOf="@+id/interestTV" />
+
+            <ImageView
+                android:id="@+id/upgradeNumberTV"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:src="@drawable/upgradepointsicon"
+                app:layout_constraintBottom_toTopOf="@+id/unusedItemsTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/interestTV" />
+
+            <TextView
+                android:id="@+id/upgradeNumberShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.upgradePoints.toString()}"
+                android:textColor="@{updateViewModel.upgradePointsColor}"
+                android:textSize="@{updateViewModel.textStatsPic}"
+                app:layout_constraintBottom_toBottomOf="@+id/upgradeNumberTV"
+                app:layout_constraintStart_toEndOf="@+id/upgradeNumberTV"
+                app:layout_constraintTop_toTopOf="@+id/upgradeNumberTV" />
+
+
+            <ImageView
+                android:id="@+id/unusedItemsTV"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:src="@drawable/itempointsicon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/upgradeNumberTV" />
+
+
+            <TextView
+                android:id="@+id/unusedItemsShowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:elevation="1dp"
+                android:text="@{updateViewModel.itemPoints.toString()}"
+                android:textColor="@{updateViewModel.itemPointsColor}"
+                android:textSize="@{updateViewModel.textStatsPic}"
+                app:layout_constraintBottom_toBottomOf="@+id/unusedItemsTV"
+                app:layout_constraintStart_toEndOf="@+id/unusedItemsTV"
+                app:layout_constraintTop_toTopOf="@+id/unusedItemsTV" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -532,14 +542,15 @@
                 android:id="@+id/coinIV"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/goldicon" />
+                android:src="@drawable/shopicon" />
 
 
             <ImageView
-                android:id="@+id/dmgIV"
+                android:id="@+id/shopiconmystery"
+                android:visibility="invisible"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/swordandwandicon"
+                android:src="@drawable/shopiconmystery"
                 />
 
         </LinearLayout>

@@ -2,7 +2,6 @@ package com.agsolutions.td
 
 import android.graphics.Canvas
 import android.view.SurfaceHolder
-import com.agsolutions.td.Companion.Companion.gameSpeedAdjuster
 import kotlinx.coroutines.InternalCoroutinesApi
 
 class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView: GameView) :
@@ -12,7 +11,7 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
         private var canvas: Canvas? = null
     }
     private val targetFPS =
-        60 * gameSpeedAdjuster // frames per second, the rate at which you would like to refresh the Canvas
+        60 * GameActivity.companionList.gameSpeedAdjuster // frames per second, the rate at which you would like to refresh the Canvas
 
     @InternalCoroutinesApi
     override fun run() {
@@ -22,7 +21,7 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
         var targetTime: Long
 
         while (running) {
-            targetTime = (1000 / (targetFPS * gameSpeedAdjuster)).toLong()
+            targetTime = (1000 / (targetFPS * GameActivity.companionList.gameSpeedAdjuster)).toLong()
             startTime = System.nanoTime()
 
                 try {

@@ -64,6 +64,7 @@ class StatsFragment (var updateViewModel: UpdateViewModel) : Fragment() {
 
         var scalePics = 1.5
 
+        /*
         xpTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
         xpTV.layoutParams.width = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
         useNumberTV.layoutParams.height = (com.agsolutions.td.Companion.scaleTextStats * scalePics).toInt()
@@ -126,6 +127,8 @@ class StatsFragment (var updateViewModel: UpdateViewModel) : Fragment() {
             com.agsolutions.td.Companion.toastGlobal = true
             com.agsolutions.td.Companion.toastText = "Item Points - currency to buy special items"
         }
+
+         */
 
     }
 
