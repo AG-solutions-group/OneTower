@@ -3,13 +3,18 @@ package com.agsolutions.td
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
+import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.agsolutions.td.GameActivity.Companion.companionList
-import com.agsolutions.td.Main.MainActivity
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.math.atan2
+
+
+
 
 
 class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context, attributes),
@@ -29,22 +34,24 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
         var towerBase: Bitmap? = null
         var dragRect = Rect(0, 0, 0, 0)
-        var dragRectList = mutableListOf<Rect>(
-            Rect(0, 0, 1600, 300),
-            Rect(0, 1300, 1600, 1600),
+        var dragRectList = mutableListOf<Rect>()
+        var dragRectListTower = mutableListOf<DragRectListData>()
 
-            Rect(200, 950, 950, 1100),
-            Rect(200, 475, 850, 625),
-            Rect(900, 950, 1000, 1250),
-            Rect(375, 475, 525, 850),
-            Rect(200, 475, 350, 1100),
-            Rect(750, 475, 875, 1250)
-        )
+        var scaleFactor = 1f
+        var focusCanvasX = 0f
+        var focusCanvasY = 0f
+        var focusVar = 0f
     }
 
     private var thread: GameThread
     val enemy = Enemy(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0)
     var firstBoot = true
+
+    var MIN_ZOOM = 1f
+    var MAX_ZOOM = 3f
+
+
+    var detector = ScaleGestureDetector(getContext(), ScaleListener())
 
 
     var rectBackground = Rect(0, 0, 1200, 1800)
@@ -85,12 +92,26 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     var paintManaShield = Paint()
     var paintShield = Paint()
     var paintText = Paint ()
+    var paintDisrupt = Paint ()
 
     var towerGunBasic: Bitmap? = null
     var towerGunBlue: Bitmap? = null
     var towerGunOrange: Bitmap? = null
     var towerGunPurple: Bitmap? = null
+    var goldDrop: Bitmap? = null
+    var upDrop: Bitmap? = null
+    var ipDrop: Bitmap? = null
 
+    var elementButterfly : Bitmap? = null
+    var elementDark : Bitmap? = null
+    var elementEarth : Bitmap? = null
+    var elementFire : Bitmap? = null
+    var elementIce : Bitmap? = null
+    var elementMoon : Bitmap? = null
+    var elementPoison : Bitmap? = null
+    var elementUtils : Bitmap? = null
+    var elementWind : Bitmap? = null
+    var elementWizard : Bitmap? = null
 
 
     //initialize items----------------------------------------------------------------------------
@@ -112,6 +133,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         paintText.isAntiAlias = true
         paintText.textSize = 40f
         paintText.setShadowLayer(10f,10f, 10f, Color.BLACK)
+        paintDisrupt.color = Color.parseColor("#500E28")
         paintTowerDmgDone.color = Color.WHITE
         paintTowerDmgDone.style = Paint.Style.FILL_AND_STROKE
         paintTowerDmgDone.isAntiAlias = true
@@ -169,8 +191,21 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         paintBombDmgDone.letterSpacing = -0.15f
         paintBombDmgDone.setShadowLayer(5f,0f, 0f, Color.WHITE)
 
-        talentP = BitmapFactory.decodeResource(context.resources, R.drawable.talenticondraw)
+         elementButterfly = BitmapFactory.decodeResource(context.resources, R.drawable.talentsbutterfly)
+         elementDark = BitmapFactory.decodeResource(context.resources, R.drawable.talentsdark)
+         elementEarth = BitmapFactory.decodeResource(context.resources, R.drawable.talentsearth)
+         elementFire = BitmapFactory.decodeResource(context.resources, R.drawable.talentsfire)
+         elementIce = BitmapFactory.decodeResource(context.resources, R.drawable.talentsice)
+         elementMoon = BitmapFactory.decodeResource(context.resources, R.drawable.moon)
+         elementPoison = BitmapFactory.decodeResource(context.resources, R.drawable.talentspoison)
+         elementUtils = BitmapFactory.decodeResource(context.resources, R.drawable.talentsutils)
+         elementWind = BitmapFactory.decodeResource(context.resources, R.drawable.talentswind)
+         elementWizard = BitmapFactory.decodeResource(context.resources, R.drawable.talentswizard)
 
+        goldDrop = BitmapFactory.decodeResource(context.resources, R.drawable.goldicon)
+        upDrop = BitmapFactory.decodeResource(context.resources, R.drawable.upgradepointsicon)
+        ipDrop = BitmapFactory.decodeResource(context.resources, R.drawable.itempointsicon)
+        talentP = BitmapFactory.decodeResource(context.resources, R.drawable.talenticondraw)
         towerBase = BitmapFactory.decodeResource(context.resources, R.drawable.towerbasesmall)
         towerFalling = BitmapFactory.decodeResource(context.resources, R.drawable.towerfalling)
         towerGunBasic = BitmapFactory.decodeResource(context.resources, R.drawable.towergunbasic)
@@ -217,6 +252,19 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
     }
 
+    private inner class ScaleListener : SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            scaleFactor *= detector.scaleFactor
+            scaleFactor = Math.max(MIN_ZOOM, Math.min(scaleFactor, MAX_ZOOM))
+            focusCanvasX = detector.focusX
+            focusCanvasY = detector.focusY
+            Log.d("blablax", focusCanvasX.toString())
+            Log.d("blablay", focusCanvasY.toString())
+            invalidate()
+            return true
+        }
+    }
+
     //surface holder things-----------------------------------------------------------------------
 
     override fun surfaceCreated(surfaceHolder: SurfaceHolder) {
@@ -243,20 +291,46 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
-        if (!MainActivity.startScreenBool) {
-            companionList.readLockEnemy.lock()
-            try {
+        /*
+        when(event!!.action) {
+            MotionEvent.ACTION_SCROLL -> {
+                // Find the index of the active pointer and fetch its position
+                var pointerIndex = event!!.getPointerId(0);
+                var x = event!!.getX(pointerIndex);
+                var y = event!!.getY(pointerIndex);
 
+                var dx = x - mLastTouchX;
+                var dy = y - mLastTouchY;
+
+                focusCanvasX += dx;
+                focusCanvasY += dy;
+
+                mLastTouchX = x;
+                mLastTouchY = y;
+
+                invalidate();
+                break;
+            }
+        }
+
+         */
+                var scaler = ((companionList.scaleScreen / 10) * GameView.scaleFactor)
                 val x = event!!.x
                 val y = event.y
 
-                if (tower(x, y)) {
-
-                } else if ((x > 875 * (companionList.scaleScreen / 10) && x < 1025 * (companionList.scaleScreen / 10)) && (y > 1145 * (companionList.scaleScreen / 10) && y < 1275 * (companionList.scaleScreen / 10)) && companionList.spawnDoubleClickCounter in 1..20 && companionList.mapMode == 1) {
-                    companionList.spawnDoubleClick = true
+                if (tower(x, y, scaler)) {
+                    return super.onTouchEvent(event)
+                } else if ((!companionList.autoSpawn && companionList.enemyList.isEmpty() && x > ((875 * scaler) - (companionList.clipRect.left * scaler)) && x < ((1025 * scaler) - (companionList.clipRect.left * scaler)) && y > ((1145 * scaler) - (companionList.clipRect.top * scaler)) && y < ((1275 * scaler) - (companionList.clipRect.top * scaler))) && companionList.mapMode == 1) {
                     companionList.towerClick = false
                     companionList.build = true
                     companionList.buildClickBool = true
+                    companionList.spawnEnemy = true
+                    return super.onTouchEvent(event)
+                } else if ((x > ((875 * scaler) - (companionList.clipRect.left * scaler)) && x < ((1025 * scaler) - (companionList.clipRect.left * scaler)) && y > ((1145 * scaler) - (companionList.clipRect.top * scaler)) && y < ((1275 * scaler) - (companionList.clipRect.top * scaler))) && companionList.mapMode == 1)  {
+                    companionList.towerClick = false
+                    companionList.build = true
+                    companionList.buildClickBool = true
+                    companionList.autoSpawnClick = true
                         if (companionList.autoSpawn) {
                             companionList.autoSpawn = false
                             companionList.spawnEnemy = false
@@ -264,29 +338,26 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                             companionList.autoSpawn = true
                             companionList.spawnEnemy = false
                         }
-                } else if ((x > 875 * (companionList.scaleScreen / 10) && x < 1025 * (companionList.scaleScreen / 10)) && (y > 1145 * (companionList.scaleScreen / 10) && y < 1275 * (companionList.scaleScreen / 10)) && companionList.mapMode == 1) {
-                    companionList.spawnDoubleClickCounter = 1
-                    companionList.towerClick = false
-                    companionList.build = true
-                    companionList.buildClickBool = true
-                }else if (enemy(x, y)){
+                    return super.onTouchEvent(event)
+                }else if (enemy(x, y, scaler)){
+                    return super.onTouchEvent(event)
                 }else {
                     companionList.towerClick = false
                     companionList.enemyClick = false
                     companionList.build = true
                     companionList.buildClickBool = true
+                    detector.onTouchEvent(event)
+                    return true
                 }
 
-                return super.onTouchEvent(event)
-            } finally {
-                companionList.readLockEnemy.unlock()
-            }
-        } else return super.onTouchEvent(event)
+      //  return super.onTouchEvent(event)
+      //  return true
     }
 
-    fun enemy (x: Float, y: Float) : Boolean{
-
+    fun enemy (x: Float, y: Float, scaler: Float) : Boolean{
         var bool = false
+        companionList.readLockEnemy.lock()
+        try {
 
         var enemyListIterator = companionList.enemyList.listIterator()
         while (enemyListIterator.hasNext()) {
@@ -296,12 +367,12 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         var enemyListIteratorZ = companionList.enemyList.listIterator()
         while (enemyListIteratorZ.hasNext()) {
             var it = enemyListIteratorZ.next()
-            val distanceX = x - (it.circle!!.x * (companionList.scaleScreen / 10))
-            val distanceY = y - (it.circle!!.y  * (companionList.scaleScreen / 10))
+            val distanceX = (x + (companionList.clipRect.left * scaler)) - (it.circle!!.x * scaler)
+            val distanceY = (y + (companionList.clipRect.top * scaler)) - (it.circle!!.y * scaler)
 
             val squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
 
-            val sumOfRadius = (1 + it.circle!!.r)
+            val sumOfRadius = (1 + it.circle!!.r * scaler)
 
             if (squaredDistance <= sumOfRadius * sumOfRadius) {
                 it.selected = true
@@ -313,12 +384,17 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 break
             }
         }
+             } finally {
+                companionList.readLockEnemy.unlock()
+            }
         return bool
     }
 
-    fun tower (x: Float, y: Float) : Boolean{
-
+    fun tower (x: Float, y: Float, scaler: Float) : Boolean{
         var bool = false
+
+        companionList.readLockTower.lock()
+        try {
 
         var towerListIterator = companionList.towerList.listIterator()
         while (towerListIterator.hasNext()) {
@@ -329,12 +405,12 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         var towerListIteratorZ = companionList.towerList.listIterator()
         while (towerListIteratorZ.hasNext()) {
             var it = towerListIteratorZ.next()
-            val distanceX = x - (it.towerRange.x * (companionList.scaleScreen / 10))
-            val distanceY = y - (it.towerRange.y * (companionList.scaleScreen / 10))
+            val distanceX = (x + (companionList.clipRect.left * scaler)) - (it.towerRange.x * scaler)
+            val distanceY = (y + (companionList.clipRect.top * scaler)) - (it.towerRange.y * scaler)
 
             val squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
 
-            val sumOfRadius = (1 + 80)
+            val sumOfRadius = (1 + 80 * scaler)
 
             if (squaredDistance <= sumOfRadius * sumOfRadius) {
                 it.selected = true
@@ -347,6 +423,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 break
             }
         }
+            } finally {
+                        companionList.readLockTower.unlock()
+                }
         return bool
     }
 
@@ -369,9 +448,14 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 //  MAIN ACTIVITY ---------------------------------------------------------------------------------------------------------------------------------
 
                 //scale canvas for different devices
+
+                focusVar = scaleFactor - 1
+                canvas.translate(focusCanvasX * (focusVar) * -1, focusCanvasY * (focusVar) * -1)
                 canvas.scale(
-                    (companionList.scaleScreen / 10), (companionList.scaleScreen / 10)
+                    ((companionList.scaleScreen / 10) * scaleFactor), ((companionList.scaleScreen / 10) * scaleFactor)
                 )
+
+                companionList.clipRect = canvas.clipBounds
 
                 //draw background
                 if (companionList.mapPick == 0 || companionList.mapPick == 1) {
@@ -388,8 +472,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 }
 
                 // draw text
-                if (companionList.mapMode != 2) {
+                if (companionList.mapMode == 1) {
                     if (companionList.autoSpawn) canvas.drawText("ON", 910f, 1225f, paintText)
+                    else if (companionList.enemyList.isEmpty()) canvas.drawText("NXT", 910f, 1225f, paintText)
                     else canvas.drawText("OFF", 910f, 1225f, paintText)
                 }
 
@@ -411,6 +496,69 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                 var rectBase =
                                     Rect((it.towerRange.x - 80).toInt(), (it.towerRange.y - 80).toInt(), (it.towerRange.x + 80).toInt(), (it.towerRange.y + 80).toInt())
                                 canvas.drawBitmap(towerBase!!, null, rectBase, null)
+
+                                if (companionList.towerClick && it.selected) canvas.drawCircle(it.towerRange.x, it.towerRange.y, it.towerR, paintRange)
+                                if (companionList.towerClick && it.selected && it.itemListBag.contains(GameActivity.companionList.eutils)) canvas.drawCircle(it.towerRange.x, it.towerRange.y, 150f, paintRange)
+                                var rectTalent = Rect((it.towerRange.x - 60).toInt(), (it.towerRange.y + 30).toInt(), it.towerRange.x.toInt() - 30, it.towerRange.y.toInt() + 60)
+                                if (it.talentPoints > 0) canvas.drawBitmap(talentP!!, null, rectTalent, null)
+                                var textsize = paintTowerDmgDone.measureText(it.towerLevel.toString())
+                                canvas.drawText(it.towerLevel.toString(), (it.towerRange.x + 55 - (textsize /2)), (it.towerRange.y + 60), paintTowerDmgDone)
+                                if(it.bagSizeElementCount > 0) {
+                                    var yBool = 0
+                                    var bitmap = elementButterfly
+                                        for (item in it.itemListBag) {
+                                            var elementIsThere = false
+                                            when (item) {
+                                                companionList.eearth -> {
+                                                    bitmap = elementEarth
+                                                    elementIsThere = true
+                                                }
+                                                companionList.ebutterfly -> {
+                                                    bitmap = elementButterfly
+                                                    elementIsThere = true
+                                                }
+                                                companionList.ewind -> {
+                                                    bitmap = elementWind
+                                                    elementIsThere = true
+                                                }
+                                                companionList.emoon -> {
+                                                    bitmap = elementMoon
+                                                    elementIsThere = true
+                                                }
+                                                companionList.epoison -> {
+                                                    bitmap = elementPoison
+                                                    elementIsThere = true
+                                                }
+                                                companionList.eice -> {
+                                                    bitmap = elementIce
+                                                    elementIsThere = true
+                                                }
+                                                companionList.efire -> {
+                                                    bitmap = elementFire
+                                                    elementIsThere = true
+                                                }
+                                                companionList.edark -> {
+                                                    bitmap = elementDark
+                                                    elementIsThere = true
+                                                }
+                                                companionList.eutils -> {
+                                                    bitmap = elementUtils
+                                                    elementIsThere = true
+                                                }
+                                                companionList.ewizard -> {
+                                                    bitmap = elementWizard
+                                                    elementIsThere = true
+                                                }
+                                            }
+                                            if (elementIsThere) {
+                                                var rectTalent =
+                                                    Rect((it.towerRange.x + 35).toInt(), (it.towerRange.y + yBool).toInt(), it.towerRange.x.toInt() + 75, it.towerRange.y.toInt() + yBool + 40)
+                                                canvas.drawBitmap(bitmap!!, null, rectTalent, null)
+                                                yBool -= 35
+                                            }
+                                        }
+                                    }
+
                                     canvas.save()
                                     canvas.rotate(getAngle(it), it.towerRange.x, it.towerRange.y)
                                     var rectTower =
@@ -423,17 +571,12 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                     }
                                     canvas.restore()
                             }
-                            if (companionList.towerClick && it.selected) canvas.drawCircle(it.towerRange.x, it.towerRange.y, it.towerR, paintRange)
-                            if (companionList.towerClick && it.selected && it.itemListBag.contains(GameActivity.companionList.eutils)) canvas.drawCircle(it.towerRange.x, it.towerRange.y, 150f, paintRange)
-                            var rectTalent = Rect((it.towerRange.x - 60).toInt(), (it.towerRange.y + 30).toInt(), it.towerRange.x.toInt() - 30, it.towerRange.y.toInt() + 60)
-                            if (it.talentPoints > 0) canvas.drawBitmap(talentP!!, null, rectTalent, null)
+                            if (it.disrupted) canvas.drawCircle(it.towerRange.x, it.towerRange.y,30f, paintDisrupt)
                         }
                 } finally {
                         companionList.writeLockTower.unlock()
                 }
                 }
-
-
 
                     //draw poison talent
                     if (companionList.poisonCloud > 0 && companionList.shootListPoison.isNotEmpty()) {
@@ -471,7 +614,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                 var it = shootListTornadoIterator.next()
                                 if (it.broken == 1) {
                                     shootListTornadoIterator.remove()
-                                } else {
+                                } else if (companionList.shootListTornado.size > 0) {
                                     it.update()
                                     companionList.rotateTornado += 5
                                     if (companionList.rotateTornado >= 360) companionList.rotateTornado = 0f
@@ -519,14 +662,16 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
                             if (companionList.level > 0) level()
                             if (companionList.enemyList.size > 0) {
-
                                 companionList.writeLockEnemy.lock()
                                 try {
+                                    companionList.enemyList.removeAll(companionList.enemyRemoveList)
+                                    companionList.enemyRemoveList.removeAll(companionList.enemyRemoveList)
+                                    if (companionList.enemyList.size > 0) {
                                     var enemyListIterator = companionList.enemyList.listIterator()
                                     while (enemyListIterator.hasNext()) {
                                         var it = enemyListIterator.next()
                                         // enemy out of screen
-                                        if (companionList.refresh && it.dead != 1) {
+                                        if (companionList.refresh && !it.dead) {
                                             it.update()
                                         }
                                         // draw
@@ -544,16 +689,17 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                             canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 54).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 44).toFloat(), paintHpBarBack)
                                             canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 52).toFloat(), (it.circle!!.x.toFloat() - it.enemyRightShield + 35.0F), (it.circle!!.y - 42).toFloat(), paintShield)
                                         }
-
                                         if (it.hit) {
-                                            it.explosionCounter ++
+                                            it.explosionCounter++
                                             when (it.explosionCounter) {
                                                 in 1..4 -> {
-                                                    var rectExplosion = Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
+                                                    var rectExplosion =
+                                                        Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
                                                     canvas.drawBitmap(explosion!!, null, rectExplosion, null)
                                                 }
                                                 in 5..10 -> {
-                                                    var rectExplosion = Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
+                                                    var rectExplosion =
+                                                        Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
                                                     canvas.drawBitmap(explosion2!!, null, rectExplosion, null)
                                                 }
                                                 in 11..999 -> {
@@ -596,7 +742,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                                         display.dmgCount++
                                                         if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
                                                         else display.dmgCountPosition -= 2
-                                                        if (it.passed == 0.toByte() || it.passed == 2.toByte() || it.passed == 4.toByte()) canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x + display.dmgCountPosition)), (it.circle!!.y - (it.circle!!.r / 2) + display.positionY), display.paint)
+                                                        if (it.circleYMovement == "yminus" || it.circleYMovement == "yplus") canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x + display.dmgCountPosition)), (it.circle!!.y - (it.circle!!.r / 2) + display.positionY), display.paint)
                                                         else canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x - (it.circle!!.r / 2)) + display.positionX), (it.circle!!.y - display.dmgCountPosition), display.paint)
                                                         if (display.dmgCount > 25) {
                                                             //   display.burnDmgDelete = fireDmgDisplay.indexOf(display)
@@ -608,7 +754,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                                 companionList.writeLockDisplay.unlock()
                                             }
                                         }
-
+                                    }
                                     }
                                 } finally {
                                     companionList.writeLockEnemy.unlock()
@@ -629,10 +775,44 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                             companionList.writeLockDisplay.unlock()
                         }
 
+        companionList.writeLockDisplayDrop.lock()
+        try {
+            var dmgDisplayListIterator =
+                companionList.dmgDisplayDropList.listIterator()
+            while (dmgDisplayListIterator.hasNext()) {
+                var display = dmgDisplayListIterator.next()
+
+                //        for (display in dmgDisplayList) {
+                //            Log.d("thread", Thread.currentThread().name)
+                    display.dmgCount++
+                    if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
+                    else display.dmgCountPosition -= 2
+                var icon = if(display.icon == "gold") goldDrop else if (display.icon == "ip") ipDrop else upDrop
+                var rectPlace = Rect((display.indexx - 25), (display.indexy - 75 - display.dmgCountPosition), (display.indexx + 25), (display.indexy - 25 - display.dmgCountPosition))
+                    canvas.drawBitmap(icon!!, null, rectPlace, null)
+                    if (display.dmgCount > 25) {
+                        //   display.burnDmgDelete = fireDmgDisplay.indexOf(display)
+                        display.displayDmgDelete = true
+                    }
+                }
+
+            if (companionList.dmgDisplayDropList.isNotEmpty()) {
+                var dmgDisplayListIteratorZ = companionList.dmgDisplayDropList.listIterator()
+                while (dmgDisplayListIteratorZ.hasNext()) {
+                    var displayZ = dmgDisplayListIteratorZ.next()
+                    if (displayZ.displayDmgDelete) dmgDisplayListIteratorZ.remove()
+                }
+            }
+        } finally {
+            companionList.writeLockDisplayDrop.unlock()
+        }
+
+
 
                         //draw shot
                         if (companionList.shootList.size > 0) {
                             companionList.writeLockShot.lock()
+                            companionList.writeLockEnemy.lock()
                             try {
                                 var shootListIteratorZ = companionList.shootList.listIterator()
                                 while (shootListIteratorZ.hasNext()) {
@@ -641,87 +821,92 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                         shootListIteratorZ.remove()
                                     }
                                 }
+                                if (companionList.shootList.size > 0) {
                                 var shootListIterator = companionList.shootList.listIterator()
                                 while (shootListIterator.hasNext()) {
                                     var it = shootListIterator.next()
-                                        if (companionList.refresh) {
-                                            it.update()
-                                        }
-                                        if (it.sniper) {
-                                            if (!crossTowerBullet(it)) {
-                                                canvas.save()
-                                                canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                                var baseShootBullet =
-                                                    Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                                canvas.drawBitmap(shootBulletPic!!, null, baseShootBullet, null)
-                                                canvas.restore()
-                                            }
-                                        } else if (it.chainLightning) {
+                                    if (companionList.refresh) {
+                                        it.update()
+                                    }
+                                    if (it.sniper) {
+                                        if (!crossTowerBullet(it)) {
                                             canvas.save()
-                                            canvas.rotate(getAngleBullet(it) - 75, it.bullet.x, it.bullet.y)
-                                            var baseShootChain =
-                                                Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
-                                            canvas.drawBitmap(shootChainLightningPic!!, null, baseShootChain, null)
+                                            canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
+                                            var baseShootBullet =
+                                                Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
+                                            canvas.drawBitmap(shootBulletPic!!, null, baseShootBullet, null)
                                             canvas.restore()
-                                        } else if (companionList.towerList[it.towerId].towerPrimaryElement == "moon") {
-                                            if (!crossTowerBullet(it)) {
-                                                companionList.rotateShotBounce += 30
-                                                if (companionList.rotateShotBounce >= 360) companionList.rotateShotBounce = 0f
-                                                canvas.save()
-                                                canvas.rotate(companionList.rotateShotBounce, it.bullet.x, it.bullet.y)
-                                                var baseShootBounce =
-                                                    Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                                canvas.drawBitmap(shootBouncePic!!, null, baseShootBounce, null)
-                                                canvas.restore()
-                                            }
-                                        } else if (it.multiShotBullet && companionList.towerList[it.towerId].towerPrimaryElement == "wind") {
-                                            companionList.rotateShotMulti += 5
-                                            if (companionList.rotateShotMulti >= 360) companionList.rotateShotMulti = 0f
-                                            canvas.save()
-                                            canvas.rotate(companionList.rotateShotMulti, it.bullet.x, it.bullet.y)
-                                            var baseShootMulti =
-                                                Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
-                                            if (companionList.day) canvas.drawBitmap(shootMultiPicDay!!, null, baseShootMulti, null)
-                                            else canvas.drawBitmap(shootMultiPic!!, null, baseShootMulti, null)
-                                            canvas.restore()
-                                        } else if (companionList.towerList[it.towerId].towerPrimaryElement == "earth") {
-                                            if (!crossTowerBullet(it)) {
-                                                canvas.save()
-                                                canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                                var baseShootSplash =
-                                                    Rect((it.bullet.x - (it.bullet.r * 8)).toInt(), (it.bullet.y - (it.bullet.r * 8)).toInt(), (it.bullet.x + (it.bullet.r * 8)).toInt(), (it.bullet.y + (it.bullet.r * 8)).toInt())
-                                                canvas.drawBitmap(shootSplashPic!!, null, baseShootSplash, null)
-                                                canvas.restore()
-                                            }
-                                        } else if (companionList.towerList[it.towerId].towerPrimaryElement == "butterfly") {
-                                            if (!crossTowerBullet(it)) {
-                                                canvas.save()
-                                                canvas.rotate(getAngleBullet(it) - 90, it.bullet.x, it.bullet.y)
-                                                var baseShootButterfly =
-                                                    Rect((it.bullet.x - (it.bullet.r * 7)).toInt(), (it.bullet.y - (it.bullet.r * 7)).toInt(), (it.bullet.x + (it.bullet.r * 7)).toInt(), (it.bullet.y + (it.bullet.r * 7)).toInt())
-                                                it.butterflyPicCounter++
-                                                if (it.butterflyPicCounter > 2) {
-                                                    it.butterflyPicCounter = 0
-                                                    it.butterflyNextPic++
-                                                    if (it.butterflyNextPic >= 4) it.butterflyNextPic =
-                                                        0
-                                                }
-                                                canvas.drawBitmap(shootButterflyArray!![it.butterflyNextPic], null, baseShootButterfly, null)
-                                                canvas.restore()
-                                            }
-                                        } else {
-                                            if (!crossTowerBullet(it)) {
-                                                canvas.save()
-                                                canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                                var baseShootBullet =
-                                                    Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                                canvas.drawBitmap(shootBulletPic!!, null, baseShootBullet, null)
-                                                canvas.restore()
-                                            }
                                         }
+                                    } else if (it.chainLightning) {
+                                        canvas.save()
+                                        canvas.rotate(getAngleBullet(it) - 75, it.bullet.x, it.bullet.y)
+                                        var baseShootChain =
+                                            Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
+                                        canvas.drawBitmap(shootChainLightningPic!!, null, baseShootChain, null)
+                                        canvas.restore()
+                                    } else if (companionList.towerList[it.towerId].towerPrimaryElement == "moon") {
+                                        if (!crossTowerBullet(it)) {
+                                            companionList.rotateShotBounce += 30
+                                            if (companionList.rotateShotBounce >= 360) companionList.rotateShotBounce =
+                                                0f
+                                            canvas.save()
+                                            canvas.rotate(companionList.rotateShotBounce, it.bullet.x, it.bullet.y)
+                                            var baseShootBounce =
+                                                Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
+                                            canvas.drawBitmap(shootBouncePic!!, null, baseShootBounce, null)
+                                            canvas.restore()
+                                        }
+                                    } else if (it.multiShotBullet && companionList.towerList[it.towerId].towerPrimaryElement == "wind") {
+                                        companionList.rotateShotMulti += 5
+                                        if (companionList.rotateShotMulti >= 360) companionList.rotateShotMulti =
+                                            0f
+                                        canvas.save()
+                                        canvas.rotate(companionList.rotateShotMulti, it.bullet.x, it.bullet.y)
+                                        var baseShootMulti =
+                                            Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
+                                        if (companionList.day) canvas.drawBitmap(shootMultiPicDay!!, null, baseShootMulti, null)
+                                        else canvas.drawBitmap(shootMultiPic!!, null, baseShootMulti, null)
+                                        canvas.restore()
+                                    } else if (companionList.towerList[it.towerId].towerPrimaryElement == "earth") {
+                                        if (!crossTowerBullet(it)) {
+                                            canvas.save()
+                                            canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
+                                            var baseShootSplash =
+                                                Rect((it.bullet.x - (it.bullet.r * 8)).toInt(), (it.bullet.y - (it.bullet.r * 8)).toInt(), (it.bullet.x + (it.bullet.r * 8)).toInt(), (it.bullet.y + (it.bullet.r * 8)).toInt())
+                                            canvas.drawBitmap(shootSplashPic!!, null, baseShootSplash, null)
+                                            canvas.restore()
+                                        }
+                                    } else if (companionList.towerList[it.towerId].towerPrimaryElement == "butterfly") {
+                                        if (!crossTowerBullet(it)) {
+                                            canvas.save()
+                                            canvas.rotate(getAngleBullet(it) - 90, it.bullet.x, it.bullet.y)
+                                            var baseShootButterfly =
+                                                Rect((it.bullet.x - (it.bullet.r * 7)).toInt(), (it.bullet.y - (it.bullet.r * 7)).toInt(), (it.bullet.x + (it.bullet.r * 7)).toInt(), (it.bullet.y + (it.bullet.r * 7)).toInt())
+                                            it.butterflyPicCounter++
+                                            if (it.butterflyPicCounter > 2) {
+                                                it.butterflyPicCounter = 0
+                                                it.butterflyNextPic++
+                                                if (it.butterflyNextPic >= 4) it.butterflyNextPic =
+                                                    0
+                                            }
+                                            canvas.drawBitmap(shootButterflyArray!![it.butterflyNextPic], null, baseShootButterfly, null)
+                                            canvas.restore()
+                                        }
+                                    } else {
+                                        if (!crossTowerBullet(it)) {
+                                            canvas.save()
+                                            canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
+                                            var baseShootBullet =
+                                                Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
+                                            canvas.drawBitmap(shootBulletPic!!, null, baseShootBullet, null)
+                                            canvas.restore()
+                                        }
+                                    }
+                                }
                                 }
                             } finally {
                                 companionList.writeLockShot.unlock()
+                                companionList.writeLockEnemy.unlock()
                             }
                         }
 
@@ -729,19 +914,27 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
 
                     //draw ice talent
-                    if (companionList.iceShardSpeed > 0) {
-                        companionList.writeLockIce.lock()
-                        try {
-                            var shootListIceIterator = companionList.shootListIce.listIterator()
-                            while (shootListIceIterator.hasNext()) {
-                                var it = shootListIceIterator.next()
-                                if (companionList.refresh) it.update()
-                                it.draw(canvas)
+
+                        if (companionList.towerList.isNotEmpty()) {
+                            companionList.writeLockTower.lock()
+                            try {
+                                var towerListIterator = companionList.towerList.listIterator()
+                                while (towerListIterator.hasNext()) {
+                                    var it = towerListIterator.next()
+                                    if (it.iceShard > 0) {
+                                        var shootListIceIterator = it.shootListIce.listIterator()
+                                        while (shootListIceIterator.hasNext()) {
+                                            var shard = shootListIceIterator.next()
+                                            if (companionList.refresh) shard.update()
+                                            shard.draw(canvas)
+                                        }
+                                    }
+                                }
+                            } finally {
+                                companionList.writeLockTower.unlock()
                             }
-                        } finally {
-                            companionList.writeLockIce.unlock()
                         }
-                    }
+
                 companionList.refresh = false
                 }
 
@@ -837,55 +1030,57 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                             "split" -> split(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
                             "shield" -> shield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
                             "manaShield" -> manaShield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+                            "invu" -> invu(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
                         }
                     }
-                "armor", "normal", "speed", "mass", "regeneration", "evade", "magic armor", "immune", "shortcut", "split", "shield", "manaShield" ->
-                    if (companionList.levelList.contains("healer") && companionList.levelStatus != "boss" && companionList.levelStatus != "mass" && companionList.levelStatus != "challenge") {
+                "armor", "normal", "speed", "mass", "regeneration", "evade", "magic armor", "immune", "shortcut", "split", "shield", "manaShield", "invu" ->
+                    if (companionList.levelStatus != "boss" && companionList.levelStatus != "mass" && companionList.levelStatus != "challenge") {
                         when ((0..5).random()) {
                             0 -> {
-                                healer(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            }
-                            in 1..5 -> {
-                                when (companionList.levelStatus) {
-                                    "armor" -> armor(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                    "normal" -> normal(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                    "speed" -> speed(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                    "mass" -> mass(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                    "regeneration" -> reg(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                    "evade" -> evade(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                    "magic armor" -> magicArmor(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                    "immune" -> immune(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                    "shortcut" -> shortcut(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                    "split" -> split(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                    "shield" -> shield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                    "manaShield" -> manaShield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+                                if (companionList.levelList.contains("healer") && companionList.levelList.contains("disruptor")) {
+                                        when ((0..1).random()) {
+                                            0 -> healer(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+                                            1 -> disruptor(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+                                        }
+                                } else if (companionList.levelList.contains("healer")){
+                                    healer(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+                                } else if (companionList.levelList.contains("disruptor")){
+                                    disruptor(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+                                } else levelStatus()
                                 }
+                            in 1..5 -> {
+                                levelStatus()
                             }
                         }
                     } else {
-                        when (companionList.levelStatus) {
-                            "armor" -> armor(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "normal" -> normal(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "speed" -> speed(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "mass" -> mass(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "regeneration" -> reg(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "evade" -> evade(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "magic armor" -> magicArmor(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "immune" -> immune(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "shortcut" -> shortcut(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "split" -> split(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "shield" -> shield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "manaShield" -> manaShield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                        }
+                        levelStatus()
                     }
             }
+        }
+    }
+
+    fun levelStatus (){
+        when (companionList.levelStatus) {
+            "armor" -> armor(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "normal" -> normal(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "speed" -> speed(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "mass" -> mass(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "regeneration" -> reg(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "evade" -> evade(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "magic armor" -> magicArmor(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "immune" -> immune(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "shortcut" -> shortcut(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "split" -> split(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "shield" -> shield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "manaShield" -> manaShield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
+            "invu" -> invu(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
         }
     }
 
     private fun armor(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-            if (companionList.timer >= 50 && companionList.enemySpawned < 8 + companionList.midnightMadnessExtraSpawn) {
+            if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
                 var eliteMob = 1
                 if (companionList.timerEliteMob == 0) {
                     eliteMob = 1
@@ -915,8 +1110,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                         }
                     }
                 }
-                if (companionList.manaShieldBool) manaShield = (hp / 10f) * companionList.shieldBrakerItem
-                if (companionList.shieldBool) shield = (hp / 10f) * companionList.shieldBrakerItem
+                if (companionList.manaShieldBool) manaShield = (hp * 0.2f) * companionList.shieldBrakerItem
+                if (companionList.shieldBool) shield = (hp * 0.2f) * companionList.shieldBrakerItem
 
                 var x: Enemy =
                     Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, (armor * 10f), magicArmor * 0.5f,
@@ -929,6 +1124,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 if (eliteMob == 3) eliteMob = 2
                 x.name = "armor"
                 x.baseSpeed = x.speed
+                x.invuTime = 120
                 enemyListIterator.add(x)
                 companionList.enemySpawned += 1 * eliteMob
                 when ((0..5).random()) {
@@ -949,7 +1145,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     private fun magicArmor(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < 8 + companionList.midnightMadnessExtraSpawn) {
+        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
             var eliteMob = 1
             if (companionList.timerEliteMob == 0) {
                 eliteMob = 1
@@ -979,8 +1175,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
                 }
             }
-            if (companionList.manaShieldBool) manaShield = (hp / 10f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp / 10f)* companionList.shieldBrakerItem
+            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
+            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
             var x: Enemy =
                 Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor * 0.5f, (magicArmor * 10f) * companionList.wizardMagicArmorSmasher, evade * 0.5f, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#af7ac5"))
             if (companionList.level > 50) x =
@@ -990,6 +1186,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             if (eliteMob == 3) eliteMob = 2
             x.name = "magicArmor"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1 * eliteMob
             when ((0..5).random()) {
@@ -1010,7 +1207,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     private fun normal(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < 8 + companionList.midnightMadnessExtraSpawn) {
+        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
             var eliteMob = 1
             if (companionList.timerEliteMob == 0) {
                 eliteMob = 1
@@ -1040,8 +1237,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
                 }
             }
-            if (companionList.manaShieldBool) manaShield = (hp / 10f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp / 10f)* companionList.shieldBrakerItem
+            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
+            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
             val x: Enemy =
                 Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#6FBCAF"))
             if (eliteMob == 2) x.eliteMob = true
@@ -1049,6 +1246,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             if (eliteMob == 3) eliteMob = 2
             x.name = "normal"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1 * eliteMob
             when ((0..5).random()) {
@@ -1066,10 +1264,70 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         }
     }
 
+    private fun invu(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
+        companionList.writeLockEnemy.lock()
+        try {
+            if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
+                var eliteMob = 1
+                if (companionList.timerEliteMob == 0) {
+                    eliteMob = 1
+                } else {
+                    when((0..3).random()){
+                        0,1,2 -> eliteMob = 2
+                        3 -> eliteMob = 3
+                    }
+                }
+                val enemyListIterator = companionList.enemyList.listIterator()
+                var manaShield = 0f
+                var shield = 0f
+                if (!companionList.allShieldsBool) {
+                    companionList.allShieldsBool = true
+                    if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
+                        when ((0..2).random()) {
+                            0 -> companionList.manaShieldBool = true
+                            1 -> companionList.shieldBool = true
+                        }
+                    } else if (companionList.levelList.contains("manaShield")) {
+                        when ((0..2).random()) {
+                            0 -> companionList.manaShieldBool = true
+                        }
+                    } else if (companionList.levelList.contains("shield")) {
+                        when ((0..2).random()) {
+                            0 -> companionList.shieldBool = true
+                        }
+                    }
+                }
+                if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
+                if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
+                val x: Enemy =
+                    Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#6FBCAF"))
+                if (eliteMob == 2) x.eliteMob = true
+                if (eliteMob == 3) x.elementalMob = true
+                if (eliteMob == 3) eliteMob = 2
+                x.name = "invu"
+                x.baseSpeed = x.speed
+                x.invuTime = 120
+                enemyListIterator.add(x)
+                companionList.enemySpawned += 1 * eliteMob
+                when ((0..5).random()) {
+                    0 -> companionList.timerEliteMob = 1
+                    in 1..5 -> companionList.timerEliteMob = 0
+                }
+                companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
+                else 25
+                companionList.levelStatus = "invu"
+                companionList.levelCountSecondBool = true
+
+            }
+        } finally {
+            companionList.writeLockEnemy.unlock()
+        }
+    }
+
     private fun shortcut(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < 8 + companionList.midnightMadnessExtraSpawn) {
+        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
             var eliteMob = 1
             if (companionList.timerEliteMob == 0) {
                 eliteMob = 1
@@ -1099,8 +1357,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
                 }
             }
-            if (companionList.manaShieldBool) manaShield = (hp / 10f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp / 10f)* companionList.shieldBrakerItem
+            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
+            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
             val x: Enemy =
                 Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed * 1.2f, resources.getColor(R.color.shortcut))
             if (eliteMob == 2) x.eliteMob = true
@@ -1108,6 +1366,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             if (eliteMob == 3) eliteMob = 2
             x.name = "shortcut"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1 * eliteMob
             when ((0..5).random()) {
@@ -1128,7 +1387,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     private fun speed(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < 8 + companionList.midnightMadnessExtraSpawn) {
+        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
             var eliteMob = 1
             if (companionList.timerEliteMob == 0) {
                 eliteMob = 1
@@ -1158,8 +1417,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
                 }
             }
-            if (companionList.manaShieldBool) manaShield = (hp / 10f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp / 10f)* companionList.shieldBrakerItem
+            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
+            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
             val x: Enemy =
                 Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, resources.getColor(R.color.fast))
             if (eliteMob == 2) x.eliteMob = true
@@ -1168,6 +1427,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             x.name = "speed"
             x.baseSpeed = x.speed
             x.extraSpeed = 3.0f
+            x.invuTime = 90
             enemyListIterator.add(x)
             companionList.enemySpawned += 1 * eliteMob
             when ((0..5).random()) {
@@ -1188,7 +1448,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     private fun mass(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-        if (companionList.timer >= 20 && companionList.enemySpawned < 16 + (companionList.midnightMadnessExtraSpawn *2) ) {
+        if (companionList.timer >= 20 && companionList.enemySpawned < (companionList.enemySpawnedCount * 2) + (companionList.midnightMadnessExtraSpawn *2) ) {
             val enemyListIterator = companionList.enemyList.listIterator()
             var manaShield = 0f
             var shield = 0f
@@ -1209,12 +1469,13 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
                 }
             }
-            if (companionList.manaShieldBool) manaShield = (hp / 10f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp / 10f)* companionList.shieldBrakerItem
+            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
+            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
             val x: Enemy =
                 Enemy(hp * 0.7f, hp * 0.7f, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp, speed, Color.parseColor("#f64545"))
             x.name = "mass"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1
             companionList.timer = 0
@@ -1230,7 +1491,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     private fun reg(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < 8 + companionList.midnightMadnessExtraSpawn) {
+        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
             var eliteMob = 1
             if (companionList.timerEliteMob == 0) {
                 eliteMob = 1
@@ -1260,8 +1521,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
                 }
             }
-            if (companionList.manaShieldBool) manaShield = (hp / 10f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp / 10f)* companionList.shieldBrakerItem
+            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
+            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
             val x: Enemy =
                 Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * (hp / 500), xp * eliteMob, speed, Color.parseColor("#fff116"))
             if (eliteMob == 2) x.eliteMob = true
@@ -1269,6 +1530,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             if (eliteMob == 3) eliteMob = 2
             x.name = "regeneration"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1 * eliteMob
             when ((0..5).random()) {
@@ -1289,7 +1551,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     private fun evade(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < 8 + companionList.midnightMadnessExtraSpawn) {
+        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
             var eliteMob = 1
             if (companionList.timerEliteMob == 0) {
                 eliteMob = 1
@@ -1319,8 +1581,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
                 }
             }
-            if (companionList.manaShieldBool) manaShield = (hp / 10f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp / 10f)* companionList.shieldBrakerItem
+            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
+            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
             var x: Enemy =
                 Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade * 5f, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#d5dbdb"))
             if (companionList.level > 50) x =
@@ -1330,6 +1592,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             if (eliteMob == 3) eliteMob = 2
             x.name = "evade"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1 * eliteMob
             when ((0..5).random()) {
@@ -1356,6 +1619,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 Enemy(hp * 6.0f, hp * 6.0f, 0f, 0f, 0f, 0f, armor, magicArmor, evade, hpReg * (hp / 1000), xp * 6f, speed, resources.getColor(R.color.boss))
             x.name = "boss"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1
             companionList.timer = 0
@@ -1377,6 +1641,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 Enemy(hp * 15.0f, hp * 15.0f, 0f, 0f, 0f, 0f, armor * 4, magicArmor * 4, evade * 0, hpReg * 0, xp * 0, speed, resources.getColor(R.color.challenge))
             x.name = "challenge"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1
             companionList.timer = 0
@@ -1393,7 +1658,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         companionList.writeLockEnemy.lock()
         try {
 
-        if (companionList.timer >= 50 && companionList.enemySpawned < 8 + companionList.midnightMadnessExtraSpawn) {
+        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
             var eliteMob = 1
             if (companionList.timerEliteMob == 0) {
                 eliteMob = 1
@@ -1423,8 +1688,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
                 }
             }
-            if (companionList.manaShieldBool) manaShield = (hp / 10f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp / 10f)* companionList.shieldBrakerItem
+            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
+            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
             val x: Enemy =
                 Enemy((hp * 0.7f * eliteMob), (hp * 0.7f * eliteMob), manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, resources.getColor(R.color.immune))
             if (eliteMob == 2) x.eliteMob = true
@@ -1432,6 +1697,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             if (eliteMob == 3) eliteMob = 2
             x.name = "immune"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1 * eliteMob
             when ((0..5).random()) {
@@ -1452,7 +1718,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     private fun split(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < 8 + companionList.midnightMadnessExtraSpawn) {
+        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
             var eliteMob = 1
             if (companionList.timerEliteMob == 0) {
                 eliteMob = 1
@@ -1482,8 +1748,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                     }
                 }
             }
-            if (companionList.manaShieldBool) manaShield = (hp / 10f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp / 10f)* companionList.shieldBrakerItem
+            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
+            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
             val x: Enemy =
                 Enemy(hp * 0.5f * eliteMob, hp * 0.5f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, resources.getColor(R.color.split))
             if (eliteMob == 2) x.eliteMob = true
@@ -1491,6 +1757,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             if (eliteMob == 3) eliteMob = 2
             x.name = "split"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1 * eliteMob
             when ((0..5).random()) {
@@ -1511,7 +1778,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     private fun shield(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < 8 + companionList.midnightMadnessExtraSpawn) {
+        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
             var eliteMob = 1
             if (companionList.timerEliteMob == 0) {
                 eliteMob = 1
@@ -1536,6 +1803,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             if (eliteMob == 3) eliteMob = 2
             x.name = "shield"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1 * eliteMob
             when ((0..5).random()) {
@@ -1555,7 +1823,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     private fun manaShield(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < 8 + companionList.midnightMadnessExtraSpawn) {
+        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
             var eliteMob = 1
             if (companionList.timerEliteMob == 0) {
                 eliteMob = 1
@@ -1580,6 +1848,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             if (eliteMob == 3) eliteMob = 2
             x.name = "manaShield"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1 * eliteMob
             when ((0..5).random()) {
@@ -1599,17 +1868,37 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     private fun healer(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
         companionList.writeLockEnemy.lock()
         try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < 8) {
+        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount) {
             val enemyListIterator = companionList.enemyList.listIterator()
             val x: Enemy =
                 Enemy(hp * 1.0f, hp * 1.0f, 0f, 0f, 0f, 0f, armor * 0, magicArmor * 0, evade, hpReg * 0, xp * 1.5f, speed, resources.getColor(R.color.healer))
             x.name = "healer"
             x.baseSpeed = x.speed
+            x.invuTime = 120
             enemyListIterator.add(x)
             companionList.enemySpawned += 1
             companionList.timer = 25
         }
             } finally {
+            companionList.writeLockEnemy.unlock()
+        }
+    }
+
+    private fun disruptor(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
+        companionList.writeLockEnemy.lock()
+        try {
+            if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount) {
+                val enemyListIterator = companionList.enemyList.listIterator()
+                val x: Enemy =
+                    Enemy(hp * 1.0f, hp * 1.0f, 0f, 0f, 0f, 0f, armor * 0, magicArmor * 0, evade, hpReg * 0, xp * 1.5f, speed, Color.parseColor("#F22B79"))
+                x.name = "disruptor"
+                x.baseSpeed = x.speed
+                x.invuTime = 120
+                enemyListIterator.add(x)
+                companionList.enemySpawned += 1
+                companionList.timer = 25
+            }
+        } finally {
             companionList.writeLockEnemy.unlock()
         }
     }
@@ -1620,9 +1909,10 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             if (companionList.timer >= 50) {
                 val enemyListIterator = companionList.enemyList.listIterator()
                 val x: Enemy =
-                    Enemy(hp * 2f, hp * 2f, 0f, 0f, 0f, 0f, armor * 3, magicArmor * 3, evade * 0, hpReg * 0, xp * 1.5f, speed, resources.getColor(R.color.tank))
+                    Enemy(hp * 1.5f, hp * 1.5f, 0f, 0f, 0f, 0f, armor * 3, magicArmor * 3, evade * 0, hpReg * 0, xp * 1.5f, speed, resources.getColor(R.color.tank))
                 x.name = "tank"
                 x.baseSpeed = x.speed
+                x.invuTime = 120
                 enemyListIterator.add(x)
                 companionList.enemySpawned += 1
                 companionList.timer = 25
@@ -1632,5 +1922,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         }
     }
 }
+
+
 
 // TODO Item insert : Gameactivty - Items fragment - itemAdapter - ItemBagAdapter - Itemupgradefragment - Gameactivity Load Game

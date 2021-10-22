@@ -69,9 +69,7 @@ class MidnightMadness : AppCompatActivity(), ItemFragmentAdapter.OnStatsClickLis
             }
             showAdapterMM.notifyDataSetChanged()
 
-            companionList.itemList.add(0, mmItem)
-            StartItems.startItems += 1
-
+            companionList.itemListInsertItem.add( mmItem)
 
         }else {
             window.setLayout((600.0f * ((companionList.scaleScreen.toFloat()) / 10)).toInt(), (700.0f * ((companionList.scaleScreen.toFloat()) /10)).toInt())

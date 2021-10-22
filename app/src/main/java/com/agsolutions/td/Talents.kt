@@ -25,6 +25,9 @@ class Talents : AppCompatActivity() {
     var wizardFragment = WizardTalentFragment ()
     var butterflyFragment = ButterflyTalentFragment ()
     var mHandler = Handler ()
+    var one = 0
+    var two = 0
+    var three = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,16 +36,13 @@ class Talents : AppCompatActivity() {
         var screenwidth = (Resources.getSystem().displayMetrics.widthPixels * 0.9).toInt()
         var screenheight = (Resources.getSystem().displayMetrics.heightPixels * 0.8).toInt()
 
+
         window.setLayout((screenwidth).toInt(), (screenheight).toInt())
         window.setElevation(10F)
 
         GameActivity.companionList.focusTalentWindow = true
         GameActivity.companionList.focusMainWindow = false
 
-        earthTalentBTN.doOnLayout {
-            UiViewTalent.talentX = earthTalentBTN.x
-            UiViewTalent.talentY = earthTalentBTN.y
-        }
         topBarLayout.doOnLayout {
             topBarHeight = topBarLayout.height.toFloat()
         }
@@ -59,9 +59,10 @@ class Talents : AppCompatActivity() {
 
     }
 
+    /*
     fun update () {
 
-        if (GameActivity.companionList.focusEarthFragment) {
+        if (GameActivity.companionList.focusTalentFragment) {
         }else if(GameActivity.companionList.focusTalentWindow) {
             if ( GameActivity.companionList.hintsBool) {
                     //     var point = IntArray(2)
@@ -75,42 +76,143 @@ class Talents : AppCompatActivity() {
         }
     }
 
+     */
+
     override fun onBackPressed() {
     }
 
     private fun initviews() {
 
-        earthTalentBTN.visibility = View.INVISIBLE
-        wizardTalentBTN.visibility = View.INVISIBLE
-        iceTalentBTN.visibility = View.INVISIBLE
-        butterflyTalentBTN.visibility = View.INVISIBLE
-        poisonTalentBTN.visibility = View.INVISIBLE
-        moonTalentBTN.visibility = View.INVISIBLE
-        windTalentBTN.visibility = View.INVISIBLE
-        utilsTalentBTN.visibility = View.INVISIBLE
-        fireTalentBTN.visibility = View.INVISIBLE
-        darkTalentBTN.visibility = View.INVISIBLE
+        firstTalentBTN.visibility = View.INVISIBLE
+        secondTalentBTN.visibility = View.INVISIBLE
+        thirdTalentBTN.visibility = View.INVISIBLE
 
+        var count = 1
 
-        if (GameActivity.companionList.towerClick){
-            if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].bagSizeElementCount > 0){
-                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.eearth)) earthTalentBTN.visibility = View.VISIBLE
-                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.ewizard)) wizardTalentBTN.visibility = View.VISIBLE
-                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.eice)) iceTalentBTN.visibility = View.VISIBLE
-                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.ebutterfly)) butterflyTalentBTN.visibility = View.VISIBLE
-                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.epoison)) poisonTalentBTN.visibility = View.VISIBLE
-                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.emoon)) moonTalentBTN.visibility = View.VISIBLE
-                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.ewind)) windTalentBTN.visibility = View.VISIBLE
-                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.eutils)) utilsTalentBTN.visibility = View.VISIBLE
-                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.efire)) fireTalentBTN.visibility = View.VISIBLE
-                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.contains(GameActivity.companionList.edark)) darkTalentBTN.visibility = View.VISIBLE
+        if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].bagSizeElementCount > 0){
+            GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.asReversed().forEach {
+                if (it.element){
+                    when (count){
+                        1 -> one = GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.indexOf(it)
+                        2 -> two = GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.indexOf(it)
+                        3 -> three = GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.indexOf(it)
+                    }
+                    count++
+                }
             }
+
         }
+
+        if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].bagSizeElementCount > 0){
+                firstTalentBTN.visibility = View.VISIBLE
+                when(GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[one]){
+                    GameActivity.companionList.eearth -> {
+                        firstTalentBTN.setBackgroundResource(R.drawable.elementearth)
+                        supportFragmentManager.beginTransaction().apply {
+                            replace(R.id.talentsFragment, earthFragment)
+                            commit()
+                        }
+                    }
+                    GameActivity.companionList.ewizard -> {
+                        firstTalentBTN.setBackgroundResource(R.drawable.elementwizard)
+                        supportFragmentManager.beginTransaction().apply {
+                            replace(R.id.talentsFragment, wizardFragment)
+                            commit()
+                        }
+                    }
+                    GameActivity.companionList.eice -> {
+                        firstTalentBTN.setBackgroundResource(R.drawable.elementice)
+                        supportFragmentManager.beginTransaction().apply {
+                            replace(R.id.talentsFragment, iceFragment)
+                            commit()
+                        }
+                    }
+                    GameActivity.companionList.ebutterfly -> {
+                        firstTalentBTN.setBackgroundResource(R.drawable.elementbutterfly)
+                        supportFragmentManager.beginTransaction().apply {
+                            replace(R.id.talentsFragment, butterflyFragment)
+                            commit()
+                        }
+                    }
+                    GameActivity.companionList.epoison -> {
+                        firstTalentBTN.setBackgroundResource(R.drawable.elementpoison)
+                        supportFragmentManager.beginTransaction().apply {
+                            replace(R.id.talentsFragment, poisonFragment)
+                            commit()
+                        }
+                    }
+                    GameActivity.companionList.emoon -> {
+                        firstTalentBTN.setBackgroundResource(R.drawable.elementmoon)
+                        supportFragmentManager.beginTransaction().apply {
+                            replace(R.id.talentsFragment, moonFragment)
+                            commit()
+                        }
+                    }
+                    GameActivity.companionList.ewind -> {
+                        firstTalentBTN.setBackgroundResource(R.drawable.elementwind)
+                        supportFragmentManager.beginTransaction().apply {
+                            replace(R.id.talentsFragment, windFragment)
+                            commit()
+                        }
+                    }
+                    GameActivity.companionList.eutils -> {
+                        firstTalentBTN.setBackgroundResource(R.drawable.elementutils)
+                        supportFragmentManager.beginTransaction().apply {
+                            replace(R.id.talentsFragment, utilsFragment)
+                            commit()
+                        }
+                    }
+                    GameActivity.companionList.efire -> {
+                        firstTalentBTN.setBackgroundResource(R.drawable.elementfire)
+                        supportFragmentManager.beginTransaction().apply {
+                            replace(R.id.talentsFragment, fireFragment)
+                            commit()
+                        }
+                    }
+                    GameActivity.companionList.edark -> {
+                        firstTalentBTN.setBackgroundResource(R.drawable.elementdark)
+                        supportFragmentManager.beginTransaction().apply {
+                            replace(R.id.talentsFragment, darkFragment)
+                            commit()
+                        }
+                    }
+                }
+            }
+        if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].bagSizeElementCount > 1) {
+                secondTalentBTN.visibility = View.VISIBLE
+                when (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[two]) {
+                    GameActivity.companionList.eearth -> secondTalentBTN.setBackgroundResource(R.drawable.elementearth)
+                    GameActivity.companionList.ewizard -> secondTalentBTN.setBackgroundResource(R.drawable.elementwizard)
+                    GameActivity.companionList.eice -> secondTalentBTN.setBackgroundResource(R.drawable.elementice)
+                    GameActivity.companionList.ebutterfly -> secondTalentBTN.setBackgroundResource(R.drawable.elementbutterfly)
+                    GameActivity.companionList.epoison -> secondTalentBTN.setBackgroundResource(R.drawable.elementpoison)
+                    GameActivity.companionList.emoon -> secondTalentBTN.setBackgroundResource(R.drawable.elementmoon)
+                    GameActivity.companionList.ewind -> secondTalentBTN.setBackgroundResource(R.drawable.elementwind)
+                    GameActivity.companionList.eutils -> secondTalentBTN.setBackgroundResource(R.drawable.elementutils)
+                    GameActivity.companionList.efire -> secondTalentBTN.setBackgroundResource(R.drawable.elementfire)
+                    GameActivity.companionList.edark -> secondTalentBTN.setBackgroundResource(R.drawable.elementdark)
+                }
+            }
+        if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].bagSizeElementCount > 2) {
+                thirdTalentBTN.visibility = View.VISIBLE
+                when(GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[three]){
+                    GameActivity.companionList.eearth -> thirdTalentBTN.setBackgroundResource(R.drawable.elementearth)
+                    GameActivity.companionList.ewizard -> thirdTalentBTN.setBackgroundResource(R.drawable.elementwizard)
+                    GameActivity.companionList.eice -> thirdTalentBTN.setBackgroundResource(R.drawable.elementice)
+                    GameActivity.companionList.ebutterfly -> thirdTalentBTN.setBackgroundResource(R.drawable.elementbutterfly)
+                    GameActivity.companionList.epoison -> thirdTalentBTN.setBackgroundResource(R.drawable.elementpoison)
+                    GameActivity.companionList.emoon -> thirdTalentBTN.setBackgroundResource(R.drawable.elementmoon)
+                    GameActivity.companionList.ewind -> thirdTalentBTN.setBackgroundResource(R.drawable.elementwind)
+                    GameActivity.companionList.eutils -> thirdTalentBTN.setBackgroundResource(R.drawable.elementutils)
+                    GameActivity.companionList.efire -> thirdTalentBTN.setBackgroundResource(R.drawable.elementfire)
+                    GameActivity.companionList.edark -> thirdTalentBTN.setBackgroundResource(R.drawable.elementdark)
+                }
+            }
 
         saveTalentsBTN.setOnClickListener() {
             GameActivity.companionList.focusTalentWindow = false
             GameActivity.companionList.focusMainWindow = true
-            GameActivity.companionList.focusEarthFragment = false
+            GameActivity.companionList.focusTalentFragment = false
             GameActivity.companionList.showHelpTalent = false
             GameActivity.paused = false
             mHandler.postDelayed({
@@ -120,66 +222,226 @@ class Talents : AppCompatActivity() {
     }
 
     private fun fragments() {
-        fireTalentBTN.setOnClickListener() {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.talentsFragment, fireFragment)
-                commit()
+        firstTalentBTN.setOnClickListener() {
+            when(GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[one]){
+                GameActivity.companionList.eearth -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, earthFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.ewizard -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, wizardFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.eice -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, iceFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.ebutterfly -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, butterflyFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.epoison -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, poisonFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.emoon -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, moonFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.ewind -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, windFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.eutils -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, utilsFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.efire -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, fireFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.edark -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, darkFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
             }
         }
-        iceTalentBTN.setOnClickListener() {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.talentsFragment, iceFragment)
-                commit()
+        secondTalentBTN.setOnClickListener() {
+            when(GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[two]){
+                GameActivity.companionList.eearth -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, earthFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.ewizard -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, wizardFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.eice -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, iceFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.ebutterfly -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, butterflyFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.epoison -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, poisonFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.emoon -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, moonFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.ewind -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, windFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.eutils -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, utilsFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.efire -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, fireFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.edark -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, darkFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
             }
         }
-        darkTalentBTN.setOnClickListener() {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.talentsFragment, darkFragment)
-                commit()
-            }
-        }
-        utilsTalentBTN.setOnClickListener() {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.talentsFragment, utilsFragment)
-                commit()
-            }
-        }
-        poisonTalentBTN.setOnClickListener() {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.talentsFragment, poisonFragment)
-                commit()
-            }
-        }
-        windTalentBTN.setOnClickListener() {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.talentsFragment, windFragment)
-                commit()
-            }
-        }
-        earthTalentBTN.setOnClickListener() {
-            supportFragmentManager.beginTransaction().apply {
-                GameActivity.companionList.focusTalentWindow = false
-                uiViewTalent.invalidate()
-                replace(R.id.talentsFragment, earthFragment)
-                commit()
-            }
-        }
-        moonTalentBTN.setOnClickListener() {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.talentsFragment, moonFragment)
-                commit()
-            }
-        }
-        wizardTalentBTN.setOnClickListener() {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.talentsFragment, wizardFragment)
-                commit()
-            }
-        }
-        butterflyTalentBTN.setOnClickListener() {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.talentsFragment, butterflyFragment)
-                commit()
+        thirdTalentBTN.setOnClickListener() {
+            when(GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[three]){
+                GameActivity.companionList.eearth -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, earthFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.ewizard -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, wizardFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.eice -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, iceFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.ebutterfly -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, butterflyFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.epoison -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, poisonFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.emoon -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, moonFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.ewind -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, windFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.eutils -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, utilsFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.efire -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, fireFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
+                GameActivity.companionList.edark -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.talentsFragment, darkFragment)
+                        GameActivity.companionList.focusTalentWindow = false
+                        commit()
+                    }
+                }
             }
         }
     }

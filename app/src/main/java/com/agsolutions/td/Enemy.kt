@@ -2,7 +2,6 @@ package com.agsolutions.td
 
 import android.graphics.*
 import com.agsolutions.td.GameActivity.Companion.companionList
-import com.agsolutions.td.Main.MainActivity.Companion.startScreenBool
 import java.io.Serializable
 
 
@@ -10,10 +9,15 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     Serializable {
 
     var circle: TowerRadius? = null
+    var circleXMovement = "xnull"
+    var circleYMovement = "ynull"
+    var point = 0
+    var introBool = true
+    var debuffExtraMgcDmg = false
 
-    var passed: Byte = 0
+    var reachedPortal = false
     var status = -1
-    var dead = 0
+    var dead = false
     var flag = 0
     var squaredDistance = 0f
     var selected = false
@@ -29,11 +33,14 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     var xpDropDebuff = 1f
     var goldDropDebuff = 1f
     var overallXp = 0f
+    var xpDrop = 0f
     var overallGold = 0f
     var antihealDebuff = 0
     var antihealDebuffActive = 0f
     var antihealDebuffTowerId = 0
     var hpRegDebuff = 0f
+    var invu = false
+    var invuTime = 0
 
     var random1 = 0
     var random2 = 0
@@ -113,6 +120,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     var darkMoreDmgDebuffComplete = 0f
     var darkMoreDmgDebuffStacks = 0
     var darkMoreDmgDebuffTowerId = 0
+    var darkSlowSpeedReduce = 0f
 
     // talent moon
     var talentMoonlightAlreadyAffected = 0f
@@ -179,10 +187,10 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     var paintBomb: Painter
     var paintLightning: Painter
     var paintBoulder: Painter
+    var path = mutableListOf<Triple<Int, Int, Int>>()
 
 
     init {
-
         circle = TowerRadius(950.0f, 1199.0f, 30.0f)
 
         paint = Painter()
@@ -530,44 +538,57 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     }
 
     fun paintShader () {
-        if (passed != 5.toByte()) {
+        if (!dead) {
             var gradient: LinearGradient? = null
-            if (companionList.day) {
-                when (passed) {
-                    0.toByte(), 2.toByte() ->
-                        gradient =
-                            LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, color, Color.LTGRAY, Shader.TileMode.CLAMP)
-                    1.toByte() ->
-                        gradient =
-                            LinearGradient(circle!!.x - circle!!.r, 0f, circle!!.x + circle!!.r, 0f, color, Color.LTGRAY, Shader.TileMode.CLAMP)
-                    3.toByte() ->
-                        gradient =
-                            LinearGradient(circle!!.x - circle!!.r, 0f, circle!!.x + circle!!.r, 0f, Color.LTGRAY, color, Shader.TileMode.CLAMP)
-                    4.toByte() ->
-                        gradient =
-                            LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, Color.LTGRAY, color, Shader.TileMode.CLAMP)
+            var gradient2: RadialGradient? = null
+            if (invu){
+                gradient2 = RadialGradient(circle!!.x , circle!!.y, circle!!.r, Color.YELLOW, Color.WHITE, Shader.TileMode.MIRROR)
+            }
+            else if (companionList.day) {
+                when (circleXMovement){
+                    "xplus" -> gradient =
+                        LinearGradient(circle!!.x - circle!!.r, 0f, circle!!.x + circle!!.r, 0f, Color.LTGRAY, color, Shader.TileMode.CLAMP)
+                    "xminus" -> gradient =
+                        LinearGradient(circle!!.x - circle!!.r, 0f, circle!!.x + circle!!.r, 0f, color, Color.LTGRAY, Shader.TileMode.CLAMP)
+                    "xnull" -> {
+                        when (circleYMovement) {
+                            "yplus" -> gradient =
+                                LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, color, Color.LTGRAY, Shader.TileMode.CLAMP)
+                            "yminus" -> gradient =
+                                LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, Color.LTGRAY, color, Shader.TileMode.CLAMP)
+                            "ynull" -> gradient =
+                                LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, Color.LTGRAY, color, Shader.TileMode.CLAMP)
+                        }
+                    }
                 }
             } else {
-                when (passed) {
-                    0.toByte(), 2.toByte() ->
-                        gradient =
-                            LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, color, Color.DKGRAY, Shader.TileMode.CLAMP)
-                    1.toByte() ->
-                        gradient =
-                            LinearGradient(circle!!.x - circle!!.r, 0f, circle!!.x + circle!!.r, 0f, color, Color.DKGRAY, Shader.TileMode.CLAMP)
-                    3.toByte() ->
-                        gradient =
-                            LinearGradient(circle!!.x - circle!!.r, 0f, circle!!.x + circle!!.r, 0f, Color.DKGRAY, color, Shader.TileMode.CLAMP)
-                    4.toByte() ->
-                        gradient =
-                            LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, Color.DKGRAY, color, Shader.TileMode.CLAMP)
+                when (circleXMovement){
+                    "xplus" -> gradient =
+                        LinearGradient(circle!!.x - circle!!.r, 0f, circle!!.x + circle!!.r, 0f, Color.DKGRAY, color, Shader.TileMode.CLAMP)
+                    "xminus" -> gradient =
+                        LinearGradient(circle!!.x - circle!!.r, 0f, circle!!.x + circle!!.r, 0f, color, Color.DKGRAY, Shader.TileMode.CLAMP)
+                    "xnull" -> {
+                        when (circleYMovement) {
+                            "yplus" -> gradient =
+                                LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, color, Color.DKGRAY, Shader.TileMode.CLAMP)
+                            "yminus" -> gradient =
+                                LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, Color.DKGRAY, color, Shader.TileMode.CLAMP)
+                            "ynull" -> gradient =
+                                LinearGradient(0f, circle!!.y - circle!!.r, 0f, circle!!.y + circle!!.r, Color.DKGRAY, color, Shader.TileMode.CLAMP)
+                        }
+                    }
                 }
             }
             var gradientMatrix = Matrix()
             if (eliteMob || elementalMob) gradientMatrix!!.preRotate((0f), circle!!.x, circle!!.y)
             else gradientMatrix!!.preRotate((360 - randomAngle), circle!!.x, circle!!.y)
-            gradient!!.setLocalMatrix(gradientMatrix)
-            paint.shader = gradient!!
+            if (invu){
+                gradient2!!.setLocalMatrix(gradientMatrix)
+                paint.shader = gradient2!!
+            }else {
+                gradient!!.setLocalMatrix(gradientMatrix)
+                paint.shader = gradient!!
+            }
         }
     }
 
@@ -631,74 +652,72 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
 
     fun update() {
 
-        if (companionList.mapPick == 0 || companionList.mapPick == 1) {
+        if (introBool) {
+            introBool = false
 
-            if (startScreenBool){
-
-            } else {
-
-                if (circle!!.y <= 1000 && passed == 0.toByte()) {
-                    passed = 1
-                }
-
-                if (circle!!.x <= 400 && passed == 1.toByte() && flag == 0 && name == "shortcut") {
-                    flag = 1
-                } else if (circle!!.x <= 400 && passed == 1.toByte() && flag == 0 && GameActivity.companionList.levelList.contains("shortcut")) {
-                    when ((0..3).random()) {
-                        0 -> flag = 1
-                        in 1..3 -> flag = 2
+            path.add(Triple(950, 1000, 1))
+            path.add(Triple(400, 1000, 2))
+            if (name == "shortcut") path.add(Triple(400, 500, 3))
+            else if (GameActivity.companionList.levelList.contains("shortcut")) {
+                when ((0..3).random()) {
+                    0 -> path.add(Triple(400, 500, 3))
+                    in 1..3 -> {
+                        path.add(Triple(200, 1000, 2))
+                        path.add(Triple(200, 500, 3))
+                        path.add(Triple(400, 500, 4))
                     }
-                } else if (circle!!.x <= 400 && passed == 1.toByte() && flag == 0) {
-                    flag = 2
                 }
-
-                if (flag == 1) passed = 2
-                if (flag == 2) passed = 1
-
-                if (circle!!.x <= 200 && passed == 1.toByte()) {
-                    flag = 0
-                    passed = 2
-                }
-                if (circle!!.y <= 500 && passed == 2.toByte()) {
-                    flag = 0
-                    passed = 3
-                }
-                if (circle!!.x >= 800 && passed == 3.toByte()) {
-                    flag = 0
-                    passed = 4
-                }
-                if (companionList.mapMode == 2 && circle!!.y >= 1000 && passed == 4.toByte()) passed = 1
-                if (circle!!.y >= 1200 && passed == 4.toByte()) {
-                    passed = 5
-                }
+            } else {
+                path.add(Triple(200, 1000, 2))
+                path.add(Triple(200, 500, 3))
+                path.add(Triple(400, 500, 4))
             }
-
-            when (passed) {
-                0.toByte() ->
-                    circle!!.y -= ((speed  ) * companionList.gameSpeedAdjuster)
-                1.toByte() ->
-                    circle!!.x -= ((speed  ) * companionList.gameSpeedAdjuster)
-                2.toByte() ->
-                    circle!!.y -= ((speed  ) * companionList.gameSpeedAdjuster)
-                3.toByte() ->
-                    circle!!.x += ((speed  ) * companionList.gameSpeedAdjuster)
-                4.toByte() ->
-                    circle!!.y += ((speed  ) * companionList.gameSpeedAdjuster)
-                5.toByte() -> {
-                    circle!!.y ++
-                    circle!!.x
-                }
-            }
-
-            enemyRight = if (hp > 0){
-                    (((maxHp * 70.0) - (hp * 70.0)) / maxHp).toFloat()
-            }
-            else {
-                (((maxHp * 70.0) - (1 * 70.0)) / maxHp).toFloat()
-            }
-            enemyRightManaShield =
-                (((manaShieldMax * 70.0) - (manaShield * 70.0)) / manaShieldMax).toFloat()
-            enemyRightShield = (((shieldMax * 70.0) - (shield * 70.0)) / shieldMax).toFloat()
+            path.add(Triple(800, 500, 4))
+            if (companionList.mapMode == 2) path.add(Triple(800, 1000, 5))
+            else path.add(Triple(800, 1200, 5))
         }
+
+        if (point >= path.size) {
+            reachedPortal = true
+        }else {
+            if (circle!!.x.toInt() == path[point].first) {
+                circleXMovement = "xnull"
+            }else if (circle!!.x.toInt() < path[point].first) {
+                circleXMovement = "xplus"
+                if (circle!!.x + (speed * companionList.gameSpeedAdjuster) > path[point].first) circle!!.x = path[point].first.toFloat()
+                else circle!!.x += (speed * companionList.gameSpeedAdjuster)
+            } else {
+                circleXMovement = "xminus"
+                if (circle!!.x - (speed * companionList.gameSpeedAdjuster) < path[point].first) circle!!.x = path[point].first.toFloat()
+                else circle!!.x -= (speed * companionList.gameSpeedAdjuster)
+            }
+
+            if (circle!!.y.toInt() == path[point].second) {
+                circleYMovement = "ynull"
+            }else if (circle!!.y.toInt() < path[point].second) {
+                circleYMovement = "yplus"
+                if (circle!!.y + (speed * companionList.gameSpeedAdjuster) > path[point].second) circle!!.y = path[point].second.toFloat()
+                else circle!!.y += (speed * companionList.gameSpeedAdjuster)
+            } else {
+                circleYMovement = "yminus"
+                if (circle!!.y - (speed * companionList.gameSpeedAdjuster) < path[point].second) circle!!.y = path[point].second.toFloat()
+                else circle!!.y -= (speed * companionList.gameSpeedAdjuster)
+            }
+            if (circle!!.x.toInt() == path[point].first && circle!!.y.toInt() == path[point].second){
+                if (circle!!.x == 800f && circle!!.y == 1000f) point = 1
+                else point++
+            }
+        }
+
+        enemyRight = if (hp > 0){
+            (((maxHp * 70.0) - (hp * 70.0)) / maxHp).toFloat()
+        }
+        else {
+            (((maxHp * 70.0) - (1 * 70.0)) / maxHp).toFloat()
+        }
+        enemyRightManaShield =
+            (((manaShieldMax * 70.0) - (manaShield * 70.0)) / manaShieldMax).toFloat()
+        enemyRightShield = (((shieldMax * 70.0) - (shield * 70.0)) / shieldMax).toFloat()
+
     }
 }

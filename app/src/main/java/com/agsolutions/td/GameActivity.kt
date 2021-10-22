@@ -18,6 +18,8 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.forEach
+import androidx.core.view.iterator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.agsolutions.td.ActiveAbility.Companion.aAid0
@@ -34,9 +36,9 @@ import com.agsolutions.td.GameView.Companion.paintPestDmgDone
 import com.agsolutions.td.GameView.Companion.paintPoisonDmgDone
 import com.agsolutions.td.GameView.Companion.paintTowerDmgDone
 import com.agsolutions.td.GameView.Companion.paintWizardDmgDone
+import com.agsolutions.td.GameView.Companion.towerBase
 import com.agsolutions.td.LogIn.HttpTask
 import com.agsolutions.td.Main.MainActivity
-import com.agsolutions.td.Main.StartItemsMenu
 import com.agsolutions.td.UiView.Companion.xLevelCount
 import com.agsolutions.td.UiView.Companion.yLevelCount
 import com.agsolutions.td.Utils.round
@@ -72,11 +74,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
     var mHandler = Handler()
     var itemTouchHelper = ItemTouchHelper(SwipeItem(adapter))
     var itemTouchHelper2 = ItemTouchHelper(SwipeItemBag(bagAdapter))
-    private val fragmentStats = StatsFragment(updateViewModel)
-    private val fragmentStatsTower = StatsTowerFragment(updateViewModel)
-    private val fragmentStatsEnemy = StatsEnemyFragment(updateViewModel)
-    private val fragmentItem = ItemFragment()
-    private val fragmentUpgradeItem = ItemUpgradeFragment()
+    var fragmentStats = StatsFragment(updateViewModel)
+    var fragmentStatsTower = StatsTowerFragment(updateViewModel)
+    var fragmentStatsEnemy = StatsEnemyFragment(updateViewModel)
+    var fragmentItem = ItemFragment()
+    var fragmentUpgradeItem = ItemUpgradeFragment()
     private var activityThread: ActivityThread = ActivityThread(this)
     val attr = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build()
     val soundPool = Builder().setMaxStreams(10).setAudioAttributes(attr).build()
@@ -154,6 +156,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         companionList.mapMode = intent.getIntExtra("pickMode", 1)
         companionList.itemPick = intent.getIntExtra("pickMap", 0)
         var usernameX = sharedPref!!.getString("username", "user")
+        var startItemsPlace = mutableListOf<Items>()
 
         if (isOnline(this)) {
             HttpTask {
@@ -164,20 +167,20 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 }
                 println(it)
                 val jsonRes = JSONObject(it)
-                var startItemHiddenListRemove = mutableListOf<Items>()
                 if (jsonRes.getString("status") == "true") {
                     var jsonArray = JSONArray(jsonRes.getString("data"))
                     for (i in 0 until jsonArray.length()) {
                         var itemlist = jsonArray.getJSONObject(i)
                         var itemid = itemlist.getInt("itemid")
-                        companionList.startItemHiddenList.forEach() {
+                        companionList.startItemListAll.forEach() {
                             if (itemid == it.id) {
-                                companionList.startItemList.add(it)
-                                startItemHiddenListRemove.add(it)
+
+                                startItemsPlace.add(it)
                             }
                         }
+
                     }
-                    companionList.startItemHiddenList.removeAll(StartItemsMenu.startItemHiddenListRemove)
+                    companionList.startItemList.addAll(startItemsPlace)
                     Log.d("userdata Data:::::::", "worked")
 
                 } else {
@@ -189,16 +192,14 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             var fis = FileInputStream(textFile)
             var ois = ObjectInputStream(fis)
             var itemListPlace = ois.readObject() as ArrayList<Int>
-            var startItemHiddenListRemove = mutableListOf<Items>()
             for (itemid in itemListPlace) {
-                companionList.startItemHiddenList.forEach() {
+                companionList.startItemListAll.forEach() {
                     if (itemid == it.id) {
-                        companionList.startItemList.add(it)
-                        startItemHiddenListRemove.add(it)
+                        startItemsPlace.add(it)
                     }
                 }
             }
-            companionList.startItemHiddenList.removeAll(StartItemsMenu.startItemHiddenListRemove)
+            companionList.startItemList.addAll(startItemsPlace)
         }
 
        if (isOnline(this)) {
@@ -431,15 +432,28 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             livesTV.text = "NME"
         }
 
+        // Rect
+        GameView.dragRectList.addAll(mutableListOf(
+            Rect(0, 0, (9999).toInt(), (300 ).toInt()),
+            Rect(0, (1300 ).toInt(), (9999).toInt(), (9999).toInt()),
+            Rect((170 ).toInt(), (960 ).toInt(), (940 ).toInt(), (1050 ).toInt()),
+            Rect((170 ).toInt(), (475 ).toInt(), (840 ).toInt(), (565 ).toInt()),
+            Rect((910 ).toInt(), (960 ).toInt(), (1000 ).toInt(), (1240 ).toInt()),
+            Rect((365 ).toInt(), (475 ).toInt(), (455 ).toInt(), (1050 ).toInt()),
+            Rect((170 ).toInt(), (475 ).toInt(), (260 ).toInt(), (1050 ).toInt())
+        ))
+        if (companionList.mapMode == 1) GameView.dragRectList.add(Rect((760 ).toInt(), (475 ).toInt(), (850 ).toInt(), (1240 ).toInt()))
+        else if (companionList.mapMode == 2) GameView.dragRectList.add(Rect((760 ).toInt(), (475 ).toInt(), (850 ).toInt(), (1050 ).toInt()))
+
         gameSpeedBtn.setOnClickListener {
-            if (gameSpeedBtn.text == "1x"){
-                gameSpeedBtn.text = "1.5x"
+            if (companionList.gameSpeedAdjuster == 1f){
+                gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttononefivex)
                 companionList.gameSpeedAdjuster = 1.5f
-            }else if (gameSpeedBtn.text == "1.5x") {
-                gameSpeedBtn.text = "2x"
+            }else if (companionList.gameSpeedAdjuster == 1.5f) {
+                gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttontwox)
                 companionList.gameSpeedAdjuster = 2f
-            }else if (gameSpeedBtn.text == "2x") {
-                gameSpeedBtn.text = "1x"
+            }else if (companionList.gameSpeedAdjuster == 2f) {
+                gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttononex)
                 companionList.gameSpeedAdjuster = 1f
             }
         }
@@ -465,25 +479,25 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                             if (companionList.towerList[companionList.towerClickID].firstLastRandom == 0) {
                                 companionList.towerList[companionList.towerClickID].firstLastRandomText = "last"
-                                firstLastRandomBtn.text = companionList.towerList[companionList.towerClickID].firstLastRandomText
+                                firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonlast)
                                 companionList.towerList[companionList.towerClickID].firstLastRandom = 1
                                 companionList.towerList[companionList.towerClickID].randomEnemyForShotBool = true
                                 companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky = true
                             } else if (companionList.towerList[companionList.towerClickID].firstLastRandom == 1) {
                                 companionList.towerList[companionList.towerClickID].firstLastRandomText = "random"
-                                firstLastRandomBtn.text = companionList.towerList[companionList.towerClickID].firstLastRandomText
+                                firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonrandom)
                                 companionList.towerList[companionList.towerClickID].firstLastRandom = 2
                                 companionList.towerList[companionList.towerClickID].randomEnemyForShotBool = true
                                 companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky = true
                             } else if (companionList.towerList[companionList.towerClickID].firstLastRandom == 2) {
                                 companionList.towerList[companionList.towerClickID].firstLastRandomText = "first"
-                                firstLastRandomBtn.text = companionList.towerList[companionList.towerClickID].firstLastRandomText
+                                firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonfirst)
                                 companionList.towerList[companionList.towerClickID].firstLastRandom = 3
                                 companionList.towerList[companionList.towerClickID].randomEnemyForShotBool = true
                                 companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky = true
                             } else if (companionList.towerList[companionList.towerClickID].firstLastRandom == 3) {
                                 companionList.towerList[companionList.towerClickID].firstLastRandomText = "sticky"
-                                firstLastRandomBtn.text = companionList.towerList[companionList.towerClickID].firstLastRandomText
+                                firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonsticky)
                                 companionList.towerList[companionList.towerClickID].firstLastRandom = 0
                                 companionList.towerList[companionList.towerClickID].randomEnemyForShotBool = true
                                 companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky = true
@@ -563,7 +577,9 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
             companionList = itemListPlace[0] as com.agsolutions.td.Companion
             companionList.towerClick = false
+            companionList.enemyClick = false
             companionList.build = true
+            companionList.buildClickBool = true
 
             adapter = ItemAdapter(companionList.itemList, this)
             bagAdapter = ItemBagAdapter(companionList.itemListBagInserter, this, this)
@@ -588,8 +604,17 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             recyclerRadio.setHasFixedSize(true)
 
+            itemTouchHelper = ItemTouchHelper(SwipeItem(adapter))
+            itemTouchHelper2 = ItemTouchHelper(SwipeItemBag(bagAdapter))
+
             itemTouchHelper.attachToRecyclerView(recyclerCurrentItem)
             itemTouchHelper2.attachToRecyclerView(recyclerBagItem)
+
+            fragmentStats = StatsFragment(updateViewModel)
+            fragmentStatsTower = StatsTowerFragment(updateViewModel)
+            fragmentStatsEnemy = StatsEnemyFragment(updateViewModel)
+            fragmentItem = ItemFragment()
+            fragmentUpgradeItem = ItemUpgradeFragment()
 
             adapter.notifyDataSetChanged()
             bagAdapter.notifyDataSetChanged()
@@ -619,20 +644,20 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         companionList.logVolumeEffects = (1f-(log10(companionList.maxVolume - companionList.globalSoundEffects) / log10(companionList.maxVolume)))
         if (mediaPlayer != null) mediaPlayer!!.setVolume(companionList.logVolume, companionList.logVolume)
 
+        dropItem2()
+
         runOnUiThread {
             startItems()
             insertItem()
             unusedItems()
             activeAbilities()
-            if (paused) playPauseBtn.setImageResource(R.drawable.play)
-            else playPauseBtn.setImageResource(R.drawable.pause)
+            if (paused) playPauseBtn.setBackgroundResource(R.drawable.gamebuttonplay)
+            else playPauseBtn.setBackgroundResource(R.drawable.gamebuttonpause)
 
                 if (companionList.towerClick && companionList.towerClickBool) {
                     companionList.towerClickBool = false
-                    companionList.enemyClick = false
                     talentsBTN.visibility = View.VISIBLE
                     firstLastRandomBtn.visibility = View.VISIBLE
-                    firstLastRandomBtn.text = companionList.towerList[companionList.towerClickID].firstLastRandomText
 
 
                     companionList.itemListBagInserter.clear()
@@ -699,7 +724,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 }
             }
 
-            if (companionList.spawnDoubleClick) {
+            if (companionList.autoSpawnClick) {
                 if (companionList.autoSpawn) {
                     var toast = Toast.makeText(this,
                         "Autospawn on", Toast.LENGTH_SHORT)
@@ -712,7 +737,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
                     toast.show()
                 }
-                companionList.spawnDoubleClick = false
+                companionList.autoSpawnClick = false
             }
 
             if (companionList.toastGlobal) {
@@ -732,34 +757,174 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         count++
                     }
                 }
+                GameActivity.companionList.towerList.forEach(){
+                    var a = 0
+                    var rect2 = Rect((it.towerRange.x -80).toInt(), (it.towerRange.y - 80).toInt(), (it.towerRange.x + 80).toInt(), (it.towerRange.y + 80).toInt())
+                        when (companionList.dragTower.id){
+                            2000 -> { // basic
+                                when (it.towerRarity){
+                                    "basic" -> {
+                                        if (Rect.intersects(rect2, GameView.dragRect)) count++
+                                    }
+                                    "rare" -> {
+                                        if (Rect.intersects(rect2, GameView.dragRect)) count++
+                                    }
+                                    "epic" -> {
+                                        if (Rect.intersects(rect2, GameView.dragRect)) count++
+                                    }
+                                    "legendary" -> {
+                                        if (Rect.intersects(rect2, GameView.dragRect)) count++
+                                    }
+                                }
+                            }
+                            in 2100..2109 -> { // rare
+                                when (it.towerRarity){
+                                    "basic" -> {
+                                        a++
+                                        GameActivity.companionList.overrideTower = Rect.intersects(rect2, GameView.dragRect)
+                                        it.canBuildEach = Rect.intersects(rect2, GameView.dragRect)
+                                    }
+                                    "rare" -> {
+                                        if (Rect.intersects(rect2, GameView.dragRect)) count++
+                                    }
+                                    "epic" -> {
+                                        if (Rect.intersects(rect2, GameView.dragRect)) count++
+                                    }
+                                    "legendary" -> {
+                                        if (Rect.intersects(rect2, GameView.dragRect)) count++
+                                    }
+                                }
+                            }
+                            in 2200..2209 -> { // epic
+                                when (it.towerRarity){
+                                    "basic" -> {
+                                        a++
+                                        GameActivity.companionList.overrideTower = Rect.intersects(rect2, GameView.dragRect)
+                                        it.canBuildEach = Rect.intersects(rect2, GameView.dragRect)
+                                    }
+                                    "rare" -> {
+                                        a++
+                                        GameActivity.companionList.overrideTower = Rect.intersects(rect2, GameView.dragRect)
+                                        it.canBuildEach = Rect.intersects(rect2, GameView.dragRect)
+                                    }
+                                    "epic" -> {
+                                        if (Rect.intersects(rect2, GameView.dragRect)) count++
+                                    }
+                                    "legendary" -> {
+                                        if (Rect.intersects(rect2, GameView.dragRect)) count++
+                                    }
+                                }
+                            }
+                            in 2300..2309 -> { // legendary
+                                when (it.towerRarity){
+                                    "basic" -> {
+                                        a++
+                                        GameActivity.companionList.overrideTower = Rect.intersects(rect2, GameView.dragRect)
+                                        it.canBuildEach = Rect.intersects(rect2, GameView.dragRect)
+                                    }
+                                    "rare" -> {
+                                        a++
+                                        GameActivity.companionList.overrideTower = Rect.intersects(rect2, GameView.dragRect)
+                                        it.canBuildEach = Rect.intersects(rect2, GameView.dragRect)
+                                    }
+                                    "epic" -> {
+                                        a++
+                                        GameActivity.companionList.overrideTower = Rect.intersects(rect2, GameView.dragRect)
+                                        it.canBuildEach = Rect.intersects(rect2, GameView.dragRect)
+                                    }
+                                    "legendary" -> {
+                                        if (Rect.intersects(rect2, GameView.dragRect)) count++
+                                    }
+                                }
+                            }
+                        }
+                    it.canBuild = a > 0
+                }
                 companionList.dragStatusCantBuild = count > 0
                 companionList.invalidate++
             }
+            var containsStartItemPos = -1
+            if (GameActivity.companionList.towerList.isEmpty()  && GameActivity.companionList.hintsBool){
+                if (GameActivity.companionList.buildListBag.isEmpty()) {
+                    for (it in GameActivity.companionList.itemList) {
+                        if (it == (GameActivity.companionList.stt0) ||
+                            it == (GameActivity.companionList.stt1) ||
+                            it == (GameActivity.companionList.stt2) ||
+                            it == (GameActivity.companionList.stt3) ||
+                            it == (GameActivity.companionList.stt4) ||
+                            it == (GameActivity.companionList.stt5) ||
+                            it == (GameActivity.companionList.stt6) ||
+                            it == (GameActivity.companionList.stt7) ||
+                            it == (GameActivity.companionList.stt8) ||
+                            it == (GameActivity.companionList.stt9)
+                        ) {
+                            containsStartItemPos = GameActivity.companionList.itemList.indexOf(it)
+                            break
+                        }
+                    }
+                }else {
+                    containsStartItemPos = 0
+                }
+            }
+            if (GameActivity.companionList.towerList.isEmpty() && containsStartItemPos != -1 && GameActivity.companionList.hintsBool) {
 
-            if (companionList.towerClick && companionList.towerList[companionList.towerClickID].itemListBag.isEmpty() && companionList.itemList.isNotEmpty() && companionList.hintsBool) {
                 val posXY = IntArray(2)
-                recyclerCurrentItem.getLocationOnScreen(posXY)
-                UiView.xRecycler = posXY[0].toFloat()
-                UiView.yRecycler = posXY[1].toFloat()
-                companionList.invalidate++
+                if (GameActivity.companionList.buildListBag.isEmpty()) {
+                    recyclerCurrentItem.forEach {
+                        var a = recyclerCurrentItem.indexOfChild(it)
+                        if (a == containsStartItemPos) it.getLocationOnScreen(posXY)
+                    }
+                    UiView.xRecyclerTower = posXY[0].toFloat()
+                    UiView.yRecyclerTower = posXY[1].toFloat()
+                    companionList.invalidate++
+                }else {
+                    for (recycler in recyclerBagItem) {
+                        recycler.getLocationOnScreen(posXY)
+                        UiView.xRecyclerTower = posXY[0].toFloat()
+                        UiView.yRecyclerTower = posXY[1].toFloat()
+                        companionList.invalidate++
+                        break
+                    }
+                }
             }
-            if (companionList.towerClick && companionList.towerList[companionList.towerClickID].talentPoints > 1 && companionList.hintsBool) {
-                val posXY = IntArray(2)
-                talentsBTN.getLocationOnScreen(posXY)
-                UiView.xTalents = posXY[0].toFloat()
-                UiView.yTalents = posXY[1].toFloat()
-                companionList.invalidate++
-            }
-            if (companionList.towerClick && companionList.towerList[companionList.towerClickID].itemListBag.isNotEmpty() && companionList.hintsBool && companionList.tutorialFirstUseItemBool) {
+
+                       if (companionList.towerClick && companionList.towerList[companionList.towerClickID].itemListBag.size - companionList.towerList[companionList.towerClickID].bagSizeElementCount < 1 && companionList.itemList.isNotEmpty() && companionList.hintsBool) {
+                           val posXY = IntArray(2)
+                           recyclerCurrentItem.getLocationOnScreen(posXY)
+                           UiView.xRecycler = posXY[0].toFloat()
+                           UiView.yRecycler = posXY[1].toFloat()
+                           companionList.invalidate++
+                       }
+
+                       if (companionList.towerClick && companionList.towerList[companionList.towerClickID].talentPoints > 1 && companionList.hintsBool) {
+                           val posXY = IntArray(2)
+                           talentsBTN.getLocationOnScreen(posXY)
+                           UiView.xTalents = posXY[0].toFloat()
+                           UiView.yTalents = posXY[1].toFloat()
+                           companionList.invalidate++
+                       }
+            if (companionList.towerClick && companionList.towerList[companionList.towerClickID].itemListBag.size - companionList.towerList[companionList.towerClickID].bagSizeElementCount >= 1 && companionList.hintsBool && companionList.tutorialFirstUseItemBool) {
                 companionList.tutorialFirstUseItemCounter++
                 if (companionList.tutorialFirstUseItemCounter > 180) companionList.tutorialFirstUseItemBool = false
                 val posXY = IntArray(2)
-                recyclerBagItem.getLocationOnScreen(posXY)
+                for (it in recyclerBagItem) {
+                    if (recyclerBagItem.indexOfChild(it) == 1){
+                        it.getLocationOnScreen(posXY)
+                        break
+                    }
+                }
                 UiView.xRecyclerBag = posXY[0].toFloat()
                 UiView.yRecyclerBag = posXY[1].toFloat()
                 companionList.invalidate++
             }
-            if (!companionList.autoSpawn && companionList.autoSpawnCount > 180 && companionList.hintsBool && companionList.enemyList.isEmpty()) {
+
+            if (companionList.spawnBool && companionList.hintsBool && companionList.level != 0) {
+                companionList.spawnBoolCounter++
+                if (companionList.spawnBoolCounter > 360) companionList.spawnBool = false
+                companionList.invalidate++
+            }
+
+            if (GameActivity.companionList.enemyList.isEmpty() && GameActivity.companionList.level != 0 && GameActivity.companionList.mapMode == 1 && !GameActivity.companionList.autoSpawn && GameActivity.companionList.hintsBool){
                 companionList.invalidate++
             }
 
@@ -786,13 +951,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         gameEnd()
 
-        // on Touch -------------------------------------------------------------
-        if (companionList.spawnDoubleClickCounter > 0) companionList.spawnDoubleClickCounter++
-        if (companionList.spawnDoubleClickCounter > 21) {
-            if (!companionList.autoSpawn && companionList.enemyList.isEmpty()) companionList.spawnEnemy = true
-            companionList.spawnDoubleClickCounter = 0
-        }
-
         //  update game -------------------------------------------------------------
         if (!paused && companionList.end == 0) {
             updateGame()
@@ -802,7 +960,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
     }
 
     //----------------------------------------------------------------------------
-
 
     private fun startItems() {
         //from StartItems class
@@ -815,38 +972,22 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
     //----------------------------------------------------------------------------
 
     private fun insertItem() {
-        // tutorial
-        if (companionList.itemPick == 0) {
-            if (companionList.enemiesKilled == 4) {
-                companionList.itemList.add(0, Items(0, 1, 999, 0, 4f, 0, 0f, 0, "Mace", R.drawable.pdoubleswordsgrey, R.drawable.overlaytransparent, (3.0f * companionList.lvlScaler), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1, "", 0f, "", 0f))
-                adapter.notifyItemInserted(0)
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, TutorialItems::class.java)
-                    startActivity(intent)
-                }, 50)
-                companionList.dropItemList = 0
-                companionList.itemPick = 1
-                if (supportFragmentManager.findFragmentById(R.id.fragment) == fragmentItem) {
-                    companionList.fragmentItemCurrentItem += 1
-                }
-            }
-            // add items
-        } else {
+
             if (companionList.dropItemDarkUltimate > 0) {
-                companionList.itemList.add(0, Items(6666, 1, 999, 0, 0f, 0, 0f, 0, "Soul Collector", R.drawable.soulpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "Collects Souls", 0f, "", 0f))
-                adapter.notifyItemInserted(0)
+                companionList.itemListInsertItem.add(0, Items(6666, 1, 999, 0, 0f, 0, 0f, 0, "Soul Collector", R.drawable.soulpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "Collects Souls", 0f, "", 0f))
                 companionList.dropItemDarkUltimate -= 1
                 if (supportFragmentManager.findFragmentById(R.id.fragment) == fragmentItem) {
                     companionList.fragmentItemCurrentItem += 1
                 }
             }
             // telling adapter to insert item to recycler 1
-            if (companionList.insertItem >= 1) {
-                companionList.insertItem -= 1
+            if (companionList.itemListInsertItem.isNotEmpty()) {
+                var itemPlace = companionList.itemListInsertItem.random()
+
+                companionList.itemList.add(0,itemPlace)
+                companionList.itemListInsertItem.remove(itemPlace)
 
                 adapter.notifyItemInserted(0)
-                recyclerCurrentItem.smoothScrollToPosition(0)
             }
 
             // telling adapter to insert item to recycler 2
@@ -884,7 +1025,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 radioAdapter.notifyDataSetChanged()
                 recyclerRadio.smoothScrollToPosition(companionList.radioList.size - 1)
             }
-        }
+
         // tell adapter active abilities to insert into recycler active ability
         if (companionList.insertSpell > 0) {
             activeAbilityAdapter.notifyDataSetChanged()
@@ -896,12 +1037,16 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     fun dropItem (enemy: Enemy) {
         if (companionList.dropItemList >= 1) {
-            repeat(companionList.dropItemList) {
             if (!companionList.itemBeingMoved) {
+                repeat(companionList.dropItemList) {
                 if (enemy.elementalMob || enemy.name == "boss" || enemy.name == "challenge") {
                     var itemX = getItem2(companionList.towerList[enemy.killerId])
-                    // TODO    if (Companion.upgraderBool && itemX.upgrade != 0) itemX.upgrade *= 2
-                    companionList.itemList.add(0, itemX)
+                    if (itemX.id == 7){
+                                companionList.upgradePoints++
+                                companionList.dmgDisplayDropList.add(DropDisplay(enemy.circle!!.x.toInt(),enemy.circle!!.y.toInt(), "up", 1, 50))
+                            }else {
+                        companionList.itemListInsertItem.add(itemX)
+                    }
                     if (companionList.towerList[enemy.killerId].overallItemChance > 20) {
                         when ((0..3).random()) {
                             0 -> {
@@ -916,28 +1061,37 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     when ((0..999).random()) {
                         in 0..(companionList.towerList[enemy.killerId].overallItemChance * 10).toInt() -> {
                             var itemX = getItem(companionList.towerList[enemy.killerId])
-                            // TODO    if (Companion.upgraderBool && itemX.upgrade != 0) itemX.upgrade *= 2
-                            companionList.itemList.add(0, itemX)
-
+                            if (itemX.id == 6){
+                                companionList.gold += (((0..(enemy.overallGold * 10).toInt()).random()) + 0.01f) * 0.1f
+                                companionList.dmgDisplayDropList.add(DropDisplay(enemy.circle!!.x.toInt(),enemy.circle!!.y.toInt(), "gold", 1, 50))
+                            }else {
+                                if (companionList.upgraderBool && itemX.upgrade != 0) itemX.upgrade *= 2
+                                companionList.itemListInsertItem.add(itemX)
+                            }
                         }
                     }
-                }
-                runOnUiThread {
-                    companionList.itemListInserter.clear()
-                    adapter.notifyDataSetChanged()
-                    companionList.itemListInserter.addAll(companionList.itemList)
-                    adapter.notifyItemRangeInserted(0, companionList.itemListInserter.size)
-                    recyclerCurrentItem.smoothScrollToPosition(0)
                 }
 
                 if (supportFragmentManager.findFragmentById(R.id.fragment) == fragmentItem) {
                     companionList.fragmentItemCurrentItem += 1
                 }
                 companionList.dropItemList -= 1
-            } else mHandler.postDelayed({
-                dropItem((enemy))
-            }, 50)
+            }
+        } else {
+                companionList.itemBeingMovedSave++
+                companionList.itemBeingMovedSaveList.add(enemy)
+            }
         }
+    }
+
+    //----------------------------------------------------------------------------
+
+    fun dropItem2 () {
+        if (companionList.itemBeingMovedSave > 0 && !companionList.itemBeingMoved) {
+            companionList.itemBeingMovedSave -= 1
+            var randomDrop = companionList.itemBeingMovedSaveList.random()
+            companionList.itemBeingMovedSaveList.remove(randomDrop)
+            dropItem(randomDrop)
         }
     }
 
@@ -947,18 +1101,13 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         // unused items
         if (companionList.itemList.size >= 8) {
 
-            if (companionList.itemListNormal.contains(companionList.itemList[7].id)) companionList.itemPoints += 0.5f
-            if (companionList.itemListRare.contains(companionList.itemList[7].id)) companionList.itemPoints += 1f
-            if (companionList.itemListEpic.contains(companionList.itemList[7].id)) companionList.itemPoints += 2f
-            if (companionList.itemListLegendary.contains(companionList.itemList[7].id)) companionList.itemPoints += 3f
+            var amount = 0f
+            if (companionList.itemListNormal.contains(companionList.itemList[7].id)) amount = 0.5f
+            if (companionList.itemListRare.contains(companionList.itemList[7].id)) amount = 1f
+            if (companionList.itemListEpic.contains(companionList.itemList[7].id)) amount = 2f
+            if (companionList.itemListLegendary.contains(companionList.itemList[7].id)) amount = 3f
 
-            if (supportFragmentManager.findFragmentById(R.id.fragment) == fragmentItem && companionList.fragmentItemCurrentItem >= 7) {
-                supportFragmentManager.beginTransaction().apply {
-                replace(R.id.fragment, fragmentStats)
-                .addToBackStack(null)
-                .commit()
-                }
-            }
+            companionList.itemPoints += amount
 
             companionList.itemList.removeAt(7)
 
@@ -969,6 +1118,20 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 adapter.notifyItemRangeInserted(0, companionList.itemListInserter.size)
                 recyclerCurrentItem.smoothScrollToPosition(0)
             }
+
+            val posXY = IntArray(2)
+            var height = 0
+            var width = 0
+            for (it in recyclerCurrentItem) {
+                if (recyclerCurrentItem.indexOfChild(it) == 6){
+                    it.getLocationOnScreen(posXY)
+                    height = it.height
+                    width = it.width
+                    break
+                }
+            }
+
+            companionList.dmgDisplayDropList.add(DropDisplay(posXY[0] + height, posXY[1] + width, "ip", 1, 50))
 
         }
     }
@@ -1048,8 +1211,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 }
 
                 DragEvent.ACTION_DRAG_LOCATION -> {
-                    GameView.dragRect = Rect(event.x.toInt(), event.y.toInt(), event.x.toInt(), event.y.toInt())
+                    var scaler = ((companionList.scaleScreen / 10) * GameView.scaleFactor)
+                    // (companionList.clipRect.left * scaler)
+                    // (GameView.towerBase!!.height / 2)
 
+                    GameView.dragRect = Rect(((event.x / scaler) + (companionList.clipRect.left) - (GameView.towerBase!!.height / 2)).toInt(), ((event.y / scaler) + (companionList.clipRect.top ) - (GameView.towerBase!!.height / 2)).toInt(), ((event.x / scaler) + (companionList.clipRect.left) - (GameView.towerBase!!.height / 2)).toInt(), ((event.y / scaler) + (companionList.clipRect.top) - (GameView.towerBase!!.height / 2)).toInt())
                 true
                 }
 
@@ -1063,6 +1229,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     val item: ClipData.Item = event.clipData.getItemAt(0)
                     val dragData = item.text
                     var build = true
+
 
                     if (companionList.level > 0 && position == 0){
                         if (!companionList.day && companionList.moonTalentItemCost > 0){
@@ -1080,79 +1247,203 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     }
 
                     if (build && !companionList.dragStatusCantBuild) {
-                        var towerPlace =
-                            Tower(companionList.buildListBag[position].dmg, companionList.buildListBag[position].atkDmg, companionList.buildListBag[position].mgcDmg, companionList.buildListBag[position].speed, companionList.buildListBag[position].crit, companionList.buildListBag[position].critDmg)
-                        towerPlace.towerRange = TowerRadius(event.x - 32, event.y - 32, 300f)
-                        GameView.dragRectList.add(Rect((event.x - 80).toInt(), (event.y - 80).toInt(), (event.x + 80).toInt(), (event.y + 80).toInt()))
-                        towerPlace.bagSize = (companionList.buildListBag[position].specialFloat - 1).toInt()
-                        towerPlace.bagSizeElement =
-                            (companionList.buildListBag[position].specialFloat2 - 1).toInt()
-                        when (companionList.buildListBag[position].id) {
-                            2000 -> {
-                                towerPlace.towerRarity = "basic"
-                                towerPlace.towerRarityMultiplier = 0.80f
+                        var scaler = ((companionList.scaleScreen / 10) * GameView.scaleFactor)
+                        if (companionList.overrideTower){
+                            companionList.writeLockTower.lock()
+                            try {
+                                var towerListIterator = companionList.towerList.listIterator()
+                                while (towerListIterator.hasNext()) {
+                                    var elementBagFull = false
+                                    var it = towerListIterator.next()
+                                    var eventX =
+                                        (event.x / scaler)  + (companionList.clipRect.left) - ((towerBase!!.height / 2))
+                                    var eventY =
+                                        (event.y / scaler)  + (companionList.clipRect.top) - ((towerBase!!.height / 2))
+                                    var rect = Rect((eventX - 100).toInt(), (eventY - 100).toInt(), (eventX + 100).toInt(), (eventY + 100).toInt())
+                                    var rect2 = Rect(it.towerRange.x.toInt(), it.towerRange.y.toInt(), it.towerRange.x.toInt(), it.towerRange.y.toInt())
+                                    if (Rect.intersects(rect, rect2)) {
+                                        when (companionList.dragTower.id) {
+                                            in 2100..2109 -> {
+                                                if (it.towerRarity == "basic") {
+                                                    it.towerRarityMultiplier += (1.0f - 0.8f)
+                                                    it.dmg += (10f - 5f)
+                                                    it.speed -= (70f - 60f)
+                                                    it.bagSize += (3 - 2)
+                                                    it.bagSizeElement += (2 - 1)
+                                                }
+                                                it.towerRarity = "rare"
+                                            }
+                                            in 2200..2209 -> {
+                                                if (it.towerRarity == "basic") {
+                                                    it.towerRarityMultiplier += (1.2f - 0.8f)
+                                                    it.dmg += (15f - 5f)
+                                                    it.speed -= (70f - 55f)
+                                                    it.bagSize += (4 - 2)
+                                                    it.bagSizeElement += (2 - 1)
+                                                } else if (it.towerRarity == "rare") {
+                                                    it.towerRarityMultiplier += (1.2f - 1.0f)
+                                                    it.dmg += (15f - 10f)
+                                                    it.speed -= (60f - 55f)
+                                                    it.bagSize += (3 - 2)
+                                                    it.bagSizeElement += (2 - 2)
+                                                    elementBagFull = true
+                                                }
+                                                it.towerRarity = "epic"
+                                            }
+                                            in 2300..2309 -> {
+                                                if (it.towerRarity == "basic") {
+                                                    it.towerRarityMultiplier += (1.2f - 0.8f)
+                                                    it.dmg += (25f - 5f)
+                                                    it.speed -= (70f - 50f)
+                                                    it.bagSize += (5 - 2)
+                                                    it.bagSizeElement += (3 - 1)
+                                                } else if (it.towerRarity == "rare") {
+                                                    it.towerRarityMultiplier += (1.2f - 1.0f)
+                                                    it.dmg += (25f - 10f)
+                                                    it.speed -= (60f - 50f)
+                                                    it.bagSize += (5 - 3)
+                                                    it.bagSizeElement += (3 - 2)
+                                                } else if (it.towerRarity == "epic") {
+                                                    it.towerRarityMultiplier += (1.2f - 1.2f)
+                                                    it.dmg += (25f - 15f)
+                                                    it.speed -= (55f - 50f)
+                                                    it.bagSize += (5 - 4)
+                                                    it.bagSizeElement += (3 - 2)
+                                                }
+                                                it.towerRarity = "legendary"
+                                            }
+                                        }
+                                        if (!elementBagFull) {
+                                            var itemPlace: Items? = null
+                                            when (companionList.dragTower.id) {
+                                                2100, 2200, 2300 -> {
+                                                    if (!it.itemListBag.contains(companionList.eearth) || !it.itemListBag.contains(companionList.ebutterfly) || !it.itemListBag.contains(companionList.ewind) || !it.itemListBag.contains(companionList.emoon)) it.towerPrimaryElement =
+                                                        "earth"
+                                                    itemPlace = companionList.eearth
+                                                }
+                                                2101, 2201, 2301 -> itemPlace =
+                                                    companionList.ewizard
+                                                2102, 2202, 2302 -> itemPlace = companionList.eice
+                                                2103, 2203, 2303 -> {
+                                                    if (!it.itemListBag.contains(companionList.eearth) || !it.itemListBag.contains(companionList.ebutterfly) || !it.itemListBag.contains(companionList.ewind) || !it.itemListBag.contains(companionList.emoon)) it.towerPrimaryElement =
+                                                        "butterfly"
+                                                    itemPlace = companionList.ebutterfly
+                                                }
+                                                2104, 2204, 2304 -> itemPlace =
+                                                    companionList.epoison
+                                                2105, 2205, 2305 -> {
+                                                    if (!it.itemListBag.contains(companionList.eearth) || !it.itemListBag.contains(companionList.ebutterfly) || !it.itemListBag.contains(companionList.ewind) || !it.itemListBag.contains(companionList.emoon)) it.towerPrimaryElement =
+                                                        "moon"
+                                                    itemPlace = companionList.emoon
+                                                }
+                                                2106, 2206, 2306 -> {
+                                                    if (!it.itemListBag.contains(companionList.eearth) || !it.itemListBag.contains(companionList.ebutterfly) || !it.itemListBag.contains(companionList.ewind) || !it.itemListBag.contains(companionList.emoon)) it.towerPrimaryElement =
+                                                        "wind"
+                                                    itemPlace = companionList.ewind
+                                                }
+                                                2107, 2207, 2307 -> itemPlace = companionList.eutils
+                                                2108, 2208, 2308 -> itemPlace = companionList.efire
+                                                2109, 2209, 2309 -> itemPlace = companionList.edark
+                                            }
+                                            if (itemPlace != null) {
+                                                if (it.bagSizeElementCount == 0) it.itemListBag.add(0, itemPlace)
+                                                else it.itemListBag.add(itemPlace)
+                                            }
+                                        }
+
+                                            if (companionList.level == 0 || (companionList.level > 0 && position != 0)) {
+                                                companionList.buildListBag.removeAt(position)
+
+                                                companionList.itemListBagInserter.clear()
+                                                bagAdapter.notifyDataSetChanged()
+                                                companionList.itemListBagInserter.addAll(companionList.buildListBag)
+                                                bagAdapter.notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
+                                                recyclerBagItem.smoothScrollToPosition(0)
+                                            }
+                                    }
+                                    break
+                                }
+                                 } finally {
+                        companionList.writeLockTower.unlock()
+                                }
+                        }else {
+                            var towerPlace =
+                                Tower(companionList.buildListBag[position].dmg, companionList.buildListBag[position].atkDmg, companionList.buildListBag[position].mgcDmg, companionList.buildListBag[position].speed, companionList.buildListBag[position].crit, companionList.buildListBag[position].critDmg)
+                            var eventX =
+                                (event.x / scaler)  + (companionList.clipRect.left) - ((towerBase!!.height / 2))
+                            var eventY =
+                                (event.y / scaler)  + (companionList.clipRect.top) - ((towerBase!!.height / 2))
+                            towerPlace.towerRange = TowerRadius(eventX, eventY, 300f)
+                            towerPlace.bagSize =
+                                (companionList.buildListBag[position].specialFloat - 1).toInt()
+                            towerPlace.bagSizeElement =
+                                (companionList.buildListBag[position].specialFloat2 - 1).toInt()
+                            when (companionList.buildListBag[position].id) {
+                                2000 -> {
+                                    towerPlace.towerRarity = "basic"
+                                    towerPlace.towerRarityMultiplier = 0.80f
+                                }
+                                in 2100..2109 -> {
+                                    towerPlace.towerRarity = "rare"
+                                    towerPlace.towerRarityMultiplier = 1.0f
+                                }
+                                in 2200..2209 -> {
+                                    towerPlace.towerRarity = "epic"
+                                    towerPlace.towerRarityMultiplier = 1.2f
+                                }
+                                in 2300..2309 -> {
+                                    towerPlace.towerRarity = "legendary"
+                                    towerPlace.towerRarityMultiplier = 1.5f
+                                }
                             }
-                            in 2100..2109 -> {
-                                towerPlace.towerRarity = "rare"
-                                towerPlace.towerRarityMultiplier = 1.0f
+
+                            var itemPlace: Items? = null
+                            when (companionList.buildListBag[position].id) {
+                                2100, 2200, 2300 -> {
+                                    towerPlace.towerPrimaryElement = "earth"
+                                    itemPlace = companionList.eearth
+                                }
+                                2101, 2201, 2301 -> itemPlace = companionList.ewizard
+                                2102, 2202, 2302 -> itemPlace = companionList.eice
+                                2103, 2203, 2303 -> {
+                                    towerPlace.towerPrimaryElement = "butterfly"
+                                    itemPlace = companionList.ebutterfly
+                                }
+                                2104, 2204, 2304 -> itemPlace = companionList.epoison
+                                2105, 2205, 2305 -> {
+                                    towerPlace.towerPrimaryElement = "moon"
+                                    itemPlace = companionList.emoon
+                                }
+                                2106, 2206, 2306 -> {
+                                    towerPlace.towerPrimaryElement = "wind"
+                                    itemPlace = companionList.ewind
+                                }
+                                2107, 2207, 2307 -> itemPlace = companionList.eutils
+                                2108, 2208, 2308 -> itemPlace = companionList.efire
+                                2109, 2209, 2309 -> itemPlace = companionList.edark
                             }
-                            in 2200..2209 -> {
-                                towerPlace.towerRarity = "epic"
-                                towerPlace.towerRarityMultiplier = 1.2f
+                            if (itemPlace != null) {
+                                towerPlace.itemListBag.add(0, itemPlace)
                             }
-                            in 2300..2309 -> {
-                                towerPlace.towerRarity = "legendary"
-                                towerPlace.towerRarityMultiplier = 1.5f
+
+                            companionList.writeLockTower.lock()
+                            try {
+                                var towerListIterator = companionList.towerList.listIterator()
+                                towerListIterator.add(towerPlace)
+                            } finally {
+                                companionList.writeLockTower.unlock()
+                            }
+
+                            if (companionList.level == 0 || (companionList.level > 0 && position != 0)) {
+                                companionList.buildListBag.removeAt(position)
+
+                                companionList.itemListBagInserter.clear()
+                                bagAdapter.notifyDataSetChanged()
+                                companionList.itemListBagInserter.addAll(companionList.buildListBag)
+                                bagAdapter.notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
+                                recyclerBagItem.smoothScrollToPosition(0)
                             }
                         }
-
-                        var itemPlace: Items? = null
-                        when (companionList.buildListBag[position].id) {
-                            2100, 2200, 2300 -> {
-                                towerPlace.towerPrimaryElement = "earth"
-                                itemPlace = companionList.eearth
-                            }
-                            2101, 2201, 2301 -> itemPlace = companionList.ewizard
-                            2102, 2202, 2302 -> itemPlace = companionList.eice
-                            2103, 2203, 2303 -> {
-                                towerPlace.towerPrimaryElement = "butterfly"
-                                itemPlace = companionList.ebutterfly
-                            }
-                            2104, 2204, 2304 -> itemPlace = companionList.epoison
-                            2105, 2205, 2305 -> {
-                                towerPlace.towerPrimaryElement = "moon"
-                                itemPlace = companionList.emoon
-                            }
-                            2106, 2206, 2306 -> {
-                                towerPlace.towerPrimaryElement = "wind"
-                                itemPlace = companionList.ewind
-                            }
-                            2107, 2207, 2307 -> itemPlace = companionList.eutils
-                            2108, 2208, 2308 -> itemPlace = companionList.efire
-                            2109, 2209, 2309 -> itemPlace = companionList.edark
-                        }
-                        if (itemPlace != null) {
-                            towerPlace.itemListBag.add(0, itemPlace)
-                        }
-
-                        companionList.writeLockTower.lock()
-                        try {
-                            var towerListIterator = companionList.towerList.listIterator()
-                            towerListIterator.add(towerPlace)
-                        } finally {
-                            companionList.writeLockTower.unlock()
-                        }
-
-                        if (companionList.level == 0 || (companionList.level > 0 && position != 0)) {
-                            companionList.buildListBag.removeAt(position)
-
-                            companionList.itemListBagInserter.clear()
-                            bagAdapter.notifyDataSetChanged()
-                            companionList.itemListBagInserter.addAll(companionList.buildListBag)
-                            bagAdapter.notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
-                            recyclerBagItem.smoothScrollToPosition(0)
-                        }
-
                     }
                     vv.invalidate()
                     Log.d("drag", "dropped")
@@ -1175,6 +1466,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             Log.d("drag", "ended, fail")
                         }
                     }
+                    paused = false
 
                     // returns true; the value is ignored.
                     true
@@ -1291,20 +1583,20 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 .toString()))
                         }
             if (companionList.buildListBag[position].id == 2000) {
-                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 0.9"))
-                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 0.9"))
+                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 0.8"))
+                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 0.8"))
             }
             if (companionList.buildListBag[position].id == 2100 || companionList.buildListBag[position].id == 2101 || companionList.buildListBag[position].id == 2102 || companionList.buildListBag[position].id == 2103 || companionList.buildListBag[position].id == 2104 || companionList.buildListBag[position].id == 2105 || companionList.buildListBag[position].id == 2106 || companionList.buildListBag[position].id == 2107 || companionList.buildListBag[position].id == 2108 || companionList.buildListBag[position].id == 2109){
                 companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 1.0"))
                 companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 1.0"))
             }
             if (companionList.buildListBag[position].id == 2200 || companionList.buildListBag[position].id == 2201 || companionList.buildListBag[position].id == 2202 || companionList.buildListBag[position].id == 2203 || companionList.buildListBag[position].id == 2204 || companionList.buildListBag[position].id == 2205 || companionList.buildListBag[position].id == 2206 || companionList.buildListBag[position].id == 2207 || companionList.buildListBag[position].id == 2208 || companionList.buildListBag[position].id == 2209){
-                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 1.1"))
-                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 1.1"))
+                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 1.2"))
+                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 1.2"))
             }
             if (companionList.buildListBag[position].id == 2300 || companionList.buildListBag[position].id == 2301 || companionList.buildListBag[position].id == 2302 || companionList.buildListBag[position].id == 2303 || companionList.buildListBag[position].id == 2304 || companionList.buildListBag[position].id == 2305 || companionList.buildListBag[position].id == 2306 || companionList.buildListBag[position].id == 2307 || companionList.buildListBag[position].id == 2308 || companionList.buildListBag[position].id == 2309){
-                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 1.25"))
-                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 1.25"))
+                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 1.5"))
+                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 1.5"))
             }
             companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.overlaytransparent, "                ".toString()))
 
@@ -1432,8 +1724,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         dmgDisplayListIterator.add(DmgDisplay(companionList.enemyList[companionList.enemyList.indexOf(it)], dmgString, 1, 50, paintBombDmgDone, 30, 15))
 
                         if (it.hp < 0) {
-                            it.killerId = companionList.enemyList.indexOf(it)
-                            dead(it)
+                            it.killerId = companionList.towerList.indexOf(companionList.towerList.random())
+                            companionList.enemyKilledList.add(it)
                         }
                     }
 
@@ -1517,6 +1809,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     fun updateGame() {
 
+        deadSplit()
         onLvlUp ()
         dayNight ()
         midnightEvents ()
@@ -1530,6 +1823,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         enemyDots()
         items()
         activeAbilitiesEffect()
+        dead()
         dead2()
 
     }
@@ -1548,22 +1842,15 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             }
             if (companionList.enemyList.isEmpty() && !companionList.autoSpawn && companionList.mapMode == 1 && companionList.level != 0) {
                 companionList.levelCount = 0
-                if (companionList.autoSpawnCountBool){
-                    companionList.autoSpawnCountBool = false
-                    companionList.autoSpawnCount = 1
-                }
             }
             if (companionList.enemyList.isEmpty() && companionList.spawnEnemy && companionList.mapMode == 1 && companionList.level != 0) {
                 companionList.spawnEnemy = false
                 companionList.levelCount = companionList.levelCountPlace
-                companionList.autoSpawnCount = 0
             }
-            if (companionList.autoSpawnCount > 0) companionList.autoSpawnCount++
             if (companionList.levelCountBool) companionList.levelCount ++
 
             //normal
             if (companionList.levelCount >= companionList.levelCountPlace) {
-                companionList.autoSpawnCountBool = true
                 companionList.levelCountBool = false
                 companionList.levelCountSecondBool = false
                 companionList.level++
@@ -1581,21 +1868,17 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 else if (companionList.level > 125) companionList.levelCountPlace * 0.95
                 else if (companionList.level > 75) companionList.levelCountPlace * 0.99
 
+                // spawn counter
+                if (Utils.divisible(companionList.level, 20)){
+                    companionList.enemySpawnedCount++
+                }
+
                 // tutorial touch screen
 
                 if (companionList.level == 3 && companionList.mapPick == 0) {
                     paused = true
                     mHandler.postDelayed({
                         intent = Intent(this, TutorialTouchScreen::class.java)
-                        startActivity(intent)
-                    }, 50)
-                }
-
-                // tutorial talents
-                if (companionList.level == 4 && companionList.hintsBool) {
-                    paused = true
-                    mHandler.postDelayed({
-                        intent = Intent(this, TutorialTalents::class.java)
                         startActivity(intent)
                     }, 50)
                 }
@@ -1630,7 +1913,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         it.atkDmg /= 1000
                         it.mgcDmg /= 1000
                     }
-                    companionList.readLockTower.lock ()
+                    companionList.writeLockTower.lock ()
                     try {
                             var towerListIterator = companionList.towerList.listIterator()
                             while (towerListIterator.hasNext()) {
@@ -1756,8 +2039,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 companionList.manaShieldBool = false
                 companionList.shieldBool = false
 
-                if (companionList.level == 10) companionList.levelListReserve.addAll(listOf("shortcut", "speed", "mass", "regeneration", "immune", "split", "manaShield", "shield"))
-                if (companionList.level == 60) companionList.levelListReserve.addAll(listOf("healer", "tank"))
+                if (companionList.level == 10) companionList.levelListReserve.addAll(listOf("shortcut", "speed", "mass", "regeneration", "immune", "split", "manaShield", "shield", "invu"))
+                if (companionList.level == 60) companionList.levelListReserve.addAll(listOf("healer", "tank", "disruptor"))
 
                 if (companionList.level > 0 && Utils.divisible(companionList.level, 50)) {
                     paused = true
@@ -1824,8 +2107,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 companionList.endlessNightActiveCounter = 0
             }
         } else {
-            if (companionList.dayNightVariable < -5) companionList.dayNightVariable = -5
-            if (companionList.dayNightVariable > 5) companionList.dayNightVariable = 5
             companionList.day = !(companionList.dayNightHour < companionList.dayNightVariable || companionList.dayNightHour > 19)
         }
     }
@@ -1847,36 +2128,29 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             if (companionList.midnightMadnessDisableItems) {
                 companionList.midnightMadnessDisableItems = false
                 companionList.midnightMadnessSaveList.remove("Darkest Hour")
-                companionList.readLockTower.lock ()
+                companionList.writeLockTower.lock ()
                 try {
                         var towerListIterator = companionList.towerList.listIterator()
                         while (towerListIterator.hasNext()) {
                             var tower = towerListIterator.next()
-
                             tower.itemListBag.forEach {
                                 if (it.crossedOut){
-                                    var x = tower.itemListBag.indexOf(it)
-                                    var itemListBagIterator = companionList.itemListBagMysteryEventCancelled.listIterator()
-                                    while (itemListBagIterator.hasNext()) {
-                                        var cancelled = itemListBagIterator.next()
-                                        if (it.id == cancelled.id) tower.itemListBag.set(x, cancelled)
-                                        itemListBagIterator.remove()
-                                        break
-                                    }
-                                    it.crossedOut = false
-                                    it.imageOverlay = R.drawable.overlaytransparent
+                                    var index = tower.itemListBag.indexOf(it)
+                                    tower.itemListBag[index] = tower.itemListDisabled[0]
+                                    adapter.statsAdd(index, tower, true)
+                                    tower.itemListDisabled.remove(tower.itemListDisabled[0])
                                 }
                             }
-
-
                         }
                 }finally {
-                    companionList.readLockTower.unlock()
+                    companionList.writeLockTower.unlock()
                 }
-
-                runOnUiThread {
-                    bagAdapter.notifyDataSetChanged()
+                if (companionList.towerClick) {
+                    runOnUiThread {
+                        bagAdapter.notifyDataSetChanged()
+                    }
                 }
+                Log.d("Midnight Madness", "Remove Complete")
             }
             if (companionList.midnightMadnessMidas){
                 companionList.midnightMadnessMidas = false
@@ -1897,10 +2171,10 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 companionList.midnightMadnessSaveList.remove("Extra")
             }
 
-
-            when ((0..9).random()) {
+            when ((7..7).random()) {
                 //nothing
                 in 0..2 -> {
+                    Log.d("Midnight Madness", "A Quiet Night")
                     paused = true
                     companionList.midnightMadnessEvent = "A Quiet Night"
                     mHandler.postDelayed({
@@ -1914,6 +2188,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 // extra
 
                 3 -> {
+                    Log.d("Midnight Madness", "Extra, Extra!")
                     paused = true
                     companionList.midnightMadnessEvent = "Extra, Extra!"
                     companionList.midnightMadnessExtraSpawnBool = true
@@ -1929,6 +2204,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                 // upgrade
                 4 -> {
+                    Log.d("Midnight Madness", "Upgrader")
                     paused = true
                     companionList.midnightMadnessEvent = "Upgrader"
 
@@ -1967,6 +2243,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                 // heavy winds (cost)
                 5 -> {
+                    Log.d("Midnight Madness", "Heavy Winds")
                     paused = true
                     companionList.midnightMadnessEvent = "Heavy Winds"
                     companionList.midnightMadnessWind = true
@@ -1985,6 +2262,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                 // more gold (cost)
                 6 -> {
+                    Log.d("Midnight Madness", "Midas")
                     paused = true
                     companionList.midnightMadnessEvent = "Midas"
                     companionList.midnightMadnessMidas = true
@@ -2002,11 +2280,12 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                 // items stolen
                 7 -> {
+                    Log.d("Midnight Madness", "Darkest Hour")
                     paused = true
                     companionList.midnightMadnessEvent = "Darkest Hour"
                     companionList.midnightMadnessSaveList.add("Darkest Hour")
                     companionList.midnightMadnessDisableItems = true
-                    companionList.readLockTower.lock ()
+                    companionList.writeLockTower.lock ()
                     try {
                             var towerListIterator = companionList.towerList.listIterator()
                             while (towerListIterator.hasNext()) {
@@ -2014,69 +2293,73 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                 repeat(2) {
                                     if ((tower.itemListBag.size - tower.bagSizeElementCount) > 0) {
-                                        val randomItem: Int = (0 until (tower.itemListBag.size -1)).random()
-                                        if (tower.itemListBag[randomItem].crossedOut || tower.itemListBag[randomItem].element) {
+                                        val randomItemIndex: Int = (0 until (tower.itemListBag.size -1)).random()
+                                        var randomItem: Items = tower.itemListBag[randomItemIndex]
+                                        if (randomItem.crossedOut || randomItem.element) {
                                         } else {
                                             when {
-                                                (companionList.greyItems.contains(tower.itemListBag[randomItem].id)) -> {
+                                                (companionList.greyItems.contains(randomItem.id)) -> {
                                                     when ((0..1).random()) {
                                                         0 -> {
-                                                            tower.itemListBag[randomItem].crossedOut = true
-                                                            var listPlace = tower.itemListBag.toMutableList()
-                                                            companionList.itemListBagMysteryEventCancelled.add(0, listPlace[randomItem])
-                                                            bagAdapter.replaceCrossedOut(randomItem)
-                                                            tower.itemListBag[randomItem].imageOverlay =
-                                                                R.drawable.crossedout
+                                                            bagAdapter.statsDelete(randomItemIndex, tower)
+                                                            tower.itemListDisabled.add(tower.itemListBag[randomItemIndex])
+                                                            var itemReplace = Items (11, 1, 999, 0, 0f, 0, 0f, 0, randomItem.name, randomItem.image, R.drawable.crossedout, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "", 0f, "", 0f)
+                                                            itemReplace.crossedOut = true
+                                                            itemReplace.goldCost = 0f
+                                                            itemReplace.diaCost = 0
+                                                            tower.itemListBag[randomItemIndex] =
+                                                                itemReplace
                                                         }
                                                     }
                                                 }
-                                                (companionList.blueItems.contains(tower.itemListBag[randomItem].id)) -> {
-                                                    when ((0..4).random()) {
+                                                (companionList.blueItems.contains(randomItem.id)) -> {
+                                                    when ((0..3).random()) {
                                                         0 -> {
-                                                            tower.itemListBag[randomItem].crossedOut = true
-                                                            var listPlace = tower.itemListBag.toMutableList()
-                                                            companionList.itemListBagMysteryEventCancelled.add(0, listPlace[randomItem])
-                                                            bagAdapter.replaceCrossedOut(randomItem)
-                                                            tower.itemListBag[randomItem].imageOverlay =
-                                                                R.drawable.crossedout
+                                                            bagAdapter.statsDelete(randomItemIndex, tower)
+                                                            tower.itemListDisabled.add(tower.itemListBag[randomItemIndex])
+                                                            var itemReplace = Items (11, 1, 999, 0, 0f, 0, 0f, 0, randomItem.name, randomItem.image, R.drawable.crossedout, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "", 0f, "", 0f)
+                                                            itemReplace.crossedOut = true
+                                                            tower.itemListBag[randomItemIndex] =
+                                                                itemReplace
                                                         }
                                                     }
                                                 }
-                                                (companionList.orangeItems.contains(tower.itemListBag[randomItem].id)) -> {
+                                                (companionList.orangeItems.contains(randomItem.id)) -> {
+                                                    when ((0..6).random()) {
+                                                        0 -> {
+                                                            bagAdapter.statsDelete(randomItemIndex, tower)
+                                                            tower.itemListDisabled.add(tower.itemListBag[randomItemIndex])
+                                                            var itemReplace = Items (11, 1, 999, 0, 0f, 0, 0f, 0, randomItem.name, randomItem.image, R.drawable.crossedout, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "", 0f, "", 0f)
+                                                            itemReplace.crossedOut = true
+                                                            tower.itemListBag[randomItemIndex] =
+                                                                itemReplace
+                                                        }
+                                                    }
+                                                }
+                                                (companionList.purpleItems.contains(randomItem.id)) -> {
                                                     when ((0..9).random()) {
                                                         0 -> {
-                                                            tower.itemListBag[randomItem].crossedOut = true
-                                                            var listPlace = tower.itemListBag.toMutableList()
-                                                            companionList.itemListBagMysteryEventCancelled.add(0, listPlace[randomItem])
-                                                            bagAdapter.replaceCrossedOut(randomItem)
-                                                            tower.itemListBag[randomItem].imageOverlay =
-                                                                R.drawable.crossedout
-                                                        }
-                                                    }
-                                                }
-                                                (companionList.purpleItems.contains(tower.itemListBag[randomItem].id)) -> {
-                                                    when ((0..19).random()) {
-                                                        0 -> {
-                                                            tower.itemListBag[randomItem].crossedOut = true
-                                                            var listPlace = tower.itemListBag.toMutableList()
-                                                            companionList.itemListBagMysteryEventCancelled.add(0, listPlace[randomItem])
-                                                            bagAdapter.replaceCrossedOut(randomItem)
-                                                            tower.itemListBag[randomItem].imageOverlay =
-                                                                R.drawable.crossedout
+                                                            bagAdapter.statsDelete(randomItemIndex, tower)
+                                                            tower.itemListDisabled.add(tower.itemListBag[randomItemIndex])
+                                                            var itemReplace = Items (11, 1, 999, 0, 0f, 0, 0f, 0, randomItem.name, randomItem.image, R.drawable.crossedout, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "", 0f, "", 0f)
+                                                            itemReplace.crossedOut = true
+                                                            tower.itemListBag[randomItemIndex] =
+                                                                itemReplace
                                                         }
                                                     }
                                                 }
                                             }
-
-                                            runOnUiThread {
-                                                bagAdapter.notifyDataSetChanged()
+                                            if (companionList.towerClick) {
+                                                runOnUiThread {
+                                                    bagAdapter.notifyDataSetChanged()
+                                                }
                                             }
                                         }
                                     }
                             }
                         }
                     }finally {
-                        companionList.readLockTower.unlock()
+                        companionList.writeLockTower.unlock()
                     }
 
                     mHandler.postDelayed({
@@ -2089,6 +2372,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                 // get pirate items
                 8 -> {
+                    Log.d("Midnight Madness", "Treasure Hunt")
                     paused = true
                     companionList.midnightMadnessEvent = "Treasure Hunt"
                     mHandler.postDelayed({
@@ -2101,6 +2385,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                 // secret shop
                 9 -> {
+                    Log.d("Midnight Madness", "Secret Shop")
                     paused = true
                     companionList.midnightMadnessEvent = "Secret Shop"
                     runOnUiThread() {
@@ -2128,132 +2413,144 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         // update mystery points--------------------------------------------
 
-            // TODO
-            /*
-        when {
-            darkRow1Item1 == 1 && earthRow1Item1 == 1 && fireRow1Item1 == 1 && iceRow1Item1 == 1 && windRow1Item1 == 1 && moonRow1Item1 == 1 && poisonRow1Item1 == 1 && mysteryAllRounderBool-> {
-                mysteryAllRounderBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "All-Rounder")
-                    intent.putExtra("Description", "Put 1 TP in each element.")
-                    startActivity(intent)
-                }, 500)
-            }
-            fireRow4Item1 == 3 && iceRow4Item1 == 3 && mysterySongBool -> {
-                mysterySongBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "A song of ice and fire")
-                    intent.putExtra("Description", "Put 3 talent points in the fire and ice ultimate ability.")
-                    startActivity(intent)
-                }, 500)
-            }
-            magicBoxCount > 3 && mysteryClownBool-> {
-                mysteryClownBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "Clown")
-                    intent.putExtra("Description", "Have 4 or more magic boxes in your inventory.")
-                    startActivity(intent)
-                }, 150)
-            }
-            maceCount > 3 && mysteryMaceBool-> {
-                mysteryMaceBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "Strong like a Bear")
-                    intent.putExtra("Description", "Have 4 or more maces in your inventory.")
-                    startActivity(intent)
-                }, 150)
-            }
-            bowCount > 3 && mysteryBowBool-> {
-                mysteryBowBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "Fast as the Wind")
-                    intent.putExtra("Description", "Have 4 or more bows in your inventory.")
-                    startActivity(intent)
-                }, 150)
-            }
-            swordCount > 3 && mysterySwordBool-> {
-                mysterySwordBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "Sharp as a Knife")
-                    intent.putExtra("Description", "Have 4 or more swords in your inventory.")
-                    startActivity(intent)
-                }, 150)
-            }
-            luckyCharmCount > 2 && mysteryLuckyCharmBool-> {
-                mysteryLuckyCharmBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "Master of the Occult")
-                    intent.putExtra("Description", "Have 3 or more lucky charms in your inventory.")
-                    startActivity(intent)
-                }, 150)
-            }
-            pirateItemCount > 2 && mysteryPirateHunterBool -> {
-                mysteryPirateHunterBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "Pirate Hunter")
-                    intent.putExtra("Description", "Have 3 or more pirate items in your inventory.")
-                    startActivity(intent)
-                }, 150)
-            }
-            bombsUsedCounter == 5 && mysteryBombsUsedBool -> {
-                mysteryBombsUsedBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "Bomberman")
-                    intent.putExtra("Description", "Use 5 bombs.")
-                    startActivity(intent)
-                }, 150)
-            }
-            livesMpCounter && iceRow4Item1 == 3 && mysteryColdHeartBool -> {
-                mysteryColdHeartBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "Cold Heart")
-                    intent.putExtra("Description", "Buy 5 lives and have ice ultimate skilled.")
-                    startActivity(intent)
-                }, 150)
-            }
-            challengesKilled == 3 && challengesKilledBool -> {
-                challengesKilledBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "Challenged")
-                    intent.putExtra("Description", "Kill 3 challenges.")
-                    startActivity(intent)
-                }, 150)
-            }
-            mysteryWokeCount > 2 && mysteryWokeBool -> {
-                mysteryWokeBool = false
-                paused = true
-                mHandler.postDelayed({
-                    intent = Intent(this, MysteryMessage::class.java)
-                    intent.putExtra("Title", "Get Woke, Go Broke")
-                    intent.putExtra("Description", "Welcome to Wokistan (it/zher).")
-                    startActivity(intent)
-                }, 150)
-            }
-        }
 
-             */
+            when {
+                companionList.poisonTowerCount > 0 && companionList.wizardTowerCount > 0 && companionList.iceTowerCount > 0 && companionList.fireTowerCount > 0 && companionList.moonTowerCount > 0 &&
+                        companionList.windTowerCount > 0 && companionList.utilsTowerCount > 0 && companionList.darkTowerCount > 0 && companionList.butterflyTowerCount > 0 && companionList.earthTowerCount > 0 && companionList.mysteryAllRounderBool -> {
+                            companionList.mysteryAllRounderBool = false
+                            paused = true
+                            mHandler.postDelayed({
+                                intent = Intent(this, MysteryMessage::class.java)
+                                intent.putExtra("Title", "All-Rounder")
+                                intent.putExtra("Description", "Use one of each elements.")
+                                startActivity(intent)
+                            }, 500)
+                        }
+                companionList.magicBoxCount > 4 && companionList.mysteryClownBool -> {
+                    companionList.mysteryClownBool = false
+                    paused = true
+                    mHandler.postDelayed({
+                        intent = Intent(this, MysteryMessage::class.java)
+                        intent.putExtra("Title", "Clown")
+                        intent.putExtra("Description", "Have 5 or more magic boxes in your inventory.")
+                        startActivity(intent)
+                    }, 150)
+                }
+                companionList.maceCount > 3 && companionList.mysteryMaceBool -> {
+                    companionList.mysteryMaceBool = false
+                    paused = true
+                    mHandler.postDelayed({
+                        intent = Intent(this, MysteryMessage::class.java)
+                        intent.putExtra("Title", "Strong like a Bear")
+                        intent.putExtra("Description", "Have 4 or more maces in your inventory.")
+                        startActivity(intent)
+                    }, 150)
+                }
+                companionList.bowCount > 3 && companionList.mysteryBowBool -> {
+                    companionList.mysteryBowBool = false
+                    paused = true
+                    mHandler.postDelayed({
+                        intent = Intent(this, MysteryMessage::class.java)
+                        intent.putExtra("Title", "Fast as the Wind")
+                        intent.putExtra("Description", "Have 4 or more bows in your inventory.")
+                        startActivity(intent)
+                    }, 150)
+                }
+                companionList.swordCount > 3 && companionList.mysterySwordBool -> {
+                    companionList.mysterySwordBool = false
+                    paused = true
+                    mHandler.postDelayed({
+                        intent = Intent(this, MysteryMessage::class.java)
+                        intent.putExtra("Title", "Sharp as a Knife")
+                        intent.putExtra("Description", "Have 4 or more swords in your inventory.")
+                        startActivity(intent)
+                    }, 150)
+                }
+                companionList.bombsUsedCounter == 5 && companionList.mysteryBombsUsedBool -> {
+                    companionList.mysteryBombsUsedBool = false
+                    paused = true
+                    mHandler.postDelayed({
+                        intent = Intent(this, MysteryMessage::class.java)
+                        intent.putExtra("Title", "Bomberman")
+                        intent.putExtra("Description", "Use 5 bombs.")
+                        startActivity(intent)
+                    }, 150)
+                }
+                companionList.challengesKilled == 1 && companionList.challengesKilledBool -> {
+                    companionList.challengesKilledBool = false
+                    paused = true
+                    mHandler.postDelayed({
+                        intent = Intent(this, MysteryMessage::class.java)
+                        intent.putExtra("Title", "Challenged")
+                        intent.putExtra("Description", "Kill a challenge.")
+                        startActivity(intent)
+                    }, 150)
+                }
+                companionList.mysteryWokeCount > 2 && companionList.mysteryWokeBool -> {
+                    companionList.mysteryWokeBool = false
+                    paused = true
+                    companionList.gold * 0.9f
+                    mHandler.postDelayed({
+                        intent = Intent(this, MysteryMessage::class.java)
+                        intent.putExtra("Title", "Get Woke, Go Broke")
+                        intent.putExtra("Description", "Have 3 or more Gender neutral items. Lose 10% of your gold.")
+                        startActivity(intent)
+                    }, 150)
+                }
+            }
+
+            companionList.readLockTower.lock()
+            try {
+                var towerListIterator = companionList.towerList.listIterator()
+                while (towerListIterator.hasNext()) {
+                    var tower = towerListIterator.next()
+                    when {
+                        tower.fireRow4Item1 == 3 && tower.iceRow4Item1 == 3 && companionList.mysterySongBool -> {
+                            companionList.mysterySongBool = false
+                            paused = true
+                            mHandler.postDelayed({
+                                intent = Intent(this, MysteryMessage::class.java)
+                                intent.putExtra("Title", "A song of ice and fire")
+                                intent.putExtra("Description", "Put 3 talent points in the fire and ice ultimate ability.")
+                                startActivity(intent)
+                            }, 500)
+                        }
+                        tower.luckyCharmCount > 2 && companionList.mysteryLuckyCharmBool -> {
+                            companionList.mysteryLuckyCharmBool = false
+                            paused = true
+                            mHandler.postDelayed({
+                                intent = Intent(this, MysteryMessage::class.java)
+                                intent.putExtra("Title", "Master of the Occult")
+                                intent.putExtra("Description", "Have 3 or more lucky charms in your inventory.")
+                                startActivity(intent)
+                            }, 150)
+                        }
+                        tower.pirateItemCount > 1 && companionList.mysteryPirateHunterBool -> {
+                            companionList.mysteryPirateHunterBool = false
+                            paused = true
+                            mHandler.postDelayed({
+                                intent = Intent(this, MysteryMessage::class.java)
+                                intent.putExtra("Title", "Pirate Hunter")
+                                intent.putExtra("Description", "Have 2 or more pirate items in your inventory.")
+                                startActivity(intent)
+                            }, 150)
+                        }
+
+                        companionList.livesMpCounter && tower.iceRow4Item1 == 3 && companionList.mysteryColdHeartBool -> {
+                            companionList.mysteryColdHeartBool = false
+                            paused = true
+                            mHandler.postDelayed({
+                                intent = Intent(this, MysteryMessage::class.java)
+                                intent.putExtra("Title", "Cold Heart")
+                                intent.putExtra("Description", "Buy 5 lives and have ice ultimate skilled.")
+                                startActivity(intent)
+                            }, 150)
+                        }
+                    }
+                }
+                    }finally {
+            companionList.readLockTower.unlock()
+        }
         }
 
     fun updateViewModel () {
@@ -2420,7 +2717,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 if (companionList.levelList.contains("healer")) {
                     if (it.name == "healer") {
                         companionList.healCounter ++
-                        if (companionList.healCounter >= 50){
+                        if (companionList.healCounter >= 30){
                             for (it in companionList.enemyList.shuffled()){
                                 if (it.hp < it.maxHp) {
                                     it.hp += (it.maxHp/5) * (1 - it.hpRegDebuff - companionList.hpRegDebuffGlobal)
@@ -2429,7 +2726,20 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 }
                             }
                         }
+                    }
+                }
 
+                // disruptor
+                if (companionList.levelList.contains("disruptor")) {
+                    if (it.name == "disruptor") {
+                        companionList.disruptorCounter ++
+                        if (companionList.disruptorCounter >= 90){
+                            for (tower in companionList.towerList.shuffled()){
+                                companionList.disruptorCounter = 0
+                                tower.disrupted = true
+                                break
+                            }
+                        }
                     }
                 }
 
@@ -2443,7 +2753,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 it.xpDropDebuff = 1f + butterflyDebuffEnemyGoldXpAlreadyEffectedPlace
                 it.goldDropDebuff = 1f + butterflyDebuffEnemyGoldXpAlreadyEffectedPlace
 
-                it.overallXp = it.xpEnemy * it.xpDropDebuff
+                it.overallXp = it.xpEnemy * it.xpDropDebuff * companionList.wiseMan
+                it.xpDrop = 1 * it.xpDropDebuff * companionList.wiseMan
                 it.overallGold = it.xpEnemy * it.goldDropDebuff * companionList.midnightMadnessMidasGold
 
             }
@@ -2480,52 +2791,59 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         // Ice Talent
 
-        if (companionList.iceShard) {
-            when (companionList.iceShardSpeed) {
-                135 -> companionList.iceShardCounter3 = 1
-                120 -> companionList.iceShardCounter3 = 2
-                105 -> companionList.iceShardCounter3 = 3
-                90 -> companionList.iceShardCounter3 = 4
-                75 -> companionList.iceShardCounter3 = 5
-            }
-        }
-        if (companionList.iceShard && companionList.iceShardCounter2 < companionList.iceShardCounter3) {
-            companionList.writeLockIce.lock()
+        if (companionList.towerList.isNotEmpty()) {
+            companionList.writeLockTower.lock()
             try {
-                companionList.iceShardCounter += 1
+                var towerListIterator = companionList.towerList.listIterator()
+                while (towerListIterator.hasNext()) {
+                    var tower = towerListIterator.next()
+                    if (tower.iceShard > 0) {
+                        tower.iceShardCounter++
+                        if (tower.iceShardCounter > 3) {
+                            tower.iceShardCounter = 0
+                        var shootListIceIterator = tower.shootListIce.listIterator()
+                        while (shootListIceIterator.hasNext()) {
+                            var shard = shootListIceIterator.next()
+                            when (tower.iceShard) {
+                                1 -> {
+                                    shard.shardSpeedBasic = 3f
+                                }
+                                2 -> {
+                                    shard.shardSpeedBasic = 4.5f
+                                }
+                                3 -> {
+                                    shard.shardSpeedBasic = 6f
+                                }
+                            }
+                            shard.shardSpeed += 0.01f
+                            if (shard.shardSpeed < 0) shard.shardSpeed = 0f
+                            if (shard.shardSpeed > shard.shardSpeedBasic) shard.shardSpeed = shard.shardSpeedBasic
+                            if (companionList.enemyList.isEmpty()) shard.shardSpeed = shard.shardSpeedBasic
 
-                if (companionList.iceShardCounter == companionList.iceShardSpeed) {
-                    companionList.shootListIce.add(ShootIceTalent(0.0))
-                    companionList.shootListIce.add(ShootIceTalent(1.5))
-                    companionList.shootListIce.add(ShootIceTalent(3.0))
-                    companionList.shootListIce.add(ShootIceTalent(4.5))
-                    companionList.shootListIce.add(ShootIceTalent(6.0))
-                    companionList.shootListIce.add(ShootIceTalent(7.5))
-                    companionList.shootListIce.add(ShootIceTalent(9.0))
-                    companionList.shootListIce.add(ShootIceTalent(10.5))
-                    companionList.iceShardCounter = 0
-                    companionList.iceShardCounter2 += 1
+                                if (crossesShard(shard)) {
+                                    shard.shard.x = shard.shardStart.x
+                                    shard.shard.y = shard.shardStart.y
+                                }
+                            }
+                        }
+                        if (tower.shootListIce.isEmpty()) {
+                            var times = 0.0f
+                            repeat(8) {
+                                var shardPlace = ShootIceTalent()
+                                shardPlace.iceShardTowerId = companionList.towerList.indexOf(tower)
+                                shardPlace.shard =
+                                    TowerRadius(tower.towerRange.x, tower.towerRange.y, 10f)
+                                shardPlace.shardStart =
+                                    TowerRadius(tower.towerRange.x, tower.towerRange.y, 10f)
+                                shardPlace.direction = (times)
+                                tower.shootListIce.add(shardPlace)
+                                times += 1.5f
+                            }
+                        }
+                    }
                 }
             } finally {
-                companionList.writeLockIce.unlock()
-            }
-        }
-
-        if (companionList.iceShard) {
-            companionList.iceShardCounter4++
-            if (companionList.iceShardCounter4 >= 3) {
-                companionList.writeLockIce.lock()
-                try {
-                    var shootListIceIterator = companionList.shootListIce.listIterator()
-                    while (shootListIceIterator.hasNext()) {
-             //    for (it in shootListIce)
-              //          CoroutineScope(Dispatchers.Default).launch {
-                        var it = shootListIceIterator.next()
-                        if (!it.hit) crossesShard(it)
-                        }
-                } finally {
-                    companionList.writeLockIce.unlock()
-                }
+                companionList.writeLockTower.unlock()
             }
         }
 
@@ -2566,60 +2884,51 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         }
 
         // Tornado
+        if (companionList.tornadoRadius > 0) {
+            companionList.writeLockTornado.lock()
+            try {
+                companionList.tornadoCounter++
+                if (companionList.tornadoCounter >= companionList.tornadoTimer && companionList.enemyList.isNotEmpty()) {
+                    companionList.tornadoCounter = 0
+                    var shootListTornadoIterator = companionList.shootListTornado.listIterator()
+                    var shootTornadoTalentPlace = ShootTornadoTalent()
+                    shootTornadoTalentPlace.tornadoRadius =
+                        TowerRadius((0..1200).random().toFloat(), (0..1600).random()
+                            .toFloat(), companionList.tornadoRadius)
+                    shootListTornadoIterator.add(shootTornadoTalentPlace)
+                }
 
-        companionList.writeLockTornado.lock()
-        companionList.readLockTower.lock()
-        try {
-            var towerListIterator = companionList.towerList.listIterator()
-            while (towerListIterator.hasNext()) {
-                var tower = towerListIterator.next()
-                if (tower.tornadoRadius > 0) {
-
-                    tower.tornadoCounter++
-                    if (tower.tornadoCounter >= tower.tornadoTimer && companionList.enemyList.isNotEmpty()) {
-                        tower.tornadoCounter = 0
-                        var shootListTornadoIterator = companionList.shootListTornado.listIterator()
-                        var shootTornadoTalentPlace = ShootTornadoTalent()
-                        shootTornadoTalentPlace.tornadoRadius =
-                            TowerRadius((0..1200).random().toFloat(), (0..1600).random()
-                                .toFloat(), tower.tornadoRadius)
-                        shootListTornadoIterator.add(shootTornadoTalentPlace)
-                    }
-
-                    if (companionList.shootListTornado.isNotEmpty()) {
-                        var shootListTornadoIterator = companionList.shootListTornado.listIterator()
-                        while (shootListTornadoIterator.hasNext()) {
-                            var it = shootListTornadoIterator.next()
-                            if (it.tornadoRadiusPosition == 2) it.tornadoCount++
-                            if (it.tornadoCount >= 100) {
-                                it.broken = 1
-                                it.randomEnemyTornadoBool = true
-                            }
-                        }
-                    }
-
-                    if (companionList.enemyList.isNotEmpty()) {
-                        companionList.tornadoPlaceholderCounter++
-                        if (companionList.tornadoPlaceholderCounter >= 2) {
-                            companionList.tornadoPlaceholderCounter = 0
-                            //     for (it in shootListTornado)
-                            //     CoroutineScope(Dispatchers.Default).launch {
-                            var shootListTornadoIterator = companionList.shootListTornado.listIterator()
-                            while (shootListTornadoIterator.hasNext()) {
-                                var it = shootListTornadoIterator.next()
-                                var tornadoCloudPlaceholder = it.tornadoRadius
-                                crossesTornado(tornadoCloudPlaceholder)
-                            }
+                if (companionList.shootListTornado.isNotEmpty()) {
+                    var shootListTornadoIterator = companionList.shootListTornado.listIterator()
+                    while (shootListTornadoIterator.hasNext()) {
+                        var it = shootListTornadoIterator.next()
+                        if (it.tornadoRadiusPosition == 2) it.tornadoCount++
+                        if (it.tornadoCount >= 100) {
+                            it.broken = 1
+                            it.randomEnemyTornadoBool = true
                         }
                     }
                 }
-            }
+
+                if (companionList.enemyList.isNotEmpty()) {
+                    companionList.tornadoPlaceholderCounter++
+                    if (companionList.tornadoPlaceholderCounter >= 3) {
+                        companionList.tornadoPlaceholderCounter = 0
+                        //     for (it in shootListTornado)
+                        //     CoroutineScope(Dispatchers.Default).launch {
+                        var shootListTornadoIterator = companionList.shootListTornado.listIterator()
+                        while (shootListTornadoIterator.hasNext()) {
+                            var it = shootListTornadoIterator.next()
+                            var tornadoCloudPlaceholder = it.tornadoRadius
+                            crossesTornado(tornadoCloudPlaceholder)
+                        }
+                    }
+                }
+
             } finally {
-            companionList.writeLockTornado.unlock()
-            companionList.readLockTower.unlock()
+                companionList.writeLockTornado.unlock()
             }
-
-
+        }
 
         // mine talent
         if (companionList.wizardMine) {
@@ -2665,63 +2974,77 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
              //   for (it in shootList)
              //   CoroutineScope(Dispatchers.Default).launch {
 
-                    if (it.broken != 1) {
-                        if (it.chainLightning) {
-                            if (it.bounceLeft > 0) {
-                                if (crossesChainLightning(it)) {
-                                    it.alreadyBouncedResetChain = false
-                                    it.alreadyBounced += 1
-                                    it.bounceLeft -= 1
-                                    if (inBounceRange(it.bullet) < 1) {
-                                        it.broken = 1
-                                        companionList.towerList[it.towerId].randomEnemyChainBool = true
-                                    }
-                                    if (it.bounceLeft == 0) {
-                                        it.broken = 1
-                                        companionList.towerList[it.towerId].randomEnemyChainBool = true
-                                    }
-                                }
-                            } else {
-                                it.broken = 1
-                                companionList.towerList[it.towerId].randomEnemyChainBool = true
-                            }
-                        } else if (companionList.towerList[it.towerId].towerPrimaryElement == "moon") {
-                            if (it.bounceLeft > 0) {
-                                    if (crosses2(it)) {
-                                        companionList.rotationBulletY = it.bullet.y
-                                        companionList.rotationBulletX = it.bullet.x
-                                        it.alreadyBouncedReset = false
-                                        companionList.towerList[it.towerId].randomEnemyForShotBool = true
-                                        it.alreadyBounced += 1
-                                        it.bounceLeft -= 1
-                                        if (inBounceRange(it.bullet) <= 1){
-                                            it.broken = 1
-                                            companionList.towerList[it.towerId].randomEnemyForShotBool = true
-                                        }
-                                        if (it.bounceLeft == 0) {
-                                            it.broken = 1
-                                            companionList.towerList[it.towerId].randomEnemyForShotBool = true
-                                        }
-                                    }
-                            } else {
-                                companionList.towerList[it.towerId].randomEnemyForShotBool = true
-                                it.broken = 1
-                            }
-                        } else {
+                      it.collisionCount++
 
-                            if (crosses2(it)) {
-                                it.broken = 1
-                                companionList.towerList[it.towerId].randomEnemyForShotBool = true
-                            }
+                      if (it.collisionCount >= 3) {
+                          it.collisionCount = 0
+                          if (it.broken != 1) {
+                              if (it.chainLightning) {
+                                  if (it.bounceLeft > 0) {
+                                      if (crossesChainLightning(it)) {
+                                          it.alreadyBouncedResetChain = false
+                                          it.alreadyBounced += 1
+                                          it.bounceLeft -= 1
+                                          if (inBounceRange(it.bullet) < 1) {
+                                              it.broken = 1
+                                              companionList.towerList[it.towerId].randomEnemyChainBool =
+                                                  true
+                                          }
+                                          if (it.bounceLeft == 0) {
+                                              it.broken = 1
+                                              companionList.towerList[it.towerId].randomEnemyChainBool =
+                                                  true
+                                          }
+                                      }
+                                  } else {
+                                      it.broken = 1
+                                      companionList.towerList[it.towerId].randomEnemyChainBool =
+                                          true
+                                  }
+                              } else if (companionList.towerList[it.towerId].towerPrimaryElement == "moon") {
+                                  if (it.bounceLeft > 0) {
+                                      if (crosses2(it)) {
+                                          companionList.rotationBulletY = it.bullet.y
+                                          companionList.rotationBulletX = it.bullet.x
+                                          it.alreadyBouncedReset = false
+                                          companionList.towerList[it.towerId].randomEnemyForShotBool =
+                                              true
+                                          it.alreadyBounced += 1
+                                          it.bounceLeft -= 1
+                                          if (inBounceRange(it.bullet) <= 1) {
+                                              it.broken = 1
+                                              companionList.towerList[it.towerId].randomEnemyForShotBool =
+                                                  true
+                                          }
+                                          if (it.bounceLeft == 0) {
+                                              it.broken = 1
+                                              companionList.towerList[it.towerId].randomEnemyForShotBool =
+                                                  true
+                                          }
+                                      }
+                                  } else {
+                                      companionList.towerList[it.towerId].randomEnemyForShotBool =
+                                          true
+                                      it.broken = 1
+                                  }
+                              } else {
+
+                                  if (crosses2(it)) {
+                                      it.broken = 1
+                                      companionList.towerList[it.towerId].randomEnemyForShotBool =
+                                          true
+                                  }
 
 
-                            if (companionList.enemyList.isEmpty()) {
-                                it.broken = 1
-                                companionList.towerList[it.towerId].randomEnemyForShotBool = true
-                            }
+                                  if (companionList.enemyList.isEmpty()) {
+                                      it.broken = 1
+                                      companionList.towerList[it.towerId].randomEnemyForShotBool =
+                                          true
+                                  }
 
-                        }
-                        }
+                              }
+                          }
+                      }
                 }
         } finally {
             companionList.writeLockShot.unlock()
@@ -2763,47 +3086,58 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                  while (towerListIterator.hasNext()) {
                      var it = towerListIterator.next()
 
+
+                     // tutorial talents
+                     if (it.towerLevel == 2 && companionList.hintsBool && companionList.tutorialFirstTowerLevelBool) {
+                         companionList.tutorialFirstTowerLevelBool = false
+                         paused = true
+                         mHandler.postDelayed({
+                             intent = Intent(this, TutorialTalents::class.java)
+                             startActivity(intent)
+                         }, 50)
+                     }
+
                      var bagSizeElementCountPlace = 0
 
                      if (it.itemListBag.contains(companionList.epoison)) {
-                         bagSizeElementCountPlace ++
-                         poisonTowerCountPlace ++
+                         bagSizeElementCountPlace++
+                         poisonTowerCountPlace++
                      }
                      if (it.itemListBag.contains(companionList.ewizard)) {
                          bagSizeElementCountPlace++
-                         wizardTowerCountPlace ++
+                         wizardTowerCountPlace++
                      }
                      if (it.itemListBag.contains(companionList.eice)) {
                          bagSizeElementCountPlace++
-                         iceTowerCountPlace ++
+                         iceTowerCountPlace++
                      }
                      if (it.itemListBag.contains(companionList.efire)) {
                          bagSizeElementCountPlace++
-                         fireTowerCountPlace ++
+                         fireTowerCountPlace++
                      }
                      if (it.itemListBag.contains(companionList.emoon)) {
                          bagSizeElementCountPlace++
-                         moonTowerCountPlace ++
+                         moonTowerCountPlace++
                      }
                      if (it.itemListBag.contains(companionList.ewind)) {
                          bagSizeElementCountPlace++
-                         windTowerCountPlace ++
+                         windTowerCountPlace++
                      }
                      if (it.itemListBag.contains(companionList.eutils)) {
                          bagSizeElementCountPlace++
-                         utilsTowerCountPlace ++
+                         utilsTowerCountPlace++
                      }
                      if (it.itemListBag.contains(companionList.edark)) {
                          bagSizeElementCountPlace++
-                         darkTowerCountPlace ++
+                         darkTowerCountPlace++
                      }
                      if (it.itemListBag.contains(companionList.ebutterfly)) {
                          bagSizeElementCountPlace++
-                         butterflyTowerCountPlace ++
+                         butterflyTowerCountPlace++
                      }
                      if (it.itemListBag.contains(companionList.eearth)) {
                          bagSizeElementCountPlace++
-                         earthTowerCountPlace ++
+                         earthTowerCountPlace++
                      }
 
                      it.bagSizeElementCount = bagSizeElementCountPlace
@@ -2826,13 +3160,22 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                  if (tower.itemListBag.contains(companionList.eutils)) extraSpdAura += 5f
                                  if (tower.itemChanceAura > 0) extraItemChance += tower.itemChanceAura
                                  if (tower.itemQualityAura > 0) extraItemQuality += tower.itemQualityAura
-                                 if (it.markOfTheButterflySpdBoost > 0 && it.towerPrimaryElement == "butterfly") markOfTheButterflySpdBoostTowersNumberPlace ++
+                                 if (it.markOfTheButterflySpdBoost > 0 && it.towerPrimaryElement == "butterfly") markOfTheButterflySpdBoostTowersNumberPlace++
                              }
                          }
                      }
 
 
-                     it.markOfTheButterflySpdBoostTowersNumber = markOfTheButterflySpdBoostTowersNumberPlace
+                     it.markOfTheButterflySpdBoostTowersNumber =
+                         markOfTheButterflySpdBoostTowersNumberPlace
+
+                     if (it.disrupted) {
+                         it.disruptedCounter++
+                         if (it.disruptedCounter > 180){
+                             it.disruptedCounter = 0
+                             it.disrupted = false
+                        }
+                    }
 
                      // level
                      when (it.xpTower.toInt()){
@@ -2842,11 +3185,10 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                              it.talentPoints ++
                              it.towerRarityMultiplier += 0.02f
                              it.dmg += (it.towerLevel /2)
-                             it.speed -= 1f
                              itemListBagAddMultiplier(it)
                              var xp2 = it.xpGoal2
                              it.xpGoal1 = xp2
-                             it.xpGoal2 = (xp2 * 1.5f)
+                             it.xpGoal2 = xp2 + (xp2 * 1.25f)
                          }
                      }
 
@@ -2856,10 +3198,9 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                          repeat(3){
                                  _ -> itemListBagAddMultiplier(it)
                              it.xpGoal1 = xp2
-                             it.xpGoal2 = (xp2 * 1.5f)
+                             it.xpGoal2 = xp2 + (xp2 * 1.25f)
                              xp2 = it.xpGoal2
                              it.dmg += (it.towerLevel /2)
-                             it.speed -= 1f
                              it.towerLevel ++
                              it.talentPoints ++
                              it.towerRarityMultiplier += 0.02f
@@ -2892,52 +3233,52 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                      when {
                          (companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 1000 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
-                                     ((it.overallTowerSpd * ((50f / 100f)) / 2f) +
-                                             (((it.overallTowerSpd * ((50f) / 100f)) / 4f)) +
-                                             (((it.overallTowerSpd * ((100f) / 100f)) / 8f)) +
+                                     ((it.overallTowerSpd * ((50f / 100f)) / 4f) +
+                                             (((it.overallTowerSpd * ((50f) / 100f)) / 8f)) +
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 16f)) +
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 32f)) +
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 64f)) +
-                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 1000f) / 100f)) / 128f)))
+                                             (((it.overallTowerSpd * ((100f) / 100f)) / 128f)) +
+                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 1000f) / 100f)) / 256f)))
                          }
                          (companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 500 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
-                                     ((it.overallTowerSpd * ((50f / 100f)) / 2f) +
-                                             (((it.overallTowerSpd * ((50f) / 100f)) / 4f)) +
-                                             (((it.overallTowerSpd * ((100f) / 100f)) / 8f)) +
+                                     ((it.overallTowerSpd * ((50f / 100f)) / 4f) +
+                                             (((it.overallTowerSpd * ((50f) / 100f)) / 8f)) +
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 16f)) +
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 32f)) +
-                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 500f) / 100f)) / 64f)))
+                                             (((it.overallTowerSpd * ((100f) / 100f)) / 64f)) +
+                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 500f) / 100f)) / 128f)))
                          }
                          (companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 300 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
-                                     ((it.overallTowerSpd * ((50f / 100f)) / 2f) +
-                                             (((it.overallTowerSpd * ((50f) / 100f)) / 4f)) +
-                                             (((it.overallTowerSpd * ((100f) / 100f)) / 8f)) +
+                                     ((it.overallTowerSpd * ((50f / 100f)) / 4f) +
+                                             (((it.overallTowerSpd * ((50f) / 100f)) / 8f)) +
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 16f)) +
-                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 300f) / 100f)) / 32f)))
+                                             (((it.overallTowerSpd * ((100f) / 100f)) / 32f)) +
+                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 300f) / 100f)) / 64f)))
                          }
                          (companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 200 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
-                                     ((it.overallTowerSpd * ((50f / 100f)) / 2f) +
-                                             (((it.overallTowerSpd * ((50f) / 100f)) / 4f)) +
-                                             (((it.overallTowerSpd * ((100f) / 100f)) / 8f)) +
-                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 200f) / 100f)) / 16f)))
+                                     ((it.overallTowerSpd * ((50f / 100f)) / 4f) +
+                                             (((it.overallTowerSpd * ((50f) / 100f)) / 8f)) +
+                                             (((it.overallTowerSpd * ((100f) / 100f)) / 16f)) +
+                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 200f) / 100f)) / 32f)))
                          }
                          (companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 100 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
-                                     ((it.overallTowerSpd * ((50f / 100f)) / 2f) +
-                                             (((it.overallTowerSpd * ((50f) / 100f)) / 4f)) +
-                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 100f) / 100f)) / 8f)))
+                                     ((it.overallTowerSpd * ((50f / 100f)) / 4f) +
+                                             (((it.overallTowerSpd * ((50f) / 100f)) / 8f)) +
+                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 100f) / 100f)) / 16f)))
                          }
                          (companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 50 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
-                                     ((it.overallTowerSpd * ((50f / 100f) / 2f)) +
-                                             ((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 50f) / 100f)) / 4f))
+                                     ((it.overallTowerSpd * ((50f / 100f) / 4f)) +
+                                             ((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 50f) / 100f)) / 8f))
                          }
                          else -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
-                                     ((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) / 100f)) / 2f)
+                                     ((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) / 100f)) / 4f)
                          }
                      }
 
@@ -2954,6 +3295,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                      }
                      if (it.itemListBag.contains(companionList.eearth)) it.towerAttackSpeed *= 2
 
+                     if (it.disrupted) it.towerAttackSpeed = 999f
                      if (it.towerAttackSpeed <= 3) it.towerAttackSpeed = 3f
                      it.towerAttackSpeedShow = (it.towerAttackSpeed / 60)
 
@@ -2974,7 +3316,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                      // multicrit
                      if (it.fireRow4Item1 == 3) it.fireUltimateMulticritBonus =
-                         (floor(companionList.level * 0.5f)).toInt()
+                         (floor(companionList.level * 0.05f)).toInt()
                      it.overallMulticrit =
                          it.bonusmultiCrit + it.fireUltimateMulticritBonus
 
@@ -2991,6 +3333,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                          (it.dmg + it.bonusTowerDmg + itemsDmg(it)) * (it.overallDamageMultiplyer + extraDmgAura) * it.damageMultiplyerNight
                      it.overallTowerDmgBool = it.overallTowerDmg
                      it.overallTowerDmg *= companionList.bigNumberScaler
+                     if (it.disrupted) it.overallTowerDmg = 0f
 
                      // physical dmg
                      var talentPhysicalDmgMultiplyer = 1f
@@ -2999,13 +3342,14 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                      if (it.itemListBag.contains(companionList.eearth)) talentBonusPhysicalDmg += companionList.earthTalentBonusPhysicalDmg
                      it.overallTowerPhysicalDmg =
                          (it.phyDmg + it.overallTowerDmgBool + it.bonusPhysicalDmg + talentBonusPhysicalDmg) * talentPhysicalDmgMultiplyer * companionList.bigNumberScaler
+                     if (it.disrupted) it.overallTowerPhysicalDmg = 0f
 
                      // spell dmg
                      var spellDmgTalentX = 0f
                      if (it.talentWizardLvlToDmg) spellDmgTalentX += ((it.towerLevel * 3) * 0.01f)
-                     if (it.slowExtraMgcDmg) spellDmgTalentX += 0.2f
                      it.overallTowerSpellDmg =
                          (it.mgcDmg + it.overallTowerDmgBool + (it.overallTowerDmgBool * (companionList.globalBonusSpellDmgPercent * 0.01f)) + it.bonusSpellDamage) * (it.overallSpellDmgMultiplyer + spellDmgTalentX) * companionList.bigNumberScaler
+                     if (it.disrupted) it.overallTowerSpellDmg = 0f
 
                      // hit chance
                      var talentBonusHitChance = 0f
@@ -3033,7 +3377,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                      it.overallBonusMagicPen = it.bonusMagicPen + companionList.globalMagicPen
 
                      // dmg immune
-                     it.overallDmgImmune = 1 + (it.bonusDmgImmune)
+                     it.overallDmgImmune = 0.01f + it.bonusDmgImmune
 
                      // evade night
                      if (companionList.day) companionList.evadeNight = 0f
@@ -3041,11 +3385,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                          if (companionList.moonTalentEvadeNight) companionList.evadeNight = 0f
                          else companionList.evadeNight = (ceil(companionList.level * 0.1f))
                      }
-
-                     // TODO            // single target
-                     // TODO            if (!multishot && !shotBounce && splashRange < 1) isSingleTarget = true
-                     // TODO             else isSingleTarget = false
-
                  }
 
                  companionList.poisonTowerCount = poisonTowerCountPlace
@@ -3190,15 +3529,29 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                         //---------------------------------------------------------------------------------------
 
+                        // invu
+
+                        if (it.name == "invu"){
+                            when ((0..500).random()){
+                                0 -> it.invuTime = 120
+                            }
+                        } else if (GameActivity.companionList.levelList.contains("invu")){
+                             when ((0..2500).random()){
+                                0 -> it.invuTime = 90
+                            }
+                        }
+
+                        if (it.invuTime > 0){
+                            it.invu = true
+                            it.invuTime--
+                            deactivateAllDebuffs(it)
+                        } else it.invu = false
 
                         // ice nova
 
                         if (it.iceNovaAlreadyAffected) it.iceNovaAlreadyAffectedCounter++
                         if (it.iceNovaAlreadyAffectedCounter >= 75) {
-                            it.baseSpeed += it.iceNovaSpeedReduce
-                            it.iceNovaSpeedReduce = 0f
-                            it.iceNovaAlreadyAffectedCounter = 0
-                            it.iceNovaAlreadyAffected = false
+                            iceNovaDeactivate (it)
                         }
 
                         // ice Debuff
@@ -3213,14 +3566,13 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 it.baseSpeed -= it.iceSlowEachSpeedReduce
                                 it.iceDebuff += 1
                                 it.iceAlreadyAffected = 1
+                                if(companionList.towerList[it.iceDebuffTowerId].slowExtraMgcDmg) it.debuffExtraMgcDmg = true
                                 if (companionList.towerList[it.iceDebuffTowerId].experienceSlow) towerExperience(it.iceDebuffTowerId, 0.03f)
                             } else it.iceDebuff += 1
                         } else if (it.iceDebuff > 90) {
-                            it.iceDebuff = 0
-                            it.iceAlreadyAffected = 0
-                            it.baseSpeed += it.iceSlowEachSpeedReduce
-                            it.iceSlowEachSpeedReduce = 0f
+                            iceDebuffDeactivate(it)
                         } else if (it.iceDebuff > 0) it.iceDebuff += 1
+
 
                         // dark talent dmg debuff
 
@@ -3229,13 +3581,13 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             it.darkMoreDmgDebuffComplete =
                                 it.darkMoreDmgDebuffStacks * companionList.towerList[it.darkMoreDmgDebuffTowerId].darkDmgDebuff
                         } else if (it.darkMoreDmgDebuff >= 180) {
-                            it.darkMoreDmgDebuff = 0
-                            it.darkMoreDmgDebuffStacks = 0
+                            darkMoreDmgDebuffDeactivate(it)
                         } else if (it.darkMoreDmgDebuff > 1) {
                             it.darkMoreDmgDebuffComplete =
                                 it.darkMoreDmgDebuffStacks * companionList.towerList[it.darkMoreDmgDebuffTowerId].darkDmgDebuff
                             it.darkMoreDmgDebuff++
                         }
+
 
                         // antiheal debuffs from items
 
@@ -3243,8 +3595,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             it.antihealDebuff++
                             it.antihealDebuffActive = companionList.towerList[it.antihealDebuffTowerId].bonusAntiHeal
                         } else if (it.darkMoreDmgDebuff >= 180) {
-                            it.antihealDebuff = 0
-                            it.antihealDebuffActive = 0f
+                            antiHealDebuffDeactivate(it)
                         } else if (it.antihealDebuff > 1) it.antihealDebuff++
 
                         // ice slow Extra
@@ -3259,6 +3610,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                             (it.baseSpeed * (companionList.towerList[it.iceDebuffExtraTowerId].slowExtra / 100)) * it.iceDebuffExtraDR.toFloat()
                                         it.baseSpeed -= it.iceSlowExtraSpeedReduce
                                         it.iceExtraAlreadyAffected = 1
+                                        if(companionList.towerList[it.iceDebuffExtraTowerId].slowExtraMgcDmg) it.debuffExtraMgcDmg = true
                                         it.iceDebuffExtra += 1
                                         it.iceDebuffExtraDR *= 0.66f
                                         if (it.iceDebuffExtraDR <= 0.1f) it.iceDebuffExtraDR = 0f
@@ -3268,10 +3620,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         0
                                 }
                             } else if (it.iceDebuffExtra > 90) {
-                                it.iceDebuffExtra = 0
-                                it.iceExtraAlreadyAffected = 0
-                                it.baseSpeed += it.iceSlowExtraSpeedReduce
-                                it.iceSlowExtraSpeedReduce = 0f
+                                iceSlowExtraDebuffDeactivate(it)
                             } else if (it.iceExtraAlreadyAffected == 1) it.iceDebuffExtra += 1
                             else if (it.iceDebuffExtra > 1) it.iceDebuffExtra += 1
                         }
@@ -3285,14 +3634,16 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                 if (it.name == "boss" || it.name == "challenge") {
                                     dmg =
-                                        (((it.maxHp * companionList.towerList[it.fireDebuffTowerId].fireBurnTalentDmg) / 2) * it.winddebuffincreased * it.fireDebuffDR * 2) * magicPen(it, companionList.towerList[it.fireDebuffTowerId])
+                                        (((it.maxHp * companionList.towerList[it.fireDebuffTowerId].fireBurnTalentDmg) / 2) * it.winddebuffincreased * it.fireDebuffDR) * magicPen(it, companionList.towerList[it.fireDebuffTowerId])
                                 } else {
                                     if (it.name == "immune") dmg =
-                                        ((it.maxHp * companionList.towerList[it.fireDebuffTowerId].fireBurnTalentDmg) * it.winddebuffincreased * it.fireDebuffDR * companionList.towerList[it.fireDebuffTowerId].overallDmgImmune * 2) * magicPen(it, companionList.towerList[it.fireDebuffTowerId])
+                                        ((it.maxHp * companionList.towerList[it.fireDebuffTowerId].fireBurnTalentDmg) * it.winddebuffincreased * it.fireDebuffDR * companionList.towerList[it.fireDebuffTowerId].overallDmgImmune) * magicPen(it, companionList.towerList[it.fireDebuffTowerId])
                                     else dmg =
-                                        (((it.maxHp * companionList.towerList[it.fireDebuffTowerId].fireBurnTalentDmg)) * it.winddebuffincreased * it.fireDebuffDR * 2) * magicPen(it, companionList.towerList[it.fireDebuffTowerId])
+                                        (((it.maxHp * companionList.towerList[it.fireDebuffTowerId].fireBurnTalentDmg)) * it.winddebuffincreased * it.fireDebuffDR) * magicPen(it, companionList.towerList[it.fireDebuffTowerId])
                                 }
-                                it.hp -= dmg
+                                var extraDmgSlow = 1f
+                                if (it.debuffExtraMgcDmg) extraDmgSlow = 1.2f
+                                it.hp -= dmg * extraDmgSlow
                                 if (dmg > (it.maxHp / 100)) {
                                     var dmgString = "0"
                                     when (dmg.toInt()) {
@@ -3308,16 +3659,15 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                 if (it.hp < 0){
                                     it.killerId = it.fireDebuffTowerId
-                                    dead(it)
+                                    companionList.enemyKilledList.add(it)
                                 }
                             }
                             it.fireDebuff += 1
                         } else if (it.fireDebuff >= 102) {
-                            it.fireDebuffDR *= 0.75f
+                            fireBurnDebuffDeactivate(it)
+                            it.fireDebuffDR *= 0.66f
                             if (it.fireDebuffDR <= 0.1f) it.fireDebuffDR = 0f
-                            it.fireDebuff = 0
                         } else if (it.fireDebuff > 0) it.fireDebuff += 1
-
 
                         var sunburnOnlyOne = 0
                         var towerListIterator = companionList.towerList.listIterator()
@@ -3335,8 +3685,10 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                             (it.baseSpeed * (tower.slowAura / 100)).toFloat()
                                         it.baseSpeed -= it.iceAuraSpeedReduce
                                         it.iceAuraAlreadyAffected = 1
+                                        if (tower.slowExtraMgcDmg) it.debuffExtraMgcDmg = true
                                     } else if (!tower.crossesAllList.contains(it) && it.iceAuraAlreadyAffected == 1) {
                                         it.iceAuraAlreadyAffected = 0
+                                        it.debuffExtraMgcDmg = false
                                         it.baseSpeed += it.iceAuraSpeedReduce
                                         it.iceAuraSpeedReduce = 0f
                                     }
@@ -3355,10 +3707,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     it.itemLassoSpeedReduce = it.baseSpeed
                                     it.baseSpeed -= it.itemLassoSpeedReduce
                                 } else if (it.itemLassoAlreadyAffected <= -80) {
-                                    it.itemLassoAlreadyAffected = 0
-                                    it.itemLassoAlreadyAffectedTowerId = 0
-                                    it.baseSpeed += it.itemLassoSpeedReduce
-                                    it.itemLassoSpeedReduce = 0f
+                                    itemLassoDeactivate(it)
                                 }
                             }
 
@@ -3367,9 +3716,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             if (tower.itemFrost > 0) {
                                 if (it.itemFrostAlreadyAffected > 0) it.itemFrostAlreadyAffected++
                                 if (it.itemFrostAlreadyAffected >= 50) {
-                                    it.itemFrostAlreadyAffected = 0
-                                    it.baseSpeed += it.itemFrostSpeedReduce
-                                    it.itemFrostSpeedReduce = 0f
+                                    itemFrostDeactivate(it)
                                 }
                             }
 
@@ -3378,27 +3725,31 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             if (tower.sunburn > 0 && companionList.day && sunburnOnlyOne < 1) {
                                 sunburnOnlyOne++
                                 if (companionList.enemyList.contains(it)) {
-                                    when ((0..999).random()) {
-                                        0 -> it.fireDebuff = 1
-                                    }
-                                    var dmg = 0f
-                                    if (it.fireDebuff > 0) {
-                                        if (it.name == "immune") dmg =
-                                            (it.maxHp / 100 / 60) * tower.sunburn * (tower.fireBurnTalentDmg / 2) * it.winddebuffincreased * tower.overallDmgImmune
-                                        else dmg =
-                                            (it.maxHp / 100 / 60) * tower.sunburn * (tower.fireBurnTalentDmg / 2) * it.winddebuffincreased
-                                    } else {
-                                        if (it.name == "immune") dmg =
-                                            (it.maxHp / 100 / 60 / 1.5f) * tower.sunburn * it.winddebuffincreased * tower.overallDmgImmune
-                                        else dmg =
-                                            (it.maxHp / 100 / 60 / 1.5f) * tower.sunburn * it.winddebuffincreased
-                                    }
+                                    if (it.hp > 0) {
+                                        when ((0..999).random()) {
+                                            0 -> it.fireDebuff = 1
+                                        }
+                                        var dmg = 0f
+                                        if (it.fireDebuff > 0) {
+                                            if (it.name == "immune") dmg =
+                                                (it.maxHp / 100 / 60) * tower.sunburn * (tower.fireBurnTalentDmg / 2) * it.winddebuffincreased * tower.overallDmgImmune
+                                            else dmg =
+                                                (it.maxHp / 100 / 60) * tower.sunburn * (tower.fireBurnTalentDmg / 2) * it.winddebuffincreased
+                                        } else {
+                                            if (it.name == "immune") dmg =
+                                                (it.maxHp / 100 / 60 / 1.5f) * tower.sunburn * it.winddebuffincreased * tower.overallDmgImmune
+                                            else dmg =
+                                                (it.maxHp / 100 / 60 / 1.5f) * tower.sunburn * it.winddebuffincreased
+                                        }
 
-                                    if (it.hp > dmg) it.hp -= dmg
-                                    else it.hp = 0.1f
+                                        it.hp -= dmg
+                                        if (it.hp < 0) {
+                                            it.killerId = companionList.towerList.indexOf(tower)
+                                            companionList.enemyKilledList.add(it)
+                                        }
+                                    }
                                 }
                             }
-
 
                         }
 
@@ -3465,8 +3816,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             it.butterflyDebuffEnemyDmgAlreadyEffected = true
                             it.butterflyDebuffEnemyDmg++
                         } else if (it.butterflyDebuffEnemyDmg >= 300) {
-                            it.butterflyDebuffEnemyDmg = 0
-                            it.butterflyDebuffEnemyDmgAlreadyEffected = false
+                            butterflyDebuffEnemyDamageDeactivate(it)
                         } else if (it.butterflyDebuffEnemyDmg > 0) {
                             it.butterflyDebuffEnemyDmg++
                         }
@@ -3475,11 +3825,12 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             it.butterflyDebuffEnemyGoldXpAlreadyEffected = true
                             it.butterflyDebuffEnemyDmg++
                         } else if (it.butterflyDebuffEnemyGoldXp >= 300) {
-                            it.butterflyDebuffEnemyDmg = 0
-                            it.butterflyDebuffEnemyGoldXpAlreadyEffected = false
+                            butterflyDebuffGoldXpDeactivate(it)
                         } else if (it.butterflyDebuffEnemyGoldXp > 0) {
                             it.butterflyDebuffEnemyDmg++
                         }
+
+
 
                         // poison Debuff
 
@@ -3489,10 +3840,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             enemiesPoisonedPlace++
                             if (it.hp > 0) {
                                 var dmg = 0f
+                                if (it.poisonStack > 100) it.poisonStack = 100f
                                 if (it.name == "immune") dmg =
-                                    ((it.poisonStack * 1.5f + (it.poisonStack.pow((it.poisonStack / 20)))) * ((companionList.towerList[it.poisonDebuffTowerId].overallTowerSpellDmg * magicPen(it, companionList.towerList[it.poisonDebuffTowerId])) * 0.15f) * companionList.towerList[it.poisonDebuffTowerId].stackablePoison * it.winddebuffincreased * companionList.towerList[it.poisonDebuffTowerId].overallDmgImmune)
+                                    ((it.poisonStack * 1.5f + (it.poisonStack.pow((it.poisonStack / 20)))) * ((companionList.towerList[it.poisonDebuffTowerId].overallTowerSpellDmg) * 0.15f) * companionList.towerList[it.poisonDebuffTowerId].stackablePoison * it.winddebuffincreased * companionList.towerList[it.poisonDebuffTowerId].overallDmgImmune)
                                 else dmg =
-                                    ((it.poisonStack * 1.5f + (it.poisonStack.pow((it.poisonStack / 20)))) * ((companionList.towerList[it.poisonDebuffTowerId].overallTowerSpellDmg * magicPen(it, companionList.towerList[it.poisonDebuffTowerId])) * 0.15f) * companionList.towerList[it.poisonDebuffTowerId].stackablePoison * it.winddebuffincreased)
+                                    ((it.poisonStack * 1.5f + (it.poisonStack.pow((it.poisonStack / 20)))) * ((companionList.towerList[it.poisonDebuffTowerId].overallTowerSpellDmg) * 0.15f) * companionList.towerList[it.poisonDebuffTowerId].stackablePoison * it.winddebuffincreased)
 
                                 if (it.manaShield > 0) {
                                     if (it.manaShield > dmg) {
@@ -3503,9 +3855,12 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         it.manaShield = 0f
                                     }
                                 }
+                                dmg *= magicPen(it, companionList.towerList[it.poisonDebuffTowerId])
                                 if (it.shield > 0) dmg = 0f
 
-                                it.hp -= dmg
+                                var extraDmgSlow = 1f
+                                if (it.debuffExtraMgcDmg) extraDmgSlow = 1.2f
+                                it.hp -= dmg * extraDmgSlow
                                 if (dmg > (it.maxHp / 100)) {
                                     var dmgString = "0"
                                     when (dmg.toInt()) {
@@ -3520,21 +3875,18 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 }
 
                                 if (it.hp < 0){
-                                    if (companionList.towerList[it.poisonDebuffTowerId].experiencePoisonKill) towerExperience(it.poisonDebuffTowerId, 0.25f)
+                                    if (companionList.towerList[it.poisonDebuffTowerId].experiencePoisonKill) towerExperience(it.poisonDebuffTowerId, it.xpDrop * 0.25f)
                                     it.killerId = it.poisonDebuffTowerId
-                                    dead(it)
+                                    companionList.enemyKilledList.add(it)
                                 }
                             }
                             it.poisonDebuff += 1
                         } else if (it.poisonDebuff >= 212) {
-                            it.poisonDebuff = 0
-                            it.poisonDebuffTowerId = 0
-                            it.poisonStack = 0.0f
+                            poisonDebuffDeactivate(it)
                         } else if (it.poisonDebuff > 0){
                             enemiesPoisonedPlace++
                             it.poisonDebuff += 1
                         }
-
 
                         // poison entangle
 
@@ -3555,22 +3907,17 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             it.baseSpeed += it.entangleSpeedReduce
                             it.entangleSpeedReduce = 0f
                         } else if (it.entangled == true && it.entangleOnHit >= 40 * it.entangleDR) {
+                            poisonEntangleDeactivate(it)
                             it.entangleDR *= 0.66f
                             if (it.entangleDR <= 0.1f) it.entangleDR = 0f
-                            it.entangled = false
-                            it.entangleOnHit = 0
-                            it.baseSpeed += it.entangleSpeedReduce
-                            it.entangleSpeedReduce = 0f
                         } else if (it.entangled == true) it.entangleOnHit += 1
+
 
                         // throw boulder
                         if (it.throwBoulderHit >= 40 * it.throwBoulderDR) {
                             it.throwBoulderDR *= 0.66f
                             if (it.throwBoulderDR <= 0.1f) it.throwBoulderDR = 0f
-                            it.throwBoulderHitAlreadyEffected = false
-                            it.throwBoulderHit = 0
-                            it.baseSpeed += it.throwBoulderSpeedReduce
-                            it.throwBoulderSpeedReduce = 0f
+                            throwBoulderDeactivate(it)
                         } else if (it.throwBoulderHitAlreadyEffected) it.throwBoulderHit += 1
 
                         // dark slow
@@ -3580,7 +3927,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 in 0..companionList.towerList[it.darkDebuffTowerId].slowExtraChanceDark -> {
                                     if (it.name == "speed") it.extraSpeed =
                                         0.0f       // counter speed
-                                    it.baseSpeed -= (it.baseSpeed * (companionList.towerList[it.darkDebuffTowerId].slowExtraDark / 100)).toFloat()
+                                    it.darkSlowSpeedReduce = (it.baseSpeed * (companionList.towerList[it.darkDebuffTowerId].slowExtraDark / 100)).toFloat()
+                                    it.baseSpeed -= it.darkSlowSpeedReduce
                                     it.darkSlowAlreadyAffected = true
                                 }
                             }
@@ -3589,26 +3937,19 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         // dark fear
                         if (it.fearOnHit >= 1) {
                             if (it.fearOnHit == 1 && it.feared == false) {
-                                it.fearSpeedReduce = it.baseSpeed
-                                it.baseSpeed -= (it.fearSpeedReduce + 2f)
+                                it.fearSpeedReduce = it.baseSpeed + 2f
+                                it.baseSpeed -= (it.fearSpeedReduce)
                                 it.feared = true
                                 it.fearOnHit += 1
-                            } else if (it.feared == true && it.fearOnHit >= ((10 * companionList.towerList[it.fearTowerId].fearDuration) * it.fearDR) && (it.name == "boss" || it.name == "challenge")) {
-                                it.fearDR *= 0.66f
-                                if (it.fearDR <= 0.1f) it.fearDR = 0f
-                                it.feared = false
-                                it.fearOnHit = 0
-                                it.baseSpeed += (it.fearSpeedReduce + 2f)
-                                it.fearSpeedReduce = 0f
+                            } else if (it.feared && it.fearOnHit >= ((10 * companionList.towerList[it.fearTowerId].fearDuration) * it.fearDR) && (it.name == "boss" || it.name == "challenge")) {
+                                darkFearDeactivate(it)
                             } else if (it.feared && it.fearOnHit >= (30 * companionList.towerList[it.fearTowerId].fearDuration) * it.fearDR) {
                                 it.fearDR *= 0.66f
                                 if (it.fearDR <= 0.1f) it.fearDR = 0f
-                                it.feared = false
-                                it.fearOnHit = 0
-                                it.baseSpeed += (it.fearSpeedReduce + 2f)
-                                it.fearSpeedReduce = 0f
+                                darkFearDeactivate(it)
                             } else if (it.feared == true) it.fearOnHit += 1
                         }
+
 
                         // talent poison pest
                         if (companionList.poisonTalentPest > 0) {
@@ -3616,9 +3957,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 it.poisonTalentPestAlreadyAffected++
                                 it.poisonTalentPestDamage++
                                 if (it.poisonTalentPestDamage > 151) {
-                                    it.poisonTalentPestDamage = 0
-                                    it.poisonTalentPestAlreadyAffected = 0
-                                    it.poisonTalentPestImmune = true
+                                    poisonPestDeactivate(it)
                                 }
                                 if (it.name == "boss" || it.name == "challenge") {
                                     if (it.poisonTalentPestDamage == 1 || it.poisonTalentPestDamage == 51 || it.poisonTalentPestDamage == 101 || it.poisonTalentPestDamage == 151) {
@@ -3724,11 +4063,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             }
                         }
 
+
                         // dark talent laser
                         if (companionList.towerList[it.darkTalentLaserTowerId].darkTalentLaser > 0) {
                             if (it.darkTalentLaserAlreadyAffected >= 250) {
-                                it.darkTalentLaserAlreadyAffected = 0
-                                it.darkTalentLaserTowerId = 0
+                                darkLaserDeactivate(it)
                             } else if (it.darkTalentLaserAlreadyAffected > 0 && companionList.towerList[it.darkTalentLaserTowerId].crossesAllList.contains(it)) {
                                 it.darkTalentLaserAlreadyAffected++
                                 if (it.hp > 0) {
@@ -3736,7 +4075,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     it.hp -= (it.maxHp * (companionList.towerList[it.darkTalentLaserTowerId].darkTalentLaser / 100))
                                     if (it.hp < 0) {
                                         it.killerId = it.darkTalentLaserTowerId
-                                        dead(it)
+                                        companionList.enemyKilledList.add(it)
                                     }
                                 }
                             } else {
@@ -3769,8 +4108,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         it.manaShield = 0f
                                     }
                                 }
+                                dmg *= magicPen(it, companionList.towerList[it.wizardBombTowerId])
                                 if (it.shield > 0) dmg = 0f
-                                it.hp -= dmg
+                                var extraDmgSlow = 1f
+                                if (it.debuffExtraMgcDmg) extraDmgSlow = 1.2f
+                                it.hp -= dmg * extraDmgSlow
                                 if (dmg > (it.maxHp / 100)) {
                                     var dmgString = "0"
                                     when (dmg.toInt()) {
@@ -3786,7 +4128,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                 if (it.hp < 0){
                                     it.killerId = it.wizardBombTowerId
-                                    dead(it)
+                                    companionList.enemyKilledList.add(it)
                                 }
                             }
                             var enemyListIteratorZ = companionList.enemyList.listIterator()
@@ -3807,8 +4149,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                 otherEnemy.manaShield = 0f
                                             }
                                         }
+                                        dmg *= magicPen(it, companionList.towerList[it.wizardBombTowerId])
                                         if (otherEnemy.shield > 0) dmg = 0f
-                                        otherEnemy.hp -= dmg
+                                        var extraDmgSlow = 1f
+                                        if (otherEnemy.debuffExtraMgcDmg) extraDmgSlow = 1.2f
+                                        otherEnemy.hp -= dmg * extraDmgSlow
                                         if (dmg > (otherEnemy.maxHp / 100)) {
                                             var dmgString = "0"
                                             when (dmg.toInt()) {
@@ -3824,27 +4169,25 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         }
                                         if (otherEnemy.hp < 0) {
                                             otherEnemy.killerId = it.wizardBombTowerId
-                                            dead(otherEnemy)
+                                            companionList.enemyKilledList.add(otherEnemy)
                                         }
                                     }
                                 }
                             }
                         }
 
+
                         // wizard mine
                         if (companionList.wizardMine) {
                             if (it.mineAlreadyAffected) it.mineAlreadyAffectedCounter++
                             if (it.mineAlreadyAffectedCounter >= 180) {
-                                it.baseSpeed += it.mineSpeedReduce
-                                it.mineSpeedReduce = 0f
-                                it.mineAlreadyAffected = false
+                                wizardMineDeactivate(it)
                             }
                         }
 
                         // wizard lightning
                         if (it.wizardMissedLightningActiveHit >= 1) it.wizardMissedLightningActiveHit++
-                        if (it.wizardMissedLightningActiveHit >= 20) it.wizardMissedLightningActiveHit =
-                            0
+                        if (it.wizardMissedLightningActiveHit >= 20) it.wizardMissedLightningActiveHit = 0
 
                     }
                     // ---------------------------------------------------------------------------------------------------------
@@ -3891,22 +4234,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 tower.chainLightningCounter = 0
                                 if (tower.crossesAllList.isNotEmpty()) {
                                     tower.spellCastCDCounterHeap += 1
-                                    GameActivity.companionList.writeLockShot.lock()
-                                    try {
-                                    var shootListPlace = Shoot()
-                                    shootListPlace.chainLightning = true
-                                    shootListPlace.color = Color.WHITE
-                                    shootListPlace.bulletSpeed = 12f
-                                    var towerindex = companionList.towerList.indexOf(tower)
-                                    shootListPlace.towerId = towerindex
-                                    shootListPlace.bullet =
-                                        TowerRadius(tower.towerRange.x, tower.towerRange.y, 8f)
-                                    shootListPlace.bounceLeft = tower.chainLightningBounceTargets
-                                    var shootListIterator = companionList.shootList.listIterator()
-                                    shootListIterator.add(shootListPlace)
-                                    } finally {
-                                    GameActivity.companionList.writeLockShot.unlock()
-                                    }
+                                    companionList.addChainLighning++
                                 }
                             }
                         }
@@ -3923,8 +4251,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     for (it in tower.crossesAllList.shuffled()) {
                                         if (it.hp > 0) {
                                             var dmg = 0f
-                                            dmg =
-                                                (tower.overallTowerPhysicalDmg * armorPen(it, tower)) * tower.throwBoulder
+                                            dmg = (tower.overallTowerPhysicalDmg) * tower.throwBoulder
 
                                             if (it.shield > 0) {
                                                 if (it.shield > dmg) {
@@ -3935,6 +4262,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                     it.shield = 0f
                                                 }
                                             }
+                                            dmg *= armorPen(it, tower)
                                             if (it.manaShield > 0) dmg = 0f
                                             it.hp -= dmg
                                             if (dmg > (it.maxHp / 100)) {
@@ -3952,7 +4280,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                             }
                                             if (it.hp < 0){
                                                 it.killerId = companionList.towerList.indexOf(tower)
-                                                dead(it)
+                                                companionList.enemyKilledList.add(it)
                                             }
                                         }
                                         if (it.name == "speed") it.extraSpeed =
@@ -3968,8 +4296,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                 } else {
                                                     if (otherEnemy.hp > 0) {
                                                         var dmg = 0f
-                                                        dmg =
-                                                            (tower.overallTowerPhysicalDmg * armorPen(it, tower)) * tower.throwBoulder * 0.75f
+                                                        dmg = (tower.overallTowerPhysicalDmg) * tower.throwBoulder * 0.75f
 
                                                         if (otherEnemy.shield > 0) {
                                                             if (otherEnemy.shield > dmg) {
@@ -3980,6 +4307,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                                 otherEnemy.shield = 0f
                                                             }
                                                         }
+                                                        dmg *= armorPen(it, tower)
                                                         if (otherEnemy.manaShield > 0) dmg = 0f
                                                         otherEnemy.hp -= dmg
                                                         if (dmg > (otherEnemy.maxHp / 100)) {
@@ -4001,7 +4329,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                                         if (otherEnemy.hp < 0){
                                                             otherEnemy.killerId = companionList.towerList.indexOf(tower)
-                                                            dead(otherEnemy)
+                                                            companionList.enemyKilledList.add(otherEnemy)
                                                         }
 
                                                     }
@@ -4055,8 +4383,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         if (tower.iceNovaSpellDmg > 0) {
                                             if (it.hp > 0) {
                                                 var dmg = 0f
-                                                dmg =
-                                                    ((tower.overallTowerSpellDmg * tower.iceNovaSpellDmg) * magicPen(it, tower))
+                                                dmg = ((tower.overallTowerSpellDmg * tower.iceNovaSpellDmg))
                                                 if (it.manaShield > 0) {
                                                     if (it.manaShield > dmg) {
                                                         it.manaShield -= dmg
@@ -4066,8 +4393,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                         it.manaShield = 0f
                                                     }
                                                 }
+                                                dmg *= magicPen(it, tower)
                                                 if (it.shield > 0) dmg = 0f
-                                                it.hp -= dmg
+                                                var extraDmgSlow = 1f
+                                                if (it.debuffExtraMgcDmg) extraDmgSlow = 1.2f
+                                                it.hp -= dmg * extraDmgSlow
                                                 if (dmg > (it.maxHp / 100)) {
                                                     var dmgString = "0"
                                                     when (dmg.toInt()) {
@@ -4085,7 +4415,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                                 if (it.hp < 0){
                                                     it.killerId = companionList.towerList.indexOf(tower)
-                                                    dead(it)
+                                                    companionList.enemyKilledList.add(it)
                                                 }
                                             }
                                         }
@@ -4098,6 +4428,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         else it.iceNovaSpeedReduce = (it.baseSpeed * 0.7f * it.iceNovaDR).toFloat()
                                         it.baseSpeed -= it.iceNovaSpeedReduce
                                         it.iceNovaAlreadyAffected = true
+                                        if(tower.slowExtraMgcDmg) it.debuffExtraMgcDmg = true
                                         it.iceNovaDR *= 0.66f
                                         if (it.iceNovaDR <= 0.1f) it.iceNovaDR = 0f
                                         if (tower.experienceSlow) towerExperience(companionList.towerList.indexOf(tower), 0.03f)
@@ -4112,8 +4443,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                 if (tower.iceNovaSpellDmg > 0) {
                                                     if (otherEnemy.hp > 0) {
                                                         var dmg = 0f
-                                                        dmg =
-                                                            ((tower.overallTowerSpellDmg * tower.iceNovaSpellDmg) * magicPen(otherEnemy, tower) * 0.75f)
+                                                        dmg = ((tower.overallTowerSpellDmg * tower.iceNovaSpellDmg) * 0.75f)
 
                                                         if (otherEnemy.manaShield > 0) {
                                                             if (otherEnemy.manaShield > dmg) {
@@ -4124,8 +4454,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                                 otherEnemy.manaShield = 0f
                                                             }
                                                         }
+                                                        dmg *= magicPen(otherEnemy, tower)
                                                         if (otherEnemy.shield > 0) dmg = 0f
-                                                        otherEnemy.hp -= dmg
+                                                        var extraDmgSlow = 1f
+                                                        if (otherEnemy.debuffExtraMgcDmg) extraDmgSlow = 1.2f
+                                                        otherEnemy.hp -= dmg * extraDmgSlow
                                                         if (dmg > (otherEnemy.maxHp / 100)) {
                                                             var dmgString = "0"
                                                             when (dmg.toInt()) {
@@ -4145,7 +4478,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                                         if (otherEnemy.hp < 0){
                                                             otherEnemy.killerId = companionList.towerList.indexOf(tower)
-                                                            dead(otherEnemy)
+                                                            companionList.enemyKilledList.add(otherEnemy)
                                                         }
 
                                                     }
@@ -4155,6 +4488,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                 else otherEnemy.iceNovaSpeedReduce = (otherEnemy.baseSpeed * 0.8f * otherEnemy.iceNovaDR).toFloat()
                                                 otherEnemy.baseSpeed -= otherEnemy.iceNovaSpeedReduce
                                                 otherEnemy.iceNovaAlreadyAffected = true
+                                                if(tower.slowExtraMgcDmg) otherEnemy.debuffExtraMgcDmg = true
                                                 otherEnemy.iceNovaDR *= 0.66f
                                                 if (otherEnemy.iceNovaDR <= 0.1f) otherEnemy.iceNovaDR = 0f
                                                 if (tower.experienceSlow) towerExperience(companionList.towerList.indexOf(tower), 0.03f)
@@ -4228,7 +4562,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         if (it.hp > 0) {
                                             var dmg = 0f
                                             dmg =
-                                                tower.overallTowerSpellDmg * magicPen(it, tower) * tower.wizardMissedLightningDmgBoost
+                                                tower.overallTowerSpellDmg * tower.wizardMissedLightningDmgBoost
 
                                             if (it.manaShield > 0) {
                                                 if (it.manaShield > dmg) {
@@ -4239,8 +4573,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                     it.manaShield = 0f
                                                 }
                                             }
+                                            dmg *= magicPen(it, tower)
                                             if (it.shield > 0) dmg = 0f
-                                            it.hp -= dmg
+                                            var extraDmgSlow = 1f
+                                            if (it.debuffExtraMgcDmg) extraDmgSlow = 1.2f
+                                            it.hp -= dmg * extraDmgSlow
                                             if (dmg > (it.maxHp / 100)) {
                                                 var dmgString = "0"
                                                 when (dmg.toInt()) {
@@ -4257,7 +4594,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                             if (it.hp < 0) {
                                                 it.killerId = companionList.towerList.indexOf(tower)
-                                                dead(it)
+                                                companionList.enemyKilledList.add(it)
                                             }
 
                                         }
@@ -4303,8 +4640,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 for (it in tower.crossesAllList.shuffled()) {
                                     if (it.hp > 0) {
                                         if (tower.experienceMoonlight && it.talentMoonlightAlreadyAffected > 0.67f) towerExperience(companionList.towerList.indexOf(tower), 0.1f)
-                                        var dmg =
-                                            ceil((0..(tower.overallTowerSpellDmg * magicPen(it, tower)).toInt()).random() / 10f) * (1 + it.talentMoonlightAlreadyAffected)
+                                        var dmgPlace = (0..(tower.overallTowerSpellDmg * 2).toInt()).random()
+                                        var dmg = dmgPlace * 0.1f * (1 + it.talentMoonlightAlreadyAffected)
 
                                         if (it.manaShield > 0) {
                                             if (it.manaShield > dmg) {
@@ -4315,6 +4652,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                 it.manaShield = 0f
                                             }
                                         }
+                                        dmg *= magicPen(it, tower)
                                         if (it.shield > 0) dmg = 0f
                                         it.hp -= dmg
                                         if (dmg > (it.maxHp / 100)) {
@@ -4333,7 +4671,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                         if (it.hp < 0) {
                                             it.killerId = companionList.towerList.indexOf(tower)
-                                            dead(it)
+                                            companionList.enemyKilledList.add(it)
                                         }
                                         it.talentMoonlightAlreadyAffected += 0.33f
                                         it.talentMoonlightDraw = 1
@@ -4359,6 +4697,131 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         }
 
         //----------------------------------------------------------------------------------
+
+    fun deactivateAllDebuffs(it: Enemy){
+        darkSlowDeactivate(it)
+     iceNovaDeactivate (it)
+     iceDebuffDeactivate (it)
+     darkMoreDmgDebuffDeactivate(it)
+     antiHealDebuffDeactivate(it)
+     iceSlowExtraDebuffDeactivate(it)
+     fireBurnDebuffDeactivate (it)
+     itemLassoDeactivate(it)
+     itemFrostDeactivate(it)
+     butterflyDebuffEnemyDamageDeactivate(it)
+     butterflyDebuffGoldXpDeactivate(it)
+     poisonDebuffDeactivate(it)
+     poisonEntangleDeactivate(it)
+     throwBoulderDeactivate(it)
+     darkFearDeactivate(it)
+     poisonPestDeactivate(it)
+     darkLaserDeactivate (it)
+     wizardBombDeactivate(it)
+     wizardMineDeactivate (it)
+    }
+
+    fun darkSlowDeactivate(it: Enemy){
+        it.darkDebuff = false
+        it.baseSpeed += it.darkSlowSpeedReduce
+        it.darkSlowSpeedReduce = 0f
+        it.darkSlowAlreadyAffected = false
+    }
+    fun iceNovaDeactivate (it: Enemy){
+        it.baseSpeed += it.iceNovaSpeedReduce
+        it.iceNovaSpeedReduce = 0f
+        it.iceNovaAlreadyAffectedCounter = 0
+        it.iceNovaAlreadyAffected = false
+        it.debuffExtraMgcDmg = false
+    }
+    fun iceDebuffDeactivate (it: Enemy){
+        it.iceDebuff = 0
+        it.iceAlreadyAffected = 0
+        it.baseSpeed += it.iceSlowEachSpeedReduce
+        it.iceSlowEachSpeedReduce = 0f
+        it.debuffExtraMgcDmg = false
+    }
+    fun darkMoreDmgDebuffDeactivate(it: Enemy){
+        it.darkMoreDmgDebuff = 0
+        it.darkMoreDmgDebuffStacks = 0
+    }
+    fun antiHealDebuffDeactivate(it: Enemy){
+        it.antihealDebuff = 0
+        it.antihealDebuffActive = 0f
+    }
+    fun iceSlowExtraDebuffDeactivate(it: Enemy){
+        it.iceDebuffExtra = 0
+        it.iceExtraAlreadyAffected = 0
+        it.baseSpeed += it.iceSlowExtraSpeedReduce
+        it.iceSlowExtraSpeedReduce = 0f
+        it.debuffExtraMgcDmg = false
+    }
+    fun fireBurnDebuffDeactivate (it: Enemy){
+        it.fireDebuff = 0
+    }
+    fun itemLassoDeactivate(it: Enemy){
+        it.itemLassoAlreadyAffected = 0
+        it.itemLassoAlreadyAffectedTowerId = 0
+        it.baseSpeed += it.itemLassoSpeedReduce
+        it.itemLassoSpeedReduce = 0f
+    }
+    fun itemFrostDeactivate(it: Enemy){
+        it.itemFrostAlreadyAffected = 0
+        it.baseSpeed += it.itemFrostSpeedReduce
+        it.itemFrostSpeedReduce = 0f
+    }
+    fun butterflyDebuffEnemyDamageDeactivate(it: Enemy){
+        it.butterflyDebuffEnemyDmg = 0
+        it.butterflyDebuffEnemyDmgAlreadyEffected = false
+    }
+    fun butterflyDebuffGoldXpDeactivate(it: Enemy){
+        it.butterflyDebuffEnemyDmg = 0
+        it.butterflyDebuffEnemyGoldXpAlreadyEffected = false
+    }
+    fun poisonDebuffDeactivate(it: Enemy){
+        it.poisonDebuff = 0
+        it.poisonDebuffTowerId = 0
+        it.poisonStack = 0.0f
+    }
+    fun poisonEntangleDeactivate(it: Enemy){
+        it.entangled = false
+        it.entangleOnHit = 0
+        it.baseSpeed += it.entangleSpeedReduce
+        it.entangleSpeedReduce = 0f
+    }
+    fun throwBoulderDeactivate(it: Enemy){
+        it.throwBoulderHitAlreadyEffected = false
+        it.throwBoulderHit = 0
+        it.baseSpeed += it.throwBoulderSpeedReduce
+        it.throwBoulderSpeedReduce = 0f
+    }
+    fun darkFearDeactivate(it: Enemy){
+        it.feared = false
+        it.fearOnHit = 0
+        if (it.fearSpeedReduce > 0) it.baseSpeed += it.fearSpeedReduce
+        it.fearSpeedReduce = 0f
+    }
+    fun poisonPestDeactivate(it: Enemy){
+        it.poisonTalentPestDamage = 0
+        it.poisonTalentPestAlreadyAffected = 0
+        it.poisonTalentPestImmune = true
+    }
+    fun darkLaserDeactivate (it: Enemy){
+        it.darkTalentLaserAlreadyAffected = 0
+        it.darkTalentLaserTowerId = 0
+    }
+    fun wizardBombDeactivate(it: Enemy){
+        it.wizardBombActive = 0
+    }
+    fun wizardMineDeactivate (it: Enemy){
+        it.baseSpeed += it.mineSpeedReduce
+        it.mineSpeedReduce = 0f
+        it.mineAlreadyAffected = false
+    }
+
+
+    //----------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------
 
         private fun inBounceRange(bullet: TowerRadius): Int {
 
@@ -4439,7 +4902,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             var shootListPlace = Shoot()
                             var towerindex = companionList.towerList.indexOf(it)
                             shootListPlace.towerId = towerindex
-                            shootListPlace.bounceLeft = it.shotBounceTargets
+                            shootListPlace.bounceLeft = it.shotBounceTargets * it.shotBounceTargetsStartItems
                             if (it.towerPrimaryElement == "earth")   shootListPlace.bulletSpeed = 6f
                             else if (it.towerPrimaryElement == "butterfly")   shootListPlace.bulletSpeed = 8f
                             shootListPlace.bullet =
@@ -4449,6 +4912,23 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 soundPool.play(soundIds[0], companionList.logVolumeEffects, companionList.logVolumeEffects, 1, 0, 1.0f)
                             }
                             it.timertower = 0
+                        }
+                    }
+
+                    if (it.chainLighning) {
+                        if (companionList.addChainLighning > 0) {
+                            companionList.addChainLighning -= 1
+                            var shootListPlace = Shoot()
+                            shootListPlace.chainLightning = true
+                            shootListPlace.color = Color.WHITE
+                            shootListPlace.bulletSpeed = 12f
+                            var towerindex = companionList.towerList.indexOf(it)
+                            shootListPlace.towerId = towerindex
+                            shootListPlace.bullet =
+                                TowerRadius(it.towerRange.x, it.towerRange.y, 8f)
+                            shootListPlace.bounceLeft = it.chainLightningBounceTargets
+                            var shootListIterator = companionList.shootList.listIterator()
+                            shootListIterator.add(shootListPlace)
                         }
                     }
 
@@ -4623,24 +5103,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 companionList.towerList[towerId].particleDmg = 0f
                                 if (it.hp < 0) {
                                     if (companionList.towerList[towerId].particleDmgBool) companionList.towerList[towerId].particleDmg += (it.hp * -1)
-                                    if (companionList.towerList[towerId].darkPermaKill > 0) {
-                                            for (item in companionList.towerList[towerId].itemListBag) {
-                                                if (item.id == 6666) {
-                                                    if (it.name == "boss") {
-                                                        companionList.towerList[towerId].bonusPhysicalDmg += (companionList.towerList[towerId].darkPermaKill * 5) * (companionList.lvlScaler / 20)
-                                                        item.specialFloat += (companionList.towerList[towerId].darkPermaKill * 5) * (companionList.lvlScaler / 20)
-                                                    } else if (it.name == "challenge") {
-                                                        companionList.towerList[towerId].bonusPhysicalDmg += (companionList.towerList[towerId].darkPermaKill * 10) * (companionList.lvlScaler / 20)
-                                                        item.specialFloat += (companionList.towerList[towerId].darkPermaKill * 10) * (companionList.lvlScaler / 20)
-                                                    } else {
-                                                        companionList.towerList[towerId].bonusPhysicalDmg += companionList.towerList[towerId].darkPermaKill * (companionList.lvlScaler / 20)
-                                                        item.specialFloat += companionList.towerList[towerId].darkPermaKill * (companionList.lvlScaler / 20)
-                                                    }
-                                                }
-                                            }
-                                    }
                                     it.killerId = towerId
-                                    dead(it)
+                                    companionList.enemyKilledList.add(it)
                                 }
                                 //    splashListIterator.remove()
                             }
@@ -4732,7 +5196,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                         }
                                     it.killerId = towerId
-                                    dead(it)
+                                    companionList.enemyKilledList.add(it)
                                 }
                             }
                         }
@@ -4789,194 +5253,222 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             // all hits ---------------------------------------------------------
                             // all hits ---------------------------------------------------------
 
+                            if (!it.invu) {
+                                GlobalScope.launch {
+                                    soundPool.play(soundIds[1], companionList.logVolumeEffects, companionList.logVolumeEffects, 1, 0, 1.0f)
+                                }
+                                it.hit = true
+                                bullet.hitEnemyId = companionList.enemyList.indexOf(it)
+                                if (companionList.towerList[bullet.towerId].towerPrimaryElement == "moon") {
+                                    bullet.bullet.x = it.circle!!.x
+                                    bullet.bullet.y = it.circle!!.y
+                                }
 
-                            GlobalScope.launch {
-                                soundPool.play(soundIds[1], companionList.logVolumeEffects, companionList.logVolumeEffects, 1, 0, 1.0f)
-                            }
-                            it.hit = true
-                            bullet.hitEnemyId = companionList.enemyList.indexOf(it)
-                            if (companionList.towerList[bullet.towerId].towerPrimaryElement == "moon") {
-                                bullet.bullet.x = it.circle!!.x
-                                bullet.bullet.y = it.circle!!.y
-                            }
+                                // talent multi shot
+                                if (companionList.towerList[bullet.towerId].towerPrimaryElement == "wind" && splash15) dmgDoneX =
+                                    (autoAttackDmg / (companionList.towerList[bullet.towerId].crossesAllList.size + 2))
+                                else dmgDoneX = autoAttackDmg
+                                if (it.name == "immune" && companionList.towerList[bullet.towerId].earthDmgImmune > 1f) dmgDoneX *= companionList.towerList[bullet.towerId].earthDmgImmune
 
-                            // talent multi shot
-                            if (companionList.towerList[bullet.towerId].towerPrimaryElement == "wind" && splash15) dmgDoneX =
-                                (autoAttackDmg / (companionList.towerList[bullet.towerId].crossesAllList.size + 2))
-                            else dmgDoneX = autoAttackDmg
-                            if (it.name == "immune" && companionList.towerList[bullet.towerId].earthDmgImmune > 1f) dmgDoneX *= companionList.towerList[bullet.towerId].earthDmgImmune
-
-                           if (companionList.towerList[bullet.towerId].experienceEachHit) towerExperience(bullet.towerId, 0.03f)
-                           if (companionList.towerList[bullet.towerId].experienceDrop) {
-                               when ((0..99).random()) {
-                                   0 -> {
-                                       companionList.itemList.add(0,Items(6, 1, 999, 0, 0f, 0, 0f, 0, "Experiencer", R.drawable.xpgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: gain xp", it.overallXp, "", 0f))
-                                       companionList.insertItem += 1
-                                   }
-                               }
-                           }
-                           // pen
-                           it.armor -= companionList.towerList[bullet.towerId].armorPenPerHit
-                           it.magicArmor -= companionList.towerList[bullet.towerId].magicPenPerHit
-
-                            // utils drop upgrade
-                            if (companionList.towerList[bullet.towerId].utilsUpgrader > 0){
-                                when((0..200).random()){
-                                    in 0..companionList.towerList[bullet.towerId].utilsUpgrader.toInt() -> {
-                                        companionList.itemList.add(0,Items(7, 1, 999, 0, 0f, 0, 0f, 0, "Upgrader", R.drawable.upgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: gain 1 UP point", 0f, "", 0f))
-                                        companionList.insertItem += 1
+                                if (companionList.towerList[bullet.towerId].experienceEachHit) towerExperience(bullet.towerId, 0.03f)
+                                if (companionList.towerList[bullet.towerId].goldDrop) {
+                                    when ((0..299).random()) {
+                                        0 -> {
+                                            companionList.gold += (((0..(it.overallGold * 10).toInt()).random()) + 0.01f) * 0.1f
+                                            companionList.dmgDisplayDropList.add(DropDisplay(companionList.towerList[bullet.towerId].towerRange.x.toInt(),companionList.towerList[bullet.towerId].towerRange.y.toInt(), "gold", 1, 50))
+                                        }
                                     }
                                 }
-                            }
+                                // pen
+                                it.armor -= companionList.towerList[bullet.towerId].armorPenPerHit
+                                it.magicArmor -= companionList.towerList[bullet.towerId].magicPenPerHit
 
-                           // dark talent slow
-                           if (companionList.towerList[bullet.towerId].slowExtraDark > 0 && splash15) {
-                               it.darkDebuff = true // dark talent
-                               it.darkDebuffTowerId = bullet.towerId
-                           }
-                           // dark talent debuff
-                           if (companionList.towerList[bullet.towerId].darkDmgDebuff > 0 && splash15) {
-                               it.darkMoreDmgDebuff = 1
-                               it.darkMoreDmgDebuffTowerId = 1
-                               it.darkMoreDmgDebuffStacks += 1
-                           }
-                           // Ice talent slow
-                           if (splash15 && companionList.towerList[bullet.towerId].slowEach > 0) {
-                               it.iceDebuffTowerId = bullet.towerId
-                               it.iceDebuff = 1
-                           }
-                           // Ice talent slow extra
-                           if (companionList.towerList[bullet.towerId].slowExtra > 0 && splash15){
-                               it.iceDebuffExtra = 1
-                               it.iceDebuffExtraTowerId = bullet.towerId
-                           }
-                           // Poison talent stackable poison
-                           if (companionList.towerList[bullet.towerId].itemListBag.contains(companionList.epoison) && splash15) {
-                               if (it.poisonDebuff > 0 && companionList.towerList[bullet.towerId].overallTowerSpellDmg < companionList.towerList[it.poisonDebuffTowerId].overallTowerSpellDmg) {
-                               } else if (it.poisonDebuff > 0 && companionList.towerList[bullet.towerId].overallTowerSpellDmg > companionList.towerList[it.poisonDebuffTowerId].overallTowerSpellDmg) {
-                                   it.poisonDebuffTowerId = bullet.towerId
-                               }else if (it.poisonDebuff == 0) it.poisonDebuffTowerId = bullet.towerId
-                               it.poisonDebuff = 1
-                               if (companionList.towerList[bullet.towerId].itemStartPoison) it.poisonStack += 2.0f
-                               else it.poisonStack += 1.0f
-                           }
-                           // Nature talent entangle
-                           if (companionList.towerList[bullet.towerId].entangle > 0 && it.name != "immune" && splash15) {
-                               it.entangleOnHitTowerId = bullet.towerId
-                               it.entangleOnHit = 1
-                           }
-                           // Wind talent pushback
-                           if (companionList.towerList[bullet.towerId].pushBack > 0 && it.name != "immune" && splash15) pushback(it, bullet)
-                           // Wind talent bonus speed
-                           if (companionList.towerList[bullet.towerId].bonusSpeedWindTalent > 0 && splash15) companionList.towerList[bullet.towerId].bonusSpeedWindTalentPercent += companionList.towerList[bullet.towerId].bonusSpeedWindTalent
-                           // item slow death
-                           if (companionList.towerList[bullet.towerId].itemSlowDeath > 0) {
-                               var dmg = ((it.maxHp * companionList.towerList[bullet.towerId].itemSlowDeath) * magicPen(it, companionList.towerList[bullet.towerId]))
+                                // utils drop upgrade
+                                if (companionList.towerList[bullet.towerId].utilsUpgrader > 0) {
+                                    when ((0..200).random()) {
+                                        in 0..companionList.towerList[bullet.towerId].utilsUpgrader.toInt() -> {
+                                            companionList.upgradePoints++
+                                            companionList.dmgDisplayDropList.add(DropDisplay(companionList.towerList[bullet.towerId].towerRange.x.toInt(),companionList.towerList[bullet.towerId].towerRange.y.toInt(), "up", 1, 50))
+                                        }
+                                    }
+                                }
 
-                               if (it.manaShield > 0) {
-                                   if (it.manaShield > dmg) {
-                                       it.manaShield -= dmg
-                                       dmg = 0f
-                                   } else {
-                                       dmg = (dmg - it.manaShield)
-                                       it.manaShield = 0f
-                                   }
-                               }
-                               if (it.shield > 0) dmg = 0f
+                                // dark talent slow
+                                if (companionList.towerList[bullet.towerId].slowExtraDark > 0 && splash15) {
+                                    it.darkDebuff = true // dark talent
+                                    it.darkDebuffTowerId = bullet.towerId
+                                }
+                                // dark talent debuff
+                                if (companionList.towerList[bullet.towerId].darkDmgDebuff > 0 && splash15) {
+                                    it.darkMoreDmgDebuff = 1
+                                    it.darkMoreDmgDebuffTowerId = bullet.towerId
+                                    it.darkMoreDmgDebuffStacks += 1
+                                }
+                                // Ice talent slow
+                                if (splash15 && companionList.towerList[bullet.towerId].slowEach > 0) {
+                                    it.iceDebuffTowerId = bullet.towerId
+                                    it.iceDebuff = 1
+                                }
+                                // Ice talent slow extra
+                                if (companionList.towerList[bullet.towerId].slowExtra > 0 && splash15) {
+                                    it.iceDebuffExtra = 1
+                                    it.iceDebuffExtraTowerId = bullet.towerId
+                                }
+                                // Poison talent stackable poison
+                                if (companionList.towerList[bullet.towerId].itemListBag.contains(companionList.epoison) && splash15) {
+                                    if (it.poisonDebuff > 0 && companionList.towerList[bullet.towerId].overallTowerSpellDmg < companionList.towerList[it.poisonDebuffTowerId].overallTowerSpellDmg) {
+                                    } else if (it.poisonDebuff > 0 && companionList.towerList[bullet.towerId].overallTowerSpellDmg > companionList.towerList[it.poisonDebuffTowerId].overallTowerSpellDmg) {
+                                        it.poisonDebuffTowerId = bullet.towerId
+                                    } else if (it.poisonDebuff == 0) it.poisonDebuffTowerId =
+                                        bullet.towerId
+                                    it.poisonDebuff = 1
+                                    if (companionList.towerList[bullet.towerId].itemStartPoison) it.poisonStack += 2.0f
+                                    else it.poisonStack += 1.0f
+                                }
+                                // Nature talent entangle
+                                if (companionList.towerList[bullet.towerId].entangle > 0 && it.name != "immune" && splash15) {
+                                    it.entangleOnHitTowerId = bullet.towerId
+                                    it.entangleOnHit = 1
+                                }
+                                // Wind talent pushback
+                                if (companionList.towerList[bullet.towerId].pushBack > 0 && it.name != "immune" && splash15) pushback(it, bullet)
+                                // Wind talent bonus speed
+                                if (companionList.towerList[bullet.towerId].bonusSpeedWindTalent > 0 && splash15) companionList.towerList[bullet.towerId].bonusSpeedWindTalentPercent += companionList.towerList[bullet.towerId].bonusSpeedWindTalent
+                                // item slow death
+                                if (companionList.towerList[bullet.towerId].itemSlowDeath > 0) {
+                                    if (it.hp > 0) {
+                                        var dmg =
+                                            ((it.maxHp * companionList.towerList[bullet.towerId].itemSlowDeath))
 
-                               it.hp -= dmg
-                               if (it.hp < 0) {
-                                   dmgDoneX = 0f
-                                   it.killerId = bullet.towerId
-                                   dead(it)
-                               }
-                           }
-                           // wind debuff
-                           if (companionList.towerList[bullet.towerId].windTalentDebuff > 0) it.winddebuffincreased = (1 + companionList.towerList[bullet.towerId].windTalentDebuff)
+                                        if (it.manaShield > 0) {
+                                            if (it.manaShield > dmg) {
+                                                it.manaShield -= dmg
+                                                dmg = 0f
+                                            } else {
+                                                dmg = (dmg - it.manaShield)
+                                                it.manaShield = 0f
+                                            }
+                                        }
+                                        dmg *= magicPen(it, companionList.towerList[bullet.towerId])
+                                        if (it.shield > 0) dmg = 0f
 
-                           // talent wind ultimate
-                           if (companionList.towerList[bullet.towerId].windUltimatePercent > 0) {
-                               var dmg = ((it.maxHp * companionList.towerList[bullet.towerId].windUltimatePercent) * magicPen(it, companionList.towerList[bullet.towerId]))
+                                        it.hp -= dmg
+                                        if (it.hp < 0) {
+                                            dmgDoneX = 0f
+                                            it.killerId = bullet.towerId
+                                            companionList.enemyKilledList.add(it)
+                                        }
+                                    }
+                                }
+                                // wind debuff
+                                if (companionList.towerList[bullet.towerId].windTalentDebuff > 0) it.winddebuffincreased =
+                                    (1 + companionList.towerList[bullet.towerId].windTalentDebuff)
 
-                               if (it.manaShield > 0) {
-                                   if (it.manaShield > dmg) {
-                                       it.manaShield -= dmg
-                                       dmg = 0f
-                                   } else {
-                                       dmg = (dmg - it.manaShield)
-                                       it.manaShield = 0f
-                                   }
-                               }
-                               if (it.shield > 0) dmg = 0f
+                                // talent wind ultimate
+                                if (companionList.towerList[bullet.towerId].windUltimatePercent > 0) {
+                                    if (it.hp > 0) {
+                                        var dmg =
+                                            ((it.maxHp * companionList.towerList[bullet.towerId].windUltimatePercent))
 
-                               it.hp -= dmg
-                               if (it.hp < 0) {
-                                   dmgDoneX = 0f
-                                   it.killerId = bullet.towerId
-                                   dead(it)
-                               }
-                           }
-                           // anti heal
-                           if (companionList.towerList[bullet.towerId].bonusAntiHeal > 0){
-                               it.antihealDebuff = 1
-                               it.antihealDebuffTowerId = bullet.towerId
-                           }
-                           // Dark talent instakill
-                           if (splash15 && it.name != "boss" && it.name != "challenge" && it.instakillStacks < 11 && companionList.towerList[bullet.towerId].itemListBag.contains(companionList.edark)) {
-                               it.instakillStacks++
-                                   when ((0..999).random()) {
-                                       in 0..(companionList.instaKill * 10).toInt() -> {
-                                           dmgDoneX = 0f
-                                           it.hp = -1.0f
-                                           it.killerId = bullet.towerId
-                                           it.instaKilled = 2
-                                           dead(it)
-                                       }
-                               }
-                           }
-                           // Butterfly talent
-                           if (companionList.towerList[bullet.towerId].towerPrimaryElement == "butterfly") {
-                               if (companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId < companionList.enemyList.size) {
-                                   if (companionList.enemyList.indexOf(it) != companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId && companionList.enemyList[companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId].markOfTheButterflyCounter > 1 && it.markOfTheButterflyTowerCounter.size > 1) {}
-                                   else if ((companionList.enemyList.indexOf(it) != companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId)) companionList.enemyList[companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId].markOfTheButterflyCounter = 0
-                                   else {}
-                               }
-                               it.markOfTheButterflyCounter++
-                               if (!it.markOfTheButterflyTowerCounter.contains(bullet.towerId))it.markOfTheButterflyTowerCounter.add(bullet.towerId)
-                               companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId = companionList.enemyList.indexOf(it)
-                               it.markOfTheButterflyTowerId = bullet.towerId
-                               if (it.markOfTheButterflyCounter >= 3) {
-                                   it.markOfTheButterflyTowerCounter.remove(bullet.towerId)
-                                   it.markOfTheButterflyCounter = 0
-                                   if (companionList.towerList[bullet.towerId].experienceButterflyPop > 0) towerExperience(bullet.towerId, companionList.towerList[bullet.towerId].experienceButterflyPop)
-                                   if (companionList.towerList[bullet.towerId].butterflyDebuffEnemyDmg > 0) {
-                                       it.butterflyDebuffEnemyDmgTowerId = bullet.towerId
-                                       it.butterflyDebuffEnemyDmg = 1
-                                   }
-                                   if (companionList.towerList[bullet.towerId].butterflyDebuffEnemyDmg > 0) {
-                                       it.butterflyDebuffEnemyGoldXpTowerId = bullet.towerId
-                                       it.butterflyDebuffEnemyGoldXp = 1
-                                   }
-                                   companionList.towerList[bullet.towerId].markOfTheButterflyDmgBoostActive = true
-                                   if (companionList.towerList[bullet.towerId].markOfTheButterflySpdBoost > 0) {
-                                       companionList.towerList[bullet.towerId].markOfTheButterflySpdBoostActiveNumber += companionList.towerList[bullet.towerId].markOfTheButterflySpdBoostTowersNumber
-                                       companionList.towerList[bullet.towerId].markOfTheButterflySpdBoostActiveCounter = 0
-                                       companionList.towerList[bullet.towerId].markOfTheButterflySpdBoostActive = true
-                                   }
-                                   if (companionList.towerList[bullet.towerId].markOfTheButterflySlow && splash15) {
-                                       it.markOfTheButterflySlowActive = 1
-                                       it.markOfTheButterflySlowActiveTowerId = bullet.towerId
-                                   }
-                                   if (companionList.towerList[bullet.towerId].markOfTheButterflyExtraShot) {
-                                       companionList.shootButterflyReserve++
-                                   }
+                                        if (it.manaShield > 0) {
+                                            if (it.manaShield > dmg) {
+                                                it.manaShield -= dmg
+                                                dmg = 0f
+                                            } else {
+                                                dmg = (dmg - it.manaShield)
+                                                it.manaShield = 0f
+                                            }
+                                        }
+                                        dmg *= magicPen(it, companionList.towerList[bullet.towerId])
+                                        if (it.shield > 0) dmg = 0f
 
+                                        it.hp -= dmg
+                                        if (it.hp < 0) {
+                                            dmgDoneX = 0f
+                                            it.killerId = bullet.towerId
+                                            companionList.enemyKilledList.add(it)
+                                        }
+                                    }
+                                }
+                                // anti heal
+                                if (companionList.towerList[bullet.towerId].bonusAntiHeal > 0) {
+                                    it.antihealDebuff = 1
+                                    it.antihealDebuffTowerId = bullet.towerId
+                                }
+                                // Dark talent instakill
+                                if (splash15 && it.name != "boss" && it.name != "challenge" && it.instakillStacks < 11 && companionList.towerList[bullet.towerId].itemListBag.contains(companionList.edark)) {
+                                    if (it.hp > 0) {
+                                        it.instakillStacks++
+                                        when ((0..999).random()) {
+                                            in 0..(companionList.instaKill * 10).toInt() -> {
+                                                dmgDoneX = 0f
+                                                it.hp = -1.0f
+                                                it.killerId = bullet.towerId
+                                                it.instaKilled = 2
+                                                companionList.enemyKilledList.add(it)
+                                            }
+                                        }
+                                    }
+                                }
+                                // Butterfly talent
+
+                                /*
+
+                                if enemy stack from this tower > 0 -> stack +1
+                                rest stacks from this tower 0
+
+                                 */
+
+                                if (companionList.towerList[bullet.towerId].towerPrimaryElement == "butterfly") {
+                                    if (companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId < companionList.enemyList.size) {
+                                        if (companionList.enemyList.indexOf(it) != companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId && companionList.enemyList[companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId].markOfTheButterflyCounter > 1 && it.markOfTheButterflyTowerCounter.size > 1) {
+                                        } else if ((companionList.enemyList.indexOf(it) != companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId)) companionList.enemyList[companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId].markOfTheButterflyCounter =
+                                            0
+                                        else {
+                                        }
+                                    }
+                                    it.markOfTheButterflyCounter++
+                                    if (!it.markOfTheButterflyTowerCounter.contains(bullet.towerId)) it.markOfTheButterflyTowerCounter.add(bullet.towerId)
+                                    companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId =
+                                        companionList.enemyList.indexOf(it)
+                                    it.markOfTheButterflyTowerId = bullet.towerId
+                                    if (it.markOfTheButterflyCounter >= 3) {
+                                        it.markOfTheButterflyTowerCounter.remove(bullet.towerId)
+                                        it.markOfTheButterflyCounter = 0
+                                        if (companionList.towerList[bullet.towerId].experienceButterflyPop > 0) towerExperience(bullet.towerId, companionList.towerList[bullet.towerId].experienceButterflyPop)
+                                        if (companionList.towerList[bullet.towerId].butterflyDebuffEnemyDmg > 0) {
+                                            it.butterflyDebuffEnemyDmgTowerId = bullet.towerId
+                                            it.butterflyDebuffEnemyDmg = 1
+                                        }
+                                        if (companionList.towerList[bullet.towerId].butterflyDebuffEnemyDmg > 0) {
+                                            it.butterflyDebuffEnemyGoldXpTowerId = bullet.towerId
+                                            it.butterflyDebuffEnemyGoldXp = 1
+                                        }
+                                        companionList.towerList[bullet.towerId].markOfTheButterflyDmgBoostActive =
+                                            true
+                                        if (companionList.towerList[bullet.towerId].markOfTheButterflySpdBoost > 0) {
+                                            companionList.towerList[bullet.towerId].markOfTheButterflySpdBoostActiveNumber += companionList.towerList[bullet.towerId].markOfTheButterflySpdBoostTowersNumber
+                                            companionList.towerList[bullet.towerId].markOfTheButterflySpdBoostActiveCounter =
+                                                0
+                                            companionList.towerList[bullet.towerId].markOfTheButterflySpdBoostActive =
+                                                true
+                                        }
+                                        if (companionList.towerList[bullet.towerId].markOfTheButterflySlow && splash15) {
+                                            it.markOfTheButterflySlowActive = 1
+                                            it.markOfTheButterflySlowActiveTowerId = bullet.towerId
+                                        }
+                                        if (companionList.towerList[bullet.towerId].markOfTheButterflyExtraShot) {
+                                            companionList.shootButterflyReserve++
+                                        }
+
+                                    }
                                 }
                             }
 
                         }
                     }
-                return dmgDoneX
+            if (it.invu) dmgDoneX = 0f
+            return dmgDoneX
         }
 
     //------------------------------------------------------------------------------------
@@ -4984,6 +5476,9 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
     private fun crossesChainLightning(bullet: Shoot) : Boolean {
         // check if shot crosses enemy
         var check = false
+
+        companionList.readLockEnemy.lock()
+        try {
 
             var enemyListIterator = companionList.enemyList.listIterator()
             while (enemyListIterator.hasNext()) {
@@ -5007,7 +5502,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                     if (it.hp > 0) {
                         var dmg =
-                            (companionList.towerList[bullet.towerId].overallTowerSpellDmg + (companionList.towerList[bullet.towerId].chainLightningBonusDmg * companionList.bigNumberScaler)) * magicPen(it, companionList.towerList[bullet.towerId]) * companionList.towerList[bullet.towerId].chainLightningDmg
+                            (companionList.towerList[bullet.towerId].overallTowerSpellDmg + (companionList.towerList[bullet.towerId].chainLightningBonusDmg * 1.5f * companionList.bigNumberScaler)) * companionList.towerList[bullet.towerId].chainLightningDmg
 
                         if (it.manaShield > 0) {
                             if (it.manaShield > dmg) {
@@ -5018,6 +5513,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 it.manaShield = 0f
                             }
                         }
+                        dmg *= magicPen(it, companionList.towerList[bullet.towerId])
                         if (it.shield > 0) dmg = 0f
                         when (bullet.alreadyBounced) {
                             0 -> {
@@ -5053,12 +5549,15 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                         if (it.hp < 0) {
                             it.killerId = bullet.towerId
-                            companionList.towerList[bullet.towerId].chainLightningBonusDmg += (it.xpEnemy / 10)
-                            dead(it)
+                            companionList.towerList[bullet.towerId].chainLightningBonusDmg += (it.xpEnemy * 0.2f)
+                            companionList.enemyKilledList.add(it)
                         }
                     }
                     }
                 }
+            } finally {
+                companionList.readLockEnemy.unlock()
+            }
 
         return check
     }
@@ -5168,7 +5667,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         private fun crossesShard(shard: ShootIceTalent): Boolean {
             // ice talent cross check
             companionList.writeLockEnemy.lock()
-            companionList.writeLockDisplay.lock()
             try {
                 var check = false
 
@@ -5190,7 +5688,9 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         check = true
 
                         // dmg -------------------------------------------------------------------
-
+                        Log.d("blabla", "hitnotinvu")
+                        if(!it.invu) {
+                            Log.d("blabla", "hit")
                             var dmg = 0f
                             if (it.name == "boss" || it.name == "challenge") dmg =
                                 (it.maxHp * (0.05f + (0.01f * companionList.iceTowerCount))) * it.iceUltimateDR
@@ -5208,30 +5708,34 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     in 1000000..999999999 -> dmgString =
                                         (dmg / 1000000).toInt().toString() + "M"
                                 }
-                                var dmgDisplayListIterator = companionList.dmgDisplayList.listIterator()
+                                companionList.writeLockDisplay.lock()
+                                try {
+                                var dmgDisplayListIterator =
+                                    companionList.dmgDisplayList.listIterator()
                                 dmgDisplayListIterator.add(DmgDisplay(companionList.enemyList[companionList.enemyList.indexOf(it)], dmgString, 1, 50, paintIceDmgDone, 30, 15))
+                                } finally {
+                                    companionList.writeLockDisplay.unlock()
+                                }
                             }
 
                             it.iceUltimateDR *= 0.9f
+                            shard.shardSpeed -= shard.shardSpeedReduce
 
                             if (companionList.towerList[it.iceDebuffTowerId].slowEach > 0) {
                                 it.iceDebuff = 1
-                                it.iceDebuffTowerId = companionList.iceShardTowerId
+                                it.iceDebuffTowerId = shard.iceShardTowerId
                             }
                             if (companionList.towerList[it.iceDebuffTowerId].slowExtra > 0) {
                                 it.iceDebuffExtra = 1
-                                it.iceDebuffExtraTowerId = companionList.iceShardTowerId
+                                it.iceDebuffExtraTowerId = shard.iceShardTowerId
                             }
-
-                            shard.color = Color.TRANSPARENT
-                            shard.hit = true
+                        }
                         }
                 }
 
                 return check
             } finally {
                 companionList.writeLockEnemy.unlock()
-                companionList.writeLockDisplay.unlock()
             }
         }
 
@@ -5280,48 +5784,53 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
     private fun crossesTornado(tornadoRadius: TowerRadius): Boolean {
         var check = false
 
-        companionList.writeLockEnemy.lock()
+        if (companionList.enemyList.isNotEmpty()) {
+            GameActivity.companionList.writeLockEnemy.lock()
+            try {
+                var enemyListIterator = companionList.enemyList.listIterator()
+                while (enemyListIterator.hasNext()) {
+                    var it = enemyListIterator.next()
 
-        try {
-            var enemyListIterator = companionList.enemyList.listIterator()
-            while (enemyListIterator.hasNext()) {
-                var it = enemyListIterator.next()
+                    val distanceX = (tornadoRadius.x) - it.circle!!.x
+                    val distanceY = (tornadoRadius.y) - it.circle!!.y
 
-                val distanceX = (tornadoRadius.x) - it.circle!!.x
-                val distanceY = (tornadoRadius.y) - it.circle!!.y
+                    val squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
 
-                val squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
+                    val sumOfRadius = tornadoRadius.r + it.circle!!.r
 
-                val sumOfRadius = tornadoRadius.r + it.circle!!.r
+                    if (squaredDistance <= sumOfRadius * sumOfRadius) {
+                        check = true
 
-                if (squaredDistance <= sumOfRadius * sumOfRadius) {
-                    check = true
+                        // dmg -------------------------------------------------------------------
 
-                    // dmg -------------------------------------------------------------------
-
-                    when (it.passed) {
-                        1.toByte() -> {
-                            if (it.circle!!.x > tornadoRadius.x) it.circle!!.x -= 3
-                            else if (it.circle!!.x < tornadoRadius.x) it.circle!!.x += 9
+                        if (it.name != "immune") {
+                            when(it.circleXMovement){
+                                "xplus" -> {
+                                    if (it.circle!!.x > tornadoRadius.x) it.circle!!.x -= 9
+                                    else if (it.circle!!.x < tornadoRadius.x) it.circle!!.x += 3
+                                }
+                                "xminus" -> {
+                                    if (it.circle!!.x > tornadoRadius.x) it.circle!!.x -= 3
+                                    else if (it.circle!!.x < tornadoRadius.x) it.circle!!.x += 9
+                                }
+                            }
+                            when(it.circleYMovement){
+                                "yplus" -> {
+                                    if (it.circle!!.y > tornadoRadius.y) it.circle!!.y -= 9
+                                    else if (it.circle!!.y < tornadoRadius.y) it.circle!!.y += 3
+                                }
+                                "yminus" -> {
+                                    if (it.circle!!.y > tornadoRadius.y) it.circle!!.y -= 3
+                                    else if (it.circle!!.y < tornadoRadius.y) it.circle!!.y += 9
+                                }
+                            }
                         }
-                        0.toByte(),2.toByte() -> {
-                            if (it.circle!!.y > tornadoRadius.y) it.circle!!.y -= 3
-                            else if (it.circle!!.y > tornadoRadius.y) it.circle!!.y += 9
-                        }
-                        3.toByte() -> {
-                            if (it.circle!!.x > tornadoRadius.x) it.circle!!.x -= 9
-                            else if (it.circle!!.x < tornadoRadius.x) it.circle!!.x += 3
-                        }
-                        4.toByte() -> {
-                            if (it.circle!!.y > tornadoRadius.y) it.circle!!.y -= 9
-                            else if (it.circle!!.y > tornadoRadius.y) it.circle!!.y += 3
-                        }
+                        //------------------------------------------------------------------------
                     }
-                    //------------------------------------------------------------------------
                 }
+            } finally {
+                companionList.writeLockEnemy.unlock()
             }
-        } finally {
-            companionList.writeLockEnemy.unlock()
         }
         return check
     }
@@ -5406,6 +5915,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 var enemyListIterator = companionList.enemyList.listIterator()
                 while (enemyListIterator.hasNext()) {
                     var it = enemyListIterator.next()
+                    if (companionList.towerList.isEmpty()){
+                        if (it.dead) {
+                            companionList.enemyRemoveList.add(it)
+                        }
+                    }else{
                     var towerListIterator = Companion.companionList.towerList.listIterator()
                     while (towerListIterator.hasNext()) {
                         var towerZ = towerListIterator.next()
@@ -5417,7 +5931,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                             if (towerZ.crossesAllList.contains(it)) {
                             } else {
-                                if (it == towerZ.randomEnemyForShot) towerZ.randomEnemyForShotSticky = true
+                                if (it == towerZ.randomEnemyForShot) towerZ.randomEnemyForShotSticky =
+                                    true
                                 if (towerZ.towerPrimaryElement != "wind") {
                                     if (towerZ.firstLastRandom == 1) towerZ.crossesAllList.add(0, it)     // last
                                     else if (towerZ.firstLastRandom == 0 || towerZ.firstLastRandom == 3) towerZ.crossesAllList.add(towerZ.crossesAllList.size, it)      // first
@@ -5435,8 +5950,10 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             if (towerZ.crossesNoneList.contains(it)) {
                             } else towerZ.crossesNoneList.add(0, it)
                         }
-                        if (it.dead == 1) {
+                        if (it.dead) {
                             if (companionList.dmgDisplayList.isNotEmpty()) {
+                                companionList.writeLockDisplay.lock()
+                                try {
                                 var dmgDisplayListIterator = companionList.dmgDisplayList.listIterator()
                                 while (dmgDisplayListIterator.hasNext()) {
                                     var display = dmgDisplayListIterator.next()
@@ -5444,17 +5961,18 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         display.displayDmgDelete = true
                                     }
                                 }
+                                    } finally {
+                                    companionList.writeLockDisplay.unlock()
+                                }
                             }
-                            if (it == towerZ.randomEnemyForShot) towerZ.randomEnemyForShotSticky = true
+                            if (it == towerZ.randomEnemyForShot) towerZ.randomEnemyForShotSticky =
+                                true
                             towerZ.crossesAllList.remove(it)
                             towerZ.crossesNoneList.remove(it)
+                            companionList.enemyRemoveList.add(it)
                         }
                     }
-                }
-                var enemyListIteratorZ = companionList.enemyList.listIterator()
-                while (enemyListIteratorZ.hasNext()) {
-                    var itZ = enemyListIteratorZ.next()
-                    if (itZ.dead == 1) enemyListIteratorZ.remove()
+                    }
                 }
             } finally {
                 companionList.writeLockEnemy.unlock()
@@ -5496,7 +6014,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 var dmg = 0f
 
                 // ice talent
-
                 if (it.iceAlreadyAffected == 1){
                     dmg += (companionList.towerList[towerId].overallTowerSpellDmg *0.2f) * magicPen(it, companionList.towerList[towerId])
                 }
@@ -5511,7 +6028,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                 // dark talent
                 if (companionList.towerList[towerId].darkMagicDmgPercent > 0) {
-                    dmg += (companionList.towerList[towerId].overallTowerSpellDmg * magicPen(it, companionList.towerList[towerId])) * companionList.towerList[towerId].darkMagicDmgPercent
+                    dmg += (companionList.towerList[towerId].overallTowerSpellDmg * companionList.towerList[towerId].darkMagicDmgPercent)
                 }
 
                 if  (it.manaShield > 0){
@@ -5523,6 +6040,12 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         it.manaShield = 0f
                     }
                 }
+                dmg *= magicPen(it, companionList.towerList[towerId])
+
+            var extraDmgSlow = 1f
+            if (it.debuffExtraMgcDmg) extraDmgSlow = 1.2f
+            dmg *= extraDmgSlow
+
                 if (it.shield > 0) dmg = 0f
                 return dmg
 
@@ -5535,17 +6058,19 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
             when ((0..999).random()) {
                 in 0..(99 * it.pushBackDR).toInt() -> {
-                    when (it.passed) {
-                        1.toByte() ->
-                            it.circle!!.x += companionList.towerList[bullet.towerId].pushBack
-                        2.toByte() ->
-                            it.circle!!.y += companionList.towerList[bullet.towerId].pushBack
-                        3.toByte() ->
-                            it.circle!!.x -= companionList.towerList[bullet.towerId].pushBack
-                        4.toByte() ->
-                            it.circle!!.y -= companionList.towerList[bullet.towerId].pushBack
+                    when (it.circleXMovement) {
+                        "xminus" ->
+                            it.circle!!.x += (companionList.towerList[bullet.towerId].pushBack)
+                        "xplus" ->
+                            it.circle!!.x -= (companionList.towerList[bullet.towerId].pushBack)
                     }
-                    it.pushBackDR * 0.66
+                    when (it.circleYMovement) {
+                        "yminus" ->
+                            it.circle!!.y += (companionList.towerList[bullet.towerId].pushBack)
+                        "xminus" ->
+                            it.circle!!.y -= (companionList.towerList[bullet.towerId].pushBack)
+                    }
+                    it.pushBackDR *= 0.66f
                 }
                 in (99 * it.pushBackDR).toInt() + 1..999 -> {
                 }
@@ -5595,9 +6120,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     try {
                                     var shootListPlace = Shoot()
                                     shootListPlace.sniper = true
+                                        shootListPlace.bullet = TowerRadius(tower.towerRange.x, tower.towerRange.y, 5.0f)
+                                        shootListPlace.bulletSpeed = 12f
                                     var shootListIterator = companionList.shootList.listIterator()
                                     shootListIterator.add(shootListPlace)
-                                             } finally {
+                                    } finally {
                                     companionList.writeLockShot.unlock()
                                     }
                                 }
@@ -5614,6 +6141,9 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         private fun itemsPerRound () {
 
+            var luckyCharmBool = 0
+            var pirateItemBool = 0
+
             companionList.writeLockTower.lock()
             try {
                 var towerListIterator = companionList.towerList.listIterator()
@@ -5621,7 +6151,12 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     var tower = towerListIterator.next()
 
                     tower.itemListBag.forEach() {
-
+                        if (it.id == 4 || it.id == 104) {
+                            luckyCharmBool++
+                        }
+                        if (it.id == 1100 || it.id == 1101 || it.id == 1102 || it.id == 1103 || it.id == 1104 || it.id == 1105) {
+                            pirateItemBool++
+                        }
                         if (it.id == 207 && it.special == "+ X dmg/round") {
                             tower.bonusTowerDmg -= it.specialFloat
                             it.specialFloat = it.lvlAqu.toFloat() * tower.itemPikaDmg
@@ -5676,6 +6211,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             tower.bonusSpellDamage += it.specialFloat
                         }
                     }
+                    tower.luckyCharmCount = luckyCharmBool
+                    tower.pirateItemCount = pirateItemBool
                 }
                } finally {
                 companionList.writeLockTower.unlock()
@@ -5700,148 +6237,199 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         //------------------------------------------------------------------------------------
 
-        private fun dead (enemy: Enemy) {
 
-            // enemy DEAD
+    fun deadSplit () {
+        if (companionList.enemyListDeadSplit.isNotEmpty()) {
+            companionList.writeLockEnemy.lock()
+            try {
+                var enemyListDeadSplitRemove = mutableListOf<Enemy>()
+                var enemyListIterator = companionList.enemyListDeadSplit.listIterator()
+                while (enemyListIterator.hasNext()) {
+                    var enemy = enemyListIterator.next()
 
-                    if (enemy.name == "split" && enemy.hp < 0 && enemy.dead == 0){
-                        companionList.writeLockEnemy.lock()
-                        try {
-                        var enemyListIterator = companionList.enemyList.listIterator()
-                        var y = 10
-                                repeat(2) {
-                                    var x =
-                                        Enemy(enemy.maxHp * 0.2f, enemy.maxHp * 0.2f, 0f, 0f, 0f, 0f, enemy.armor, enemy.magicArmor, enemy.evade, enemy.hpReg * 0, (enemy.xpEnemy * 0.5f), companionList.lvlSpd, R.color.splitter)
-                                    x.circle!!.x = (enemy.circle!!.x + y)
-                                    x.circle!!.y = enemy.circle!!.y
-                                    x.baseSpeed = x.speed
-                                    x.passed = enemy.passed
-                                    x.name = "splitter"
-                                    enemyListIterator.add(x)
-                                    y -= 20
-                                }
-                        enemy.passed = 5.toByte()
-                        enemy.dead = 1
-                        } finally {
-                            companionList.writeLockEnemy.unlock()
-                        }
-                    } else if (enemy.hp <= 0 && enemy.dead == 0) {
-
-                        if (enemy.wizardBombActive > 0){
-                            for (otherEnemy in companionList.enemyList) {
-                                if (enemy != otherEnemy){
-                                if (splash100(enemy.circle!!.x, enemy.circle!!.y, enemy.circle!!.r, otherEnemy.circle!!.x, otherEnemy.circle!!.y, otherEnemy.circle!!.r)) {
-                                    var dmg = 0f
-                                    dmg =
-                                        ((companionList.towerList[enemy.wizardBombTowerId].wizardBombDmg * 0.66f * companionList.bigNumberScaler) + (companionList.towerList[enemy.wizardBombTowerId].overallTowerSpellDmg * (0.1f + companionList.wizardBombStartItemDmg)))
-
-                                    if (otherEnemy.manaShield > 0) {
-                                        if (otherEnemy.manaShield > dmg) {
-                                            otherEnemy.manaShield -= dmg
-                                            dmg = 0f
-                                        } else {
-                                            dmg = (dmg - otherEnemy.manaShield)
-                                            otherEnemy.manaShield = 0f
-                                        }
-                                    }
-                                    if (otherEnemy.shield > 0) dmg = 0f
-                                    otherEnemy.hp -= dmg
-                                    if (dmg > (otherEnemy.maxHp / 100)) {
-                                        var dmgString = "0"
-                                        when (dmg.toInt()) {
-                                            in 0..999 -> dmgString = dmg.toInt().toString()
-                                            in 1000..999999 -> dmgString =
-                                                (dmg / 1000).toInt().toString() + "k"
-                                            in 1000000..999999999 -> dmgString =
-                                                (dmg / 1000000).toInt().toString() + "M"
-                                        }
-                                        companionList.writeLockDisplay.lock()
-                                        try {
-                                            var dmgDisplayListIterator =
-                                                companionList.dmgDisplayList.listIterator()
-                                            dmgDisplayListIterator.add(DmgDisplay(companionList.enemyList[companionList.enemyList.indexOf(otherEnemy)], dmgString, 1, 50, paintWizardDmgDone, -30, -15))
-                                        } finally {
-                                            companionList.writeLockDisplay.unlock()
-                                        }
-                                    }
-                                    if (otherEnemy.hp <= 0) {
-                                        otherEnemy.killerId = enemy.wizardBombTowerId
-                                        dead(otherEnemy)
-
-                                    }
-                                }
-                                }
-                            }
-                        }
-                        if (companionList.towerList[enemy.killerId].talentFireKill) companionList.towerList[enemy.killerId].bonusCrit += 0.5f
-
-                        if (enemy.name == "boss") {         // boss
-                            companionList.diamonds ++
-                            companionList.bossesKilled += 1
-                            companionList.dropItemList += 1
-                        }
-                        if (enemy.name == "challenge") {    // challenge
-                            if (companionList.mapMode != 2) companionList.lives += 5
-                            else companionList.livesMode2 += 5
-                            companionList.itemList.add(Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
-                            companionList.insertItem += 1
-                            companionList.challengesKilled += 1
-                            if (companionList.activeAbilityList.contains(aAid1)) {
-                                companionList.bombActiveAbility += 5
-                                companionList.insertSpellBomb += 1
-                            }
-                            else {
-                                companionList.activeAbilityList.add(0, aAid1)
-                                companionList.insertSpell += 1
-                                companionList.insertSpellBomb +=1
-                                companionList.bombActiveAbility += 5
-                            }
-                            companionList.dropItemList += 1
-                        }
-
-                        companionList.overallXp += enemy.overallXp
-                        companionList.gold += enemy.overallGold * companionList.towerList[enemy.killerId].itemPiggyBank
-                        var xpGain : Float =
-                            if (enemy.name == "boss") ((1 * 5) * (0.5f + companionList.towerList[enemy.killerId].experienceKill))
-                            else if (enemy.name == "challenge") (1 * 8) * (0.5f + companionList.towerList[enemy.killerId].experienceKill)
-                            else if (enemy.eliteMob || enemy.elementalMob) (1 * 2) * (0.5f + companionList.towerList[enemy.killerId].experienceKill)
-                            else (1) * (0.5f + companionList.towerList[enemy.killerId].experienceKill) * enemy.instaKilled
-                        towerExperience(enemy.killerId, xpGain)
-
-                        if (enemy.selected){
-                            supportFragmentManager.beginTransaction().apply {
-                                replace(R.id.fragment, fragmentStats)
-                                    .addToBackStack(null)
-                                    .commit()
-                            }
-                        }
-                        companionList.dropItemList += 1
-                        dropItem(enemy)
-
-                        companionList.enemiesKilled += 1
-
-
-                        var towerListIterator = companionList.towerList.listIterator()
-                        while (towerListIterator.hasNext()) {
-                            var tower = towerListIterator.next()
-
-                            if (tower.randomEnemyForShotChain == enemy) tower.randomEnemyChainBool = true
-                            if (tower.randomEnemyForShot == enemy) tower.randomEnemyForShotBool = true
-                            }
-
-                        enemy.dead = 1
-                        enemy.passed = 5.toByte()
-
+                    var enemyListIteratorZ = companionList.enemyList.listIterator()
+                    var y = 10
+                    repeat(2) {
+                        var x =
+                            Enemy(enemy.maxHp * 0.2f, enemy.maxHp * 0.2f, 0f, 0f, 0f, 0f, enemy.armor, enemy.magicArmor, enemy.evade, enemy.hpReg * 0, (enemy.xpEnemy * 0.5f), companionList.lvlSpd, R.color.splitter)
+                        x.circle!!.x = (enemy.circle!!.x + y)
+                        x.circle!!.y = enemy.circle!!.y
+                        x.baseSpeed = x.speed
+                        x.point = enemy.point
+                        x.name = "splitter"
+                        enemyListIteratorZ.add(x)
+                        y -= 20
                     }
+                    enemy.dead = true
+                    enemyListDeadSplitRemove.add(enemy)
+                    }
+                companionList.enemyListDeadSplit.removeAll(enemyListDeadSplitRemove)
+                } finally {
+                    companionList.writeLockEnemy.unlock()
+            }
+        }
+    }
+
+        private fun dead () {
+
+            if (companionList.enemyKilledList.isNotEmpty()) {
+                companionList.writeLockEnemy.lock()
+                try {
+                    var removeKilledPlace = mutableListOf<Enemy>()
+                    var enemyListIterator = companionList.enemyKilledList.listIterator()
+                    while (enemyListIterator.hasNext()) {
+                        var enemy = enemyListIterator.next()
+
+                        // enemy DEAD
+
+                        if (enemy.name == "split" && enemy.hp <= 0 && !enemy.dead) {
+                            companionList.enemyListDeadSplit.add(enemy)
+
+                        } else if (enemy.hp <= 0 && !enemy.dead) {
+
+                            if (enemy.wizardBombActive > 0) {
+                                for (otherEnemy in companionList.enemyList) {
+                                    if (enemy != otherEnemy) {
+                                        if (splash100(enemy.circle!!.x, enemy.circle!!.y, enemy.circle!!.r, otherEnemy.circle!!.x, otherEnemy.circle!!.y, otherEnemy.circle!!.r)) {
+                                            var dmg = 0f
+                                            dmg =
+                                                ((companionList.towerList[enemy.wizardBombTowerId].wizardBombDmg * 0.66f * companionList.bigNumberScaler) + (companionList.towerList[enemy.wizardBombTowerId].overallTowerSpellDmg * (0.1f + companionList.wizardBombStartItemDmg)))
+
+                                            if (otherEnemy.manaShield > 0) {
+                                                if (otherEnemy.manaShield > dmg) {
+                                                    otherEnemy.manaShield -= dmg
+                                                    dmg = 0f
+                                                } else {
+                                                    dmg = (dmg - otherEnemy.manaShield)
+                                                    otherEnemy.manaShield = 0f
+                                                }
+                                            }
+                                            dmg *= magicPen(enemy, companionList.towerList[enemy.wizardBombTowerId])
+                                            if (otherEnemy.shield > 0) dmg = 0f
+                                            var extraDmgSlow = 1f
+                                            if (otherEnemy.debuffExtraMgcDmg) extraDmgSlow = 1.2f
+                                            otherEnemy.hp -= dmg * extraDmgSlow
+                                            if (dmg > (otherEnemy.maxHp / 100)) {
+                                                var dmgString = "0"
+                                                when (dmg.toInt()) {
+                                                    in 0..999 -> dmgString = dmg.toInt().toString()
+                                                    in 1000..999999 -> dmgString =
+                                                        (dmg / 1000).toInt().toString() + "k"
+                                                    in 1000000..999999999 -> dmgString =
+                                                        (dmg / 1000000).toInt().toString() + "M"
+                                                }
+                                                companionList.writeLockDisplay.lock()
+                                                try {
+                                                    var dmgDisplayListIterator =
+                                                        companionList.dmgDisplayList.listIterator()
+                                                    dmgDisplayListIterator.add(DmgDisplay(companionList.enemyList[companionList.enemyList.indexOf(otherEnemy)], dmgString, 1, 50, paintWizardDmgDone, -30, -15))
+                                                } finally {
+                                                    companionList.writeLockDisplay.unlock()
+                                                }
+                                            }
+                                            if (otherEnemy.hp <= 0) {
+                                                otherEnemy.killerId = enemy.wizardBombTowerId
+                                                if (!companionList.enemyKilledList.contains(otherEnemy)) companionList.enemyKilledList.add(otherEnemy)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (companionList.towerList[enemy.killerId].talentFireKill) companionList.towerList[enemy.killerId].bonusCrit += 0.5f
+
+                            if (companionList.towerList[enemy.killerId].darkSoulCollector) {
+                                for (item in companionList.towerList[enemy.killerId].itemListBag) {
+                                    if (item.id == 6666) {
+                                        if (enemy.name == "boss") {
+                                            companionList.towerList[enemy.killerId].bonusPhysicalDmg += (companionList.towerList[enemy.killerId].darkPermaKill * 5) * (companionList.lvlScaler / 20)
+                                            item.specialFloat += (companionList.towerList[enemy.killerId].darkPermaKill * 5) * (companionList.lvlScaler / 20)
+                                        } else if (enemy.name == "challenge") {
+                                            companionList.towerList[enemy.killerId].bonusPhysicalDmg += (companionList.towerList[enemy.killerId].darkPermaKill * 10) * (companionList.lvlScaler / 20)
+                                            item.specialFloat += (companionList.towerList[enemy.killerId].darkPermaKill * 10) * (companionList.lvlScaler / 20)
+                                        } else {
+                                            companionList.towerList[enemy.killerId].bonusPhysicalDmg += companionList.towerList[enemy.killerId].darkPermaKill * (companionList.lvlScaler / 20)
+                                            item.specialFloat += companionList.towerList[enemy.killerId].darkPermaKill * (companionList.lvlScaler / 20)
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (enemy.name == "boss") {         // boss
+                                companionList.diamonds++
+                                companionList.bossesKilled += 1
+                                companionList.dropItemList += 1
+                            } else if (enemy.name == "challenge") {    // challenge
+                                if (companionList.mapMode != 2) companionList.lives += 5
+                                else companionList.livesMode2 += 5
+                                companionList.itemListInsertItem.add(Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
+                                companionList.challengesKilled += 1
+                                if (companionList.activeAbilityList.contains(aAid1)) {
+                                    companionList.bombActiveAbility += 5
+                                    companionList.insertSpellBomb += 1
+                                } else {
+                                    companionList.activeAbilityList.add(0, aAid1)
+                                    companionList.insertSpell += 1
+                                    companionList.insertSpellBomb += 1
+                                    companionList.bombActiveAbility += 5
+                                }
+                                companionList.dropItemList += 1
+                            }
+
+                            companionList.overallXp += enemy.overallXp
+                            companionList.gold += enemy.overallGold * companionList.towerList[enemy.killerId].itemPiggyBank
+                            var xpGain: Float =
+                                if (enemy.name == "boss") ((enemy.xpDrop * companionList.wiseMan * 5) * (0.2f + companionList.towerList[enemy.killerId].experienceKill))
+                                else if (enemy.name == "challenge") (enemy.xpDrop * 8) * (0.2f + companionList.towerList[enemy.killerId].experienceKill)
+                                else if (enemy.eliteMob || enemy.elementalMob) (enemy.xpDrop * 2) * (0.2f + companionList.towerList[enemy.killerId].experienceKill)
+                                else (enemy.xpDrop) * (0.2f + companionList.towerList[enemy.killerId].experienceKill) * enemy.instaKilled
+                            towerExperience(enemy.killerId, xpGain)
+
+                            if (enemy.selected) {
+                                supportFragmentManager.beginTransaction().apply {
+                                    replace(R.id.fragment, fragmentStats)
+                                        .addToBackStack(null)
+                                        .commit()
+                                }
+                            }
+                            companionList.dropItemList += 1
+                            dropItem(enemy)
+
+                            companionList.enemiesKilled += 1
+
+                            companionList.writeLockTower.lock()
+                            try {
+                            var towerListIterator = companionList.towerList.listIterator()
+                            while (towerListIterator.hasNext()) {
+                                var tower = towerListIterator.next()
+
+                                if (tower.randomEnemyForShotChain == enemy) tower.randomEnemyChainBool =
+                                    true
+                                if (tower.randomEnemyForShot == enemy) tower.randomEnemyForShotBool =
+                                    true
+                            }
+                                } finally {
+                                companionList.writeLockTower.unlock()
+                            }
+
+                            enemy.dead = true
+
+                        }
+                        removeKilledPlace.add(enemy)
+                    }
+                    companionList.enemyKilledList.removeAll(removeKilledPlace)
+                } finally {
+                    companionList.writeLockEnemy.unlock()
+                }
+            }
         }
 
     fun dead2 (){
-        companionList.readLockEnemy.lock()
+        companionList.writeLockEnemy.lock()
         try {
             var enemyListIterator = companionList.enemyList.listIterator()
             while (enemyListIterator.hasNext()) {
                 var enemy = enemyListIterator.next()
-                if (enemy.passed == 5.toByte() && enemy.dead != 1) {
+                if (enemy.reachedPortal && !enemy.dead) {
                     if (enemy.name == "challenge") {
                     } else if (enemy.name == "boss") {
                         companionList.bossesLeaked += 1
@@ -5849,11 +6437,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     } else companionList.lives -= 1
                     if (companionList.lives < 0) companionList.lives = 0
                     soundPool.play(soundIds[2], companionList.logVolumeEffects, companionList.logVolumeEffects, 1, 0, 1.0f)
-                    enemy.dead = 1
+                    enemy.dead = true
                 }
             }
             } finally {
-            companionList.readLockEnemy.unlock()
+            companionList.writeLockEnemy.unlock()
             }
     }
 
@@ -5893,27 +6481,28 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 }
                             }
                             1 -> x =
-                                Items(1, 1, 999, 0, (companionList.costGrey * companionList.lvlXp), 0, 0f, 0, "Bow", R.drawable.pbowgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, (4.0f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 0.0f, 1, "", 0f, "", 0f)
+                                Items(1, 1, 999, 0, (companionList.costGrey * companionList.lvlXp), 0, 0f, 0, "Bow", R.drawable.pbowgrey, R.drawable.overlaytransparent, (0.375f * companionList.lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, (2.0f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 0.0f, 1, "", 0f, "", 0f)
                             2 -> {
                                 when ((0..2).random()) {
                                     0 -> x =
-                                        Items(2, 1, 999, 0, (companionList.costGrey * companionList.lvlXp), 0, 0f, 0, "Sword", R.drawable.pcritgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, (3.0f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 1, "", 0f, "", 0f)
-                                    1,2 -> x =
-                                        Items(6, 1, 999, 0, 0f, 0, 0f, 0, "Gold Digger", R.drawable.goldgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "+ Gold", (((companionList.costBase * companionList.lvlXp) / 4)*tower.towerRarityMultiplier), "", 0f)
+                                        Items(2, 1, 999, 0, (companionList.costGrey * companionList.lvlXp), 0, 0f, 0, "Sword", R.drawable.pcritgrey, R.drawable.overlaytransparent, (0.375f * companionList.lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, (1.5f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 1, "", 0f, "", 0f)
+                                    1,2 -> {
+                                        x = Items(6, 1, 999, 0, 0f, 0, 0f, 0, "Gold Digger", R.drawable.goldgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "+ Gold", (((companionList.costBase * companionList.lvlXp) / 4) * tower.towerRarityMultiplier), "", 0f)
+                                    }
                                 }
                             }
                             3 -> x =
                                 Items(3, 1, 25, 0, 0f, 0, 0f, 0, "Magic Box", R.drawable.magicboxgrey, R.drawable.overlaytransparent, (0.5f * companionList.lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1, "no use cost", 0f, "", 0f)
                             4 -> x =
-                                Items(4, 1, 999, 0, (companionList.costGrey * companionList.lvlXp), 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 1, "", 0f, "plus itemchance", 15f + ((ceil(companionList.level / 10.0f)) * 4 * tower.towerRarityMultiplier))
+                                Items(4, 1, 999, 0, (companionList.costGrey * companionList.lvlXp), 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 1, "", 0f, "plus % itemchance", 15f + ((ceil(companionList.level / 10.0f)) * 4 * tower.towerRarityMultiplier))
                             5 -> {
                                 if (companionList.mapMode == 2) x =
                                     Items(5, 1, 999, 0, ((companionList.costGrey * companionList.lvlXp) / 2), 0, 0f, 0, "Bomb", R.drawable.bombgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: 5% dmg to all enemies", 0f, "", 0f)
                                 else x =
                                     Items(5, 1, 999, 0, ((companionList.costGrey * companionList.lvlXp) / 2), 0, 0f, 0, "Bomb", R.drawable.bombgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: 20% dmg to all enemies", 0f, "", 0f)
                             }
-                            9 -> x = Items(9, 1, 999, 0, (companionList.costGrey * companionList.lvlXp), 0, 0f, 0, "Experiencer", R.drawable.xpgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: gain xp", 1+(companionList.level * 0.5f), "", 0f)
-
+                            9 -> x = Items(9, 1, 999, 0, (companionList.costGrey * companionList.lvlXp), 0, 0f, 0, "Experiencer", R.drawable.xpgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: gain xp", 1+(companionList.level * 0.33f), "", 0f)
+                            10 -> x = Items(10, 1, 999, 0, (companionList.costGrey * companionList.lvlXp), 0, 0f, 0, "Lucky Charm", R.drawable.xpgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 1, "", 0f, "plus % xp", 15f + ((ceil(companionList.level / 10.0f)) * 4 * tower.towerRarityMultiplier))
                         }
                     }
             in floor((65 - tower.overallItemQuality) * 10).toInt()..ceil((88 - (tower.overallItemQuality / 1.5)) * 10).toInt() ->
@@ -5942,21 +6531,21 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 102 -> {
                                     when ((0..1).random()) {
                                         0 -> x =
-                                            Items(102, 1, 999, 0, (companionList.costBlue * companionList.lvlXp), 0, 0f, 0, "Rare Bow", R.drawable.pbowblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, (12.0f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                            Items(102, 1, 999, 0, (companionList.costBlue * companionList.lvlXp), 0, 0f, 0, "Rare Bow", R.drawable.pbowblue, R.drawable.overlaytransparent, (1.125f * companionList.lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, (6.0f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
                                         1 -> x =
-                                            Items(102, 1, 999, 0, (companionList.costBlue * companionList.lvlXp), 0, 0f, 0, "Rare Bow", R.drawable.pbowblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, (12.0f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 0.0f, 2, "", 0f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
+                                            Items(102, 1, 999, 0, (companionList.costBlue * companionList.lvlXp), 0, 0f, 0, "Rare Bow", R.drawable.pbowblue, R.drawable.overlaytransparent, (1.125f * companionList.lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, (6.0f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 0.0f, 2, "", 0f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
                                     }
                                 }
                                 103 -> {
                                     when ((0..1).random()) {
                                         0 -> x =
-                                            Items(103, 1, 999, 0, (companionList.costBlue * companionList.lvlXp), 0, 0f, 0, "Rare Sword", R.drawable.pcritblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, (9.0f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                            Items(103, 1, 999, 0, (companionList.costBlue * companionList.lvlXp), 0, 0f, 0, "Rare Sword", R.drawable.pcritblue, R.drawable.overlaytransparent, (1.125f * companionList.lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, (4.5f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 2, "", 0f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
                                         1 -> x =
-                                            Items(103, 1, 999, 0, (companionList.costBlue * companionList.lvlXp), 0, 0f, 0, "Rare Sword", R.drawable.pcritblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, (9.0f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 2, "", 0f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
+                                            Items(103, 1, 999, 0, (companionList.costBlue * companionList.lvlXp), 0, 0f, 0, "Rare Sword", R.drawable.pcritblue, R.drawable.overlaytransparent, (1.125f * companionList.lvlScaler * tower.towerRarityMultiplier), 0.0f, 0.0f, 0.0f, (4.5f * companionList.lvlScalerSecond * tower.towerRarityMultiplier), 0.0f, 2, "", 0f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
                                     }
                                 }
                                 104 -> x =
-                                    Items(104, 30, 999, 0, (companionList.costBlue * companionList.lvlXp), 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "", 0f, "item quality", 2f + (ceil(companionList.level / 10.0f)) * tower.towerRarityMultiplier)
+                                    Items(104, 30, 999, 0, (companionList.costBlue * companionList.lvlXp), 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmblue, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 2, "", 0f, "item quality", 2f + (ceil(companionList.level / 10.0f)) * tower.towerRarityMultiplier)
                                 105 -> x =
                                     Items(105, 1, 999, 0, 0f, 1, 0f, 0, "Piggy Bank", R.drawable.piggybank, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "10% more Gold from enemies", 0f, "", 0f)
                                 106 -> x =
@@ -5998,15 +6587,15 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 201 -> x =
                                     Items(201, 1, 25, 0, 0f, 0, 0f, 0, "Epic Magic Box", R.drawable.magicboxorange, R.drawable.overlaytransparent, ((2.0f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3, "no use cost", 0f, "", 0f)
                                 202 -> x =
-                                    Items(202, 1, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "Epic Bow", R.drawable.pboworange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((16.0f * companionList.lvlScalerSecond) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 3, specialPen(), (0.6f * companionList.lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
+                                    Items(202, 1, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "Epic Bow", R.drawable.pboworange, R.drawable.overlaytransparent, ((1.5f * companionList.lvlScaler) + (companionList.level * 0.0375f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((8.0f * companionList.lvlScalerSecond) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 3, specialPen(), (0.6f * companionList.lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                 203 -> x =
-                                    Items(203, 1, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "Epic Sword", R.drawable.pcritorange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((12.0f * companionList.lvlScalerSecond) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 3, specialPen(), (0.6f * companionList.lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
+                                    Items(203, 1, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "Epic Sword", R.drawable.pcritorange, R.drawable.overlaytransparent, ((1.5f * companionList.lvlScaler) + (companionList.level * 0.0375f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, ((6.0f * companionList.lvlScalerSecond) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 3, specialPen(), (0.6f * companionList.lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                 204 -> x =
                                     Items(204, 30, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "Epic Lucky Charm", R.drawable.luckycharmorange, R.drawable.overlaytransparent, (2.0f * companionList.lvlScaler)* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 3, "", 0f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
                                 205 -> x =
                                     Items(205, 10, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "Lifeline", R.drawable.lifelineorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "+1 live/10 rounds ", 1f, "", 0f)
                                 206 -> x =
-                                    Items(206, 1, 30, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "X-Factor", R.drawable.talentorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "+3 talent points", 3f, "", 0f)
+                                    Items(206, 1, 30, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "X-Factor", R.drawable.talentorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "+5 talent points", 5f, "", 0f)
                                 207 -> when ((0..2).random()) {
                                     0 -> x =
                                         Items(207, 1, 30, 0, (companionList.costEpic * companionList.lvlXp) / 2, 0, 0f, 0, "Battery", R.drawable.batteryorange, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 0, "+ X dmg/round", 0.5f* tower.towerRarityMultiplier, "", 0f)
@@ -6022,7 +6611,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 210 -> x =
                                     Items(210, 50, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "Lasso", R.drawable.lassoorange, R.drawable.overlaytransparent, ((0.5f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 3, "throws X lassos that stun", 1.0f, "", 0f)
                                 211 -> x =
-                                    Items(211, 30, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "20/20", R.drawable.critdmgorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, ((9f * companionList.lvlScalerSecond) + (companionList.level * 0.015f))* tower.towerRarityMultiplier, (0.01f * companionList.level)* tower.towerRarityMultiplier, 3, "", 0.0f, "", 0f)
+                                    Items(211, 30, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "20/20", R.drawable.critdmgorange, R.drawable.overlaytransparent, ((1.5f * companionList.lvlScaler) + (companionList.level * 0.0375f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, ((4.5f * companionList.lvlScalerSecond) + (companionList.level * 0.015f))* tower.towerRarityMultiplier, (0.01f * companionList.level)* tower.towerRarityMultiplier, 3, "", 0.0f, "", 0f)
                                 212 -> x =
                                     Items(212, 40, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "One Punch Thingy", R.drawable.hitorange, R.drawable.overlaytransparent, ((0.5f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, 0f, 0f, 3, "+ X hit", (0.75f * companionList.lvlScalerSecond)* tower.towerRarityMultiplier, "", 0f)
                                 213 -> x =
@@ -6042,16 +6631,16 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         }
                     7,8 -> {
                         when ((0..9).random()){
-                            0 -> x = Items(2200, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Earth Tower", R.drawable.towerearthorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
-                            1 -> x = Items(2201, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Wizard Tower", R.drawable.towerwizardorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
-                            2 -> x = Items(2202, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Ice Tower", R.drawable.towericeorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
-                            3 -> x = Items(2203, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Butterfly Tower", R.drawable.towerbutterflyorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
-                            4 -> x = Items(2204, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Poison Tower", R.drawable.towerpoisonorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
-                            5 -> x = Items(2205, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Moon Tower", R.drawable.towermoonorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
-                            6 -> x = Items(2206, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Wind Tower", R.drawable.towerwindorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
-                            7 -> x = Items(2207, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Utils Tower", R.drawable.towerutilsorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0,"bagspace", 4.0f, "bagspace element", 2f)
-                            8 -> x = Items(2208, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Fire Tower", R.drawable.towerfireorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f, 0,"bagspace", 4.0f, "bagspace element", 2f)
-                            9 -> x = Items(2209, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Dark Tower", R.drawable.towerdarkorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,50f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
+                            0 -> x = Items(2200, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Earth Tower", R.drawable.towerearthorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                            1 -> x = Items(2201, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Wizard Tower", R.drawable.towerwizardorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,55f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
+                            2 -> x = Items(2202, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Ice Tower", R.drawable.towericeorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,55f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
+                            3 -> x = Items(2203, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Butterfly Tower", R.drawable.towerbutterflyorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,55f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
+                            4 -> x = Items(2204, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Poison Tower", R.drawable.towerpoisonorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,55f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
+                            5 -> x = Items(2205, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Moon Tower", R.drawable.towermoonorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,55f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
+                            6 -> x = Items(2206, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Wind Tower", R.drawable.towerwindorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                            7 -> x = Items(2207, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Utils Tower", R.drawable.towerutilsorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,55f, 1f, 1.75f,  0,"bagspace", 4.0f, "bagspace element", 2f)
+                            8 -> x = Items(2208, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Fire Tower", R.drawable.towerfireorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,55f, 1f, 1.75f, 0,"bagspace", 4.0f, "bagspace element", 2f)
+                            9 -> x = Items(2209, 0, 999,0,(companionList.costEpic * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Epic Dark Tower", R.drawable.towerdarkorange, R.drawable.overlaytransparent,15f, 0.0f,0.0f,55f, 1f, 1.75f,  0, "bagspace", 4.0f, "bagspace element", 2f)
                         }
                     }
                 }
@@ -6078,17 +6667,17 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 301 -> x = Items(301, 1, 25, 0, 0f, 0, 0f, 0, "Legendary Magic Box", R.drawable.magicboxpurple, R.drawable.overlaytransparent, ((3.0f * companionList.lvlScaler) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5, "no xp cost", 0f, "", 0f)
                                 302 ->
                                     when ((0..2).random()) {
-                                        0 -> x = Items(302, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
-                                        1 -> x = Items(302, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
-                                        2 -> x = Items(302, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
-                                        3 -> x = Items(302, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((24.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
+                                        0 -> x = Items(302, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, ((2.25f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((12.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        1 -> x = Items(302, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, ((2.25f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((12.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        2 -> x = Items(302, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, ((2.25f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((12.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
+                                        3 -> x = Items(302, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Bow", R.drawable.pbowpurple, R.drawable.overlaytransparent, ((2.25f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((12.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
                                     }
                                 303 ->
                                     when ((0..2).random()) {
-                                        0 -> x = Items(303, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
-                                        1 -> x = Items(303, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
-                                        2 -> x = Items(303, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
-                                        3 -> x = Items(303, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, ((18.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
+                                        0 -> x = Items(303, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, ((2.25f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, ((9.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "anti-heal", 10f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        1 -> x = Items(303, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, ((2.25f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, ((9.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "extra dmg immune", 10f, "item find", 7.5f + ((ceil(companionList.level / 10.0f)) * 2)* tower.towerRarityMultiplier)
+                                        2 -> x = Items(303, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, ((2.25f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, ((9.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "anti-heal", 10f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
+                                        3 -> x = Items(303, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Sword", R.drawable.pcritpurple, R.drawable.overlaytransparent, ((2.25f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0.0f, ((9.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "extra dmg immune", 10f, "item quality", 1f + (ceil(companionList.level / 10.0f))* tower.towerRarityMultiplier)
                                     }
                                 304 -> x = Items(304, 20, 100, 0, (companionList.costLegendary * companionList.lvlXp * 0.5f), companionList.costDia, 0f, 0, "Frost Aura", R.drawable.iceaurapurple, R.drawable.overlaytransparent, ((1.0f * companionList.lvlScaler) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((1.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0, "Slow aura X%", 20f, "", 0f)
                                 305 -> x = Items(305, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Disruptor", R.drawable.disruptorpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "Adds X dmg per enemy in tower range", (2f * companionList.lvlScaler)* tower.towerRarityMultiplier, "", 0f)
@@ -6096,27 +6685,27 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 307 -> x = Items(307, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Multibarrel", R.drawable.bouncepurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((4.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "+2 bounce", 2f, "", 0f)
                                 308 -> x = Items(308, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Freezer", R.drawable.frostlila, R.drawable.overlaytransparent, ((1.0f * companionList.lvlScaler) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((4.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, ((3.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "slows a random unit for 30%", 30.0f, "", 0f)
                                 309 -> x = Items(309, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Lasso", R.drawable.lassopurple, R.drawable.overlaytransparent, ((1.0f * companionList.lvlScaler) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 5, "throws X lassos that stun", 3.0f, "", 0f)
-                                310 -> x = Items(310, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "BullZ-I", R.drawable.bullseyepurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0f, ((12.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0f, 5, "+1 multicrit", 1f, "", 0f)
-                                311 -> x = Items(311, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "21/20", R.drawable.critdmgpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, ((12f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, (0.015f * companionList.level)* tower.towerRarityMultiplier, 5, "", 0.0f, "", 0f)
+                                310 -> x = Items(310, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "BullZ-I", R.drawable.bullseyepurple, R.drawable.overlaytransparent, ((2.25f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, ((6.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0f, 5, "+1 multicrit", 1f, "", 0f)
+                                311 -> x = Items(311, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "21/20", R.drawable.critdmgpurple, R.drawable.overlaytransparent, ((2.25f * companionList.lvlScaler) + (companionList.level * 0.075f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, ((6f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, (0.015f * companionList.level)* tower.towerRarityMultiplier, 5, "", 0.0f, "", 0f)
                                 312 -> x = Items(312, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Slow Death", R.drawable.slowdeathpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "burns 1% hp as mgc dmg per attack", 0.01f, "", 0f)
                                 313 -> x = Items(313, 10, 999, 0, 0f, companionList.costDia, 0f, 0, "Lovely!", R.drawable.heartdiagreen, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "+5 lives", 5f, "", 0f)
                                 314 -> x = Items(314, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Shredder", R.drawable.shredderpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, ((6.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0f, 0f, 0, "reduces armor by X per hit", 0.5f* tower.towerRarityMultiplier, "", 0f)
                                 315 -> x = Items(315, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Magic Braker", R.drawable.magicbrakerpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, ((6.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0f, 0f, 0, "reduces magic armor by X per hit", 0.5f* tower.towerRarityMultiplier, "", 0f)
-                                316 -> x = Items(316, 20, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Buddha", R.drawable.braindamageorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 3, "+1% dmg/% towerlvl", (tower.xpTower/tower.xpGoal2).toFloat(), "", 0f)
+                                316 -> x = Items(316, 20, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Buddha", R.drawable.buddhapurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 3, "+1% dmg/% towerlvl", (tower.xpTower/tower.xpGoal2).toFloat(), "", 0f)
                             }
                         }
                     7,8 -> {
                         when ((0..9).random()){
-                            0 -> x = Items(2300, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Earth Tower", R.drawable.towerearthpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
-                            1 -> x = Items(2301, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Wizard Tower", R.drawable.towerwizardpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f,0, "bagspace", 5.0f, "bagspace element", 3f)
-                            2 -> x = Items(2302, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Ice Tower", R.drawable.towericepurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
-                            3 -> x = Items(2303, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Butterfly Tower", R.drawable.towerbutterflypurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
-                            4 -> x = Items(2304, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Poison Tower", R.drawable.towerpoisonpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
-                            5 -> x = Items(2305, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Moon Tower", R.drawable.towermoonpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
-                            6 -> x = Items(2306, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Wind Tower", R.drawable.towerwindpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f,0, "bagspace", 5.0f, "bagspace element", 3f)
-                            7 -> x = Items(2307, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Utils Tower", R.drawable.towerutilspurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f,0,"bagspace", 5.0f, "bagspace element", 3f)
-                            8 -> x = Items(2308, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Fire Tower", R.drawable.towerfirepurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f,0,"bagspace", 5.0f, "bagspace element", 3f)
-                            9 -> x = Items(2309, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Dark Tower", R.drawable.towerdarkpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,40f, 10f, 2f,0, "bagspace", 5.0f, "bagspace element", 3f)
+                            0 -> x = Items(2300, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Earth Tower", R.drawable.towerearthpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                            1 -> x = Items(2301, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Wizard Tower", R.drawable.towerwizardpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,50f, 10f, 2f,0, "bagspace", 5.0f, "bagspace element", 3f)
+                            2 -> x = Items(2302, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Ice Tower", R.drawable.towericepurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                            3 -> x = Items(2303, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Butterfly Tower", R.drawable.towerbutterflypurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                            4 -> x = Items(2304, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Poison Tower", R.drawable.towerpoisonpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                            5 -> x = Items(2305, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Moon Tower", R.drawable.towermoonpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                            6 -> x = Items(2306, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Wind Tower", R.drawable.towerwindpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,50f, 10f, 2f,0, "bagspace", 5.0f, "bagspace element", 3f)
+                            7 -> x = Items(2307, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Utils Tower", R.drawable.towerutilspurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,50f, 10f, 2f,0,"bagspace", 5.0f, "bagspace element", 3f)
+                            8 -> x = Items(2308, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Fire Tower", R.drawable.towerfirepurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,50f, 10f, 2f,0,"bagspace", 5.0f, "bagspace element", 3f)
+                            9 -> x = Items(2309, 0, 999,0,(companionList.costLegendary * companionList.lvlXp * (1.5f + (companionList.towerCount /5))), 0, 0f, 0, "Legendary Dark Tower", R.drawable.towerdarkpurple, R.drawable.overlaytransparent,25f, 0.0f,0.0f,50f, 10f, 2f,0, "bagspace", 5.0f, "bagspace element", 3f)
                         }
                     }
                 }
@@ -6214,25 +6803,25 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         2 -> {
                             when ((0..9).random()) {
                                 0 -> x =
-                                    Items(2200, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Earth Tower", R.drawable.towerearthorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                                    Items(2200, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Earth Tower", R.drawable.towerearthorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
                                 1 -> x =
-                                    Items(2201, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Wizard Tower", R.drawable.towerwizardorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                                    Items(2201, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Wizard Tower", R.drawable.towerwizardorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
                                 2 -> x =
-                                    Items(2202, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Ice Tower", R.drawable.towericeorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                                    Items(2202, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Ice Tower", R.drawable.towericeorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
                                 3 -> x =
-                                    Items(2203, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Butterfly Tower", R.drawable.towerbutterflyorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                                    Items(2203, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Butterfly Tower", R.drawable.towerbutterflyorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
                                 4 -> x =
-                                    Items(2204, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Poison Tower", R.drawable.towerpoisonorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                                    Items(2204, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Poison Tower", R.drawable.towerpoisonorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
                                 5 -> x =
-                                    Items(2205, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Moon Tower", R.drawable.towermoonorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                                    Items(2205, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Moon Tower", R.drawable.towermoonorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
                                 6 -> x =
-                                    Items(2206, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Wind Tower", R.drawable.towerwindorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                                    Items(2206, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Wind Tower", R.drawable.towerwindorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
                                 7 -> x =
-                                    Items(2207, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Utils Tower", R.drawable.towerutilsorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                                    Items(2207, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Utils Tower", R.drawable.towerutilsorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
                                 8 -> x =
-                                    Items(2208, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Fire Tower", R.drawable.towerfireorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                                    Items(2208, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Fire Tower", R.drawable.towerfireorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
                                 9 -> x =
-                                    Items(2209, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Dark Tower", R.drawable.towerdarkorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 50f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
+                                    Items(2209, 0, 999, 0, (companionList.costEpic * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Epic Dark Tower", R.drawable.towerdarkorange, R.drawable.overlaytransparent, 15f, 0.0f, 0.0f, 55f, 1f, 1.75f, 0, "bagspace", 4.0f, "bagspace element", 2f)
                             }
                         }
                     }
@@ -6258,25 +6847,25 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         2 -> {
                             when ((0..9).random()) {
                                 0 -> x =
-                                    Items(2300, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Earth Tower", R.drawable.towerearthpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                                    Items(2300, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Earth Tower", R.drawable.towerearthpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
                                 1 -> x =
-                                    Items(2301, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Wizard Tower", R.drawable.towerwizardpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                                    Items(2301, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Wizard Tower", R.drawable.towerwizardpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
                                 2 -> x =
-                                    Items(2302, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Ice Tower", R.drawable.towericepurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                                    Items(2302, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Ice Tower", R.drawable.towericepurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
                                 3 -> x =
-                                    Items(2303, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Butterfly Tower", R.drawable.towerbutterflypurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                                    Items(2303, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Butterfly Tower", R.drawable.towerbutterflypurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
                                 4 -> x =
-                                    Items(2304, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Poison Tower", R.drawable.towerpoisonpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                                    Items(2304, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Poison Tower", R.drawable.towerpoisonpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
                                 5 -> x =
-                                    Items(2305, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Moon Tower", R.drawable.towermoonpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                                    Items(2305, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Moon Tower", R.drawable.towermoonpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
                                 6 -> x =
-                                    Items(2306, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Wind Tower", R.drawable.towerwindpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                                    Items(2306, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Wind Tower", R.drawable.towerwindpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
                                 7 -> x =
-                                    Items(2307, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Utils Tower", R.drawable.towerutilspurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                                    Items(2307, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Utils Tower", R.drawable.towerutilspurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
                                 8 -> x =
-                                    Items(2308, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Fire Tower", R.drawable.towerfirepurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                                    Items(2308, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Fire Tower", R.drawable.towerfirepurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
                                 9 -> x =
-                                    Items(2309, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Dark Tower", R.drawable.towerdarkpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 40f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
+                                    Items(2309, 0, 999, 0, (companionList.costLegendary * companionList.lvlXp * (1.2f + (companionList.towerCount / 5))), 0, 0f, 0, "Legendary Dark Tower", R.drawable.towerdarkpurple, R.drawable.overlaytransparent, 25f, 0.0f, 0.0f, 50f, 10f, 2f, 0, "bagspace", 5.0f, "bagspace element", 3f)
                             }
                         }
                     }
@@ -6399,7 +6988,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
     }
 
     fun towerExperience(towerId: Int, xpGain: Float){
-        var xpGain2 = xpGain
+        var xpGain2 = xpGain * companionList.towerList[towerId].xpMulti
         if (companionList.towerList[towerId].experienceMoonNight) xpGain2 *= 2
         companionList.towerList[towerId].xpTower += xpGain2
         towerExperienceGainUtilAura(xpGain2, towerId)

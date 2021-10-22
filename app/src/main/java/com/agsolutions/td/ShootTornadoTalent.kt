@@ -1,9 +1,5 @@
 package com.agsolutions.td
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-
 
 class ShootTornadoTalent {
     companion object {
@@ -11,7 +7,6 @@ class ShootTornadoTalent {
 
 
     }
-    var paint: Paint
     var tornadoRadius = TowerRadius(600.0f, 750.0f, 5f)
     var tornadoRadiusPosition = 0
     var tornadoCount = 0
@@ -19,23 +14,7 @@ class ShootTornadoTalent {
     var randomEnemyTornadoBool = true
     var randomEnemyTornado = Enemy (0.0f,0.0f, 0.0f, 0.0f, 0.0f, 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0)
 
-    init {
-        paint = Paint()
-        paint.isAntiAlias
-        paint.isFilterBitmap
-        paint.color = Color.WHITE
-    }
-
-    fun draw(canvas: Canvas) {
-
-        canvas.drawCircle(tornadoRadius.x.toFloat(), tornadoRadius.y.toFloat(), tornadoRadius.r.toFloat(), paint)
-
-    }
-
     fun update() {
-
-        GameActivity.companionList.readLockEnemy.lock()
-        try {
             if (tornadoRadiusPosition == 2) {
                 tornadoRadius.x += 0
                 tornadoRadius.y += 0
@@ -43,38 +22,30 @@ class ShootTornadoTalent {
                 randomEnemyTornadoBool = false
                 randomEnemyTornado = GameActivity.companionList.enemyList.random()
                 movement(randomEnemyTornado)
-            } else if (!randomEnemyTornadoBool && GameActivity.companionList.enemyList.isNotEmpty()) movement(randomEnemyTornado)
+            } else if (!randomEnemyTornadoBool && GameActivity.companionList.enemyList.contains(randomEnemyTornado)) movement(randomEnemyTornado)
+            else if (!randomEnemyTornadoBool && GameActivity.companionList.enemyList.isNotEmpty()) randomEnemyTornadoBool = true
             else broken = 1
-
-        } finally {
-            GameActivity.companionList.readLockEnemy.unlock()
-        }
     }
-
 
     fun movement (enemy: Enemy){
 
-                fun xSpeed(): Int {
-                    var speed = 0
-                    when (enemy.passed) {
-                        1.toByte() -> speed = (enemy.speed.toInt()) * (-1)
-                        2.toByte() -> speed = 0
-                        3.toByte() -> speed = (enemy.speed.toInt())
-                        4.toByte() -> speed = 0
-                    }
-                    return speed
-                }
+        fun xSpeed(): Int {
+            var speed = 0
+            when (enemy.circleXMovement) {
+                "xminus" -> speed = (enemy.speed.toInt()) * (-1)
+                "xplus" -> speed = (enemy.speed.toInt())
+            }
+            return speed
+        }
 
-                fun ySpeed(): Int {
-                    var speed = 0
-                    when (enemy.passed) {
-                        1.toByte() -> speed = 0
-                        2.toByte() -> speed = (enemy.speed.toInt()) * (-1)
-                        3.toByte() -> speed = 0
-                        4.toByte() -> speed = (enemy.speed.toInt())
-                    }
-                    return speed
-                }
+        fun ySpeed(): Int {
+            var speed = 0
+            when (enemy.circleYMovement) {
+                "yminus" -> speed = (enemy.speed.toInt()) * (-1)
+                "yplus" -> speed = (enemy.speed.toInt())
+            }
+            return speed
+        }
 
                 var nx =
                     if (tornadoRadius.x > (enemy.circle!!.x + xSpeed())) ((tornadoRadius.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
@@ -91,6 +62,8 @@ class ShootTornadoTalent {
 
                 if (cross(enemy)){
                     tornadoRadiusPosition = 2
+                    tornadoRadius.x = enemy.circle!!.x
+                    tornadoRadius.y = enemy.circle!!.y
                 }else {
                     if (tornadoRadius.x > (enemy.circle!!.x + xSpeed())) {
                         tornadoRadius.x -= (nx * n)
@@ -113,7 +86,7 @@ class ShootTornadoTalent {
 
         var squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
 
-        val sumOfRadius = 10
+        val sumOfRadius = 30
 
         if (squaredDistance <= sumOfRadius * sumOfRadius) {
             x = true

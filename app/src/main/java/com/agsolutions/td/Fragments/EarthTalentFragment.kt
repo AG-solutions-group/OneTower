@@ -12,7 +12,7 @@ import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.Items
 import com.agsolutions.td.R
 import com.agsolutions.td.Talents.Companion.topBarHeight
-import com.agsolutions.td.UiViewTalentEarth
+import com.agsolutions.td.UiViewTalentWindow
 import kotlinx.android.synthetic.main.fragment_earth_talent.*
 
 
@@ -40,7 +40,7 @@ class EarthTalentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        companionList.focusEarthFragment = true
+        companionList.focusTalentFragment = true
 
         earthRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].earthRow1Item1.toString()
         earthRow1Item2ShowTV.text = companionList.towerList[companionList.towerClickID].earthRow1Item2.toString()
@@ -51,6 +51,15 @@ class EarthTalentFragment : Fragment() {
         earthRow3Item3ShowTV.text = companionList.towerList[companionList.towerClickID].earthRow3Item3.toString()
         earthRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].earthRow4Item1.toString()
 
+        if (companionList.towerList[companionList.towerClickID].earthRow1Item1 == 1) {
+            earthRow1Item2IB.isClickable = false
+            earthRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].earthRow1Item2 == 1) {
+            earthRow1Item1IB.isClickable = false
+            earthRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+        }
+
         if (companionList.towerList[companionList.towerClickID].earthRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].earthRow1Item2 == 1) backgroundEarthRow2.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].earthRow2Item1 + companionList.towerList[companionList.towerClickID].earthRow2Item2 >= 3) backgroundEarthRow3.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].earthRow3Item1 + companionList.towerList[companionList.towerClickID].earthRow3Item2 + companionList.towerList[companionList.towerClickID].earthRow3Item3 >= 3) backgroundEarthRow4.setBackgroundResource(R.drawable.backgroundplankslight)
@@ -59,24 +68,28 @@ class EarthTalentFragment : Fragment() {
 
                 var point = IntArray(2)
                 earthUpgradeBTN.getLocationInWindow(point)
-                UiViewTalentEarth.talentEarthX = point[0].toFloat()
-                UiViewTalentEarth.talentEarthY = (point[1] - topBarHeight).toFloat()
+                UiViewTalentWindow.talentX = point[0].toFloat()
+                UiViewTalentWindow.talentY = (point[1] - topBarHeight).toFloat()
                 uiViewTalentEarth.invalidate()
 
+            earthUpgradeBTN.isClickable = true
             setImagePick(11)
 
             earthNameDisplayTalentTV.text = "Killer"
             earthDisplayTalentTV.text = "Increases experience gain from kills by 10%."
 
             earthUpgradeBTN.setOnClickListener() {
-                companionList.focusEarthFragment = false
+                companionList.focusTalentFragment = false
                 uiViewTalentEarth.invalidate()
-                earthUpgradeBTN.isClickable = true
 
                 if (companionList.towerList[companionList.towerClickID].earthRow1Item1 + companionList.towerList[companionList.towerClickID].earthRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0){
                     companionList.towerList[companionList.towerClickID].earthRow1Item1 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].earthRow1Item1 == 1) companionList.towerList[companionList.towerClickID].experienceKill += 0.25f
+                    if (companionList.towerList[companionList.towerClickID].earthRow1Item1 == 1){
+                        companionList.towerList[companionList.towerClickID].experienceKill += 0.25f
+                        earthRow1Item2IB.isClickable = false
+                        earthRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                     if (companionList.towerList[companionList.towerClickID].earthRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].earthRow1Item2 == 1) backgroundEarthRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -88,21 +101,24 @@ class EarthTalentFragment : Fragment() {
 
         earthRow1Item2IB.setOnClickListener() {
 
+            earthUpgradeBTN.isClickable = true
             setImagePick(12)
 
             earthNameDisplayTalentTV.text = "Earthly Wisdom"
             earthDisplayTalentTV.text = "Occasionally gain experience when shots hit more than 3 enemies. "
 
             earthUpgradeBTN.setOnClickListener() {
-                companionList.focusEarthFragment = false
+                companionList.focusTalentFragment = false
                 uiViewTalentEarth.invalidate()
-                earthUpgradeBTN.isClickable = true
-
 
                 if (companionList.towerList[companionList.towerClickID].earthRow1Item1 + companionList.towerList[companionList.towerClickID].earthRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0){
                     companionList.towerList[companionList.towerClickID].earthRow1Item2 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].earthRow1Item2 == 1) companionList.towerList[companionList.towerClickID].experienceEarthHit = true
+                    if (companionList.towerList[companionList.towerClickID].earthRow1Item2 == 1) {
+                        companionList.towerList[companionList.towerClickID].experienceEarthHit = true
+                        earthRow1Item1IB.isClickable = false
+                        earthRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                     if (companionList.towerList[companionList.towerClickID].earthRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].earthRow1Item2 == 1) backgroundEarthRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -295,8 +311,7 @@ class EarthTalentFragment : Fragment() {
                         if (companionList.towerList[companionList.towerClickID].earthRow4Item1 == 1) companionList.towerList[companionList.towerClickID].earthTalentPhyDmgMultiplier += 0.1f
                         if (companionList.towerList[companionList.towerClickID].earthRow4Item1 == 2) companionList.towerList[companionList.towerClickID].earthTalentPhyDmgMultiplier += 0.1f
                         if (companionList.towerList[companionList.towerClickID].earthRow4Item1 == 3) {
-                            companionList.itemList.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
-                            companionList.insertItem += 1
+                            companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
                             companionList.towerList[companionList.towerClickID].earthTalentPhyDmgMultiplier += 0.1f
                         }
 
@@ -314,12 +329,12 @@ class EarthTalentFragment : Fragment() {
     }
 
     fun update () {
-        if (GameActivity.companionList.focusEarthFragment) {
+        if (GameActivity.companionList.focusTalentFragment) {
             if (GameActivity.companionList.hintsBool) {
                     var point = IntArray(2)
                     earthRow1Item1IB.getLocationInWindow(point)
-                UiViewTalentEarth.talentEarthX = point[0].toFloat()
-                UiViewTalentEarth.talentEarthY = (point[1] - topBarHeight).toFloat()
+                UiViewTalentWindow.talentX = point[0].toFloat()
+                UiViewTalentWindow.talentY = (point[1] - topBarHeight).toFloat()
                     uiViewTalentEarth.invalidate()
             }
         }
@@ -345,6 +360,15 @@ class EarthTalentFragment : Fragment() {
             32 -> earthRow3Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             33 -> earthRow3Item3IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             41 -> earthRow4Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+        }
+
+        if (companionList.towerList[companionList.towerClickID].earthRow1Item1 == 1) {
+            earthRow1Item2IB.isClickable = false
+            earthRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].earthRow1Item2 == 1) {
+            earthRow1Item1IB.isClickable = false
+            earthRow1Item1IBPick.setImageResource(R.drawable.crossedout)
         }
     }
 }

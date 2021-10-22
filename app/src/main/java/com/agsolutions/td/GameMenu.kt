@@ -54,7 +54,6 @@ class GameMenu : AppCompatActivity() {
             editor.apply()
 
             companionList.shootList.removeAll(companionList.shootList)
-            companionList.shootListIce.removeAll(companionList.shootListIce)
             companionList.shootListPoison.removeAll(companionList.shootListPoison)
             companionList.shootListTornado.removeAll(companionList.shootListTornado)
 

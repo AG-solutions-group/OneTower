@@ -1,5 +1,6 @@
 package com.agsolutions.td
 
+import android.graphics.Rect
 import java.io.Serializable
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
@@ -15,8 +16,8 @@ class Companion: Serializable {
         var towerList = mutableListOf<Tower>()
         var itemListBagInserter = mutableListOf<Items>()
         var itemListInserter = mutableListOf<Items>()
+        var itemListInsertItem = mutableListOf<Items>()
         var dropItemList = 0
-        var insertItem = 0
         var insertItemBag = 0
         var overallXp = 0.0f
         var enemyList = mutableListOf<Enemy>()
@@ -28,7 +29,6 @@ class Companion: Serializable {
         var itemFragmentEnemyList = mutableListOf<ItemFragmentStrings>()
         var itemListStartItems = mutableListOf<ItemFragmentStrings>()
         var menuItemItems = mutableListOf<ItemFragmentStrings>()
-
 
         // tutorial
         var enemiesKilled = 0
@@ -46,6 +46,11 @@ class Companion: Serializable {
         var globalDmgMultiplier = 0f
 
         var itemBeingMoved = false
+        var itemBeingMovedSave = 0
+        var itemBeingMovedSaveList = mutableListOf<Enemy>()
+        var enemyListDeadSplit = mutableListOf<Enemy>()
+        var enemyKilledList = mutableListOf<Enemy>()
+        var enemyRemoveList = mutableListOf<Enemy>()
 
         var level = 0
         var lives = 8
@@ -111,6 +116,7 @@ class Companion: Serializable {
         var enemySpd = 3.0f
         var enemyType = "undef"
         var healCounter = 0
+        var disruptorCounter = 0
         var tankBool = true
 
         var levelScalerCrit = 1f
@@ -131,9 +137,6 @@ class Companion: Serializable {
         var shotLock = ReentrantReadWriteLock ()
         var readLockShot = shotLock.readLock()
         var writeLockShot = shotLock.writeLock()
-        var shotIceLock = ReentrantReadWriteLock ()
-        var readLockIce = shotIceLock.readLock()
-        var writeLockIce = shotIceLock.writeLock()
         var shotPoisonLock = ReentrantReadWriteLock ()
         var readLockPoison = shotPoisonLock.readLock()
         var writeLockPoison = shotPoisonLock.writeLock()
@@ -149,15 +152,22 @@ class Companion: Serializable {
         var displayListLock = ReentrantReadWriteLock ()
         var readLockDisplay = displayListLock.readLock()
         var writeLockDisplay = displayListLock.writeLock()
+        var displayDropListLock = ReentrantReadWriteLock ()
+        var readLockDisplayDrop = displayDropListLock.readLock()
+        var writeLockDisplayDrop = displayDropListLock.writeLock()
         var towerLock = ReentrantReadWriteLock ()
         var readLockTower = towerLock.readLock()
         var writeLockTower = towerLock.writeLock()
+        var itemBagLock = ReentrantReadWriteLock ()
+        var readLockItemBag = itemBagLock.readLock()
+        var writeLockItemBag = itemBagLock.writeLock()
 
         // new level----------------------------
 
         var levelCount = 600
         var levelCountPlace = 1140
         var enemySpawned = 0
+        var enemySpawnedCount = 8
         var levelStatus = "undef"
         var levelList = mutableListOf<String>("normal", "armor", "magic armor")
         var levelListReserve = mutableListOf<String>("evade")
@@ -185,16 +195,6 @@ class Companion: Serializable {
         var upgradePoints  = 1
 
         // Ice Talents-------------------------
-        var iceShard = false
-        var iceShardCounter = 0
-        var iceShardCounter2 = 0
-        var iceShardCounter4 = 0
-        var iceShardSpeed = 150
-        var shardSpeed: Float = 3.0F
-        var shardStart = TowerRadius (600.0f, 750.0f, 5.0f)
-        var shootListIce = mutableListOf<ShootIceTalent>()
-        var iceShardCounter3 = 0
-        var iceShardTowerId = 0
 
         // Poison Talents-------------------------
 
@@ -216,7 +216,9 @@ class Companion: Serializable {
         var rotateTornado = 0f
         var windTalentBonusSpeed = 0f
         var globalBonusTowerRange = 0
-
+        var tornadoTimer = 1000
+        var tornadoRadius = 0f
+        var tornadoCounter = 0
 
         // Earth Talents-------------------------
 
@@ -260,6 +262,7 @@ class Companion: Serializable {
         var minePlaceholderCounter = 0
         var wizardBombStartItemDmg = 0f
         var wizardLightningStartItemTargets = 0
+    var addChainLighning = 0
 
 
         // Items -----------------------------------
@@ -320,7 +323,6 @@ class Companion: Serializable {
         var maceCount = 0
         var bowCount = 0
         var swordCount = 0
-        var luckyCharmCount = 0
 
         // mystery points ------------------------------
         var mysteryAllRounderBool = true
@@ -332,7 +334,7 @@ class Companion: Serializable {
         var mysteryLuckyCharmBool = true
         var mysteryPirateHunterBool = true
         var itemListSecretShop = mutableListOf<ItemFragmentStrings>()
-        var pirateItemCount = 0
+
         var livesMpCounter = false
         var bossesKilled = 0
         var bossesLeaked = 0
@@ -379,6 +381,7 @@ class Companion: Serializable {
         var rotationEnemyY = 0f
 
         // shoot
+        var advancedList5 = mutableListOf<Enemy>()
         var advancedList4 = mutableListOf<Enemy>()
         var advancedList3 = mutableListOf<Enemy>()
         var advancedList2 = mutableListOf<Enemy>()
@@ -403,9 +406,9 @@ class Companion: Serializable {
         // start items ---------------------------------------------
         var iceNovaTimerStartItem = 0
         var shieldBrakerItem = 1
+        var wiseMan = 1f
 
-
-
+        var upgraderBool = false
         var itemStartBounce = false
 
 
@@ -416,14 +419,16 @@ class Companion: Serializable {
         var buildClickBool = false
         var enemyClick = false
         var enemySelectedBool = false
-        var spawnDoubleClick = false
-        var spawnDoubleClickCounter = 0
+        var autoSpawnClick = false
+        var spawnBool = true
+        var spawnBoolCounter = 0
+
         var spawnEnemy = false
         var autoSpawn = false
         var autoSpawnCount = 0
-        var autoSpawnCountBool = true
         var touchCount = 0
-        var touchCountCounter = 0
+        var clipRect = Rect()
+
         var toastGlobal = false
         var toastText = ""
         var hintItemSwipe = false
@@ -432,7 +437,7 @@ class Companion: Serializable {
         var focusTalentWindow = false
         var earthFragmentFocus = false
         var invalidate = 0
-        var focusEarthFragment = false
+        var focusTalentFragment = false
         var showHelpTalent = true
 
         // menu ----------------------------------------
@@ -443,11 +448,15 @@ class Companion: Serializable {
         // tutorial -----------------------------------
         var tutorialFirstUseItemBool = true
         var tutorialFirstUseItemCounter = 0
+        var tutorialFirstTowerLevelBool = true
 
         // display ----------------------------------------
         var dmgDisplayList = mutableListOf<DmgDisplay>()
+        var dmgDisplayDropList = mutableListOf<DropDisplay>()
         var dragStatusDrag = false
         var dragStatusCantBuild = false
+        var dragTower = Items(2100, 0, 999,0,0f, 0, 0f, 0, "Rare Earth Tower", R.drawable.elementearth, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
+        var overrideTower = false
 
         // fragments ----------------------------------------------------
         var fragmentItemCounter = 0
@@ -482,18 +491,19 @@ class Companion: Serializable {
         var stid6 = Items(5006, 7, 999,0,0f, 0,0f, 0,"Froster", R.drawable.frostlila, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"+ mgcDmg/lvl, + 10% slow, Ice Nova CD halved ", 0f, "", 0f)
         var stid7 = Items(5007, 8, 999,0,0f, 0,0f, 0,"Utilizer", R.drawable.utilizerpurple, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"+ 1% interest, + 2 bag slots, +10% item find", 0f, "", 0f)
         var stid8 = Items(5008, 9, 999,0,0f, 0,0f, 0,"Shield Braker", R.drawable.shieldbrakerpurple, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"ignores shields", 0f, "", 0f)
-        var stid9 = Items(5009, 10, 999,0,0f, 0,0f, 0,"Natures Gift", R.drawable.itemstartpoison, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"starts with 1 point in Death Cap, +1 stack per hit", 0f, "", 0f)
+
         var stid10 = Items(5010, 11, 999,0,0f, 0,0f, 0,"Easy Mode", R.drawable.itemstarteasymode, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"consumable, enemies start with 10% less hp", 0f, "", 0f)
         var stid11 = Items(5011, 12, 999,0,0f, 0, 0f, 0, "Helping Hand", R.drawable.helpinghandpurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "active: +30% DMG for 5 sec. 1 min CD.", 0.0f, "", 0f)
         var stid12 = Items(5012, 13, 999,0,0f, 0, 0f, 0, "BombermXn", R.drawable.bombpurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "start with 5 bombs, bombs +10% dmg, bombs 50% cheaper", 0.0f, "", 0f)
-        var stid13 = Items(5013, 14, 999,0,0f, 0, 0f, 0, "Talented", R.drawable.talentpurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "start with 2 TP, +1 TP for each killed boss/challenge", 0.0f, "", 0f)
-        var stid14 = Items(5014, 15, 999,0,0f, 0, 0f, 0, "Darker than Black", R.drawable.itemstartdark, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "consumable, get 1 TP in Soul Collector at lvl 20", 0.0f, "", 0f)
+        var stid13 = Items(5013, 14, 999,0,0f, 0, 0f, 0, "Wise", R.drawable.talentpurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "enemies drop 10% more XP", 0.0f, "", 0f)
+
         var stid15 = Items(5015, 15, 999,0,0f, 0, 0f, 0, "Wizard", R.drawable.wizardpueple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Bombshell: +40% spelldmg scaling bomb, Lightning Bolt: +1 target", 0.0f, "", 0f)
-        var stid16 = Items(5016, 15, 999,0,0f, 0, 0f, 0, "Bouncer", R.drawable.bouncepurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "starts with 1 TP in bounce, bounce targets doubled ", 0.0f, "", 0f)
-        var stid17 = Items(5017, 15, 999,0,0f, 0, 0f, 0, "Upgrader", R.drawable.upgraderitem, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "all items 2x upgrade slots, 1 UPG point every 4 lvls, starts with 3 UPG points", 0.0f, "", 0f)
+        var stid16 = Items(5016, 15, 999,0,0f, 0, 0f, 0, "Bouncer", R.drawable.bouncepurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "bounce targets doubled ", 0.0f, "", 0f)
+        var stid17 = Items(5017, 15, 999,0,0f, 0, 0f, 0, "Upgrader", R.drawable.upgraderitem, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "all items 2x upgrade slots, starts with 3 UPG points", 0.0f, "", 0f)
 
         var startItemList = mutableListOf<Items>(stid0)
-        var startItemHiddenList = mutableListOf<Items>(stid1, stid2, stid3, stid4, stid5, stid6, stid7, stid8, stid9, stid10, stid11, stid12, stid13, stid14, stid15, stid16, stid17)
+        var startItemHiddenList = mutableListOf<Items>(stid1, stid2, stid3, stid4, stid5, stid6, stid7, stid8, stid10, stid11, stid12, stid13, stid15, stid16, stid17)
+        var startItemListAll = mutableListOf<Items>(stid0, stid1, stid2, stid3, stid4, stid5, stid6, stid7, stid8, stid10, stid11, stid12, stid13, stid15, stid16, stid17)
 
         //------------------------------------------------------------------
 
@@ -509,7 +519,8 @@ class Companion: Serializable {
         var id7 = Items(7, 1, 999, 0, 0f, 0, 0f, 0, "Upgrader", R.drawable.upgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: gain UP", 1f, "", 0f)
         // id8 = DIA green
         var id9 = Items(9, 1, 999, 0, 0f, 0, 0f, 0, "Experiencer", R.drawable.xpgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: gain xp", 0f, "", 0f)
-
+        var id10 = Items(10, 1, 999, 0, 0f, 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 1, "", 0f, "plus itemchance", 15f)
+        var id11 = Items(11, 1, 999, 0, 0f, 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 1, "", 0f, "", 0f)
 
         // rare items
 
@@ -540,7 +551,7 @@ class Companion: Serializable {
         var id214  = Items(214, 1, 999,0,0f, 0,0f, 0, "Sniper", R.drawable.sniperorange, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "snipes a single target", 0.0f, "", 0f)
         var id215  = Items(215, 40, 999, 0, 0f, 0, 0f, 0,"Shredder", R.drawable.shredderorange, R.drawable.overlaytransparent, ((0.5f) + (level * 0.075f)),0.0f,0.0f, 0f, 0f, 0f, 3, "- X armor", (2f), "", 0f)
         var id216  = Items(216, 40, 999, 0, 0f, 0, 0f, 0,"Shield Braker", R.drawable.magicbrakerorange, R.drawable.overlaytransparent,((0.5f) + (level * 0.075f)),0.0f,0.0f, 0f, 0f, 0f, 3, "- X mgc armor", (2f), "", 0f)
-        var id217  = Items(217, 1, 999, 0, 0f, 0, 0f, 0,"Snowman", R.drawable.snowmanorange, R.drawable.overlaytransparent,((0.5f) + (level * 0.05f)), 0.0f,0.0f,((0.5f) + (level * 0.05f)), ((0.5f) + (level * 0.05f)), 0f, 3, "+5% slow on hit", 5f, "", 0f)
+        var id217  = Items(217, 1, 999, 0, 0f, 0, 0f, 0,"SnowmXn", R.drawable.snowmanorange, R.drawable.overlaytransparent,((0.5f) + (level * 0.05f)), 0.0f,0.0f,((0.5f) + (level * 0.05f)), ((0.5f) + (level * 0.05f)), 0f, 3, "+5% slow on hit", 5f, "", 0f)
         var id218 = Items(218, 20, 999, 0, 0f, 0, 0f, 0, "Brain Damage", R.drawable.braindamageorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 3, "+1% dmg/towerlvl", 0f, "", 0f)
 
     // legendary items
@@ -563,14 +574,14 @@ class Companion: Serializable {
         var id315 = Items(315, 50, 999, 0, 0f, 0, 0f, 0, "Legendary Magic Braker", R.drawable.magicbrakerpurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,((6.0f * lvlScaler) + (level * 0.15f)), 0f, 0f, 0, "reduces magic armor by X per hit", 0.5f, "", 0f)
         var id316 = Items(316, 20, 999, 0, 0f, 0, 0f, 0, "Buddha", R.drawable.braindamageorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 3, "+1% dmg/% towerlvl", 0f, "", 0f)
 
-        var itemListReserveNormal = mutableListOf<Items>(id0, id1, id2, id3, id4, id5, id9)
+        var itemListReserveNormal = mutableListOf<Items>(id0, id1, id2, id3, id4, id5, id9, id10)
         var itemListReserveRare = mutableListOf<Items>(id100, id101, id102, id103, id104, id105, id106, id107)
         var itemListReserveEpic = mutableListOf<Items>(id200, id201, id202, id203, id204, id205, id206, id207, id208, id209, id210, id211, id212, id213, id214, id215, id216, id217, id218)
         var itemListReserveLegendary = mutableListOf<Items>(id300, id301, id302, id303, id304, id305, id306, id307, id308, id309, id310, id311, id312, id313, id314, id315, id316)
-        var greyItems = mutableListOf<Int>(0, 1, 2, 3, 4, 5)
-        var blueItems = mutableListOf<Int>(100, 101, 102, 103, 104, 105, 106, 107)
-        var orangeItems = mutableListOf<Int>(200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217)
-        var purpleItems = mutableListOf<Int>(300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315)
+        var greyItems = mutableListOf<Int>(0, 1, 2, 3, 4, 10)
+        var blueItems = mutableListOf<Int>(100, 101, 102, 103, 104, 105)
+        var orangeItems = mutableListOf<Int>(200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218)
+        var purpleItems = mutableListOf<Int>(300, 301, 302, 303, 304, 305, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316)
 
 
         // secret shop ------------------------------------------------------------------

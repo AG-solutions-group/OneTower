@@ -37,28 +37,23 @@ class ShootPoisonTalent {
 
         GameActivity.companionList.readLockEnemy.lock ()
         try {
-            var enemyListIterator = GameActivity.companionList.enemyList.listIterator()
-            while (enemyListIterator.hasNext()) {
-                var enemy = enemyListIterator.next()
+            if (GameActivity.companionList.enemyList.isNotEmpty()) {
+                var enemy = GameActivity.companionList.enemyList.last()
 
                 fun xSpeed(): Int {
                     var speed = 0
-                    when (enemy.passed) {
-                        1.toByte() -> speed = (enemy.speed.toInt()) * (-1)
-                        2.toByte() -> speed = 0
-                        3.toByte() -> speed = (enemy.speed.toInt())
-                        4.toByte() -> speed = 0
+                    when (enemy.circleXMovement) {
+                        "xminus" -> speed = (enemy.speed.toInt()) * (-1)
+                        "xplus" -> speed = (enemy.speed.toInt())
                     }
                     return speed
                 }
 
                 fun ySpeed(): Int {
                     var speed = 0
-                    when (enemy.passed) {
-                        1.toByte() -> speed = 0
-                        2.toByte() -> speed = (enemy.speed.toInt()) * (-1)
-                        3.toByte() -> speed = 0
-                        4.toByte() -> speed = (enemy.speed.toInt())
+                    when (enemy.circleYMovement) {
+                        "yminus" -> speed = (enemy.speed.toInt()) * (-1)
+                        "yplus" -> speed = (enemy.speed.toInt())
                     }
                     return speed
                 }
@@ -75,12 +70,12 @@ class ShootPoisonTalent {
                     else (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / ny
 
 
-                if (cross(enemy)){
+                if (cross(enemy)) {
                     poisonCloudPosition = 2
-                }else if (poisonCloudPosition == 2){
+                } else if (poisonCloudPosition == 2) {
                     poisonCloud.x += 0
                     poisonCloud.y += 0
-                }else {
+                } else {
                     if (poisonCloud.x > (enemy.circle!!.x + xSpeed())) {
                         poisonCloud.x -= (nx * n)
                     } else {
@@ -92,10 +87,11 @@ class ShootPoisonTalent {
                     } else {
                         poisonCloud.y += (ny * n)
                     }
-                    break
-
-
                 }
+            } else {
+                poisonCloudPosition = 2
+                poisonCloud.x += 0
+                poisonCloud.y += 0
             }
         }finally {
             GameActivity.companionList.readLockEnemy.unlock()

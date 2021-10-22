@@ -18,6 +18,8 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var selected = false
     var towerPrimaryElement = "none"
     var towerLevelBool = false
+    var canBuild = false
+    var canBuildEach = false
 
     var particleDmg = 0f
     var particleDmgBool = false
@@ -32,6 +34,7 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var towerAttackSpeedShow = 0.0f
     var bonusCrit = 0.0f
     var overallCrit = 0.0f
+    var xpMulti = 1f
 
     var bonusmultiCrit = 1
     var overallMulticrit = 0
@@ -62,7 +65,7 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
 
     var overallBonusArmorPen = 0f
     var overallBonusMagicPen = 0f
-    var overallDmgImmune = 0.01f
+    var overallDmgImmune = 0f
     var bonusDmgImmune = 0f
     var bonusAntiHeal = 0f
 
@@ -79,16 +82,19 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var firstLastRandomText = "first"
     var towerFallingCount = 50
 
+    var disrupted = false
+    var disruptedCounter = 0
 
     // talent
     var talentPoints = 60
     var xpTower = 0f
     var xpGoal1 = 0f
-    var xpGoal2 = 6f
+    var xpGoal2 = 1f
     var towerLevel = 1
 
     // items
     var itemListBag = mutableListOf<Items>()
+    var itemListDisabled = mutableListOf<Items>()
     var bonusDamageMultiplyerItemLastStance = 0.0f
     var itemLastStance = 0f
     var itemBonusHitChance = 0.0f
@@ -111,6 +117,10 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var itemFastDraw = false
     var itemBoring = false
 
+    var luckyCharmCount = 0
+    var pirateItemCount = 0
+    var shotBounceTargetsStartItems = 1
+
 
     // xp
 
@@ -125,7 +135,7 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var experienceGainUtilsAura = false
     var experienceShareUtilsAura = false
     var experienceEachHit = false
-    var experienceDrop = false
+    var goldDrop = false
     var experienceCast = false
     var talentWizardLvlToDmg = false
     var experienceMoonlight = false
@@ -175,6 +185,7 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var darkTalentLaser = 0f
     var darkDmgDebuff = 0f
     var darkPermaKill = 0.0f
+    var darkSoulCollector = false
 
     // earth
     var earthRow1Item1 = 0
@@ -228,6 +239,9 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var slowAura = 0.0f
     var slowExtraMgcDmg = false
     var iceNovaCounter = 0
+    var iceShard = 0
+    var shootListIce = mutableListOf<ShootIceTalent>()
+    var iceShardCounter = 0
 
     // moon
     var moonRow1Item1 = 0
@@ -286,12 +300,10 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var windTalentDebuff = 1.0f
     var windTowerBonusTowerRange = 0
     var pushBack = 0.0f
-    var tornadoRadius = 0f
-    var tornadoCounter = 0
     var bonusSpeedWindTalent = 0.0f
     var windUltimatePercent = 0f
     var bonusSpeedWindTalentPercent = 0.0f
-    var tornadoTimer = 1000
+
 
     // wizard
     var wizardRow1Item1 = 0
@@ -324,6 +336,11 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
 
 
 class DmgDisplay (var indexx: Enemy, var dmgReceived: String, var dmgCount: Int, var dmgCountPosition: Int, var paint: Paint, var positionX: Int, var positionY: Int){
+
+    var displayDmgDelete = false
+}
+
+class DropDisplay (var indexx: Int, var indexy: Int, var icon: String, var dmgCount: Int, var dmgCountPosition: Int){
 
     var displayDmgDelete = false
 }

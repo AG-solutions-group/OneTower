@@ -1,14 +1,16 @@
 package com.agsolutions.td.Fragments
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
+import com.agsolutions.td.*
 import com.agsolutions.td.GameActivity.Companion.companionList
-import com.agsolutions.td.Items
-import com.agsolutions.td.R
 import kotlinx.android.synthetic.main.fragment_dark_talent.*
+import kotlinx.android.synthetic.main.fragment_earth_talent.*
 
 
 class DarkTalentFragment : Fragment() {
@@ -23,11 +25,19 @@ class DarkTalentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dark_talent, container, false)
+        var mainLayout = inflater.inflate(R.layout.fragment_dark_talent, container, false)
+
+        mainLayout.doOnLayout {
+            update()
+        }
+
+        return mainLayout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        companionList.focusTalentFragment = true
 
         darkRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].darkRow1Item1.toString()
         darkRow1Item2ShowTV.text = companionList.towerList[companionList.towerClickID].darkRow1Item2.toString()
@@ -38,11 +48,26 @@ class DarkTalentFragment : Fragment() {
         darkRow3Item3ShowTV.text = companionList.towerList[companionList.towerClickID].darkRow3Item3.toString()
         darkRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].darkRow4Item1.toString()
 
+        if (companionList.towerList[companionList.towerClickID].darkRow1Item1 == 1) {
+            darkRow1Item2IB.isClickable = false
+            darkRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].darkRow1Item2 == 1) {
+            darkRow1Item1IB.isClickable = false
+            darkRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+        }
+
         if (companionList.towerList[companionList.towerClickID].darkRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].darkRow1Item2 == 1) backgroundDarkRow2.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].darkRow2Item1 + companionList.towerList[companionList.towerClickID].darkRow2Item2 >= 3) backgroundDarkRow3.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].darkRow3Item1 + companionList.towerList[companionList.towerClickID].darkRow3Item2 + companionList.towerList[companionList.towerClickID].darkRow3Item3 >= 3) backgroundDarkRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
         darkRow1Item1IB.setOnClickListener() {
+
+            var point = IntArray(2)
+            darkUpgradeBTN.getLocationInWindow(point)
+            UiViewTalentWindow.talentX = point[0].toFloat()
+            UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+            uiViewTalentDark.invalidate()
 
             setImagePick(11)
 
@@ -52,10 +77,17 @@ class DarkTalentFragment : Fragment() {
 
             darkUpgradeBTN.setOnClickListener() {
 
+                companionList.focusTalentFragment = false
+                uiViewTalentDark.invalidate()
+
                 if (companionList.towerList[companionList.towerClickID].darkRow1Item1 + companionList.towerList[companionList.towerClickID].darkRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                     companionList.towerList[companionList.towerClickID].darkRow1Item1 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].darkRow1Item1 == 1) companionList.towerList[companionList.towerClickID].towerLevelBool = true
+                    if (companionList.towerList[companionList.towerClickID].darkRow1Item1 == 1){
+                        companionList.towerList[companionList.towerClickID].towerLevelBool = true
+                        darkRow1Item2IB.isClickable = false
+                        darkRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                     if (companionList.towerList[companionList.towerClickID].darkRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].darkRow1Item2 == 1) backgroundDarkRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -75,10 +107,17 @@ class DarkTalentFragment : Fragment() {
 
             darkUpgradeBTN.setOnClickListener() {
 
+                companionList.focusTalentFragment = false
+                uiViewTalentDark.invalidate()
+
                 if (companionList.towerList[companionList.towerClickID].darkRow1Item1 + companionList.towerList[companionList.towerClickID].darkRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                     companionList.towerList[companionList.towerClickID].darkRow1Item2 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].darkRow1Item2 == 1) companionList.towerList[companionList.towerClickID].experienceLvl = true
+                    if (companionList.towerList[companionList.towerClickID].darkRow1Item2 == 1) {
+                        companionList.towerList[companionList.towerClickID].experienceLvl = true
+                        darkRow1Item1IB.isClickable = false
+                        darkRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                     if (companionList.towerList[companionList.towerClickID].darkRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].darkRow1Item2 == 1) backgroundDarkRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -311,8 +350,7 @@ class DarkTalentFragment : Fragment() {
                             companionList.towerList[companionList.towerClickID].bonusDmgImmune += 0.01f
                         }
                         if (companionList.towerList[companionList.towerClickID].darkRow4Item1 == 3) {
-                            companionList.itemList.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
-                            companionList.insertItem += 1
+                            companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
                             companionList.towerList[companionList.towerClickID].darkPermaKill += 0.25f
                             companionList.towerList[companionList.towerClickID].bonusDmgImmune += 0.01f
                         }
@@ -321,6 +359,23 @@ class DarkTalentFragment : Fragment() {
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
+            }
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        update()
+    }
+
+    fun update () {
+        if (GameActivity.companionList.focusTalentFragment) {
+            if (GameActivity.companionList.hintsBool) {
+                var point = IntArray(2)
+                darkRow1Item1IB.getLocationInWindow(point)
+                UiViewTalentWindow.talentX = point[0].toFloat()
+                UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+                uiViewTalentDark.invalidate()
             }
         }
     }
@@ -346,6 +401,15 @@ class DarkTalentFragment : Fragment() {
             32 -> darkRow3Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             33 -> darkRow3Item3IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             41 -> darkRow4Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+        }
+
+        if (companionList.towerList[companionList.towerClickID].darkRow1Item1 == 1) {
+            darkRow1Item2IB.isClickable = false
+            darkRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].darkRow1Item2 == 1) {
+            darkRow1Item1IB.isClickable = false
+            darkRow1Item1IBPick.setImageResource(R.drawable.crossedout)
         }
     }
 

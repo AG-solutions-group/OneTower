@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.agsolutions.td.UiViewStartItems.Companion.talentRecyclerElementX
+import com.agsolutions.td.UiViewStartItems.Companion.talentRecyclerPickX
 import com.agsolutions.td.UiViewStartItems.Companion.talentRecyclerX
 import com.agsolutions.td.Utils.round
 import kotlinx.android.synthetic.main.start_items.*
@@ -58,7 +60,15 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartT
             val posXY = IntArray(2)
             recyclerStartItem.getChildAt(0).getLocationInWindow(posXY)
             talentRecyclerX = posXY[0].toFloat()
-            UiViewStartItems.talentRecyclerY = (posXY[1] + (50 * (GameActivity.companionList.scaleScreen / 10))).toFloat()
+            UiViewStartItems.talentRecyclerY = (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
+            uiViewStartItem.invalidate()
+        }
+
+        recyclerStartTower.doOnLayout {
+            val posXY = IntArray(2)
+            recyclerStartTower.getChildAt(0).getLocationInWindow(posXY)
+            talentRecyclerElementX = posXY[0].toFloat()
+            UiViewStartItems.talentRecyclerElementY = (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
             uiViewStartItem.invalidate()
         }
 
@@ -107,13 +117,15 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartT
         showAdapter.notifyDataSetChanged()
 
         clicks1 = true
+        talentRecyclerX = 0f
+        uiViewStartItem.invalidate()
         position1 = position
         if (clicks1 && clicks2) {
             closeStartItemsBTN.visibility = View.VISIBLE
             val posXY = IntArray(2)
             closeStartItemsBTN.getLocationInWindow(posXY)
-            talentRecyclerX = posXY[0].toFloat()
-            UiViewStartItems.talentRecyclerY = (posXY[1] + (50 * (GameActivity.companionList.scaleScreen / 10))).toFloat()
+            talentRecyclerPickX = posXY[0].toFloat()
+            UiViewStartItems.talentRecyclerPickY = (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
             uiViewStartItem.invalidate()
 
             closeStartItemsBTN.setOnClickListener() {
@@ -153,14 +165,39 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartT
         GameActivity.companionList.startTowerList[position].imageOverlay = R.drawable.overlaypick
         towerAdapter.notifyDataSetChanged()
 
+        GameActivity.companionList.itemListStartItems.removeAll(GameActivity.companionList.itemListStartItems)
+
+        GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.nameicon, GameActivity.companionList.startTowerList[position].name.toString()))
+        if (GameActivity.companionList.startTowerList[position].dmg > 0) GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.swordandwandicon, GameActivity.companionList.startTowerList[position].dmg.round(2)
+            .toString()))
+        if (GameActivity.companionList.startTowerList[position].crit > 0) GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.criticon, GameActivity.companionList.startTowerList[position].crit.round(2)
+            .toString()))
+        if (GameActivity.companionList.startTowerList[position].critDmg > 0) GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.critdmgicon, GameActivity.companionList.startTowerList[position].critDmg.round(2)
+            .toString()))
+        if (GameActivity.companionList.startTowerList[position].speed > 0) GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.bowicon, GameActivity.companionList.startTowerList[position].speed.round(2)
+            .toString()))
+        if (GameActivity.companionList.startTowerList[position].special.isNotBlank()) {
+            GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, GameActivity.companionList.startTowerList[position].special.toString()))
+            if (GameActivity.companionList.startTowerList[position].specialFloat != 0f) GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, GameActivity.companionList.startTowerList[position].specialFloat.round(2)
+                .toString()))
+        }
+        if (GameActivity.companionList.startTowerList[position].special2.isNotBlank()) {
+            GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, GameActivity.companionList.startTowerList[position].special2.toString()))
+            if (GameActivity.companionList.startTowerList[position].specialFloat2 != 0f) GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, GameActivity.companionList.startTowerList[position].specialFloat2.round(2)
+                .toString()))
+        }
+        showAdapter.notifyDataSetChanged()
+
         clicks2 = true
+        talentRecyclerElementX = 0f
+        uiViewStartItem.invalidate()
         position2 = position
         if (clicks1 && clicks2) {
             closeStartItemsBTN.visibility = View.VISIBLE
             val posXY = IntArray(2)
             closeStartItemsBTN.getLocationInWindow(posXY)
-            talentRecyclerX = posXY[0].toFloat()
-            UiViewStartItems.talentRecyclerY = (posXY[1] + (50 * (GameActivity.companionList.scaleScreen / 10))).toFloat()
+            talentRecyclerPickX = posXY[0].toFloat()
+            UiViewStartItems.talentRecyclerPickY = (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
             uiViewStartItem.invalidate()
 
 

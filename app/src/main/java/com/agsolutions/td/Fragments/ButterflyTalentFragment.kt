@@ -1,14 +1,14 @@
 package com.agsolutions.td.Fragments
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
-import com.agsolutions.td.GameActivity
+import com.agsolutions.td.*
 import com.agsolutions.td.GameActivity.Companion.companionList
-import com.agsolutions.td.Items
-import com.agsolutions.td.R
 import kotlinx.android.synthetic.main.fragment_butterfly_talent.*
 
 
@@ -24,12 +24,19 @@ class ButterflyTalentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_butterfly_talent, container, false)
+
+        var mainLayout = inflater.inflate(R.layout.fragment_butterfly_talent, container, false)
+
+        mainLayout.doOnLayout {
+            update()
+        }
+        return mainLayout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        companionList.focusTalentFragment = true
 
         butterflyRow1Item1ShowTV.text = GameActivity.companionList.towerList[companionList.towerClickID].butterflyRow1Item1.toString()
         butterflyRow1Item2ShowTV.text = GameActivity.companionList.towerList[companionList.towerClickID].butterflyRow1Item2.toString()
@@ -39,29 +46,52 @@ class ButterflyTalentFragment : Fragment() {
         butterflyRow3Item2ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow3Item2.toString()
         butterflyRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow4Item1.toString()
 
+        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1) {
+            butterflyRow1Item2IB.isClickable = false
+            butterflyRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) {
+            butterflyRow1Item1IB.isClickable = false
+            butterflyRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+        }
+
         if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].butterflyRow2Item1 + companionList.towerList[companionList.towerClickID].butterflyRow2Item2 >= 3) backgroundButterflyRow3.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].butterflyRow3Item1 + companionList.towerList[companionList.towerClickID].butterflyRow3Item2 >= 3) backgroundButterflyRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
         butterflyRow1Item1IB.setOnClickListener() {
 
-            setImagePick (11)
+            var point = IntArray(2)
+            butterflyUpgradeBTN.getLocationInWindow(point)
+            UiViewTalentWindow.talentX = point[0].toFloat()
+            UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+            uiViewTalentButterfly.invalidate()
 
-            butterflyNameDisplayTalentTV.text = "Killer"
-            butterflyDisplayTalentTV.text =
-                "Increases experience gain from kills increased by 10%."
-            butterflyUpgradeBTN.isClickable = true
+                setImagePick(11)
+
+                butterflyNameDisplayTalentTV.text = "Killer"
+                butterflyDisplayTalentTV.text =
+                    "Increases experience gain from kills increased by 10%."
+                butterflyUpgradeBTN.isClickable = true
 
                 butterflyUpgradeBTN.setOnClickListener() {
+
+                    companionList.focusTalentFragment = false
+                    uiViewTalentButterfly.invalidate()
 
                     if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 + companionList.towerList[companionList.towerClickID].butterflyRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                         companionList.towerList[companionList.towerClickID].butterflyRow1Item1 += 1
 
-                        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1) companionList.towerList[companionList.towerClickID].experienceKill += 0.1f
+                        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1) {
+                            companionList.towerList[companionList.towerClickID].experienceKill += 0.1f
+                            butterflyRow1Item2IB.isClickable = false
+                            butterflyRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+                        }
 
                         if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                        butterflyRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow1Item1.toString()
+                        butterflyRow1Item1ShowTV.text =
+                            companionList.towerList[companionList.towerClickID].butterflyRow1Item1.toString()
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
@@ -69,27 +99,34 @@ class ButterflyTalentFragment : Fragment() {
 
         butterflyRow1Item2IB.setOnClickListener() {
 
-            setImagePick (12)
+                setImagePick(12)
 
-            butterflyNameDisplayTalentTV.text = "Bubble Pop"
-            butterflyDisplayTalentTV.text =
-                "Gain 10% of enemies experience each time Mark of the Butterfly is being triggered."
-            butterflyUpgradeBTN.isClickable = true
+                butterflyNameDisplayTalentTV.text = "Bubble Pop"
+                butterflyDisplayTalentTV.text =
+                    "Gain 10% of enemies experience each time Mark of the Butterfly is being triggered."
+                butterflyUpgradeBTN.isClickable = true
 
-            butterflyUpgradeBTN.setOnClickListener() {
+                butterflyUpgradeBTN.setOnClickListener() {
 
-                if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 + companionList.towerList[companionList.towerClickID].butterflyRow1Item2 < 1  && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
-                    companionList.towerList[companionList.towerClickID].butterflyRow1Item2 += 1
+                    companionList.focusTalentFragment = false
+                    uiViewTalentButterfly.invalidate()
 
-                    if (companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) companionList.towerList[companionList.towerClickID].experienceButterflyPop += 0.1f
+                    if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 + companionList.towerList[companionList.towerClickID].butterflyRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
+                        companionList.towerList[companionList.towerClickID].butterflyRow1Item2 += 1
 
+                        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) {
+                            companionList.towerList[companionList.towerClickID].experienceButterflyPop += 0.1f
+                            butterflyRow1Item1IB.isClickable = false
+                            butterflyRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+                        }
 
-                    if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                    butterflyRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow1Item2.toString()
-                    companionList.towerList[companionList.towerClickID].talentPoints -= 1
+                        butterflyRow1Item1ShowTV.text =
+                            companionList.towerList[companionList.towerClickID].butterflyRow1Item2.toString()
+                        companionList.towerList[companionList.towerClickID].talentPoints -= 1
+                    }
                 }
-            }
         }
 
             butterflyRow2Item1IB.setOnClickListener() {
@@ -225,7 +262,7 @@ class ButterflyTalentFragment : Fragment() {
                     "At mark 3/3: Shoots an additional bullet for 75/100/125% damage. +1 bag space item at 3/3."
                 butterflyUpgradeBTN.isClickable = false
 
-                if (companionList.towerList[companionList.towerClickID].butterflyRow3Item1 == 3) {
+                if (companionList.towerList[companionList.towerClickID].butterflyRow3Item1 + companionList.towerList[companionList.towerClickID].butterflyRow3Item2 >= 3) {
                     butterflyUpgradeBTN.isClickable = true
 
                     butterflyUpgradeBTN.setOnClickListener() {
@@ -243,8 +280,7 @@ class ButterflyTalentFragment : Fragment() {
                             if (companionList.towerList[companionList.towerClickID].butterflyRow4Item1 == 3) {
                                 companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShot = true
                                 companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShotDmg = 1.25f
-                                companionList.itemList.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
-                                companionList.insertItem += 1
+                                companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
                             }
 
                             butterflyRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow4Item1.toString()
@@ -255,6 +291,23 @@ class ButterflyTalentFragment : Fragment() {
 
             }
         }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        update()
+    }
+
+    fun update () {
+        if (GameActivity.companionList.focusTalentFragment) {
+            if (GameActivity.companionList.hintsBool) {
+                var point = IntArray(2)
+                butterflyRow1Item1IB.getLocationInWindow(point)
+                UiViewTalentWindow.talentX = point[0].toFloat()
+                UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+                uiViewTalentButterfly.invalidate()
+            }
+        }
+    }
 
     fun setImagePick (pick: Int) {
 
@@ -274,6 +327,15 @@ class ButterflyTalentFragment : Fragment() {
             31 -> butterflyRow3Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             32 -> butterflyRow3Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             41 -> butterflyRow4Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+        }
+
+        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1) {
+            butterflyRow1Item2IB.isClickable = false
+            butterflyRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) {
+            butterflyRow1Item1IB.isClickable = false
+            butterflyRow1Item1IBPick.setImageResource(R.drawable.crossedout)
         }
     }
 

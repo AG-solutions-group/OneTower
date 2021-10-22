@@ -7,9 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 
-class SwipeItem (var adapter: ItemAdapter) : ItemTouchHelper.SimpleCallback (0, ItemTouchHelper.DOWN
-   )
-        {
+class SwipeItem (var adapter: ItemAdapter) : ItemTouchHelper.SimpleCallback (0, ItemTouchHelper.DOWN) {
 
             override fun getMovementFlags(
                 recyclerView: RecyclerView,
@@ -17,8 +15,9 @@ class SwipeItem (var adapter: ItemAdapter) : ItemTouchHelper.SimpleCallback (0, 
             ): Int {
                 Log.d("itemBeingMoved", GameActivity.companionList.itemBeingMoved.toString())
                 var pos = viewHolder.absoluteAdapterPosition
-
-                if (pos >= 0) {
+                if (pos < 0 || pos >= GameActivity.companionList.itemList.size){
+                    return 0
+                } else  {
 
                     if (GameActivity.companionList.itemList[pos].id == 2100 || GameActivity.companionList.itemList[pos].id == 2101 || GameActivity.companionList.itemList[pos].id == 2102 || GameActivity.companionList.itemList[pos].id == 2103 || GameActivity.companionList.itemList[pos].id == 2104 || GameActivity.companionList.itemList[pos].id == 2105 || GameActivity.companionList.itemList[pos].id == 2106 || GameActivity.companionList.itemList[pos].id == 2107 || GameActivity.companionList.itemList[pos].id == 2108 || GameActivity.companionList.itemList[pos].id == 2109 ||
                         GameActivity.companionList.itemList[pos].id == 2200 || GameActivity.companionList.itemList[pos].id == 2201 || GameActivity.companionList.itemList[pos].id == 2202 || GameActivity.companionList.itemList[pos].id == 2203 || GameActivity.companionList.itemList[pos].id == 2204 || GameActivity.companionList.itemList[pos].id == 2205 || GameActivity.companionList.itemList[pos].id == 2206 || GameActivity.companionList.itemList[pos].id == 2207 || GameActivity.companionList.itemList[pos].id == 2208 || GameActivity.companionList.itemList[pos].id == 2209 ||
@@ -55,11 +54,13 @@ class SwipeItem (var adapter: ItemAdapter) : ItemTouchHelper.SimpleCallback (0, 
                             } else {
                                 if (GameActivity.companionList.gold < GameActivity.companionList.itemList[pos].goldCost) return 0
                             }
+                        } else if(GameActivity.companionList.itemList[pos].id == 5){
+
                         } else return 0
 
                         return super.getMovementFlags(recyclerView, viewHolder)
                     }
-                }else return 0
+                }
             }
 
 

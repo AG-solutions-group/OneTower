@@ -94,9 +94,10 @@ class TutorialStart : AppCompatActivity() {
         setContentView(R.layout.tutorial_start)
 
 
-        window.setLayout((600.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (900.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
+        window.setLayout((600.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
+        checkBoxHints.isChecked = !GameActivity.companionList.hintsBool
         checkBoxHints.setOnCheckedChangeListener { _, isChecked ->
             GameActivity.companionList.hintsBool = !isChecked
         }

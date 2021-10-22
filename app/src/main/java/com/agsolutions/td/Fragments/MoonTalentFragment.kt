@@ -1,14 +1,15 @@
 package com.agsolutions.td.Fragments
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
-import com.agsolutions.td.ActiveAbility
+import com.agsolutions.td.*
 import com.agsolutions.td.GameActivity.Companion.companionList
-import com.agsolutions.td.Items
-import com.agsolutions.td.R
+import kotlinx.android.synthetic.main.fragment_earth_talent.*
 import kotlinx.android.synthetic.main.fragment_moon_talent.*
 
 
@@ -24,11 +25,19 @@ class MoonTalentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_moon_talent, container, false)
+        var mainLayout = inflater.inflate(R.layout.fragment_moon_talent, container, false)
+
+        mainLayout.doOnLayout {
+            update()
+        }
+
+        return mainLayout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        companionList.focusTalentFragment = true
 
         moonRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].moonRow1Item1.toString()
         moonRow1Item2ShowTV.text = companionList.towerList[companionList.towerClickID].moonRow1Item2.toString()
@@ -38,11 +47,26 @@ class MoonTalentFragment : Fragment() {
         moonRow3Item2ShowTV.text = companionList.towerList[companionList.towerClickID].moonRow3Item2.toString()
         moonRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].moonRow4Item1.toString()
 
+        if (companionList.towerList[companionList.towerClickID].moonRow1Item1 == 1) {
+            moonRow1Item2IB.isClickable = false
+            moonRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].moonRow1Item2 == 1) {
+            moonRow1Item1IB.isClickable = false
+            moonRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+        }
+
         if (companionList.towerList[companionList.towerClickID].moonRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].moonRow1Item2 == 1) backgroundMoonRow2.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].moonRow2Item1 + companionList.towerList[companionList.towerClickID].moonRow2Item2 >= 3) backgroundMoonRow3.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].moonRow3Item1 + companionList.towerList[companionList.towerClickID].moonRow3Item2 >= 3) backgroundMoonRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
         moonRow1Item1IB.setOnClickListener() {
+
+            var point = IntArray(2)
+            moonUpgradeBTN.getLocationInWindow(point)
+            UiViewTalentWindow.talentX = point[0].toFloat()
+            UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+            uiViewTalentMoon.invalidate()
 
             setImagePick(11)
 
@@ -52,10 +76,17 @@ class MoonTalentFragment : Fragment() {
 
             moonUpgradeBTN.setOnClickListener() {
 
+                companionList.focusTalentFragment = false
+                uiViewTalentMoon.invalidate()
+
                 if (companionList.towerList[companionList.towerClickID].moonRow1Item1 + companionList.towerList[companionList.towerClickID].moonRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                     companionList.towerList[companionList.towerClickID].moonRow1Item1 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].moonRow1Item1 == 1) companionList.towerList[companionList.towerClickID].experienceMoonlight = true
+                    if (companionList.towerList[companionList.towerClickID].moonRow1Item1 == 1){
+                        companionList.towerList[companionList.towerClickID].experienceMoonlight = true
+                        moonRow1Item2IB.isClickable = false
+                        moonRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                     if (companionList.towerList[companionList.towerClickID].moonRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].moonRow1Item2 == 1) backgroundMoonRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -75,10 +106,17 @@ class MoonTalentFragment : Fragment() {
 
             moonUpgradeBTN.setOnClickListener() {
 
+                companionList.focusTalentFragment = false
+                uiViewTalentMoon.invalidate()
+
                 if (companionList.towerList[companionList.towerClickID].moonRow1Item1 + companionList.towerList[companionList.towerClickID].moonRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                     companionList.towerList[companionList.towerClickID].moonRow1Item2 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].moonRow1Item2 == 1) companionList.towerList[companionList.towerClickID].experienceMoonNight = true
+                    if (companionList.towerList[companionList.towerClickID].moonRow1Item2 == 1){
+                        companionList.towerList[companionList.towerClickID].experienceMoonNight = true
+                        moonRow1Item1IB.isClickable = false
+                        moonRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                     if (companionList.towerList[companionList.towerClickID].moonRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].moonRow1Item2 == 1) backgroundMoonRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -241,8 +279,7 @@ class MoonTalentFragment : Fragment() {
                         if (companionList.towerList[companionList.towerClickID].moonRow4Item1 == 3) {
                             companionList.moonTalentEvadeNight = true
                             if (companionList.endlessNight < 3) companionList.endlessNight += 1
-                            companionList.itemList.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
-                            companionList.insertItem += 1
+                            companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
                         }
 
                         moonRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].moonRow4Item1.toString()
@@ -251,8 +288,25 @@ class MoonTalentFragment : Fragment() {
                 }
             }
         }
-
     }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        update()
+    }
+
+    fun update () {
+        if (GameActivity.companionList.focusTalentFragment) {
+            if (GameActivity.companionList.hintsBool) {
+                var point = IntArray(2)
+                moonRow1Item1IB.getLocationInWindow(point)
+                UiViewTalentWindow.talentX = point[0].toFloat()
+                UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+                uiViewTalentMoon.invalidate()
+            }
+        }
+    }
+
     fun setImagePick (pick: Int) {
 
         moonRow1Item1IBPick.setImageResource(R.drawable.overlaytransparent)
@@ -271,6 +325,14 @@ class MoonTalentFragment : Fragment() {
             31 -> moonRow3Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             32 -> moonRow3Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             41 -> moonRow4Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+        }
+        if (companionList.towerList[companionList.towerClickID].moonRow1Item1 == 1) {
+            moonRow1Item2IB.isClickable = false
+            moonRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].moonRow1Item2 == 1) {
+            moonRow1Item1IB.isClickable = false
+            moonRow1Item1IBPick.setImageResource(R.drawable.crossedout)
         }
     }
 }

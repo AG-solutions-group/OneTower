@@ -2,7 +2,6 @@ package com.agsolutions.td
 
 import android.graphics.Canvas
 import android.graphics.Color
-import com.agsolutions.td.Main.MainActivity
 import java.io.Serializable
 
 class Shoot (): Serializable {
@@ -28,6 +27,7 @@ class Shoot (): Serializable {
     var towerId = 0
     var hitEnemyId = -1
     var hitEnemyIdChain = -1
+    var collisionCount = 0
 
     fun draw(canvas: Canvas) {
 
@@ -36,8 +36,6 @@ class Shoot (): Serializable {
     }
 
     fun update() {
-
-          if (sniper) bulletSpeed = 15f
 
             //   var crossesAllListIteratorX = crossesAllList.listIterator()
             //   while (crossesAllListIteratorX.hasNext()) {
@@ -55,7 +53,7 @@ class Shoot (): Serializable {
                     broken = 1
                 }
             } else if (chainLightning) {
-                if(alreadyBounced > 0){
+                if(alreadyBounced > 0 && GameActivity.companionList.enemyList.isNotEmpty()) {
                     if (idchain >= 0 && idchain < GameActivity.companionList.enemyList.size && alreadyBouncedResetChain && idchain != hitEnemyIdChain) {
                         movement(GameActivity.companionList.enemyList[idchain])
                     } else {
@@ -127,7 +125,7 @@ class Shoot (): Serializable {
                         broken = 1
                     }
                 }
-            }else if (GameActivity.companionList.towerList[towerId].towerPrimaryElement == "wind" && multiShotBullet) {
+            }else if (GameActivity.companionList.towerList[towerId].towerPrimaryElement == "wind" && multiShotBullet && GameActivity.companionList.enemyList.isNotEmpty()) {
                 if (firstEnemyMultiBool && GameActivity.companionList.enemyList!!.contains(firstEnemyMulti)){
                     movementMulti(firstEnemyMulti!!)
                 }
@@ -151,9 +149,10 @@ class Shoot (): Serializable {
             } else if (alreadyBounced > 0 && GameActivity.companionList.towerList[towerId].towerPrimaryElement == "moon") {
                 if (id >= 0 && id < GameActivity.companionList.enemyList.size && alreadyBouncedReset && id != hitEnemyId) {
                     movement(GameActivity.companionList.enemyList[id])
-                } else {
+                } else if (GameActivity.companionList.enemyList.isNotEmpty()) {
                     var squaredDistancePlaceholder = 185f * 185f
                     var squareDistanceList = mutableListOf<Enemy>()
+
                     GameActivity.companionList.readLockEnemy.lock()
                     try {
                     var enemyListIterator = GameActivity.companionList.enemyList.listIterator()
@@ -203,7 +202,13 @@ class Shoot (): Serializable {
                         id = GameActivity.companionList.enemyList.indexOf(enemm)
                         alreadyBouncedReset = true
                         squareDistanceList.removeAll(squareDistanceList)
-                    } else broken = 1
+                    } else {
+                        GameActivity.companionList.towerList[towerId].randomEnemyChainBool = true
+                        broken = 1
+                    }
+                } else {
+                    GameActivity.companionList.towerList[towerId].randomEnemyChainBool = true
+                    broken = 1
                 }
             } else {
                 if (GameActivity.companionList.towerList[towerId].crossesAllList.isNotEmpty()) {
@@ -234,69 +239,86 @@ class Shoot (): Serializable {
                                     var crossesAllListIteratorZ = GameActivity.companionList.towerList[towerId].crossesAllList.listIterator()
                                     while (crossesAllListIteratorZ.hasNext()) {
                                         var it = crossesAllListIteratorZ.next()
-                                        when (it.passed) {
-                                             4.toByte() -> {
+                                        when (it.path[it.point].third) {
+                                            1 -> {
                                                 var x =
                                                     Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                                 x.circle!!.x = it.circle!!.x
                                                 x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
-                                                 GameActivity.companionList.advancedList4.add(x)
+                                                x.pickEnemyID =
+                                                    GameActivity.companionList.enemyList.indexOf(it)
+                                                GameActivity.companionList.advancedList1.add(x)
                                             }
-                                            3.toByte() -> {
+                                            2 -> {
                                                 var x =
                                                     Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                                 x.circle!!.x = it.circle!!.x
                                                 x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
-                                                GameActivity.companionList.advancedList3.add(x)
-                                            }
-                                            2.toByte() -> {
-                                                var x =
-                                                    Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
-                                                x.circle!!.x = it.circle!!.x
-                                                x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
+                                                x.pickEnemyID =
+                                                    GameActivity.companionList.enemyList.indexOf(it)
                                                 GameActivity.companionList.advancedList2.add(x)
                                             }
-                                            1.toByte() -> {
+                                            3 -> {
                                                 var x =
                                                     Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                                 x.circle!!.x = it.circle!!.x
                                                 x.circle!!.y = it.circle!!.y
-                                                x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
-                                                GameActivity.companionList.advancedList1.add(x)
+                                                x.pickEnemyID =
+                                                    GameActivity.companionList.enemyList.indexOf(it)
+                                                GameActivity.companionList.advancedList3.add(x)
+                                            }
+                                            4 -> {
+                                                var x =
+                                                    Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
+                                                x.circle!!.x = it.circle!!.x
+                                                x.circle!!.y = it.circle!!.y
+                                                x.pickEnemyID =
+                                                    GameActivity.companionList.enemyList.indexOf(it)
+                                                GameActivity.companionList.advancedList4.add(x)
+                                            }
+                                            5 -> {
+                                                var x =
+                                                    Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
+                                                x.circle!!.x = it.circle!!.x
+                                                x.circle!!.y = it.circle!!.y
+                                                x.pickEnemyID =
+                                                    GameActivity.companionList.enemyList.indexOf(it)
+                                                GameActivity.companionList.advancedList5.add(x)
                                             }
                                         }
                                     }
-                                    } finally {
-                                        GameActivity.companionList.readLockEnemy.unlock()
-                                    }
-                                    if (GameActivity.companionList.advancedList4.isNotEmpty()) {
-                                        for (it in GameActivity.companionList.advancedList4) {
+                                    if (GameActivity.companionList.advancedList5.isNotEmpty()) {
+                                        for (it in GameActivity.companionList.advancedList5) {
                                             if (it.circle!!.y > place) {
                                                 place = it.circle!!.y
                                                 use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                             }
                                         }
-                                    } else if (GameActivity.companionList.advancedList3.isNotEmpty()) {
-                                        for (it in GameActivity.companionList.advancedList3) {
+                                    } else if (GameActivity.companionList.advancedList4.isNotEmpty()) {
+                                        for (it in GameActivity.companionList.advancedList4) {
                                             if (it.circle!!.x > place) {
                                                 place = it.circle!!.x
                                                 use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                             }
                                         }
+                                    } else if (GameActivity.companionList.advancedList3.isNotEmpty()) {
+                                        for (it in GameActivity.companionList.advancedList3) {
+                                            if (it.circle!!.y < place2) {
+                                                place = it.circle!!.y
+                                                use = GameActivity.companionList.enemyList[it.pickEnemyID]
+                                            }
+                                        }
                                     } else if (GameActivity.companionList.advancedList2.isNotEmpty()) {
                                         for (it in GameActivity.companionList.advancedList2) {
-                                            if (it.circle!!.y < place2) {
-                                                place2 = it.circle!!.y
+                                            if (it.circle!!.x < place2) {
+                                                place2 = it.circle!!.x
                                                 use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                             }
                                         }
                                     } else if (GameActivity.companionList.advancedList1.isNotEmpty()) {
                                         for (it in GameActivity.companionList.advancedList1) {
-                                            if (it.circle!!.x < place2) {
-                                                place2 = it.circle!!.x
+                                            if (it.circle!!.y < place2) {
+                                                place2 = it.circle!!.y
                                                 use = GameActivity.companionList.enemyList[it.pickEnemyID]
                                             }
                                         }
@@ -306,36 +328,40 @@ class Shoot (): Serializable {
                                         GameActivity.companionList.towerList[towerId].randomEnemyForShot = use!!
                                         movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
                                         GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = false
+                                        GameActivity.companionList.advancedList5.removeAll(GameActivity.companionList.advancedList5)
                                         GameActivity.companionList.advancedList4.removeAll(GameActivity.companionList.advancedList4)
                                         GameActivity.companionList.advancedList3.removeAll(GameActivity.companionList.advancedList3)
                                         GameActivity.companionList.advancedList2.removeAll(GameActivity.companionList.advancedList2)
                                         GameActivity.companionList.advancedList1.removeAll(GameActivity.companionList.advancedList1)
                                     } else {
                                     }
+                                    } finally {
+                                        GameActivity.companionList.readLockEnemy.unlock()
+                                    }
                                 } else movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
                             } else if (GameActivity.companionList.towerList[towerId].firstLastRandom == 1) {
                                 if (GameActivity.companionList.towerList[towerId].randomEnemyForShotBool){
                                 for (it in GameActivity.companionList.enemyList) {
                                     when {
-                                        it.passed == 1.toByte() && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
+                                        it.circleXMovement == "xminus" && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
                                             GameActivity.companionList.towerList[towerId].randomEnemyForShot = it
                                             movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
                                             GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = false
                                             break
                                         }
-                                        it.passed == 2.toByte() && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
+                                        it.circleYMovement == "yminus" && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
                                             GameActivity.companionList.towerList[towerId].randomEnemyForShot = it
                                             movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
                                             GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = false
                                             break
                                         }
-                                        it.passed == 3.toByte() && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
+                                        it.circleXMovement == "xplus" && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
                                             GameActivity.companionList.towerList[towerId].randomEnemyForShot = it
                                             movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
                                             GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = false
                                             break
                                         }
-                                        it.passed == 4.toByte() && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
+                                        it.circleYMovement == "yplus" && GameActivity.companionList.towerList[towerId].crossesAllList.contains(it) -> {
                                             GameActivity.companionList.towerList[towerId].randomEnemyForShot = it
                                             movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
                                             GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = false
@@ -355,16 +381,8 @@ class Shoot (): Serializable {
                                 var crossesAllListIteratorZ = GameActivity.companionList.towerList[towerId].crossesAllList.listIterator()
                                 while (crossesAllListIteratorZ.hasNext()) {
                                     var it = crossesAllListIteratorZ.next()
-                                    when (it.passed) {
-                                        4.toByte() -> {
-                                            var x =
-                                                Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
-                                            x.circle!!.x = it.circle!!.x
-                                            x.circle!!.y = it.circle!!.y
-                                            x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
-                                            GameActivity.companionList.advancedList4.add(x)
-                                        }
-                                        3.toByte() -> {
+                                    when (it.circleXMovement) {
+                                        "xplus" ->{
                                             var x =
                                                 Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                             x.circle!!.x = it.circle!!.x
@@ -372,21 +390,32 @@ class Shoot (): Serializable {
                                             x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
                                             GameActivity.companionList.advancedList3.add(x)
                                         }
-                                        2.toByte() -> {
-                                            var x =
-                                                Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
-                                            x.circle!!.x = it.circle!!.x
-                                            x.circle!!.y = it.circle!!.y
-                                            x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
-                                            GameActivity.companionList.advancedList2.add(x)
-                                        }
-                                        1.toByte() -> {
+                                        "xminus" -> {
                                             var x =
                                                 Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
                                             x.circle!!.x = it.circle!!.x
                                             x.circle!!.y = it.circle!!.y
                                             x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
                                             GameActivity.companionList.advancedList1.add(x)
+                                        }
+
+                                    }
+                                    when (it.circleYMovement) {
+                                        "yplus" -> {
+                                            var x =
+                                                Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
+                                            x.circle!!.x = it.circle!!.x
+                                            x.circle!!.y = it.circle!!.y
+                                            x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
+                                            GameActivity.companionList.advancedList4.add(x)
+                                        }
+                                        "yminus" -> {
+                                            var x =
+                                                Enemy(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, Color.RED)
+                                            x.circle!!.x = it.circle!!.x
+                                            x.circle!!.y = it.circle!!.y
+                                            x.pickEnemyID = GameActivity.companionList.enemyList.indexOf(it)
+                                            GameActivity.companionList.advancedList2.add(x)
                                         }
                                     }
                                 }
@@ -448,13 +477,8 @@ class Shoot (): Serializable {
                         movement(GameActivity.companionList.towerList[towerId].randomEnemyForShot)
                     } else {
                         GameActivity.companionList.towerList[towerId].randomEnemyForShotBool = true
-                        if (MainActivity.startScreenBool){
-                            bullet.x = 200.0f
-                            bullet.y = 750.0f
-                        } else {
                             bullet.x = GameActivity.companionList.towerList[towerId].towerRange.x
                             bullet.y = GameActivity.companionList.towerList[towerId].towerRange.y
-                        }
                             broken = 1
                     }
                 }
@@ -466,24 +490,18 @@ class Shoot (): Serializable {
 
                     fun xSpeed(): Int {
                         var speed = 0
-                        when (enemy.passed) {
-                            0.toByte() -> speed = 0
-                            1.toByte() -> speed = (enemy.speed.toInt()) * (-1)
-                            2.toByte() -> speed = 0
-                            3.toByte() -> speed = (enemy.speed.toInt())
-                            4.toByte() -> speed = 0
+                        when (enemy.circleXMovement) {
+                            "xminus" -> speed = (enemy.speed.toInt()) * (-1)
+                            "xplus" -> speed = (enemy.speed.toInt())
                         }
                         return speed
                     }
 
                     fun ySpeed(): Int {
                         var speed = 0
-                        when (enemy.passed) {
-                            0.toByte() -> speed = (enemy.speed.toInt()) * (-1)
-                            1.toByte() -> speed = 0
-                            2.toByte() -> speed = (enemy.speed.toInt()) * (-1)
-                            3.toByte() -> speed = 0
-                            4.toByte() -> speed = (enemy.speed.toInt())
+                        when (enemy.circleYMovement) {
+                            "yminus" -> speed = (enemy.speed.toInt()) * (-1)
+                            "yplus" -> speed = (enemy.speed.toInt())
                         }
                         return speed
                     }
@@ -535,24 +553,19 @@ class Shoot (): Serializable {
 
                 fun xSpeed(): Int {
                     var speed = 0
-                    when (enemy.passed) {
-                        0.toByte() -> speed = 0
-                        1.toByte() -> speed = (enemy.speed.toInt()) * (-1)
-                        2.toByte() -> speed = 0
-                        3.toByte() -> speed = (enemy.speed.toInt())
-                        4.toByte() -> speed = 0
+                    when (enemy.circleXMovement) {
+                        "xminus" -> speed = (enemy.speed.toInt()) * (-1)
+                        "xplus" -> speed = (enemy.speed.toInt())
+
                     }
                     return speed
                 }
 
                 fun ySpeed(): Int {
                     var speed = 0
-                    when (enemy.passed) {
-                        0.toByte() -> speed = (enemy.speed.toInt()) * (-1)
-                        1.toByte() -> speed = 0
-                        2.toByte() -> speed = (enemy.speed.toInt()) * (-1)
-                        3.toByte() -> speed = 0
-                        4.toByte() -> speed = (enemy.speed.toInt())
+                    when (enemy.circleYMovement) {
+                        "yminus" -> speed = (enemy.speed.toInt()) * (-1)
+                        "yplus" -> speed = (enemy.speed.toInt())
                     }
                     return speed
                 }
@@ -613,7 +626,7 @@ class Shoot (): Serializable {
                         broken = 1
                     }
 
-                } else if (alreadyBounced > 0 && (GameActivity.companionList.towerList[towerId].towerPrimaryElement == "moon" || chainLightning)) {
+                } else if (alreadyBounced > 0 && (GameActivity.companionList.towerList[towerId].towerPrimaryElement == "moon")) {
                     GameActivity.companionList.rotationEnemyX = enemy.circle!!.x
                     GameActivity.companionList.rotationEnemyY = enemy.circle!!.y
                     if (GameActivity.companionList.enemyList.contains(enemy)) {

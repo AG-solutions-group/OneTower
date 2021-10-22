@@ -1,13 +1,14 @@
 package com.agsolutions.td.Fragments
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
+import com.agsolutions.td.*
 import com.agsolutions.td.GameActivity.Companion.companionList
-import com.agsolutions.td.Items
-import com.agsolutions.td.R
 import kotlinx.android.synthetic.main.fragment_ice_talent.*
 
 
@@ -23,11 +24,19 @@ class IceTalentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ice_talent, container, false)
+        var mainLayout = inflater.inflate(R.layout.fragment_ice_talent, container, false)
+
+        mainLayout.doOnLayout {
+            update()
+        }
+
+        return mainLayout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        companionList.focusTalentFragment = true
 
         iceRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].iceRow1Item1.toString()
         iceRow1Item2ShowTV.text = companionList.towerList[companionList.towerClickID].iceRow1Item2.toString()
@@ -38,12 +47,27 @@ class IceTalentFragment : Fragment() {
         iceRow3Item2ShowTV.text = companionList.towerList[companionList.towerClickID].iceRow3Item2.toString()
         iceRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].iceRow4Item1.toString()
 
+        if (companionList.towerList[companionList.towerClickID].iceRow1Item1 == 1) {
+            iceRow1Item2IB.isClickable = false
+            iceRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].iceRow1Item2 == 1) {
+            iceRow1Item1IB.isClickable = false
+            iceRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+        }
+
         if (companionList.towerList[companionList.towerClickID].iceRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].iceRow1Item2 == 1) backgroundIceRow2.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].iceRow2Item1 + companionList.towerList[companionList.towerClickID].iceRow2Item2 + companionList.towerList[companionList.towerClickID].iceRow2Item3 >= 3) backgroundIceRow3.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].iceRow3Item1 + companionList.towerList[companionList.towerClickID].iceRow3Item2 >= 3) backgroundIceRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
 
         iceRow1Item1IB.setOnClickListener() {
+
+            var point = IntArray(2)
+            iceUpgradeBTN.getLocationInWindow(point)
+            UiViewTalentWindow.talentX = point[0].toFloat()
+            UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+            uiViewTalentIce.invalidate()
 
             setImagePick(11)
 
@@ -53,10 +77,18 @@ class IceTalentFragment : Fragment() {
             iceUpgradeBTN.isClickable = true
 
             iceUpgradeBTN.setOnClickListener() {
+
+                companionList.focusTalentFragment = false
+                uiViewTalentIce.invalidate()
+
                 if (companionList.towerList[companionList.towerClickID].iceRow1Item1 + companionList.towerList[companionList.towerClickID].iceRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                     companionList.towerList[companionList.towerClickID].iceRow1Item1 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].iceRow1Item1 == 1) companionList.towerList[companionList.towerClickID].experienceSlow = true
+                    if (companionList.towerList[companionList.towerClickID].iceRow1Item1 == 1){
+                        companionList.towerList[companionList.towerClickID].experienceSlow = true
+                        iceRow1Item2IB.isClickable = false
+                        iceRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                     if (companionList.towerList[companionList.towerClickID].iceRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].iceRow1Item2 == 1) backgroundIceRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -75,10 +107,18 @@ class IceTalentFragment : Fragment() {
             iceUpgradeBTN.isClickable = true
 
             iceUpgradeBTN.setOnClickListener() {
+
+                companionList.focusTalentFragment = false
+                uiViewTalentIce.invalidate()
+
                 if (companionList.towerList[companionList.towerClickID].iceRow1Item1 + companionList.towerList[companionList.towerClickID].iceRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                     companionList.towerList[companionList.towerClickID].iceRow1Item2 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].iceRow1Item2 == 1) companionList.towerList[companionList.towerClickID].slowExtraMgcDmg = true
+                    if (companionList.towerList[companionList.towerClickID].iceRow1Item2 == 1){
+                        companionList.towerList[companionList.towerClickID].slowExtraMgcDmg = true
+                        iceRow1Item1IB.isClickable = false
+                        iceRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                         if (companionList.towerList[companionList.towerClickID].iceRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].iceRow1Item2 == 1) backgroundIceRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -146,7 +186,7 @@ class IceTalentFragment : Fragment() {
                         if (companionList.towerList[companionList.towerClickID].iceRow2Item2 == 2) companionList.towerList[companionList.towerClickID].iceExtraDmg += 0.5f
                         if (companionList.towerList[companionList.towerClickID].iceRow2Item2 == 3) companionList.towerList[companionList.towerClickID].iceExtraDmg += 1f
 
-                        if (companionList.towerList[companionList.towerClickID].iceRow2Item1 + companionList.towerList[companionList.towerClickID].iceRow2Item2 + companionList.towerList[companionList.towerClickID].iceRow2Item3 >= 3) backgroundIceRow4.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].iceRow2Item1 + companionList.towerList[companionList.towerClickID].iceRow2Item2 + companionList.towerList[companionList.towerClickID].iceRow2Item3 >= 3) backgroundIceRow3.setBackgroundResource(R.drawable.backgroundplankslight)
 
                         iceRow2Item2ShowTV.text = companionList.towerList[companionList.towerClickID].iceRow2Item2.toString()
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1
@@ -175,7 +215,7 @@ class IceTalentFragment : Fragment() {
                         if (companionList.towerList[companionList.towerClickID].iceRow2Item3 == 2) companionList.towerList[companionList.towerClickID].slowEach += 5.0f
                         if (companionList.towerList[companionList.towerClickID].iceRow2Item3 == 3) companionList.towerList[companionList.towerClickID].slowEach += 5.0f
 
-                        if (companionList.towerList[companionList.towerClickID].iceRow2Item1 + companionList.towerList[companionList.towerClickID].iceRow2Item2 + companionList.towerList[companionList.towerClickID].iceRow2Item3 >= 3) backgroundIceRow2.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].iceRow2Item1 + companionList.towerList[companionList.towerClickID].iceRow2Item2 + companionList.towerList[companionList.towerClickID].iceRow2Item3 >= 3) backgroundIceRow3.setBackgroundResource(R.drawable.backgroundplankslight)
 
                         iceRow2Item3ShowTV.text = companionList.towerList[companionList.towerClickID].iceRow2Item3.toString()
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1
@@ -212,7 +252,7 @@ class IceTalentFragment : Fragment() {
                             companionList.towerList[companionList.towerClickID].slowExtraChance += 5
                         }
 
-                        if (companionList.towerList[companionList.towerClickID].iceRow3Item1 + companionList.towerList[companionList.towerClickID].iceRow3Item2 >= 3) backgroundIceRow3.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].iceRow3Item1 + companionList.towerList[companionList.towerClickID].iceRow3Item2 >= 3) backgroundIceRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
                         iceRow3Item1ShowTV.text = companionList.towerList[companionList.towerClickID].iceRow3Item1.toString()
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1
@@ -267,21 +307,35 @@ class IceTalentFragment : Fragment() {
                         companionList.towerList[companionList.towerClickID].iceRow4Item1 += 1
 
                         if (companionList.towerList[companionList.towerClickID].iceRow4Item1 == 1) {
-                            companionList.iceShardTowerId = companionList.towerClickID
-                            companionList.iceShard = true
-                            companionList.iceShardSpeed -= 15
+                            companionList.towerList[companionList.towerClickID].iceShard = 1
                         }
-                        if (companionList.towerList[companionList.towerClickID].iceRow4Item1 == 2) companionList.iceShardSpeed -= 15
+                        if (companionList.towerList[companionList.towerClickID].iceRow4Item1 == 2) companionList.towerList[companionList.towerClickID].iceShard = 2
                         if (companionList.towerList[companionList.towerClickID].iceRow4Item1 == 3) {
-                            companionList.itemList.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
-                            companionList.insertItem += 1
-                            companionList.iceShardSpeed -= 15
+                            companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
+                            companionList.towerList[companionList.towerClickID].iceShard = 3
                         }
 
                         iceRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].iceRow4Item1.toString()
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
+            }
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        update()
+    }
+
+    fun update () {
+        if (GameActivity.companionList.focusTalentFragment) {
+            if (GameActivity.companionList.hintsBool) {
+                var point = IntArray(2)
+                iceRow1Item1IB.getLocationInWindow(point)
+                UiViewTalentWindow.talentX = point[0].toFloat()
+                UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+                uiViewTalentIce.invalidate()
             }
         }
     }
@@ -306,6 +360,14 @@ class IceTalentFragment : Fragment() {
             31 -> iceRow3Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             32 -> iceRow3Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             41 -> iceRow4Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+        }
+        if (companionList.towerList[companionList.towerClickID].iceRow1Item1 == 1) {
+            iceRow1Item2IB.isClickable = false
+            iceRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].iceRow1Item2 == 1) {
+            iceRow1Item1IB.isClickable = false
+            iceRow1Item1IBPick.setImageResource(R.drawable.crossedout)
         }
     }
 }

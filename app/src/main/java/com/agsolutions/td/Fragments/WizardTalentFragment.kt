@@ -1,13 +1,14 @@
 package com.agsolutions.td.Fragments
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
+import com.agsolutions.td.*
 import com.agsolutions.td.GameActivity.Companion.companionList
-import com.agsolutions.td.Items
-import com.agsolutions.td.R
 import kotlinx.android.synthetic.main.fragment_wizard_talent.*
 
 
@@ -23,11 +24,19 @@ class WizardTalentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_wizard_talent, container, false)
+        var mainLayout = inflater.inflate(R.layout.fragment_wizard_talent, container, false)
+
+        mainLayout.doOnLayout {
+            update()
+        }
+
+        return mainLayout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        companionList.focusTalentFragment = true
 
         wizardRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].wizardRow1Item1.toString()
         wizardRow1Item2ShowTV.text = companionList.towerList[companionList.towerClickID].wizardRow1Item2.toString()
@@ -38,24 +47,46 @@ class WizardTalentFragment : Fragment() {
         wizardRow3Item2ShowTV.text = companionList.towerList[companionList.towerClickID].wizardRow3Item2.toString()
         wizardRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].wizardRow4Item1.toString()
 
+        if (companionList.towerList[companionList.towerClickID].wizardRow1Item1 == 1) {
+            wizardRow1Item2IB.isClickable = false
+            wizardRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].wizardRow1Item2 == 1) {
+            wizardRow1Item1IB.isClickable = false
+            wizardRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+        }
+
         if (companionList.towerList[companionList.towerClickID].wizardRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].wizardRow1Item2 == 1) backgroundWizardRow2.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].wizardRow2Item1 + companionList.towerList[companionList.towerClickID].wizardRow2Item2 + companionList.towerList[companionList.towerClickID].wizardRow2Item3 >= 3) backgroundWizardRow3.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].wizardRow3Item1 + companionList.towerList[companionList.towerClickID].wizardRow3Item2 >= 3) backgroundWizardRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
         wizardRow1Item1IB.setOnClickListener() {
 
+            var point = IntArray(2)
+            wizardUpgradeBTN.getLocationInWindow(point)
+            UiViewTalentWindow.talentX = point[0].toFloat()
+            UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+            uiViewTalentWizard.invalidate()
+
+            wizardUpgradeBTN.isClickable = true
             setImagePick(11)
 
             wizardNameDisplayTalentTV.text = "Caster"
             wizardDisplayTalentTV.text = "Gain experience for each tower cast (5% of enemy)."
 
             wizardUpgradeBTN.setOnClickListener() {
-                wizardUpgradeBTN.isClickable = true
+
+                companionList.focusTalentFragment = false
+                uiViewTalentWizard.invalidate()
 
                 if (companionList.towerList[companionList.towerClickID].wizardRow1Item1 + companionList.towerList[companionList.towerClickID].wizardRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                     companionList.towerList[companionList.towerClickID].wizardRow1Item1 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].wizardRow1Item1 == 1) companionList.towerList[companionList.towerClickID].experienceCast = true
+                    if (companionList.towerList[companionList.towerClickID].wizardRow1Item1 == 1){
+                        companionList.towerList[companionList.towerClickID].experienceCast = true
+                        wizardRow1Item2IB.isClickable = false
+                        wizardRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                     if (companionList.towerList[companionList.towerClickID].wizardRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].wizardRow1Item2 == 1) backgroundWizardRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -67,18 +98,25 @@ class WizardTalentFragment : Fragment() {
 
         wizardRow1Item2IB.setOnClickListener() {
 
+            wizardUpgradeBTN.isClickable = true
             setImagePick(12)
 
             wizardNameDisplayTalentTV.text = "Overflowing Magic"
             wizardDisplayTalentTV.text = "Improve tower spell damage by tower level (3% per tower level)."
 
             wizardUpgradeBTN.setOnClickListener() {
-                wizardUpgradeBTN.isClickable = true
+
+                companionList.focusTalentFragment = false
+                uiViewTalentWizard.invalidate()
 
                 if (companionList.towerList[companionList.towerClickID].wizardRow1Item1 + companionList.towerList[companionList.towerClickID].wizardRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                     companionList.towerList[companionList.towerClickID].wizardRow1Item2 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].wizardRow1Item2 == 1) companionList.towerList[companionList.towerClickID].talentWizardLvlToDmg = true
+                    if (companionList.towerList[companionList.towerClickID].wizardRow1Item2 == 1){
+                        companionList.towerList[companionList.towerClickID].talentWizardLvlToDmg = true
+                        wizardRow1Item1IB.isClickable = false
+                        wizardRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                     if (companionList.towerList[companionList.towerClickID].wizardRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].wizardRow1Item2 == 1) backgroundWizardRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -295,8 +333,7 @@ class WizardTalentFragment : Fragment() {
                             companionList.towerList[companionList.towerClickID].chainLightningTimer = 210f
                         }
                         if (companionList.towerList[companionList.towerClickID].wizardRow4Item1 == 3) {
-                            companionList.itemList.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
-                            companionList.insertItem += 1
+                            companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
                             companionList.towerList[companionList.towerClickID].chainLighning = true
                             companionList.towerList[companionList.towerClickID].chainLightningBounceTargets += 2
                             companionList.towerList[companionList.towerClickID].chainLightningDmg = 1.1f
@@ -310,6 +347,24 @@ class WizardTalentFragment : Fragment() {
             }
         }
     }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        update()
+    }
+
+    fun update () {
+        if (GameActivity.companionList.focusTalentFragment) {
+            if (GameActivity.companionList.hintsBool) {
+                var point = IntArray(2)
+                wizardRow1Item1IB.getLocationInWindow(point)
+                UiViewTalentWindow.talentX = point[0].toFloat()
+                UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+                uiViewTalentWizard.invalidate()
+            }
+        }
+    }
+
     fun setImagePick (pick: Int) {
 
         wizardRow1Item1IBPick.setImageResource(R.drawable.overlaytransparent)
@@ -330,6 +385,14 @@ class WizardTalentFragment : Fragment() {
             31 -> wizardRow3Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             32 -> wizardRow3Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             41 -> wizardRow4Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+        }
+        if (companionList.towerList[companionList.towerClickID].wizardRow1Item1 == 1) {
+            wizardRow1Item2IB.isClickable = false
+            wizardRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].wizardRow1Item2 == 1) {
+            wizardRow1Item1IB.isClickable = false
+            wizardRow1Item1IBPick.setImageResource(R.drawable.crossedout)
         }
     }
 }

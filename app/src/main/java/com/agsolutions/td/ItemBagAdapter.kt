@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.agsolutions.td.GameActivity.Companion.companionList
+import com.agsolutions.td.GameActivity.Companion.paused
 import kotlinx.android.synthetic.main.item.view.*
 
 class ItemBagAdapter (
@@ -36,8 +37,7 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
         holder.imageViewOverlay.setImageResource(currentItem.imageOverlay)
     }
 
-    fun deleteItem (pos: Int) {
-
+    fun deleteItemBag (pos: Int) {
 
         if (companionList.towerClick) {
 
@@ -46,159 +46,12 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
                 var it = towerListIterator.next()
                 if (it.selected) {
 
-                    if (itemList2[pos].crossedOut) {
+                    if (it.itemListBag[pos].crossedOut) {
                     } else {
-                        it.bonusTowerSpeed -= itemList2[pos].speed
-                        it.bonusTowerDmg -= itemList2[pos].dmg
-                        it.bonusPhysicalDmg -= itemList2[pos].atkDmg
-                        it.bonusSpellDamage -= itemList2[pos].mgcDmg
-                        it.bonusCrit -= itemList2[pos].crit
-                        it.bonusCritDmg -= itemList2[pos].critDmg
-                        if (itemList2[pos].id == 3 || itemList2[pos].id == 101 || itemList2[pos].id == 201 || itemList2[pos].id == 301) companionList.magicBoxCount -= 1
-                        if (itemList2[pos].id == 0 || itemList2[pos].id == 100 || itemList2[pos].id == 200 || itemList2[pos].id == 300) companionList.maceCount -= 1
-                        if (itemList2[pos].id == 1 || itemList2[pos].id == 102 || itemList2[pos].id == 202 || itemList2[pos].id == 302) companionList.bowCount -= 1
-                        if (itemList2[pos].id == 2 || itemList2[pos].id == 103 || itemList2[pos].id == 203 || itemList2[pos].id == 303) companionList.swordCount -= 1
-                        if (itemList2[pos].id == 4 || itemList2[pos].id == 104 || itemList2[pos].id == 204) companionList.luckyCharmCount -= 1
-                        if (itemList2[pos].id == 4) it.bonusItemChance -= itemList2[pos].specialFloat2
 
-                        if ((itemList2[pos].id == 100 || itemList2[pos].id == 102 || itemList2[pos].id == 103) && itemList2[pos].special2 == "item find") it.bonusItemChance -= itemList2[pos].specialFloat2
-                        if ((itemList2[pos].id == 100 || itemList2[pos].id == 102 || itemList2[pos].id == 103) && itemList2[pos].special2 == "item quality") it.bonusItemQuality -= itemList2[pos].specialFloat2
-                        if (itemList2[pos].id == 104 || itemList2[pos].id == 204) it.bonusItemQuality -= itemList2[pos].specialFloat2
-                        if (itemList2[pos].id == 105) it.itemPiggyBank -= 0.1f
-                        if ((itemList2[pos].id == 200 || itemList2[pos].id == 202 || itemList2[pos].id == 203) && itemList2[pos].special == "armor penetration") it.bonusArmorPen -= itemList2[pos].specialFloat
-                        if ((itemList2[pos].id == 200 || itemList2[pos].id == 202 || itemList2[pos].id == 203) && itemList2[pos].special == "magic penetration") it.bonusMagicPen -= itemList2[pos].specialFloat
-                        if ((itemList2[pos].id == 200 || itemList2[pos].id == 202 || itemList2[pos].id == 203) && itemList2[pos].special == "hit chance") it.itemBonusHitChance -= itemList2[pos].specialFloat
+                        statsDelete(pos, it)
 
-                        if (itemList2[pos].id == 206) it.talentPoints -= itemList2[pos].specialFloat.toInt()
-                        if (itemList2[pos].id == 207 && itemList2[pos].special == "+ X dmg/round") it.bonusTowerDmg -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 207 && itemList2[pos].special == "+ X spd/round") it.bonusTowerSpeed -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 207 && itemList2[pos].special == "+ X crit/round") it.bonusCrit -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 208 || itemList2[pos].id == 308) it.itemFrost -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 209) companionList.interest -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 210 || itemList2[pos].id == 309) it.itemLasso -= itemList2[pos].specialFloat.toInt()
-                        if (itemList2[pos].id == 212) it.itemBonusHitChance -= itemList2[pos].specialFloat.toInt()
-                        if (itemList2[pos].id == 312) it.itemSlowDeath -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 213) it.itemLastStance -= 0.1f
-                        if (itemList2[pos].id == 214) it.itemSniper -= 1
-                        if (itemList2[pos].id == 214) it.itemSniper -= 1
-                        if (itemList2[pos].id == 215) it.bonusArmorPen -= itemList2[pos].specialFloat.toInt()
-                        if (itemList2[pos].id == 216) it.bonusMagicPen -= itemList2[pos].specialFloat.toInt()
-                        if (itemList2[pos].id == 217) it.slowEach -= 10.0f
-                        if (itemList2[pos].id == 218) it.bonusDamageMultiplyer -= (itemList2[pos].specialFloat * 0.01f)
-
-                        if ((itemList2[pos].id == 300 || itemList2[pos].id == 302 || itemList2[pos].id == 303) && itemList2[pos].special == "anti-heal") it.bonusAntiHeal -= itemList2[pos].specialFloat / 100
-                        if ((itemList2[pos].id == 300 || itemList2[pos].id == 302 || itemList2[pos].id == 303) && itemList2[pos].special == "extra dmg immune") it.bonusDmgImmune -= itemList2[pos].specialFloat / 100
-                        if ((itemList2[pos].id == 300 || itemList2[pos].id == 302 || itemList2[pos].id == 303) && itemList2[pos].special2 == "item find") it.bonusItemChance -= itemList2[pos].specialFloat2
-                        if ((itemList2[pos].id == 300 || itemList2[pos].id == 302 || itemList2[pos].id == 303) && itemList2[pos].special2 == "item quality") it.bonusItemQuality -= (itemList2[pos].specialFloat2).toInt()
-                        if (itemList2[pos].id == 304) it.slowAura -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 305) it.itemDisruptor -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 307) {
-                            it.shotBounceTargets -= itemList2[pos].specialFloat.toInt()
-                        }
-                        if (itemList2[pos].id == 310) it.bonusmultiCrit -= itemList2[pos].specialFloat.toInt()
-                        if (itemList2[pos].id == 314) it.armorPenPerHit -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 315) it.magicPenPerHit -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 316) it.bonusDamageMultiplyer -= itemList2[pos].specialFloat
-
-                        if (itemList2[pos].id == 1004) it.particleDmgBool = false
-                        if (itemList2[pos].id == 1005) {
-                            it.itemSniper -= 1
-                            it.itemSniperPro = false
-                        }
-                        if (itemList2[pos].id == 1100 || itemList2[pos].id == 1101 || itemList2[pos].id == 1102 || itemList2[pos].id == 1103 || itemList2[pos].id == 1104 || itemList2[pos].id == 1105) companionList.pirateItemCount -= 1
-                        if (itemList2[pos].id == 1100 || itemList2[pos].id == 1101 || itemList2[pos].id == 1102 || itemList2[pos].id == 1103 || itemList2[pos].id == 1104 || itemList2[pos].id == 1105 || itemList2[pos].id == 1007) it.bagSize -= 1
-                        if (itemList2[pos].id == 1100) {
-                            it.towerRange.r -= 15
-                        }
-                        if (itemList2[pos].id == 1104) {
-                            it.bonusDamageMultiplyer -= 0.2f
-                            companionList.overallSpdMultiplier += 10
-                        }
-                        if (itemList2[pos].id == 1105) {
-                            it.bonusDamageMultiplyer += 0.1f
-                            companionList.overallSpdMultiplier -= 20
-                        }
-                        if (itemList2[pos].id == 1006) it.itemFastDraw = false
-                        if (itemList2[pos].id == 1007) {
-                            companionList.activeAbilityList.remove(ActiveAbility.aAid2)
-                            companionList.insertSpell += 1
-                        }
-
-                        if (itemList2[pos].id == 1008) {
-                            it.bonusDamageMultiplyer -= 0.2f
-                            companionList.overallSpdMultiplier -= 20
-                            it.itemBoring = false
-                        }
-
-                        if (itemList2[pos].id == 5000) it.bonusTowerDmg -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 5001) it.bonusTowerSpeed -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 5002) it.bonusCrit -= itemList2[pos].specialFloat
-                        if (itemList2[pos].id == 5003) {
-                            it.bonusDamageMultiplyer -= 0.1f
-                            it.bonusTowerDmg -= itemList2[pos].bonusDmgLevel
-                        }
-                        if (itemList2[pos].id == 5004) {
-                            it.overallSpellDmgMultiplyer -= 0.1f
-                            it.bonusSpellDamage -= itemList2[pos].bonusSpellDmgLevel
-                        }
-                        if (itemList2[pos].id == 5005) {
-                            it.bonusmultiCrit -= 1
-                            it.bonusCrit -= itemList2[pos].bonusCritLevel
-                            it.bonusCritDmg -= itemList2[pos].bonusCritDmgLevel
-                        }
-                        if (itemList2[pos].id == 5006) {
-                            it.slowAura -= 10f
-                            it.bonusItemChance -= 10f
-                        }
-                        if (itemList2[pos].id == 5007) {
-                            it.bagSize -= 2
-                            companionList.interest -= 0.01f
-                            it.bonusItemChance -= 10f
-                        }
-                        if (itemList2[pos].id == 5008) companionList.shieldBrakerItem = 1
-                        if (itemList2[pos].id == 5009) {
-                            it.poisonRow2Item1 -= 1
-                            it.stackablePoison -= 0.1f
-                            it.itemStartPoison = false
-                        }
-                        if (itemList2[pos].id == 5011) {
-                            companionList.activeAbilityList.remove(ActiveAbility.aAid3)
-                            companionList.insertSpell += 1
-                        }
-                        if (itemList2[pos].id == 5012) {
-                            if (companionList.mapMode == 2) companionList.bombDamage -= 0.025f
-                            else companionList.bombDamage -= 0.1f
-                            companionList.bombCost = false
-                        }
-                        if (itemList2[pos].id == 5013) {
-                           // TODO  itemStartTalentPoints = false
-                        }
-                        if (itemList2[pos].id == 5015) {
-                            companionList.wizardBombStartItemDmg -= 0.4f
-                            companionList.wizardLightningStartItemTargets -= 1
-                        }
-                       // TODO
-                        /*
-                        if (itemList2[pos].id == 5016) {
-                            itemStartBounce = false
-                            MoonTalentFragment.moonRow2Item2 -= 1
-
-                            if (MoonTalentFragment.moonRow2Item2 <= 0) {
-                                it.shotBounceTargets = 1
-                            } else if (MoonTalentFragment.moonRow2Item2 == 1) {
-                                it.shotBounceTargets = 2
-                            } else if (MoonTalentFragment.moonRow2Item2 == 2) {
-                                it.shotBounceTargets = 3
-                            }
-                        }
-
-                         */
-
-                        if (itemList2[pos].id == 6666) {
-                            it.bonusTowerDmg -= itemList2[pos].specialFloat
-                        }
-
-                        if ((itemList2[pos] == companionList.eearth || itemList2[pos] == companionList.ebutterfly || itemList2[pos] == companionList.ewind || itemList2[pos] == companionList.emoon)) {
+                        if ((it.itemListBag[pos] == companionList.eearth || it.itemListBag[pos] == companionList.ebutterfly || it.itemListBag[pos] == companionList.ewind || it.itemListBag[pos] == companionList.emoon)) {
                             if (it.itemListBag[0] == companionList.eearth || it.itemListBag[0] == companionList.ebutterfly || it.itemListBag[0] == companionList.ewind || it.itemListBag[0] == companionList.emoon ){
 
                             }else {
@@ -207,42 +60,67 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
                             }
                         }
 
+                        companionList.itemListInsertItem.add(it.itemListBag[pos])
                         it.itemListBag.removeAt(pos)
-                        itemList2.removeAt(pos)
-                        notifyItemRemoved(pos)
+                        companionList.itemListBagInserter.clear()
+                        notifyDataSetChanged()
+                        companionList.itemListBagInserter.addAll(it.itemListBag)
+                        notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
                     }
                 }
             }
         }
     }
 
-    fun replaceCrossedOut (pos: Int) {
+    fun statsDelete (pos: Int, it: Tower){
 
-        var towerListIterator = companionList.towerList.listIterator()
-        while (towerListIterator.hasNext()) {
-            var it = towerListIterator.next()
-
-            it.bonusTowerSpeed -= it.itemListBag[pos].speed
-            it.bonusTowerDmg -= it.itemListBag[pos].dmg
-            it.bonusPhysicalDmg -= it.itemListBag[pos].atkDmg
-            it.bonusSpellDamage -= it.itemListBag[pos].mgcDmg
-            it.bonusCrit -= it.itemListBag[pos].crit
-            it.bonusCritDmg -= it.itemListBag[pos].critDmg
+        it.bonusTowerSpeed -= it.itemListBag[pos].speed
+        it.itemListBag[pos].speed /= it.towerRarityMultiplier
+        it.bonusTowerDmg -= it.itemListBag[pos].dmg
+        it.itemListBag[pos].dmg /= it.towerRarityMultiplier
+        it.bonusPhysicalDmg -= it.itemListBag[pos].atkDmg
+        it.itemListBag[pos].atkDmg /= it.towerRarityMultiplier
+        it.bonusSpellDamage -= it.itemListBag[pos].mgcDmg
+        it.itemListBag[pos].mgcDmg /= it.towerRarityMultiplier
+        it.bonusCrit -= it.itemListBag[pos].crit
+        it.itemListBag[pos].crit /= it.towerRarityMultiplier
+        it.bonusCritDmg -= it.itemListBag[pos].critDmg
+        it.itemListBag[pos].critDmg /= it.towerRarityMultiplier
         if (it.itemListBag[pos].id == 3 || it.itemListBag[pos].id == 101 || it.itemListBag[pos].id == 201 || it.itemListBag[pos].id == 301) companionList.magicBoxCount -= 1
         if (it.itemListBag[pos].id == 0 || it.itemListBag[pos].id == 100 || it.itemListBag[pos].id == 200 || it.itemListBag[pos].id == 300) companionList.maceCount -= 1
         if (it.itemListBag[pos].id == 1 || it.itemListBag[pos].id == 102 || it.itemListBag[pos].id == 202 || it.itemListBag[pos].id == 302) companionList.bowCount -= 1
         if (it.itemListBag[pos].id == 2 || it.itemListBag[pos].id == 103 || it.itemListBag[pos].id == 203 || it.itemListBag[pos].id == 303) companionList.swordCount -= 1
-        if (it.itemListBag[pos].id == 4 || it.itemListBag[pos].id == 104 || it.itemListBag[pos].id == 204) companionList.luckyCharmCount -= 1
-        if (it.itemListBag[pos].id == 4) it.bonusItemChance -= it.itemListBag[pos].specialFloat
+        if (it.itemListBag[pos].id == 4) {
+            it.bonusItemChance -= it.itemListBag[pos].specialFloat2
+            it.itemListBag[pos].specialFloat2 /= it.towerRarityMultiplier
+        }
+        if (it.itemListBag[pos].id == 10) it.xpMulti -= it.itemListBag[pos].specialFloat
 
-        if ((it.itemListBag[pos].id == 100 || it.itemListBag[pos].id == 102 || it.itemListBag[pos].id == 103) && it.itemListBag[pos].special == "item find") it.bonusItemChance -= it.itemListBag[pos].specialFloat
-        if ((it.itemListBag[pos].id == 100 || it.itemListBag[pos].id == 102 || it.itemListBag[pos].id == 103) && it.itemListBag[pos].special == "item quality") it.bonusItemQuality -= it.itemListBag[pos].specialFloat
-        if (it.itemListBag[pos].id == 104 || it.itemListBag[pos].id == 204) it.bonusItemQuality -= it.itemListBag[pos].specialFloat
+        if ((it.itemListBag[pos].id == 100 || it.itemListBag[pos].id == 102 || it.itemListBag[pos].id == 103) && it.itemListBag[pos].special2 == "item find") {
+            it.bonusItemChance -= it.itemListBag[pos].specialFloat2
+            it.itemListBag[pos].specialFloat2 /= it.towerRarityMultiplier
+        }
+        if ((it.itemListBag[pos].id == 100 || it.itemListBag[pos].id == 102 || it.itemListBag[pos].id == 103) && it.itemListBag[pos].special2 == "item quality") {
+            it.bonusItemQuality -= it.itemListBag[pos].specialFloat2
+            it.itemListBag[pos].specialFloat2 /= it.towerRarityMultiplier
+        }
+        if (it.itemListBag[pos].id == 104 || it.itemListBag[pos].id == 204){
+            it.bonusItemQuality -= it.itemListBag[pos].specialFloat2
+            it.itemListBag[pos].specialFloat2 /= it.towerRarityMultiplier
+        }
         if (it.itemListBag[pos].id == 105) it.itemPiggyBank -= 0.1f
-        if ((it.itemListBag[pos].id == 200 || it.itemListBag[pos].id == 202 || it.itemListBag[pos].id == 203) && it.itemListBag[pos].special == "armor penetration") it.bonusArmorPen -= it.itemListBag[pos].specialFloat
-        if ((it.itemListBag[pos].id == 200 || it.itemListBag[pos].id == 202 || it.itemListBag[pos].id == 203) && it.itemListBag[pos].special == "magic penetration") it.bonusMagicPen -= it.itemListBag[pos].specialFloat
-        if ((it.itemListBag[pos].id == 200 || it.itemListBag[pos].id == 202 || it.itemListBag[pos].id == 203) && it.itemListBag[pos].special == "hit chance") it.itemBonusHitChance -= it.itemListBag[pos].specialFloat
-
+        if ((it.itemListBag[pos].id == 200 || it.itemListBag[pos].id == 202 || it.itemListBag[pos].id == 203) && it.itemListBag[pos].special == "armor penetration"){
+            it.bonusArmorPen -= it.itemListBag[pos].specialFloat
+            it.itemListBag[pos].specialFloat /= it.towerRarityMultiplier
+        }
+        if ((it.itemListBag[pos].id == 200 || it.itemListBag[pos].id == 202 || it.itemListBag[pos].id == 203) && it.itemListBag[pos].special == "magic penetration"){
+            it.bonusMagicPen -= it.itemListBag[pos].specialFloat
+            it.itemListBag[pos].specialFloat /= it.towerRarityMultiplier
+        }
+        if ((it.itemListBag[pos].id == 200 || it.itemListBag[pos].id == 202 || it.itemListBag[pos].id == 203) && it.itemListBag[pos].special == "hit chance"){
+            it.itemBonusHitChance -= it.itemListBag[pos].specialFloat
+            it.itemListBag[pos].specialFloat /= it.towerRarityMultiplier
+        }
 
         if (it.itemListBag[pos].id == 206) it.talentPoints -= it.itemListBag[pos].specialFloat.toInt()
         if (it.itemListBag[pos].id == 207 && it.itemListBag[pos].special == "+ X dmg/round") it.bonusTowerDmg -= it.itemListBag[pos].specialFloat
@@ -251,42 +129,73 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
         if (it.itemListBag[pos].id == 208 || it.itemListBag[pos].id == 308) it.itemFrost -= it.itemListBag[pos].specialFloat
         if (it.itemListBag[pos].id == 209) companionList.interest -= it.itemListBag[pos].specialFloat
         if (it.itemListBag[pos].id == 210 || it.itemListBag[pos].id == 309) it.itemLasso -= it.itemListBag[pos].specialFloat.toInt()
-        if (it.itemListBag[pos].id == 212) it.itemBonusHitChance -= it.itemListBag[pos].specialFloat.toInt()
-        if (it.itemListBag[pos].id == 312) it.itemSlowDeath -= it.itemListBag[pos].specialFloat
+        if (it.itemListBag[pos].id == 212){
+            it.itemBonusHitChance -= it.itemListBag[pos].specialFloat
+            it.itemListBag[pos].specialFloat /= it.towerRarityMultiplier
+        }
         if (it.itemListBag[pos].id == 213) it.itemLastStance -= 0.1f
         if (it.itemListBag[pos].id == 214) it.itemSniper -= 1
         if (it.itemListBag[pos].id == 214) it.itemSniper -= 1
-        if (it.itemListBag[pos].id == 215) it.bonusArmorPen -= it.itemListBag[pos].specialFloat.toInt()
-        if (it.itemListBag[pos].id == 216) it.bonusMagicPen -= it.itemListBag[pos].specialFloat.toInt()
+        if (it.itemListBag[pos].id == 215) {
+            it.bonusArmorPen -= it.itemListBag[pos].specialFloat
+            it.itemListBag[pos].specialFloat /= it.towerRarityMultiplier
+        }
+        if (it.itemListBag[pos].id == 216) {
+            it.bonusMagicPen -= it.itemListBag[pos].specialFloat
+            it.itemListBag[pos].specialFloat /= it.towerRarityMultiplier
+        }
         if (it.itemListBag[pos].id == 217) it.slowEach -= 10.0f
+        if (it.itemListBag[pos].id == 218) it.bonusDamageMultiplyer -= (it.itemListBag[pos].specialFloat * 0.01f)
 
-        if ((it.itemListBag[pos].id == 300 || it.itemListBag[pos].id == 302 || it.itemListBag[pos].id == 303) && it.itemListBag[pos].special == "anti-heal") it.bonusAntiHeal -= it.itemListBag[pos].specialFloat / 100
-        if ((it.itemListBag[pos].id == 300 || it.itemListBag[pos].id == 302 || it.itemListBag[pos].id == 303) && it.itemListBag[pos].special == "extra dmg immune") it.bonusDmgImmune -= it.itemListBag[pos].specialFloat / 100
+        if ((it.itemListBag[pos].id == 300 || it.itemListBag[pos].id == 302 || it.itemListBag[pos].id == 303) && it.itemListBag[pos].special == "anti-heal") {
+            it.bonusAntiHeal -= it.itemListBag[pos].specialFloat / 100
+            it.itemListBag[pos].specialFloat /= it.towerRarityMultiplier
+        }
+        if ((it.itemListBag[pos].id == 300 || it.itemListBag[pos].id == 302 || it.itemListBag[pos].id == 303) && it.itemListBag[pos].special == "extra dmg immune") {
+            it.bonusDmgImmune -= it.itemListBag[pos].specialFloat / 100
+            it.itemListBag[pos].specialFloat /= it.towerRarityMultiplier
+        }
+        if ((it.itemListBag[pos].id == 300 || it.itemListBag[pos].id == 302 || it.itemListBag[pos].id == 303) && it.itemListBag[pos].special2 == "item find") {
+            it.bonusItemChance -= it.itemListBag[pos].specialFloat2
+            it.itemListBag[pos].specialFloat2 /= it.towerRarityMultiplier
+        }
+        if ((it.itemListBag[pos].id == 300 || it.itemListBag[pos].id == 302 || it.itemListBag[pos].id == 303) && it.itemListBag[pos].special2 == "item quality") {
+            it.bonusItemQuality -= (it.itemListBag[pos].specialFloat2).toInt()
+            it.itemListBag[pos].specialFloat2 /= it.towerRarityMultiplier
+        }
         if (it.itemListBag[pos].id == 304) it.slowAura -= it.itemListBag[pos].specialFloat
         if (it.itemListBag[pos].id == 305) it.itemDisruptor -= it.itemListBag[pos].specialFloat
         if (it.itemListBag[pos].id == 307) {
             it.shotBounceTargets -= it.itemListBag[pos].specialFloat.toInt()
         }
         if (it.itemListBag[pos].id == 310) it.bonusmultiCrit -= it.itemListBag[pos].specialFloat.toInt()
-
+        if (it.itemListBag[pos].id == 312) it.itemSlowDeath -= it.itemListBag[pos].specialFloat
+        if (it.itemListBag[pos].id == 314) {
+            it.armorPenPerHit -= it.itemListBag[pos].specialFloat
+            it.itemListBag[pos].specialFloat /= it.towerRarityMultiplier
+        }
+        if (it.itemListBag[pos].id == 315) {
+            it.magicPenPerHit -= it.itemListBag[pos].specialFloat
+            it.itemListBag[pos].specialFloat /= it.towerRarityMultiplier
+        }
+        if (it.itemListBag[pos].id == 316) it.bonusDamageMultiplyer -= it.itemListBag[pos].specialFloat
 
         if (it.itemListBag[pos].id == 1004) it.particleDmgBool = false
         if (it.itemListBag[pos].id == 1005) {
             it.itemSniper -= 1
             it.itemSniperPro = false
         }
-        if (it.itemListBag[pos].id == 1100 || it.itemListBag[pos].id == 1101 || it.itemListBag[pos].id == 1102 || it.itemListBag[pos].id == 1103 || it.itemListBag[pos].id == 1104 || it.itemListBag[pos].id == 1105) companionList.pirateItemCount -= 1
         if (it.itemListBag[pos].id == 1100 || it.itemListBag[pos].id == 1101 || it.itemListBag[pos].id == 1102 || it.itemListBag[pos].id == 1103 || it.itemListBag[pos].id == 1104 || it.itemListBag[pos].id == 1105 || it.itemListBag[pos].id == 1007) it.bagSize -= 1
-            if (it.itemListBag[pos].id == 1100) {
-                it.towerBonusRange -= 15
-            }
-            if (it.itemListBag[pos].id == 1104) {
+        if (it.itemListBag[pos].id == 1100) {
+            it.towerRange.r -= 15
+        }
+        if (it.itemListBag[pos].id == 1104) {
             it.bonusDamageMultiplyer -= 0.2f
-                companionList.overallSpdMultiplier += 10
+            companionList.overallSpdMultiplier += 10
         }
         if (it.itemListBag[pos].id == 1105) {
             it.bonusDamageMultiplyer += 0.1f
-            companionList.overallSpdMultiplier -= 30
+            companionList.overallSpdMultiplier -= 20
         }
         if (it.itemListBag[pos].id == 1006) it.itemFastDraw = false
         if (it.itemListBag[pos].id == 1007) {
@@ -326,12 +235,38 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
             it.bonusItemChance -= 10f
         }
         if (it.itemListBag[pos].id == 5008) companionList.shieldBrakerItem = 1
-
+        if (it.itemListBag[pos].id == 5009) {
+            it.poisonRow2Item1 -= 1
+            it.stackablePoison -= 0.1f
+            it.itemStartPoison = false
+        }
+        if (it.itemListBag[pos].id == 5011) {
+            companionList.activeAbilityList.remove(ActiveAbility.aAid3)
+            companionList.insertSpell += 1
+        }
+        if (it.itemListBag[pos].id == 5012) {
+            if (companionList.mapMode == 2) companionList.bombDamage -= 0.025f
+            else companionList.bombDamage -= 0.1f
+            companionList.bombCost = false
+        }
+        if (it.itemListBag[pos].id == 5013) {
+            companionList.wiseMan = 1.0f
+        }
+        if (it.itemListBag[pos].id == 5015) {
+            companionList.wizardBombStartItemDmg -= 0.4f
+            companionList.wizardLightningStartItemTargets -= 1
+        }
+        if (it.itemListBag[pos].id == 5016) {
+            it.shotBounceTargetsStartItems = 1
+        }
+        if (it.itemListBag[pos].id == 5017) {
+            companionList.upgraderBool = true
+        }
         if (it.itemListBag[pos].id == 6666) {
             it.bonusTowerDmg -= it.itemListBag[pos].specialFloat
+            it.darkSoulCollector = false
+        }
 
-        }
-        }
     }
 
     override fun getItemCount() = itemList2.size
@@ -349,19 +284,21 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
 
         override fun onLongClick(v: View?):Boolean {
             if (!companionList.towerClick) {
+                paused = true
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     listener2.onBagLongClick(position, v)
                 }
 
                 val item = ClipData.Item(companionList.buildListBag[position] as? CharSequence?)
-
+                    companionList.dragTower = companionList.buildListBag[position]
                 val dragData = ClipData(
                     companionList.buildListBag[position].name as CharSequence?,
                     arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
                     item
                 )
-                val myShadow = CustomDragShadowBuilder(GameView.towerBase)
+                var towerBaseScaledPlace  = Bitmap.createScaledBitmap(GameView.towerBase!!, (GameView.towerBase!!.width * ((companionList.scaleScreen / 10) * GameView.scaleFactor)).toInt(), (GameView.towerBase!!.height * ((companionList.scaleScreen / 10) * GameView.scaleFactor)).toInt(), false)
+                val myShadow = CustomDragShadowBuilder(towerBaseScaledPlace)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     Log.d("drag", v.toString())
                     v?.startDragAndDrop(dragData, myShadow, null, 0)

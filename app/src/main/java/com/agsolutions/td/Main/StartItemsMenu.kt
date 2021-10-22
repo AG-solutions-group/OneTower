@@ -122,6 +122,52 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
         }
 
         quitBTN.setOnClickListener {
+            var idList = mutableListOf<Int>()
+            if (isOnline(this)) {
+                HttpTask {
+                    // progressMainBar.visibility = View.INVISIBLE
+                    if (it == null) {
+                        println("connection error")
+                        return@HttpTask
+                    }
+                    println(it)
+                    val jsonRes = JSONObject(it)
+                    var startItemHiddenListRemove = mutableListOf<Items>()
+                    if (jsonRes.getString("status") == "true") {
+                        var jsonArray = JSONArray(jsonRes.getString("data"))
+                        for (i in 0 until jsonArray.length()) {
+                            var itemlist = jsonArray.getJSONObject(i)
+                            var itemid = itemlist.getInt("itemid")
+                            GameActivity.companionList.startItemHiddenList.forEach() {
+                                if (itemid == it.id) {
+                                    idList.add(it.id)
+                                    startItemHiddenListRemove.add(it)
+                                }
+                            }
+                        }
+                        GameActivity.companionList.startItemHiddenList.removeAll(StartItemsMenu.startItemHiddenListRemove)
+
+                        val textFile2 = File("$filesDir/itemList.dat")
+                        if (!textFile2.exists()) {
+                            textFile2.createNewFile()
+                        } else {
+                            textFile2.delete()
+                            textFile2.createNewFile()
+                        }
+                        val fos = FileOutputStream(textFile2)
+                        val oos = ObjectOutputStream(fos)
+                        var writeList = ArrayList(idList)
+                        oos.writeObject(writeList)
+                        oos.close()
+                        fos.close()
+                        Log.d("userdata Data:::::::", "worked")
+
+                    } else {
+                        Log.d("post Data:::::::", jsonRes.getString("message"))
+                    }
+                }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_start_items.php?username=" + (username))
+            }
+
             intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
@@ -246,6 +292,49 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
 
     override fun onBackPressed() {
         super.onBackPressed()
+        var idList = mutableListOf<Int>()
+        if (isOnline(this)) {
+            HttpTask {
+                // progressMainBar.visibility = View.INVISIBLE
+                if (it == null) {
+                    println("connection error")
+                    return@HttpTask
+                }
+                println(it)
+                val jsonRes = JSONObject(it)
+                if (jsonRes.getString("status") == "true") {
+                    var jsonArray = JSONArray(jsonRes.getString("data"))
+                    for (i in 0 until jsonArray.length()) {
+                        var itemlist = jsonArray.getJSONObject(i)
+                        var itemid = itemlist.getInt("itemid")
+                        GameActivity.companionList.startItemListAll.forEach() {
+                            if (itemid == it.id) {
+                                idList.add(it.id)
+                            }
+                        }
+                    }
+
+                    val textFile2 = File("$filesDir/itemList.dat")
+                    if (!textFile2.exists()) {
+                        textFile2.createNewFile()
+                    } else {
+                        textFile2.delete()
+                        textFile2.createNewFile()
+                    }
+                    val fos = FileOutputStream(textFile2)
+                    val oos = ObjectOutputStream(fos)
+                    var writeList = ArrayList(idList)
+                    oos.writeObject(writeList)
+                    oos.close()
+                    fos.close()
+                    Log.d("userdata Data:::::::", "worked")
+
+                } else {
+                    Log.d("post Data:::::::", jsonRes.getString("message"))
+                }
+            }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_start_items.php?username=" + (username))
+        }
+
         intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()

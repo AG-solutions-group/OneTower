@@ -34,8 +34,8 @@
     <string name="tutorial_item_found_description2">Your tower can only use a certain amount of items at the same time. Remove unwanted items from the towers inventory by swiping UP.</string>
     <string name="tutorial_item_found_description3">To use an item simply swipe DOWN on it.</string>
 
-    <string name="tutorial_talents1">You just received a TP!</string>
-    <string name="tutorial_talents2"><u>You receive</u>\n - 1 TP (talent point) every 4 levels\n  - 1 UP (upgrade point) every 5 levels\n\n You can spend TPs in the talents menu and UPs in the items tab.</string>
+    <string name="tutorial_talents1">Your tower just leveled up!</string>
+    <string name="tutorial_talents2">Each time your tower levels up you gain \n - 1 TP (talent point) \n  - tower stats (damage and rarity bonus) \n\n You can spend TPs in the talents menu.</string>
     <string name="tutorial_talents3"></string>
 
     <string name="tutorial_enemies">A boss is approaching!</string>

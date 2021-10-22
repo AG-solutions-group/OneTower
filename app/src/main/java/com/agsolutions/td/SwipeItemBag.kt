@@ -12,9 +12,12 @@ class SwipeItemBag (var adapter: ItemBagAdapter) : ItemTouchHelper.SimpleCallbac
     ): Int {
         if (GameActivity.companionList.towerClick) {
             var pos = viewHolder.bindingAdapterPosition
-
-            if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] == GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[0]) return 0
-            if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos].crossedOut) return 0
+            if (pos < 0 || pos >= GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.size){
+                return 0
+            } else {
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] == GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[0]) return 0
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos].crossedOut) return 0
+            }
 
             return super.getMovementFlags(recyclerView, viewHolder)
         } else {
@@ -33,7 +36,7 @@ class SwipeItemBag (var adapter: ItemBagAdapter) : ItemTouchHelper.SimpleCallbac
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         if (!GameActivity.companionList.build) {
             var pos = viewHolder.bindingAdapterPosition
-            adapter.deleteItem(pos)
+            adapter.deleteItemBag(pos)
         }
 
     }

@@ -20,12 +20,12 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/continueGameBTN"
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="48dp"
         app:backgroundTint="@null"
-        android:background="@drawable/button_bg"
-        android:text="Continue"
+        android:background="@drawable/startbuttoncontinue"
+        android:text=""
         android:textColor="#ffffff"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/newGameBtn"
@@ -35,91 +35,91 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/newGameBtn"
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginEnd="48dp"
         app:backgroundTint="@null"
-        android:background="@drawable/button_bg"
-        android:text="New Game"
+        android:background="@drawable/startbuttonnewgame"
+        android:text=""
         android:textColor="#ffffff"
         app:layout_constraintBottom_toTopOf="@+id/startItemsBTN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/continueGameBTN" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/startItemsBTN"
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginEnd="48dp"
         app:backgroundTint="@null"
-        android:background="@drawable/button_bg"
-        android:text="Shop"
+        android:background="@drawable/startbuttonitems"
+        android:text=""
         android:textColor="#ffffff"
         app:layout_constraintBottom_toTopOf="@+id/highScoreBTN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newGameBtn" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/highScoreBTN"
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginEnd="48dp"
         app:backgroundTint="@null"
-        android:background="@drawable/button_bg"
+        android:background="@drawable/startbuttonscore"
         android:singleLine="true"
-        android:text="Score"
+        android:text=""
         android:textColor="#ffffff"
         app:layout_constraintBottom_toTopOf="@+id/wikiBTN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/startItemsBTN" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/wikiBTN"
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginEnd="48dp"
         app:backgroundTint="@null"
-        android:background="@drawable/button_bg"
-        android:text="WIKI"
+        android:background="@drawable/startbuttonwiki"
+        android:text=""
         android:textColor="#ffffff"
         app:layout_constraintBottom_toTopOf="@+id/aboutBTN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/highScoreBTN" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/aboutBTN"
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginEnd="48dp"
         app:backgroundTint="@null"
-        android:background="@drawable/button_bg"
-        android:text="About"
+        android:background="@drawable/startbuttonabout"
+        android:text=""
         android:textColor="#ffffff"
         app:layout_constraintBottom_toTopOf="@+id/quitBTN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wikiBTN" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/quitBTN"
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginEnd="48dp"
         app:backgroundTint="@null"
-        android:background="@drawable/button_bg"
-        android:text="Quit"
+        android:background="@drawable/startbuttonquit"
+        android:text=""
         android:textColor="#ffffff"
         app:layout_constraintBottom_toTopOf="@+id/scaleBTN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/aboutBTN" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/scaleBTN"
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="48dp"
         app:backgroundTint="@null"
-        android:background="@drawable/button_bg"
-        android:text="Scale"
+        android:background="@drawable/startbuttonscale"
+        android:text=""
         android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

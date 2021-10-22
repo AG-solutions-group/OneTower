@@ -74,8 +74,7 @@ class ItemFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener{
         }
 
         GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.nameicon, GameActivity.companionList.itemList[GameActivity.companionList.fragmentItemCurrentItem].name.toString()))
-            if (GameActivity.companionList.itemList[GameActivity.companionList.fragmentItemCurrentItem].diaCost > 0) GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.diamondicon, (GameActivity.companionList.itemList[GameActivity.companionList.fragmentItemCurrentItem].diaCost.toString() + " / " + GameActivity.companionList.diamonds.toInt()
-                .toString())))
+            if (GameActivity.companionList.itemList[GameActivity.companionList.fragmentItemCurrentItem].diaCost > 0) GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.diamondicon, (GameActivity.companionList.itemList[GameActivity.companionList.fragmentItemCurrentItem].diaCost.toString())))
             if (!GameActivity.companionList.day && GameActivity.companionList.moonTalentItemCost > 0) {
                 if (GameActivity.companionList.itemList[GameActivity.companionList.fragmentItemCurrentItem].goldCost > 0) {
                     when (GameActivity.companionList.itemList[GameActivity.companionList.fragmentItemCurrentItem].goldCost.toInt()) {

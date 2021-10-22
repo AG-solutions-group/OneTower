@@ -657,7 +657,7 @@
 
     </LinearLayout>
 
-    <com.agsolutions.td.UiViewTalentEarth
+    <com.agsolutions.td.UiViewTalentWindow
 
         android:id="@+id/uiViewTalentEarth"
         android:layout_width="match_parent"

@@ -1,13 +1,15 @@
 package com.agsolutions.td.Fragments
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
+import com.agsolutions.td.*
 import com.agsolutions.td.GameActivity.Companion.companionList
-import com.agsolutions.td.Items
-import com.agsolutions.td.R
+import kotlinx.android.synthetic.main.fragment_poison_talent.*
 import kotlinx.android.synthetic.main.fragment_wind_talent.*
 
 
@@ -23,11 +25,19 @@ class WindTalentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_wind_talent, container, false)
+        var mainLayout = inflater.inflate(R.layout.fragment_wind_talent, container, false)
+
+        mainLayout.doOnLayout {
+            update()
+        }
+
+        return mainLayout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        companionList.focusTalentFragment = true
 
         windRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].windRow1Item1.toString()
         windRow1Item2ShowTV.text = companionList.towerList[companionList.towerClickID].windRow1Item2.toString()
@@ -38,11 +48,26 @@ class WindTalentFragment : Fragment() {
         windRow3Item3ShowTV.text = companionList.towerList[companionList.towerClickID].windRow3Item3.toString()
         windRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].windRow4Item1.toString()
 
+        if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1) {
+            windRow1Item2IB.isClickable = false
+            windRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) {
+            windRow1Item1IB.isClickable = false
+            windRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+        }
+
         if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) backgroundWindRow2.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].windRow2Item1 + companionList.towerList[companionList.towerClickID].windRow2Item2 >= 3) backgroundWindRow3.setBackgroundResource(R.drawable.backgroundplankslight)
         if (companionList.towerList[companionList.towerClickID].windRow3Item1 + companionList.towerList[companionList.towerClickID].windRow3Item2 + companionList.towerList[companionList.towerClickID].windRow3Item3 >= 3) backgroundWindRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
         windRow1Item1IB.setOnClickListener() {
+
+            var point = IntArray(2)
+            windUpgradeBTN.getLocationInWindow(point)
+            UiViewTalentWindow.talentX = point[0].toFloat()
+            UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+            uiViewTalentWind.invalidate()
 
             setImagePick(11)
 
@@ -52,10 +77,17 @@ class WindTalentFragment : Fragment() {
 
             windUpgradeBTN.setOnClickListener() {
 
+                companionList.focusTalentFragment = false
+                uiViewTalentWind.invalidate()
+
                 if (companionList.towerList[companionList.towerClickID].windRow1Item1 + companionList.towerList[companionList.towerClickID].windRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                     companionList.towerList[companionList.towerClickID].windRow1Item1 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1) companionList.towerList[companionList.towerClickID].experienceEachHit = true
+                    if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1){
+                        companionList.towerList[companionList.towerClickID].experienceEachHit = true
+                        windRow1Item2IB.isClickable = false
+                        windRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                     if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) backgroundWindRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -70,15 +102,23 @@ class WindTalentFragment : Fragment() {
             setImagePick(12)
 
             windNameDisplayTalentTV.text = "Air Drop"
-            windDisplayTalentTV.text = "Each hit has a chance to drop an item that grants experience"
+            windDisplayTalentTV.text = "Each hit has a chance to grant a small amount of gold"
             windUpgradeBTN.isClickable = true
 
             windUpgradeBTN.setOnClickListener() {
 
+                companionList.focusTalentFragment = false
+                uiViewTalentWind.invalidate()
+
+
                 if (companionList.towerList[companionList.towerClickID].windRow1Item1 + companionList.towerList[companionList.towerClickID].windRow1Item2 < 1 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                     companionList.towerList[companionList.towerClickID].windRow1Item2 += 1
 
-                    if (companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) companionList.towerList[companionList.towerClickID].experienceDrop = true
+                    if (companionList.towerList[companionList.towerClickID].windRow1Item2 == 1){
+                        companionList.towerList[companionList.towerClickID].goldDrop = true
+                        windRow1Item1IB.isClickable = false
+                        windRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+                    }
 
                     if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) backgroundWindRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
@@ -202,14 +242,14 @@ class WindTalentFragment : Fragment() {
                     if (companionList.towerList[companionList.towerClickID].windRow3Item2 <= 2 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
                         companionList.towerList[companionList.towerClickID].windRow3Item2 += 1
 
-                        if (companionList.towerList[companionList.towerClickID].windRow3Item2 == 1) companionList.towerList[companionList.towerClickID].tornadoRadius = 60.0f
+                        if (companionList.towerList[companionList.towerClickID].windRow3Item2 == 1) companionList.tornadoRadius = 60.0f
                         if (companionList.towerList[companionList.towerClickID].windRow3Item2 == 2) {
-                            companionList.towerList[companionList.towerClickID].tornadoRadius = 70.0f
-                            companionList.towerList[companionList.towerClickID].tornadoTimer -= 150
+                            companionList.tornadoRadius = 70.0f
+                            companionList.tornadoTimer -= 50
                         }
                         if (companionList.towerList[companionList.towerClickID].windRow3Item2 == 3) {
-                            companionList.towerList[companionList.towerClickID].tornadoRadius = 80.0f
-                            companionList.towerList[companionList.towerClickID].tornadoTimer -= 150
+                            companionList.tornadoRadius = 80.0f
+                            companionList.tornadoTimer -= 50
                         }
 
                         if (companionList.towerList[companionList.towerClickID].windRow3Item1 + companionList.towerList[companionList.towerClickID].windRow3Item2 + companionList.towerList[companionList.towerClickID].windRow3Item3 >= 3) backgroundWindRow4.setBackgroundResource(R.drawable.backgroundplankslight)
@@ -273,8 +313,7 @@ class WindTalentFragment : Fragment() {
                             companionList.towerList[companionList.towerClickID].windUltimatePercent += 0.01f
                         }
                         if (companionList.towerList[companionList.towerClickID].windRow4Item1 == 3) {
-                            companionList.itemList.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
-                            companionList.insertItem += 1
+                            companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
                             companionList.towerList[companionList.towerClickID].bonusSpeedWindTalent += 0.50f
                             companionList.towerList[companionList.towerClickID].windUltimatePercent += 0.01f
                         }
@@ -285,8 +324,25 @@ class WindTalentFragment : Fragment() {
                 }
             }
         }
-
     }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        update()
+    }
+
+    fun update () {
+        if (GameActivity.companionList.focusTalentFragment) {
+            if (GameActivity.companionList.hintsBool) {
+                var point = IntArray(2)
+                windRow1Item1IB.getLocationInWindow(point)
+                UiViewTalentWindow.talentX = point[0].toFloat()
+                UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+                uiViewTalentWind.invalidate()
+            }
+        }
+    }
+
     fun setImagePick (pick: Int) {
 
         windRow1Item1IBPick.setImageResource(R.drawable.overlaytransparent)
@@ -307,6 +363,14 @@ class WindTalentFragment : Fragment() {
             32 -> windRow3Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             33 -> windRow3Item3IBPick.setImageResource(R.drawable.backgroundsymbolpick)
             41 -> windRow4Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+        }
+        if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1) {
+            windRow1Item2IB.isClickable = false
+            windRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+        }
+        if (companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) {
+            windRow1Item1IB.isClickable = false
+            windRow1Item1IBPick.setImageResource(R.drawable.crossedout)
         }
     }
 }

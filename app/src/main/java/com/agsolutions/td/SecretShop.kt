@@ -108,8 +108,7 @@ class SecretShop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
 
             GameActivity.companionList.mysteryPoints -= GameActivity.companionList.secretShopList[position].mpCost
             GameActivity.companionList.itemPoints -= GameActivity.companionList.secretShopList[position].ipCost
-            GameActivity.companionList.itemList.add(0, GameActivity.companionList.secretShopList[position])
-            StartItems.startItems += 1
+            GameActivity.companionList.itemListInsertItem.add( GameActivity.companionList.secretShopList[position])
             GameActivity.companionList.secretShopList.removeAll(GameActivity.companionList.secretShopList)
             GameActivity.paused = false
             finish()
@@ -231,8 +230,7 @@ class Shop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFragment
 
             GameActivity.companionList.mysteryPoints -= GameActivity.companionList.shopList[position].mpCost
             GameActivity.companionList.itemPoints -= GameActivity.companionList.shopList[position].ipCost
-            GameActivity.companionList.itemList.add(0, GameActivity.companionList.shopList[position])
-            StartItems.startItems += 1
+            GameActivity.companionList.itemListInsertItem.add(0, GameActivity.companionList.shopList[position])
             GameActivity.companionList.shopList.removeAll(GameActivity.companionList.shopList)
             GameActivity.paused = false
             finish()
