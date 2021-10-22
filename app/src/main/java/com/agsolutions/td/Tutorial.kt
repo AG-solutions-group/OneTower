@@ -8,32 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.tutorial_items.okayBTN
 import kotlinx.android.synthetic.main.tutorial_start.*
 
-
-class TutorialEnd : AppCompatActivity() {
-
-    var mHandler = Handler ()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.tutorial_end)
-
-
-        window.setLayout((1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1400.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
-        window.setElevation(10F)
-
-       okayBTN.setOnClickListener() {
-           GameActivity.gameEnd = 0
-           mHandler.postDelayed({
-               finish()
-           }, 50)
-       }
-
-    }
-    override fun onBackPressed() {
-    }
-
-}
-
 class TutorialEnemies : AppCompatActivity() {
 
     var mHandler = Handler ()

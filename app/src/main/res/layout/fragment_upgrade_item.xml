@@ -44,7 +44,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             app:backgroundTint="@null"
-            android:background="@drawable/button_bg"
+            android:background="@drawable/gamebuttonemptybw"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

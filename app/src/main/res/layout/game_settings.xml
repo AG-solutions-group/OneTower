@@ -127,13 +127,13 @@
 
     <Button
         android:id="@+id/returnBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
         android:text="Okay"
         android:textColor="#ffffff"
         android:textSize="@{updateViewModel.textButton}"
-        android:background="@drawable/button_bg"
+        android:background="@drawable/gamebuttonemptylongbw"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

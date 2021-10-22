@@ -1149,11 +1149,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             intent = Intent(this, GameEnd::class.java)
             startActivity(intent)
         }
-        if (companionList.mapPick == 0 && companionList.level == 10 && (companionList.bossesKilled == 1 || companionList.bossesLeaked == 1) && companionList.end == 0) {
-            companionList.end = 1
-            intent = Intent(this, TutorialEnd::class.java)
-            startActivity(intent)
-        }
 
         if (gameEnd == 0) {
             gameEnd = 1
