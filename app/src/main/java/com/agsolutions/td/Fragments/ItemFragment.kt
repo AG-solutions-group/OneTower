@@ -156,6 +156,24 @@ class ItemFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener{
                 if (companionList.itemList[companionList.fragmentItemCurrentItem].specialFloat2 != 0f) companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, companionList.itemList[companionList.fragmentItemCurrentItem].specialFloat2.round(2)
                     .toString()))
             }
+            if (companionList.itemList[companionList.fragmentItemCurrentItem].itemChance > 0f) {
+                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "Item Chance"))
+                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, companionList.itemList[companionList.fragmentItemCurrentItem].itemChance.round(2).toString()))
+            }
+        if (companionList.itemList[companionList.fragmentItemCurrentItem].itemQuality > 0f) {
+            companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "Item Quality"))
+            companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, companionList.itemList[companionList.fragmentItemCurrentItem].itemQuality.round(2).toString()))
+        }
+        if (companionList.itemList[companionList.fragmentItemCurrentItem].xpGain > 0f) {
+            companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "XP Gain"))
+            companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, companionList.itemList[companionList.fragmentItemCurrentItem].xpGain.round(2).toString()))
+        }
+        if (companionList.itemList[companionList.fragmentItemCurrentItem].goldIncome > 0f) {
+            companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "Gold Drop"))
+            companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, companionList.itemList[companionList.fragmentItemCurrentItem].goldIncome.round(2).toString()))
+        }
+
+
             if (companionList.itemList[companionList.fragmentItemCurrentItem].id == 2000 || companionList.itemList[companionList.fragmentItemCurrentItem].id == 2001 || companionList.itemList[companionList.fragmentItemCurrentItem].id == 2002 || companionList.itemList[companionList.fragmentItemCurrentItem].id == 2003 || companionList.itemList[companionList.fragmentItemCurrentItem].id == 2004 || companionList.itemList[companionList.fragmentItemCurrentItem].id == 2005 || companionList.itemList[companionList.fragmentItemCurrentItem].id == 2006 || companionList.itemList[companionList.fragmentItemCurrentItem].id == 2007 || companionList.itemList[companionList.fragmentItemCurrentItem].id == 2008 || companionList.itemList[companionList.fragmentItemCurrentItem].id == 2009) {
                 companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "dropped item value * 0.85"))
                 companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "tower item value * 0.85"))

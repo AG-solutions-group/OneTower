@@ -57,4 +57,7 @@
     <string name="wiki_abrev">DMG: damage \n SPD: attack speed \n CRT: critical strike chance \n CrtDmg: critical damage multiplier \n HIT: hit chance \n Gold: earned by killing enemies or interest \n DIA: diamonds: earned by killing bosses \n IP: item points: earned by collecting items, that are not being used \n MP: mystery points: ???</string>
     <string name="wiki_challenge">Killing a "challenge" enemy will grant you 5 lives, 5 bombs and 1 bag slot. Leaking a challenge will not result in losing lives.</string>
 
+    <!--about message-->
+    <string name="about">AG Solutions Group \n Anton Gorjunow \n Postfach 52 03 15 \n 12593 Berlin - Germany \n Contact: ag-solutions-group@protonmail.com</string>
+
 </resources>

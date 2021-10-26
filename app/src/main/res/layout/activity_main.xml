@@ -37,26 +37,52 @@
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:layout_marginEnd="48dp"
-        app:backgroundTint="@null"
         android:background="@drawable/startbuttonnewgame"
         android:text=""
         android:textColor="#ffffff"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toTopOf="@+id/startItemsBTN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/continueGameBTN" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/normalQBtn"
+        android:layout_width="40dp"
+        android:layout_height="50dp"
+        android:background="@drawable/gamebuttonempty"
+        android:text="?"
+        android:textColor="#000000"
+        android:visibility="invisible"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/newGameBtn"
+        app:layout_constraintStart_toEndOf="@+id/newGameBtn"
+        app:layout_constraintTop_toTopOf="@+id/newGameBtn" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/startItemsBTN"
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:layout_marginEnd="48dp"
-        app:backgroundTint="@null"
         android:background="@drawable/startbuttonitems"
         android:text=""
         android:textColor="#ffffff"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toTopOf="@+id/highScoreBTN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newGameBtn" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/circularQBtn"
+        android:layout_width="40dp"
+        android:layout_height="50dp"
+        android:background="@drawable/gamebuttonempty"
+        android:text="?"
+        android:textColor="#000000"
+        android:visibility="invisible"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/startItemsBTN"
+        app:layout_constraintStart_toEndOf="@+id/startItemsBTN"
+        app:layout_constraintTop_toTopOf="@+id/startItemsBTN" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/highScoreBTN"
@@ -182,5 +208,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:background="@drawable/onetowerlogo"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </ImageView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

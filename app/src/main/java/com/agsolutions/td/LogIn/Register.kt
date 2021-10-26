@@ -1,9 +1,9 @@
 package com.agsolutions.td.LogIn
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_register.*
@@ -53,11 +53,6 @@ class Register : AppCompatActivity() {
                     textInputLayoutName,
                     getString(R.string.error_message_name))) {
                 return
-            } else if (!inputValidation!!.isInputEditTextEmail(
-                    textInputEditTextUsername,
-                    textInputLayoutUsername,
-                    getString(R.string.error_message_email))) {
-                return
             } else if (!inputValidation!!.isInputEditTextFilled(
                     textInputEditTextPassword,
                     textInputLayoutPassword,
@@ -72,7 +67,6 @@ class Register : AppCompatActivity() {
                 Snackbar.make(nestedScrollView!!, getString(R.string.success_message), Snackbar.LENGTH_LONG).show()
 
                 val json = JSONObject()
-                json.put("email", textInputEditTextUsername.text.toString())
                 json.put("username", textInputEditTextName.text.toString())
                 json.put("password", textInputEditTextPassword.text.toString())
 
@@ -108,7 +102,6 @@ class Register : AppCompatActivity() {
 
         private fun emptyInputEditText() {
             textInputEditTextName!!.text = null
-            textInputEditTextUsername!!.text = null
             textInputEditTextPassword!!.text = null
             textInputEditTextConfirmPassword!!.text = null
         }

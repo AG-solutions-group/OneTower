@@ -41,10 +41,7 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
 
         if (companionList.towerClick) {
 
-            var towerListIterator = companionList.towerList.listIterator()
-            while (towerListIterator.hasNext()) {
-                var it = towerListIterator.next()
-                if (it.selected) {
+                var it = companionList.towerList[companionList.towerClickID]
 
                     if (it.itemListBag[pos].crossedOut) {
                     } else {
@@ -67,8 +64,6 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
                         companionList.itemListBagInserter.addAll(it.itemListBag)
                         notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
                     }
-                }
-            }
         }
     }
 
@@ -86,6 +81,16 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
         it.itemListBag[pos].crit /= it.towerRarityMultiplier
         it.bonusCritDmg -= it.itemListBag[pos].critDmg
         it.itemListBag[pos].critDmg /= it.towerRarityMultiplier
+
+        it.bonusItemChance -= it.itemListBag[pos].itemChance
+        it.itemListBag[pos].itemChance /= it.towerRarityMultiplier
+        it.bonusItemQuality -= it.itemListBag[pos].itemQuality
+        it.itemListBag[pos].itemQuality /= it.towerRarityMultiplier
+        it.bonusXpMultiplier -= it.itemListBag[pos].xpGain
+        it.itemListBag[pos].xpGain /= it.towerRarityMultiplier
+        it.bonusGoldMultiplier -= it.itemListBag[pos].goldIncome
+        it.itemListBag[pos].goldIncome /= it.towerRarityMultiplier
+
         if (it.itemListBag[pos].id == 3 || it.itemListBag[pos].id == 101 || it.itemListBag[pos].id == 201 || it.itemListBag[pos].id == 301) companionList.magicBoxCount -= 1
         if (it.itemListBag[pos].id == 0 || it.itemListBag[pos].id == 100 || it.itemListBag[pos].id == 200 || it.itemListBag[pos].id == 300) companionList.maceCount -= 1
         if (it.itemListBag[pos].id == 1 || it.itemListBag[pos].id == 102 || it.itemListBag[pos].id == 202 || it.itemListBag[pos].id == 302) companionList.bowCount -= 1
@@ -94,7 +99,6 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
             it.bonusItemChance -= it.itemListBag[pos].specialFloat2
             it.itemListBag[pos].specialFloat2 /= it.towerRarityMultiplier
         }
-        if (it.itemListBag[pos].id == 10) it.xpMulti -= it.itemListBag[pos].specialFloat
 
         if ((it.itemListBag[pos].id == 100 || it.itemListBag[pos].id == 102 || it.itemListBag[pos].id == 103) && it.itemListBag[pos].special2 == "item find") {
             it.bonusItemChance -= it.itemListBag[pos].specialFloat2
@@ -108,7 +112,6 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
             it.bonusItemQuality -= it.itemListBag[pos].specialFloat2
             it.itemListBag[pos].specialFloat2 /= it.towerRarityMultiplier
         }
-        if (it.itemListBag[pos].id == 105) it.itemPiggyBank -= 0.1f
         if ((it.itemListBag[pos].id == 200 || it.itemListBag[pos].id == 202 || it.itemListBag[pos].id == 203) && it.itemListBag[pos].special == "armor penetration"){
             it.bonusArmorPen -= it.itemListBag[pos].specialFloat
             it.itemListBag[pos].specialFloat /= it.towerRarityMultiplier

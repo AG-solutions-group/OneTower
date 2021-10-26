@@ -72,38 +72,48 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
         userlevel = intent.getIntExtra("userLevel", 0)
 
         if (isOnline(this)) {
-            HttpTask {
-                // progressMainBar.visibility = View.INVISIBLE
-                if (it == null) {
-                    println("connection error")
-                    return@HttpTask
+
+            if ((sharedPref!!.getInt("hasNewItems", 0)) == 1) {
+                var editor = sharedPref!!.edit()
+                editor.putInt("hasNewItems", 2)
+                editor.apply()
+
+                var usernameX = sharedPref!!.getString("username", "user")
+
+                var textFile = File("$filesDir/itemList.dat")
+                var fis = FileInputStream(textFile)
+                var ois = ObjectInputStream(fis)
+                var itemListPlace = ois.readObject() as ArrayList<Int>
+                var itemListPost = ArrayList<Int>()
+                for (itemid in itemListPlace) {
+                    itemListPost.add(itemid)
                 }
-                println(it)
-                val jsonRes = JSONObject(it)
-                if (jsonRes.getString("status") == "true") {
-                    var jsonArray = JSONArray(jsonRes.getString("data"))
-                    for (i in 0 until jsonArray.length()) {
-                        var itemlist = jsonArray.getJSONObject(i)
-                        var itemid = itemlist.getInt("itemid")
-                        Log.d("item", itemid.toString() )
-                        GameActivity.companionList.startItemHiddenList.forEach() {
-                            if (itemid == it.id) {
-                                GameActivity.companionList.startItemList.add(it)
-                                startItemHiddenListRemove.add(it)
-                            }
+
+                itemListPost.forEach() {
+                    val json = JSONObject()
+                    json.put("username", usernameX)
+                    json.put("itemid", it.toString())
+
+                    HttpTask {
+                        if (it == null) {
+                            println("DATA - connection error")
+                            return@HttpTask
                         }
-                    }
-                    GameActivity.companionList.startItemHiddenList.removeAll(startItemHiddenListRemove)
-
-                    adapterHidden.notifyDataSetChanged()
-                    adapter.notifyDataSetChanged()
-                    Log.d("userdata Data:::::::", "worked")
-
-                } else {
-                    Log.d("post Data:::::::", jsonRes.getString("message"))
+                        println(it)
+                        val json_res = JSONObject(it)
+                        if (json_res.getString("status").equals("true")) {
+                            Log.d("post Data true :::::::", json_res.getString("message"))
+                            post1()
+                        } else {
+                            Log.d("post Data else:::::::", json_res.getString("message"))
+                        }
+                    }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/start_items.php", json.toString())
                 }
-            }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_start_items.php?username=" + (username))
-        }else if (((sharedPref!!.getInt("hasNewItems", 0)) == 1) || ((sharedPref!!.getInt("hasNewItems", 0)) == 2)){
+            }else {
+                post1()
+            }
+        }else {
+            // if (((sharedPref!!.getInt("hasNewItems", 0)) == 1) || ((sharedPref!!.getInt("hasNewItems", 0)) == 2)){
             var textFile = File("$filesDir/itemList.dat")
             var fis = FileInputStream(textFile)
             var ois = ObjectInputStream(fis)
@@ -132,21 +142,13 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
                     }
                     println(it)
                     val jsonRes = JSONObject(it)
-                    var startItemHiddenListRemove = mutableListOf<Items>()
                     if (jsonRes.getString("status") == "true") {
                         var jsonArray = JSONArray(jsonRes.getString("data"))
                         for (i in 0 until jsonArray.length()) {
                             var itemlist = jsonArray.getJSONObject(i)
                             var itemid = itemlist.getInt("itemid")
-                            GameActivity.companionList.startItemHiddenList.forEach() {
-                                if (itemid == it.id) {
-                                    idList.add(it.id)
-                                    startItemHiddenListRemove.add(it)
-                                }
-                            }
+                            idList.add(itemid)
                         }
-                        GameActivity.companionList.startItemHiddenList.removeAll(StartItemsMenu.startItemHiddenListRemove)
-
                         val textFile2 = File("$filesDir/itemList.dat")
                         if (!textFile2.exists()) {
                             textFile2.createNewFile()
@@ -167,12 +169,44 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
                     }
                 }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_start_items.php?username=" + (username))
             }
-
             intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         }
 
+    }
+
+    fun post1 (){
+        HttpTask {
+            // progressMainBar.visibility = View.INVISIBLE
+            if (it == null) {
+                println("connection error")
+                return@HttpTask
+            }
+            println(it)
+            val jsonRes = JSONObject(it)
+            if (jsonRes.getString("status") == "true") {
+                var jsonArray = JSONArray(jsonRes.getString("data"))
+                for (i in 0 until jsonArray.length()) {
+                    var itemlist = jsonArray.getJSONObject(i)
+                    var itemid = itemlist.getInt("itemid")
+                    GameActivity.companionList.startItemHiddenList.forEach() {
+                        if (itemid == it.id) {
+                            GameActivity.companionList.startItemList.add(it)
+                            startItemHiddenListRemove.add(it)
+                        }
+                    }
+                }
+                GameActivity.companionList.startItemHiddenList.removeAll(startItemHiddenListRemove)
+
+                adapterHidden.notifyDataSetChanged()
+                adapter.notifyDataSetChanged()
+                Log.d("userdata Data:::::::", "worked")
+
+            } else {
+                Log.d("post Data:::::::", jsonRes.getString("message"))
+            }
+        }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_start_items.php?username=" + (username))
     }
 
     override fun onClick(position: Int) {
@@ -284,6 +318,8 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
             oos.writeObject(writeList)
             oos.close()
             fos.close()
+
+
     }
 
     override fun onStatsClick(position: Int) {

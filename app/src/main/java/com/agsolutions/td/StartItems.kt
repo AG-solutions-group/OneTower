@@ -5,7 +5,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.agsolutions.td.UiViewStartItems.Companion.talentRecyclerElementX
 import com.agsolutions.td.UiViewStartItems.Companion.talentRecyclerPickX
 import com.agsolutions.td.UiViewStartItems.Companion.talentRecyclerX
@@ -50,9 +49,22 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartT
         recyclerStartTower.setHasFixedSize(true)
 
         showStartItemStatsRecycler.adapter = showAdapter
-        showStartItemStatsRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        showStartItemStatsRecycler.setHasFixedSize(true)
+
+        val spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                if (position == 0) {
+                    return 2
+                } else {
+                    if (GameActivity.companionList.itemListStartItems[position].stats.length > 10) return 2
+                    else return 1
+                }
+            }
+        }
+
+        val glm = GridLayoutManager(this, 2)
+
+        glm.spanSizeLookup = spanSizeLookup
+        showStartItemStatsRecycler.layoutManager = glm
 
         closeStartItemsBTN.visibility = View.INVISIBLE
 
@@ -168,6 +180,48 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartT
         GameActivity.companionList.itemListStartItems.removeAll(GameActivity.companionList.itemListStartItems)
 
         GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.nameicon, GameActivity.companionList.startTowerList[position].name.toString()))
+        when(GameActivity.companionList.startTowerList[position].id){
+            2100 -> { //earth
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Difficulty"))
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Easy"))
+            }
+            2101 -> { // wizard
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Difficulty"))
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Easy"))
+            }
+            2102 -> { // ice
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Difficulty"))
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Medium"))
+            }
+            2103 -> { // butterfly
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Difficulty"))
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Medium"))
+            }
+            2104 -> { // poison
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Difficulty"))
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Easy"))
+            }
+            2105 -> { // moon
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Difficulty"))
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Easy"))
+            }
+            2106 -> { // wind
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Difficulty"))
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Hard"))
+            }
+            2107 -> { // utils
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Difficulty"))
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Extreme"))
+            }
+            2108 -> { // fire
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Difficulty"))
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Medium"))
+            }
+            2109 -> { // dark
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Difficulty"))
+                GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.specialicon, "Hard"))
+            }
+        }
         if (GameActivity.companionList.startTowerList[position].dmg > 0) GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.swordandwandicon, GameActivity.companionList.startTowerList[position].dmg.round(2)
             .toString()))
         if (GameActivity.companionList.startTowerList[position].crit > 0) GameActivity.companionList.itemListStartItems.add(ItemFragmentStrings(R.drawable.criticon, GameActivity.companionList.startTowerList[position].crit.round(2)

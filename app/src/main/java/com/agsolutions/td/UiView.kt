@@ -130,17 +130,17 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
                 GameActivity.companionList.towerList.forEach(){
                     var rectPlace = Rect(((it.towerRange.x -100) * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor)).toInt(), ((it.towerRange.y - 100) * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor)).toInt(), ((it.towerRange.x + 100) * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor)).toInt(), ((it.towerRange.y + 100)* ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor)).toInt())
                     if (it.canBuildEach){
-                        paintBlockedTower.color = Color.parseColor("#8086BD09")
+                        paintBlockedTower.color = Color.parseColor("#8086BD09") // green
                         paintBlockedTower.style = Paint.Style.FILL
                         paintBlockedTower2.color = Color.BLACK
                         paintBlockedTower2.style = Paint.Style.STROKE
                     } else if (it.canBuild) {
-                        paintBlockedTower.color = Color.parseColor("#80FFEB42")
+                        paintBlockedTower.color = Color.parseColor("#80FFEB42") // yellow
                         paintBlockedTower.style = Paint.Style.FILL
                         paintBlockedTower2.color = Color.BLACK
                         paintBlockedTower2.style = Paint.Style.STROKE
                     } else {
-                        paintBlockedTower.color = Color.parseColor("#80AA2E25")
+                        paintBlockedTower.color = Color.parseColor("#80AA2E25") // red
                         paintBlockedTower.style = Paint.Style.FILL
                         paintBlockedTower2.color = Color.BLACK
                         paintBlockedTower2.style = Paint.Style.STROKE

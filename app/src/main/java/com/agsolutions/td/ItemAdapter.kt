@@ -53,10 +53,7 @@ class ItemAdapter (
 
             if (companionList.towerClick) {
 
-                var towerListIterator = companionList.towerList.listIterator()
-                while (towerListIterator.hasNext()) {
-                    var it = towerListIterator.next()
-                    if (it.selected) {
+                    var it = companionList.towerList[companionList.towerClickID]
 
                         if (!companionList.day && companionList.moonTalentItemCost > 0) companionList.gold -= (companionList.itemList[pos].goldCost - (companionList.itemList[pos].goldCost * companionList.moonTalentItemCost))
                         else if (companionList.midnightMadnessMidasGoldCost > 0) companionList.gold -= (companionList.itemList[pos].goldCost + (companionList.itemList[pos].goldCost * companionList.midnightMadnessMidasGoldCost))
@@ -97,8 +94,6 @@ class ItemAdapter (
 
                         companionList.itemList.removeAt(pos)
                         notifyDataSetChanged()
-                    }
-                }
             } else {
                 if (companionList.itemList[pos].id == 5) {
                     if (companionList.activeAbilityList.contains(aAid1)) {
@@ -134,6 +129,15 @@ class ItemAdapter (
         it.bonusCrit += itemListPos[pos].crit
         itemListPos[pos].critDmg *= it.towerRarityMultiplier
         it.bonusCritDmg += itemListPos[pos].critDmg
+        itemListPos[pos].itemChance *= it.towerRarityMultiplier
+        it.bonusItemChance += itemListPos[pos].itemChance
+        itemListPos[pos].itemQuality *= it.towerRarityMultiplier
+        it.bonusItemQuality += itemListPos[pos].itemQuality
+        itemListPos[pos].xpGain *= it.towerRarityMultiplier
+        it.bonusXpMultiplier += itemListPos[pos].xpGain
+        itemListPos[pos].goldIncome *= it.towerRarityMultiplier
+        it.bonusGoldMultiplier += itemListPos[pos].goldIncome
+
         if (itemListPos[pos].id == 3 || itemListPos[pos].id == 101 || itemListPos[pos].id == 201 || itemListPos[pos].id == 301) companionList.magicBoxCount += 1
         if (itemListPos[pos].id == 0 || itemListPos[pos].id == 100 || itemListPos[pos].id == 200 || itemListPos[pos].id == 300) companionList.maceCount += 1
         if (itemListPos[pos].id == 1 || itemListPos[pos].id == 102 || itemListPos[pos].id == 202 || itemListPos[pos].id == 302) companionList.bowCount += 1
@@ -167,9 +171,6 @@ class ItemAdapter (
         if (itemListPos[pos].id == 9) {
             it.xpTower += itemListPos[pos].specialFloat
         }
-        if (itemListPos[pos].id == 10) {
-            it.xpMulti += itemListPos[pos].specialFloat
-        }
 
         if ((itemListPos[pos].id == 100 || itemListPos[pos].id == 102 || itemListPos[pos].id == 103) && itemListPos[pos].special2 == "item find") {
             itemListPos[pos].specialFloat2 *= it.towerRarityMultiplier
@@ -182,9 +183,6 @@ class ItemAdapter (
         if (itemListPos[pos].id == 104 || itemListPos[pos].id == 204) {
             itemListPos[pos].specialFloat2 *= it.towerRarityMultiplier
             it.bonusItemQuality += itemListPos[pos].specialFloat2
-        }
-        if (itemListPos[pos].id == 105) {
-            it.itemPiggyBank += 0.1f
         }
         if (itemListPos[pos].id == 106) {
             if (companionList.mapMode != 2) companionList.lives += 1

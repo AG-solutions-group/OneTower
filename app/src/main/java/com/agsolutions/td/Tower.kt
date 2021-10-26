@@ -34,7 +34,7 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var towerAttackSpeedShow = 0.0f
     var bonusCrit = 0.0f
     var overallCrit = 0.0f
-    var xpMulti = 1f
+    var bonusXpMultiplier = 1f
 
     var bonusmultiCrit = 1
     var overallMulticrit = 0
@@ -86,7 +86,7 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var disruptedCounter = 0
 
     // talent
-    var talentPoints = 60
+    var talentPoints = 1
     var xpTower = 0f
     var xpGoal1 = 0f
     var xpGoal2 = 1f
@@ -108,7 +108,7 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var itemPikaSpd = 0f
     var itemPikaCrit = 0f
     var itemSlowDeath = 0.0f
-    var itemPiggyBank = 1f
+    var bonusGoldMultiplier = 1f
 
     var itemLassoCount = 0
     var itemStartPoison = false

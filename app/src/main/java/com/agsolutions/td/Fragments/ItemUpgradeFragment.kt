@@ -358,6 +358,70 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
                                         }
                                     }
                                 }
+                                if (tower.itemListBag[position].itemChance > 0f) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                                tower.bonusItemChance += (tower.itemListBag[position].itemChance * 0.1f)
+                                                tower.itemListBag[position].itemChance += (tower.itemListBag[position].itemChance * 0.1f)
+                                            }
+                                        in 66..88 -> {
+                                                tower.bonusItemChance += (tower.itemListBag[position].itemChance * 0.15f)
+                                                tower.itemListBag[position].itemChance += (tower.itemListBag[position].itemChance * 0.15f)
+                                            }
+                                        in 89..99 -> {
+                                                tower.bonusItemChance += (tower.itemListBag[position].itemChance * 0.2f)
+                                                tower.itemListBag[position].itemChance += (tower.itemListBag[position].itemChance * 0.2f)
+                                            }
+                                    }
+                                }
+                                if (tower.itemListBag[position].itemQuality > 0f) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                            tower.bonusItemQuality += (tower.itemListBag[position].itemQuality * 0.1f)
+                                            tower.itemListBag[position].itemQuality += (tower.itemListBag[position].itemQuality * 0.1f)
+                                        }
+                                        in 66..88 -> {
+                                            tower.bonusItemQuality += (tower.itemListBag[position].itemQuality * 0.15f)
+                                            tower.itemListBag[position].itemQuality += (tower.itemListBag[position].itemQuality * 0.15f)
+                                        }
+                                        in 89..99 -> {
+                                            tower.bonusItemQuality += (tower.itemListBag[position].itemQuality * 0.2f)
+                                            tower.itemListBag[position].itemQuality += (tower.itemListBag[position].itemQuality * 0.2f)
+                                        }
+                                    }
+                                }
+                                if (tower.itemListBag[position].xpGain > 0f) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                            tower.bonusXpMultiplier += (tower.itemListBag[position].xpGain * 0.1f)
+                                            tower.itemListBag[position].xpGain += (tower.itemListBag[position].xpGain * 0.1f)
+                                        }
+                                        in 66..88 -> {
+                                            tower.bonusXpMultiplier += (tower.itemListBag[position].xpGain * 0.15f)
+                                            tower.itemListBag[position].xpGain += (tower.itemListBag[position].xpGain * 0.15f)
+                                        }
+                                        in 89..99 -> {
+                                            tower.bonusXpMultiplier += (tower.itemListBag[position].xpGain * 0.2f)
+                                            tower.itemListBag[position].xpGain += (tower.itemListBag[position].xpGain * 0.2f)
+                                        }
+                                    }
+                                }
+                                if (tower.itemListBag[position].goldIncome > 0f) {
+                                    when ((0..99).random()) {
+                                        in 0..65 -> {
+                                            tower.bonusGoldMultiplier += (tower.itemListBag[position].goldIncome * 0.1f)
+                                            tower.itemListBag[position].goldIncome += (tower.itemListBag[position].goldIncome * 0.1f)
+                                        }
+                                        in 66..88 -> {
+                                            tower.bonusGoldMultiplier += (tower.itemListBag[position].goldIncome * 0.15f)
+                                            tower.itemListBag[position].goldIncome += (tower.itemListBag[position].goldIncome * 0.15f)
+                                        }
+                                        in 89..99 -> {
+                                            tower.bonusGoldMultiplier += (tower.itemListBag[position].goldIncome * 0.2f)
+                                            tower.itemListBag[position].goldIncome += (tower.itemListBag[position].goldIncome * 0.2f)
+                                        }
+                                    }
+                                }
                             }
 
                             GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.nameicon, tower.itemListBag[position].name.toString()))
@@ -407,6 +471,22 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
                                 GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].special2.toString()))
                                 if (tower.itemListBag[position].specialFloat2 != 0f) GameActivity.companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].specialFloat2.round(2)
                                     .toString()))
+                            }
+                            if (tower.itemListBag[position].itemChance > 0f) {
+                                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "Item Chance"))
+                                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].itemChance.round(2).toString()))
+                            }
+                            if (tower.itemListBag[position].itemQuality > 0f) {
+                                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "Item Quality"))
+                                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].itemQuality.round(2).toString()))
+                            }
+                            if (tower.itemListBag[position].xpGain > 0f) {
+                                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "XP Gain"))
+                                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].xpGain.round(2).toString()))
+                            }
+                            if (tower.itemListBag[position].goldIncome > 0f) {
+                                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, "Gold Drop"))
+                                companionList.itemFragmentEnemyList.add(ItemFragmentStrings(R.drawable.specialicon, tower.itemListBag[position].goldIncome.round(2).toString()))
                             }
 
                             itemFragmentAdapter.notifyDataSetChanged()

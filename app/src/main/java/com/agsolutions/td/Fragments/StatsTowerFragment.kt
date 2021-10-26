@@ -93,6 +93,12 @@ class StatsTowerFragment (var updateViewModel: UpdateViewModel) : Fragment() {
         bagSizeTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
         bagSizeElementTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
         bagSizeElementTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        rangeTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        rangeTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        xpMultiTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        xpMultiTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
+        goldMultiTV.layoutParams.height = (companionList.scaleTextStats * scalePics).toInt()
+        goldMultiTV.layoutParams.width = (companionList.scaleTextStats * scalePics).toInt()
 
         rarityTV.setOnClickListener(){
             companionList.toastGlobal = true
@@ -201,6 +207,30 @@ class StatsTowerFragment (var updateViewModel: UpdateViewModel) : Fragment() {
         bagUsedShowTV.setOnClickListener(){
             companionList.toastGlobal = true
             companionList.toastText = "Bag Size - number of items you can use"
+        }
+        rangeTV.setOnClickListener(){
+            companionList.toastGlobal = true
+            companionList.toastText = "Range - how far your tower can fire"
+        }
+        rangeShowTV.setOnClickListener(){
+            companionList.toastGlobal = true
+            companionList.toastText = "Range - how far your tower can fire"
+        }
+        xpMultiTV.setOnClickListener(){
+            companionList.toastGlobal = true
+            companionList.toastText = "Xp Multiplier - number of extra experience you gain in %"
+        }
+        xpMultiShowTV.setOnClickListener(){
+            companionList.toastGlobal = true
+            companionList.toastText = "Xp Multiplier - number of extra experience you gain in %"
+        }
+        goldMultiTV.setOnClickListener(){
+            companionList.toastGlobal = true
+            companionList.toastText = "Gold Multiplier - number of extra gold you earn in %"
+        }
+        goldMultiShowTV.setOnClickListener(){
+            companionList.toastGlobal = true
+            companionList.toastText = "Gold Multiplier - number of extra gold you earn in %"
         }
 
     }

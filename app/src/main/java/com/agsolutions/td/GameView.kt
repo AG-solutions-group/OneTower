@@ -52,7 +52,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
 
     var detector = ScaleGestureDetector(getContext(), ScaleListener())
-
+    var lastTouchX = 0f
+    var lastTouchY = 0f
+    var pressDuration = 0
 
     var rectBackground = Rect(0, 0, 1200, 1800)
     var rectBackgroundStartScreen = Rect(0, 0, 1200, 1800)
@@ -291,32 +293,36 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
-        /*
-        when(event!!.action) {
-            MotionEvent.ACTION_SCROLL -> {
-                // Find the index of the active pointer and fetch its position
-                var pointerIndex = event!!.getPointerId(0);
-                var x = event!!.getX(pointerIndex);
-                var y = event!!.getY(pointerIndex);
 
-                var dx = x - mLastTouchX;
-                var dy = y - mLastTouchY;
-
-                focusCanvasX += dx;
-                focusCanvasY += dy;
-
-                mLastTouchX = x;
-                mLastTouchY = y;
-
-                invalidate();
-                break;
-            }
-        }
-
-         */
                 var scaler = ((companionList.scaleScreen / 10) * GameView.scaleFactor)
                 val x = event!!.x
                 val y = event.y
+
+        if (event!!.action == MotionEvent.ACTION_MOVE) {
+            pressDuration++
+
+            if (pressDuration > 15){
+
+                var dx = (x - lastTouchX)
+                var dy = (y - lastTouchY)
+
+                focusCanvasX -= dx
+                focusCanvasY -= dy
+
+                lastTouchX = x;
+                lastTouchY = y;
+
+                invalidate();
+            }
+        }
+        else if (event!!.action == MotionEvent.ACTION_UP) {
+            pressDuration = 0
+
+        }else if (event!!.action == MotionEvent.ACTION_DOWN) {
+            lastTouchX = x
+            lastTouchY = y
+
+        }
 
                 if (tower(x, y, scaler)) {
                     return super.onTouchEvent(event)
@@ -777,8 +783,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
         companionList.writeLockDisplayDrop.lock()
         try {
-            var dmgDisplayListIterator =
-                companionList.dmgDisplayDropList.listIterator()
+            var dmgDisplayListIterator = companionList.dmgDisplayDropList.listIterator()
             while (dmgDisplayListIterator.hasNext()) {
                 var display = dmgDisplayListIterator.next()
 
@@ -1113,12 +1118,13 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 if (companionList.manaShieldBool) manaShield = (hp * 0.2f) * companionList.shieldBrakerItem
                 if (companionList.shieldBool) shield = (hp * 0.2f) * companionList.shieldBrakerItem
 
+                var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
                 var x: Enemy =
                     Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, (armor * 10f), magicArmor * 0.5f,
-                        evade * 0.5f, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#566573"))
+                        evade * 0.5f, hpReg * 0, xpMob, speed, Color.parseColor("#566573"))
                 if (companionList.level > 50) x =
                     Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, (armor * 15f), magicArmor * 0.5f,
-                        evade * 0.5f, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#566573"))
+                        evade * 0.5f, hpReg * 0, xpMob, speed, Color.parseColor("#566573"))
                 if (eliteMob == 2) x.eliteMob = true
                 if (eliteMob == 3) x.elementalMob = true
                 if (eliteMob == 3) eliteMob = 2
@@ -1177,10 +1183,11 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             }
             if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
             if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
+            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
             var x: Enemy =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor * 0.5f, (magicArmor * 10f) * companionList.wizardMagicArmorSmasher, evade * 0.5f, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#af7ac5"))
+                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor * 0.5f, (magicArmor * 10f) * companionList.wizardMagicArmorSmasher, evade * 0.5f, hpReg * 0, xpMob, speed, Color.parseColor("#af7ac5"))
             if (companionList.level > 50) x =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor * 0.5f, (magicArmor * 15f) * companionList.wizardMagicArmorSmasher, evade * 0.5f, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#af7ac5"))
+                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor * 0.5f, (magicArmor * 15f) * companionList.wizardMagicArmorSmasher, evade * 0.5f, hpReg * 0, xpMob, speed, Color.parseColor("#af7ac5"))
             if (eliteMob == 2) x.eliteMob = true
             if (eliteMob == 3) x.elementalMob = true
             if (eliteMob == 3) eliteMob = 2
@@ -1239,8 +1246,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             }
             if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
             if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
+            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
             val x: Enemy =
-                Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#6FBCAF"))
+                Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, Color.parseColor("#6FBCAF"))
             if (eliteMob == 2) x.eliteMob = true
             if (eliteMob == 3) x.elementalMob = true
             if (eliteMob == 3) eliteMob = 2
@@ -1299,8 +1307,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 }
                 if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
                 if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
+                var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
                 val x: Enemy =
-                    Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#6FBCAF"))
+                    Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, Color.parseColor("#6FBCAF"))
                 if (eliteMob == 2) x.eliteMob = true
                 if (eliteMob == 3) x.elementalMob = true
                 if (eliteMob == 3) eliteMob = 2
@@ -1359,8 +1368,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             }
             if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
             if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
+            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
             val x: Enemy =
-                Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed * 1.2f, resources.getColor(R.color.shortcut))
+                Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed * 1.2f, resources.getColor(R.color.shortcut))
             if (eliteMob == 2) x.eliteMob = true
             if (eliteMob == 3) x.elementalMob = true
             if (eliteMob == 3) eliteMob = 2
@@ -1419,8 +1429,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             }
             if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
             if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
+            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
             val x: Enemy =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, resources.getColor(R.color.fast))
+                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, resources.getColor(R.color.fast))
             if (eliteMob == 2) x.eliteMob = true
             if (eliteMob == 3) x.elementalMob = true
             if (eliteMob == 3) eliteMob = 2
@@ -1523,8 +1534,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             }
             if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
             if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
+            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
             val x: Enemy =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * (hp / 500), xp * eliteMob, speed, Color.parseColor("#fff116"))
+                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * (hp / 500), xpMob, speed, Color.parseColor("#fff116"))
             if (eliteMob == 2) x.eliteMob = true
             if (eliteMob == 3) x.elementalMob = true
             if (eliteMob == 3) eliteMob = 2
@@ -1583,10 +1595,11 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             }
             if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
             if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
+            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
             var x: Enemy =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade * 5f, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#d5dbdb"))
+                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade * 5f, hpReg * 0, xpMob, speed, Color.parseColor("#d5dbdb"))
             if (companionList.level > 50) x =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade * 7.5f, hpReg * 0, xp * eliteMob, speed, Color.parseColor("#d5dbdb"))
+                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade * 7.5f, hpReg * 0, xpMob, speed, Color.parseColor("#d5dbdb"))
             if (eliteMob == 2) x.eliteMob = true
             if (eliteMob == 3) x.elementalMob = true
             if (eliteMob == 3) eliteMob = 2
@@ -1690,8 +1703,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             }
             if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
             if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
+            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
             val x: Enemy =
-                Enemy((hp * 0.7f * eliteMob), (hp * 0.7f * eliteMob), manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, resources.getColor(R.color.immune))
+                Enemy((hp * 0.7f * eliteMob), (hp * 0.7f * eliteMob), manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, resources.getColor(R.color.immune))
             if (eliteMob == 2) x.eliteMob = true
             if (eliteMob == 3) x.elementalMob = true
             if (eliteMob == 3) eliteMob = 2
@@ -1750,8 +1764,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             }
             if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
             if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
+            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
             val x: Enemy =
-                Enemy(hp * 0.5f * eliteMob, hp * 0.5f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, resources.getColor(R.color.split))
+                Enemy(hp * 0.5f * eliteMob, hp * 0.5f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, resources.getColor(R.color.split))
             if (eliteMob == 2) x.eliteMob = true
             if (eliteMob == 3) x.elementalMob = true
             if (eliteMob == 3) eliteMob = 2
@@ -1796,8 +1811,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 companionList.shieldBool = true
             }
             if (companionList.shieldBool) shield = (hp * 0.4f * eliteMob)* companionList.shieldBrakerItem
+            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
             val x: Enemy =
-                Enemy(hp * 0.1f, hp * 0.1f, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, resources.getColor(R.color.Shield))
+                Enemy(hp * 0.1f, hp * 0.1f, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, resources.getColor(R.color.Shield))
             if (eliteMob == 2) x.eliteMob = true
             if (eliteMob == 3) x.elementalMob = true
             if (eliteMob == 3) eliteMob = 2
@@ -1841,8 +1857,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 companionList.manaShieldBool = true
             }
             if (companionList.manaShieldBool) manaShield = (hp * 0.4f * eliteMob)* companionList.shieldBrakerItem
+            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
             val x: Enemy =
-                Enemy(hp * 0.1f, hp * 0.1f, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp * eliteMob, speed, resources.getColor(R.color.ManaShield))
+                Enemy(hp * 0.1f, hp * 0.1f, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, resources.getColor(R.color.ManaShield))
             if (eliteMob == 2) x.eliteMob = true
             if (eliteMob == 3) x.elementalMob = true
             if (eliteMob == 3) eliteMob = 2

@@ -14,6 +14,10 @@ class Items (val id: Int, val minLvl: Int, val maxLvl: Int, var lvlAqu: Int, var
     var bonusDmgLevel = 0f
     var bonusSpellDmgLevel = 0f
     var crossedOut = false
+    var itemChance = 0f
+    var itemQuality = 0f
+    var goldIncome = 0f
+    var xpGain = 0f
 }
 
 

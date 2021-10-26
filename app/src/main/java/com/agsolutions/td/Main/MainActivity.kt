@@ -8,28 +8,27 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.*
 import com.agsolutions.td.LogIn.HttpTask
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_display_scale.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.circularQBtn
+import kotlinx.android.synthetic.main.activity_main.normalQBtn
 import kotlinx.android.synthetic.main.activity_main.quitBTN
 import kotlinx.android.synthetic.main.activity_start_items_menu.*
 import kotlinx.android.synthetic.main.game_end.*
+import kotlinx.android.synthetic.main.pick_mode.*
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.File
-import java.io.FileInputStream
-import java.io.ObjectInputStream
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.atan2
 import kotlin.random.Random
 import kotlin.system.exitProcess
@@ -55,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         var rotationEnemyY = 0f
     }
 
+    var pickAMap = false
     var sharedPrefZ: SharedPreferences? = null
     private var PRIVATE_MODE = 0
 
@@ -94,12 +94,6 @@ class MainActivity : AppCompatActivity() {
                 postData()
                 postData2()
             }
-            if ( (sharedPrefZ!!.getInt("hasNewItems", 0)) == 1) {
-                var editor = sharedPrefZ!!.edit()
-                editor.putInt("hasNewItems", 2)
-                editor.apply()
-                postData3()
-            }
 
             HttpTask {
                 progressMainBar.visibility = View.INVISIBLE
@@ -110,13 +104,12 @@ class MainActivity : AppCompatActivity() {
                 println(it)
                 val json_res = JSONObject(it)
                 if (json_res.getString("status").equals("true")) {
-                    var userdata = User(0, "username", "email", 0.0)
+                    var userdata = User(0, "username",  0.0)
                     var jsonArray = JSONArray(json_res.getString("data"))
                     for (i in 0..(jsonArray.length() - 1)) {
                         val item = jsonArray.getJSONObject(i)
                         userdata.id = item.getInt("id")
                         userdata.username = item.getString("username")
-                        userdata.email = item.getString("email")
                         userdata.xp = item.getDouble("xp")
                     }
                     Log.d("userdata Data:::::::", userdata.toString())
@@ -208,40 +201,6 @@ class MainActivity : AppCompatActivity() {
         }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/update_xp.php", json.toString())
     }
 
-    private fun postData3() {
-
-        var usernameX = sharedPrefZ!!.getString("username", "user")
-
-        var textFile = File("$filesDir/itemList.dat")
-        var fis = FileInputStream(textFile)
-        var ois = ObjectInputStream(fis)
-        var itemListPlace = ois.readObject() as ArrayList<Int>
-        var itemListPost = ArrayList<Int>()
-        for (itemid in itemListPlace) {
-            itemListPost.add(itemid)
-        }
-
-        itemListPost.forEach() {
-            val json = JSONObject()
-            json.put("username", usernameX)
-            json.put("itemid", it.toString())
-
-            HttpTask {
-                if (it == null) {
-                    println("connection error")
-                    return@HttpTask
-                }
-                println(it)
-                val json_res = JSONObject(it)
-                if (json_res.getString("status").equals("true")) {
-
-                } else {
-                    Log.d("post Data:::::::", json_res.getString("message"))
-                }
-            }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/start_items.php", json.toString())
-        }
-    }
-
     override fun onBackPressed() {
 
     }
@@ -254,12 +213,16 @@ class MainActivity : AppCompatActivity() {
             startItemsBTN.visibility = View.INVISIBLE
             aboutBTN.visibility = View.INVISIBLE
             wikiBTN.visibility = View.INVISIBLE
+            normalQBtn.visibility = View.INVISIBLE
+            circularQBtn.visibility = View.INVISIBLE
         } else {
             newGameBtn.visibility = View.VISIBLE
             highScoreBTN.visibility = View.VISIBLE
             startItemsBTN.visibility = View.VISIBLE
             aboutBTN.visibility = View.VISIBLE
             wikiBTN.visibility = View.VISIBLE
+            normalQBtn.visibility = View.INVISIBLE
+            circularQBtn.visibility = View.INVISIBLE
         }
 
         progressMainBar.visibility = View.INVISIBLE
@@ -417,30 +380,79 @@ class MainActivity : AppCompatActivity() {
         }
 
         newGameBtn.setOnClickListener() {
-            intent = Intent(this, PickMap::class.java)
-            intent.putExtra("return", 0)
-            startActivity(intent)
-        }
-        highScoreBTN.setOnClickListener() {
-            intent = Intent(this, Highscore::class.java)
-            startActivity(intent)
-            exitProcess(0)
+            if (pickAMap){
+                    intent = Intent(this, GameActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.putExtra("pickMap", 1)
+                    intent.putExtra("pickMode", 1)
+                    startActivity(intent)
+                    exitProcess(0)
+            }else{
+               pickAMap = true
+                newGameBtn.setBackgroundResource(R.drawable.startbuttonnormal)
+                startItemsBTN.setBackgroundResource(R.drawable.startbuttoncircular)
+                highScoreBTN.setBackgroundResource(R.drawable.startbuttoncancel)
+
+                normalQBtn.visibility = View.VISIBLE
+                circularQBtn.visibility = View.VISIBLE
+
+                aboutBTN.visibility = View.INVISIBLE
+                wikiBTN.visibility = View.INVISIBLE
+                quitBTN.visibility = View.INVISIBLE
+                scaleBTN.visibility = View.INVISIBLE
+            }
         }
         startItemsBTN.setOnClickListener() {
-            intent = Intent(this, StartItemsMenu::class.java)
-            intent.putExtra("userLevel", userLevel)
-            startActivity(intent)
-            exitProcess(0)
+            if (pickAMap){
+                intent = Intent(this, GameActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.putExtra("pickMap", 1)
+                intent.putExtra("pickMode", 2)
+                startActivity(intent)
+                exitProcess(0)
+            }else {
+                intent = Intent(this, StartItemsMenu::class.java)
+                intent.putExtra("userLevel", userLevel)
+                startActivity(intent)
+                exitProcess(0)
+            }
+        }
+
+        normalQBtn.setOnClickListener() {
+            Toast.makeText(this, "You lose a life when enemies reach the portal. The game ends when you have no lives left.",Toast.LENGTH_LONG).show()
+        }
+        circularQBtn.setOnClickListener(){
+            Toast.makeText(this,"Enemies circle. The game ends when there are more than 30 enemies on the map.",Toast.LENGTH_LONG).show()
+        }
+
+        highScoreBTN.setOnClickListener() {
+            if (pickAMap){
+                pickAMap = false
+                newGameBtn.setBackgroundResource(R.drawable.startbuttonnewgame)
+                startItemsBTN.setBackgroundResource(R.drawable.startbuttonitems)
+                highScoreBTN.setBackgroundResource(R.drawable.startbuttonscore)
+
+                normalQBtn.visibility = View.INVISIBLE
+                circularQBtn.visibility = View.INVISIBLE
+
+                aboutBTN.visibility = View.VISIBLE
+                wikiBTN.visibility = View.VISIBLE
+                quitBTN.visibility = View.VISIBLE
+                scaleBTN.visibility = View.VISIBLE
+
+            } else {
+                intent = Intent(this, Highscore::class.java)
+                startActivity(intent)
+                exitProcess(0)
+            }
         }
         wikiBTN.setOnClickListener() {
-            intent = Intent(this, Wiki::class.java)
-            startActivity(intent)
-            exitProcess(0)
+            Toast.makeText(this,"Coming Soon.",Toast.LENGTH_LONG).show()
         }
         aboutBTN.setOnClickListener() {
             intent = Intent(this, About::class.java)
             startActivity(intent)
-            exitProcess(0)
+
         }
         quitBTN.setOnClickListener() {
             this.finishAffinity()
@@ -706,7 +718,7 @@ class GameViewStartScreen(context: Context, attributes: AttributeSet) : SurfaceV
             MainActivity.startScreenTimerTower = 0
         }
     } else {
-            var rectBackgroundStartScreen = Rect(0, 0, DisplayMetrics().widthPixels, DisplayMetrics().heightPixels)
+            var rectBackgroundStartScreen = Rect(0, 0, resources.displayMetrics.widthPixels, resources.displayMetrics.heightPixels)
             canvas.drawBitmap(backgroundStartScreen!!, null, rectBackgroundStartScreen, null)
         }
     }

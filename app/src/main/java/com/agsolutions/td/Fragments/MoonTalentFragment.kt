@@ -9,7 +9,6 @@ import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import com.agsolutions.td.*
 import com.agsolutions.td.GameActivity.Companion.companionList
-import kotlinx.android.synthetic.main.fragment_earth_talent.*
 import kotlinx.android.synthetic.main.fragment_moon_talent.*
 
 
@@ -244,7 +243,7 @@ class MoonTalentFragment : Fragment() {
                         if (companionList.towerList[companionList.towerClickID].moonRow3Item2 == 2) companionList.towerList[companionList.towerClickID].damageMultiplyerNight += 0.1f
                         if (companionList.towerList[companionList.towerClickID].moonRow3Item2 == 3) companionList.towerList[companionList.towerClickID].damageMultiplyerNight += 0.1f
 
-                        if (companionList.towerList[companionList.towerClickID].moonRow3Item1 + companionList.towerList[companionList.towerClickID].moonRow3Item2 >= 3) backgroundMoonRow2.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].moonRow3Item1 + companionList.towerList[companionList.towerClickID].moonRow3Item2 >= 3) backgroundMoonRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
                         moonRow3Item2ShowTV.text = companionList.towerList[companionList.towerClickID].moonRow3Item2.toString()
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1

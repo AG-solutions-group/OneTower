@@ -88,19 +88,27 @@ class Talents : AppCompatActivity() {
         thirdTalentBTN.visibility = View.INVISIBLE
 
         var count = 1
+        one = 0
+        two = 0
+        three = 0
 
         if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].bagSizeElementCount > 0){
-            GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.asReversed().forEach {
-                if (it.element){
+                GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.forEach {
+                if (it.id == 3000 || it.id == 3001 || it.id == 3002 || it.id == 3003 || it.id == 3004 || it.id == 3005 || it.id == 3006 || it.id == 3007 || it.id == 3008 || it.id == 3009){
                     when (count){
-                        1 -> one = GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.indexOf(it)
-                        2 -> two = GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.indexOf(it)
-                        3 -> three = GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.indexOf(it)
+                        1 ->{
+                            one = GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.indexOf(it)
+                        }
+                        2 -> {
+                            two = GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.indexOf(it)
+                        }
+                        3 -> {
+                            three = GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.indexOf(it)
+                        }
                     }
                     count++
                 }
             }
-
         }
 
         if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].bagSizeElementCount > 0){

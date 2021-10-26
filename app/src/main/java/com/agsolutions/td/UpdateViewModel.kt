@@ -48,6 +48,10 @@ class UpdateViewModel : ViewModel() {
     val itemPointsColor: LiveData<Int>
         get() = _itemPointsColor
 
+    private val _talentsColor = MutableLiveData<Int> ()
+    val talentsColor: LiveData<Int>
+        get() = _talentsColor
+
     private val _enemyType = MutableLiveData<String> ()
     val enemyType: LiveData<String>
         get() = _enemyType
@@ -63,10 +67,6 @@ class UpdateViewModel : ViewModel() {
     private val _talents = MutableLiveData<Int> ()
     val talents: LiveData<Int>
         get() = _talents
-
-    private val _talentsColor = MutableLiveData<Int> ()
-    val talentsColor: LiveData<Int>
-        get() = _talentsColor
 
     private val _xpString = MutableLiveData<String> ()
     val xpString: LiveData<String>
@@ -88,10 +88,6 @@ class UpdateViewModel : ViewModel() {
     val towerDmg: LiveData<Float>
         get() = _towerDmg
 
-    private val _towerDmgColor = MutableLiveData<Int> ()
-    val towerDmgColor: LiveData<Int>
-        get() = _towerDmgColor
-
     private val _towerPhyDmgString = MutableLiveData<String> ()
     val towerPhyDmgString: LiveData<String>
         get() = _towerPhyDmgString
@@ -99,10 +95,6 @@ class UpdateViewModel : ViewModel() {
     private val _towerPhyDmg = MutableLiveData<Float> ()
     val towerPhyDmg: LiveData<Float>
         get() = _towerPhyDmg
-
-    private val _towerPhyDmgColor = MutableLiveData<Int> ()
-    val towerPhyDmgColor: LiveData<Int>
-        get() = _towerPhyDmgColor
 
     private val _towerMgcDmgString = MutableLiveData<String> ()
     val towerMgcDmgString: LiveData<String>
@@ -112,10 +104,6 @@ class UpdateViewModel : ViewModel() {
     val towerMgcDmg: LiveData<Float>
         get() = _towerMgcDmg
 
-    private val _towerMgcDmgColor = MutableLiveData<Int> ()
-    val towerMgcDmgColor: LiveData<Int>
-        get() = _towerMgcDmgColor
-
     private val _towerCrtString = MutableLiveData<String> ()
     val towerCrtString: LiveData<String>
         get() = _towerCrtString
@@ -124,45 +112,21 @@ class UpdateViewModel : ViewModel() {
     val towerCrt: LiveData<Float>
         get() = _towerCrt
 
-    private val _towerCrtColor = MutableLiveData<Int> ()
-    val towerCrtColor: LiveData<Int>
-        get() = _towerCrtColor
-
     private val _towerSpd = MutableLiveData<Float> ()
     val towerSpd: LiveData<Float>
         get() = _towerSpd
-
-    private val _towerSpdColor = MutableLiveData<Int> ()
-    val towerSpdColor: LiveData<Int>
-        get() = _towerSpdColor
 
     private val _towerCrtDmg = MutableLiveData<Float> ()
     val towerCrtDmg: LiveData<Float>
         get() = _towerCrtDmg
 
-    private val _towerCrtDmgColor = MutableLiveData<Int> ()
-    val towerCrtDmgColor: LiveData<Int>
-        get() = _towerCrtDmgColor
-
     private val _towerMultiCrt = MutableLiveData<Int> ()
     val towerMultiCrt: LiveData<Int>
         get() = _towerMultiCrt
 
-    private val _towerMultiCrtColor = MutableLiveData<Int> ()
-    val towerMultiCrtColor: LiveData<Int>
-        get() = _towerMultiCrtColor
-
     private val _towerArmPen = MutableLiveData<Float> ()
     val towerArmPen: LiveData<Float>
         get() = _towerArmPen
-
-    private val _towerArmPenColor = MutableLiveData<Int> ()
-    val towerArmPenColor: LiveData<Int>
-        get() = _towerArmPenColor
-
-    private val _towerMgcPenColor = MutableLiveData<Int> ()
-    val towerMgcPenColor: LiveData<Int>
-        get() = _towerMgcPenColor
 
     private val _towerMgcPen = MutableLiveData<Float> ()
     val towerMgcPen: LiveData<Float>
@@ -171,10 +135,6 @@ class UpdateViewModel : ViewModel() {
     private val _towerHit = MutableLiveData<Int> ()
     val towerHit: LiveData<Int>
         get() = _towerHit
-
-    private val _towerHitColor = MutableLiveData<Int> ()
-    val towerHitColor: LiveData<Int>
-        get() = _towerHitColor
 
     private val _towerLevel = MutableLiveData<Int> ()
     val towerLevel: LiveData<Int>
@@ -191,6 +151,18 @@ class UpdateViewModel : ViewModel() {
     private val _towerLevelXpProg = MutableLiveData<Int> ()
     val towerLevelXpProg: LiveData<Int>
         get() = _towerLevelXpProg
+
+    private val _towerRange = MutableLiveData<Int> ()
+    val towerRange: LiveData<Int>
+        get() = _towerRange
+
+    private val _towerXpMulti = MutableLiveData<Int> ()
+    val towerXpMulti: LiveData<Int>
+        get() = _towerXpMulti
+
+    private val _towerGoldMulti = MutableLiveData<Int> ()
+    val towerGoldMulti: LiveData<Int>
+        get() = _towerGoldMulti
 
     private val _lvlHp = MutableLiveData<String> ()
     val lvlHp: LiveData<String>
@@ -276,10 +248,6 @@ class UpdateViewModel : ViewModel() {
     val bag: LiveData<Int>
         get() = _bag
 
-    private val _bagColor = MutableLiveData<Int> ()
-    val bagColor: LiveData<Int>
-        get() = _bagColor
-
     private val _bagStringElement = MutableLiveData<String> ()
     val bagStringElement: LiveData<String>
         get() = _bagStringElement
@@ -288,25 +256,13 @@ class UpdateViewModel : ViewModel() {
     val bagElement: LiveData<Int>
         get() = _bagElement
 
-    private val _bagColorElement = MutableLiveData<Int> ()
-    val bagColorElement: LiveData<Int>
-        get() = _bagColorElement
-
     private val _itemChance = MutableLiveData<Float> ()
     val itemChance: LiveData<Float>
         get() = _itemChance
 
-    private val _itemChanceColor = MutableLiveData<Int> ()
-    val itemChanceColor: LiveData<Int>
-        get() = _itemChanceColor
-
     private val _itemQuality = MutableLiveData<Float> ()
     val itemQuality: LiveData<Float>
         get() = _itemQuality
-
-    private val _itemQualityColor = MutableLiveData<Int> ()
-    val itemQualityColor: LiveData<Int>
-        get() = _itemQualityColor
 
     private val _interestString = MutableLiveData<String> ()
     val interestString: LiveData<String>
@@ -360,10 +316,6 @@ class UpdateViewModel : ViewModel() {
     val pictureValue: LiveData<String>
         get() = _pictureValue
 
-    private val _pictureColor = MutableLiveData<Int> ()
-    val pictureColor: LiveData<Int>
-        get() = _pictureColor
-
     private val _towerRarity = MutableLiveData<String> ()
     val towerRarity: LiveData<String>
         get() = _towerRarity
@@ -373,29 +325,15 @@ class UpdateViewModel : ViewModel() {
         get() = _towerRarityMultiplier
 
     init {
-        _pictureColor.value = Color.WHITE
+        _talentsColor.value = Color.WHITE
         _goldColor.value = Color.WHITE
         _diamondsColor.value = Color.WHITE
-        _talentsColor.value = Color.WHITE
         _upgradePointsColor.value = Color.WHITE
         _itemPointsColor.value = Color.WHITE
-        _itemChanceColor.value = Color.WHITE
-        _itemQualityColor.value = Color.WHITE
         _bagString.value = "4"
         _bag.value = 5
-        _bagColor.value = Color.WHITE
         _bagStringElement.value = "4"
         _bagElement.value = 5
-        _bagColorElement.value = Color.WHITE
-        _towerDmgColor.value = Color.WHITE
-        _towerPhyDmgColor.value = Color.WHITE
-        _towerMgcDmgColor.value = Color.WHITE
-        _towerCrtColor.value = Color.WHITE
-        _towerCrtDmgColor.value = Color.WHITE
-        _towerMultiCrtColor.value = Color.WHITE
-        _towerHitColor.value = Color.WHITE
-        _towerArmPenColor.value = Color.WHITE
-        _towerMgcPenColor.value = Color.WHITE
         _level.value = 0
         _xpString.value = "0"
         _xp.value = 0f
@@ -422,6 +360,9 @@ class UpdateViewModel : ViewModel() {
         _towerLevelXp.value = 0
         _towerLevelXpMin.value = 0
         _towerLevelXpProg.value = 0
+        _towerRange.value = 0
+        _towerXpMulti.value = 0
+        _towerGoldMulti.value = 0
         _lvlHp.value = "0.0"
         _lvlMaxHp.value = "0.0"
         _lvlShield.value = "0.0"
@@ -475,10 +416,6 @@ class UpdateViewModel : ViewModel() {
                     if (tower.selected) {
 
                         // tower damage
-                        if (tower.overallTowerDmg > _towerDmg.value!! || GameActivity.companionList.damageGain) {
-                            GameActivity.companionList.damageGain = true
-                            _towerDmgColor.postValue(Color.GREEN)
-                        } else _towerDmgColor.postValue(Color.WHITE)
 
                         when (tower.overallTowerDmg.toInt()) {
                             in 0..999 -> _towerDmgString.postValue(tower.overallTowerDmg.toInt()
@@ -491,10 +428,6 @@ class UpdateViewModel : ViewModel() {
                         _towerDmg.postValue(tower.overallTowerDmg)
 
                         // physical damage
-                        if (tower.overallTowerPhysicalDmg > _towerPhyDmg.value!! || GameActivity.companionList.phyDamageGain) {
-                            GameActivity.companionList.phyDamageGain = true
-                            _towerPhyDmgColor.postValue(Color.GREEN)
-                        } else _towerPhyDmgColor.postValue(Color.WHITE)
 
                         when (tower.overallTowerPhysicalDmg.toInt()) {
                             in 0..999 -> _towerPhyDmgString.postValue(tower.overallTowerPhysicalDmg.toInt()
@@ -507,10 +440,6 @@ class UpdateViewModel : ViewModel() {
                         _towerPhyDmg.postValue(tower.overallTowerPhysicalDmg)
 
                         // spell damage
-                        if (tower.overallTowerSpellDmg > _towerMgcDmg.value!! || GameActivity.companionList.mgcDamageGain) {
-                            GameActivity.companionList.mgcDamageGain = true
-                            _towerMgcDmgColor.postValue(Color.GREEN)
-                        } else _towerMgcDmgColor.postValue(Color.WHITE)
 
                         when (tower.overallTowerSpellDmg.toInt()) {
                             in 0..999 -> _towerMgcDmgString.postValue(tower.overallTowerSpellDmg.toInt()
@@ -523,78 +452,44 @@ class UpdateViewModel : ViewModel() {
                         _towerMgcDmg.postValue(tower.overallTowerSpellDmg)
 
                         // tower speed
-                        if ((tower.towerAttackSpeedShow * 20).round(1) < _towerSpd.value!! || GameActivity.companionList.spdGain) {
-                            GameActivity.companionList.spdGain = true
-                            _towerSpdColor.postValue(Color.GREEN)
-                        } else _towerSpdColor.postValue(Color.WHITE)
 
                         _towerSpd.postValue((tower.towerAttackSpeedShow * 20).round(1))
 
                         // crit chance
-                        if (tower.overallCrit > _towerCrt.value!! || GameActivity.companionList.critChanceGain) {
-                            GameActivity.companionList.critChanceGain = true
-                            _towerCrtColor.postValue(Color.GREEN)
-                        } else _towerCrtColor.postValue(Color.WHITE)
 
                         _towerCrtString.postValue(tower.overallCrit.round(1).toString() + "%")
                         _towerCrt.postValue(tower.overallCrit)
 
                         // crit damage
-                        if (tower.overallCritDmg.round(1) > _towerCrtDmg.value!! || GameActivity.companionList.critDamageGain) {
-                            GameActivity.companionList.critDamageGain = true
-                            _towerCrtDmgColor.postValue(Color.GREEN)
-                        } else _towerCrtDmgColor.postValue(Color.WHITE)
 
                         _towerCrtDmg.postValue(tower.overallCritDmg.round(1))
 
                         // multi crit
-                        if ((tower.overallMulticrit - 1) > _towerCrt.value!! || GameActivity.companionList.multiCritGain) {
-                            GameActivity.companionList.multiCritGain = true
-                            _towerMultiCrtColor.postValue(Color.GREEN)
-                        } else _towerMultiCrtColor.postValue(Color.WHITE)
 
                         _towerMultiCrt.postValue((tower.overallMulticrit - 1))
 
                         // tower hit
-                        if ((tower.hitChance.toInt()) > _towerHit.value!! || GameActivity.companionList.hitGain) {
-                            GameActivity.companionList.hitGain = true
-                            _towerHitColor.postValue(Color.GREEN)
-                        } else _towerHitColor.postValue(Color.WHITE)
 
                         _towerHit.postValue(tower.hitChance.toInt())
 
                         // armor pen
-                        if ((tower.overallBonusArmorPen.round(1)) > _towerArmPen.value!! || GameActivity.companionList.armorPenGain) {
-                            GameActivity.companionList.armorPenGain = true
-                            _towerArmPenColor.postValue(Color.GREEN)
-                        } else _towerArmPenColor.postValue(Color.WHITE)
+
                         _towerArmPen.postValue(tower.overallBonusArmorPen.round(1))
 
                         // magic pen
-                        if ((tower.overallBonusMagicPen.round(1)) > _towerMgcPen.value!! || GameActivity.companionList.magicArmorPenGain) {
-                            GameActivity.companionList.magicArmorPenGain = true
-                            _towerMgcPenColor.postValue(Color.GREEN)
-                        } else _towerMgcPenColor.postValue(Color.WHITE)
+
                         _towerMgcPen.postValue(tower.overallBonusMagicPen.round(1))
 
                         // item chance
-                        if (tower.overallItemChance.round(1) > _itemChance.value!! || GameActivity.companionList.itemChanceGain) {
-                            GameActivity.companionList.itemChanceGain = true
-                            _itemChanceColor.postValue(Color.GREEN)
-                        } else _itemChanceColor.postValue(Color.WHITE)
+
                         _itemChance.postValue(tower.overallItemChance.round(1))
 
                         // item quality
-                        if (tower.overallItemQuality.round(1) > _itemQuality.value!! || GameActivity.companionList.itemQualityGain) {
-                            GameActivity.companionList.itemQualityGain = true
-                            _itemQualityColor.postValue(Color.GREEN)
-                        } else _itemQualityColor.postValue(Color.WHITE)
+
                         _itemQuality.postValue(tower.overallItemQuality.round(1))
 
                         // bag size
-                        if ((tower.itemListBag.size - tower.bagSizeElementCount) == tower.bagSize + 1) {
-                            _bagColor.postValue(Color.RED)
-                        } else _bagColor.postValue(Color.WHITE)
+
                         _bag.postValue((tower.itemListBag.size))
                         _bagString.postValue((tower.itemListBag.size - tower.bagSizeElementCount).toString() + "/" + (tower.bagSize + 1).toString())
                         _bagStringElement.postValue((tower.bagSizeElementCount).toString() + "/" + (tower.bagSizeElement + 1).toString())
@@ -614,6 +509,15 @@ class UpdateViewModel : ViewModel() {
                             } else _talentsColor.postValue(Color.WHITE)
                             _talents.postValue(tower.talentPoints)
                         }
+
+                        // tower range
+                        _towerRange.postValue(tower.towerR.toInt())
+
+                        // tower xp multi
+                        _towerXpMulti.postValue(tower.bonusXpMultiplier.toInt())
+
+                        // tower gold multi
+                        _towerGoldMulti.postValue(tower.bonusGoldMultiplier.toInt())
 
                         // xp
                         _towerLevel.postValue(tower.towerLevel)

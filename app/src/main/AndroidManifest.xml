@@ -7,9 +7,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/onetowerlogo"
+        android:label="One Tower"
+        android:roundIcon="@drawable/onetowerlogo"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.NoActionBar"
         android:usesCleartextTraffic="true">
@@ -22,6 +22,7 @@
         <activity android:name=".Main.StartItemsMenu"
             android:screenOrientation="portrait" />
         <activity android:name=".Main.About"
+            android:theme="@style/AppTheme.StartItems"
             android:screenOrientation="portrait" />
         <activity android:name=".Main.Highscore"
             android:screenOrientation="portrait" />
@@ -56,10 +57,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".TutorialTouchScreen"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".TutorialEnd"
             android:theme="@style/AppTheme.StartItems"
             android:screenOrientation="portrait" />
         <activity

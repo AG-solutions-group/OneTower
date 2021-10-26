@@ -457,6 +457,7 @@ class Companion: Serializable {
         var dragStatusCantBuild = false
         var dragTower = Items(2100, 0, 999,0,0f, 0, 0f, 0, "Rare Earth Tower", R.drawable.elementearth, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
         var overrideTower = false
+        var towerToOverride = Tower(0f, 0f, 0f, 0f, 0f, 0f)
 
         // fragments ----------------------------------------------------
         var fragmentItemCounter = 0
@@ -475,31 +476,31 @@ class Companion: Serializable {
         var stt8 = Items(2108, 0, 999,0,0f, 0, 0f, 0, "Rare Fire Tower", R.drawable.elementfire, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0,"bagspace", 3.0f, "bagspace element", 2f)
         var stt9 = Items(2109, 0, 999,0,0f, 0, 0f, 0, "Rare Dark Tower", R.drawable.elementdark, R.drawable.overlaytransparent,10f, 0.0f,0.0f,60f, 1f, 1.5f, 0, "bagspace", 3.0f, "bagspace element", 2f)
 
-        var startTowerList = mutableListOf<Items>(stt0, stt1, stt2, stt3, stt4, stt5, stt6, stt7, stt8, stt9)
+        var startTowerList = mutableListOf<Items>(stt1, stt5, stt0, stt4, stt2, stt3, stt8, stt6, stt9, stt7)
 
         var itemListNormal = mutableListOf<Int>()
         var itemListRare = mutableListOf<Int>()
         var itemListEpic = mutableListOf<Int>()
         var itemListLegendary = mutableListOf<Int>()
 
-        var stid0 = Items(5000, 0, 999,0,0f, 0,0f, 0,"Starter Dmg", R.drawable.wandswordgrey, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0, "+ dmg / lvl", 0f, "", 0f)
-        var stid1 = Items(5001, 1, 999,0,0f, 0,0f, 0,"Starter Speed", R.drawable.pbowgrey, R.drawable.overlaytransparent, 0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0, "+ speed / lvl", 0f, "", 0f)
-        var stid2 = Items(5002, 3, 999,0,0f, 0,0f, 0,"Starter Crit", R.drawable.pcritgrey, R.drawable.overlaytransparent, 0.0f,0.0f,0.0f, 0.0f, 0.0f, 0.0f,0, "+ crit / lvl", 0f, "", 0f)
-        var stid3 = Items(5003, 4, 999,0,0f, 0,0f, 0,"Starter Physical", R.drawable.pdoubleswordsblue, R.drawable.overlaytransparent, 0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0, "+10% physical dmg, + phyDmg/lvl", 0f, "", 0f)
-        var stid4 = Items(5004, 5, 999,0,0f, 0,0f, 0,"Starter SpellDmg", R.drawable.zauberstabblue, R.drawable.overlaytransparent, 0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"+10% magic dmg, + mgcDmg/lvl ", 0f, "", 0f)
-        var stid5 = Items(5005, 6, 999,0,0f, 0,0f, 0,"Crit Master", R.drawable.pcritblue, R.drawable.overlaytransparent, 0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"+ 1 multi crit, + crit dmg/lvl, + crit/lvl", 0f, "", 0f)
-        var stid6 = Items(5006, 7, 999,0,0f, 0,0f, 0,"Froster", R.drawable.frostlila, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"+ mgcDmg/lvl, + 10% slow, Ice Nova CD halved ", 0f, "", 0f)
-        var stid7 = Items(5007, 8, 999,0,0f, 0,0f, 0,"Utilizer", R.drawable.utilizerpurple, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"+ 1% interest, + 2 bag slots, +10% item find", 0f, "", 0f)
+        var stid0 = Items(5000, 0, 999,0,0f, 0,0f, 0,"Starter Dmg", R.drawable.wandswordgrey, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0, "scaling dmg / lvl", 0f, "", 0f)
+        var stid1 = Items(5001, 1, 999,0,0f, 0,0f, 0,"Starter Speed", R.drawable.pbowgrey, R.drawable.overlaytransparent, 0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0, "scaling speed / lvl", 0f, "", 0f)
+        var stid2 = Items(5002, 3, 999,0,0f, 0,0f, 0,"Starter Crit", R.drawable.pcritgrey, R.drawable.overlaytransparent, 0.0f,0.0f,0.0f, 0.0f, 0.0f, 0.0f,0, "scaling crit / lvl", 0f, "", 0f)
+        var stid3 = Items(5003, 4, 999,0,0f, 0,0f, 0,"Starter Physical", R.drawable.pdoubleswordsblue, R.drawable.overlaytransparent, 0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0, "+10% physical dmg", 0f, "scaling phyDmg/lvl", 0f)
+        var stid4 = Items(5004, 5, 999,0,0f, 0,0f, 0,"Starter SpellDmg", R.drawable.zauberstabblue, R.drawable.overlaytransparent, 0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"+10% magic dmg", 0f, "scaling mgcDmg/lvl", 0f)
+        var stid5 = Items(5005, 6, 999,0,0f, 0,0f, 0,"Crit Master", R.drawable.pcritblue, R.drawable.overlaytransparent, 0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"scaling crit dmg/lvl + crit/lvl", 0f, "+ 1 multi crit", 0f)
+        var stid6 = Items(5006, 7, 999,0,0f, 0,0f, 0,"Froster", R.drawable.frostlila, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"scaling mgcDmg/lvl", 0f, "+ 10% slow, Ice Nova CD halved", 0f)
+        var stid7 = Items(5007, 8, 999,0,0f, 0,0f, 0,"Utilizer", R.drawable.utilizerpurple, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"+ 1% interest, + 2 bag slots", 0f, "+10% item find", 0f)
         var stid8 = Items(5008, 9, 999,0,0f, 0,0f, 0,"Shield Braker", R.drawable.shieldbrakerpurple, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"ignores shields", 0f, "", 0f)
 
-        var stid10 = Items(5010, 11, 999,0,0f, 0,0f, 0,"Easy Mode", R.drawable.itemstarteasymode, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"consumable, enemies start with 10% less hp", 0f, "", 0f)
+        var stid10 = Items(5010, 11, 999,0,0f, 0,0f, 0,"Easy Mode", R.drawable.itemstarteasymode, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f,0,"consumable: enemies start with 10% less hp", 0f, "", 0f)
         var stid11 = Items(5011, 12, 999,0,0f, 0, 0f, 0, "Helping Hand", R.drawable.helpinghandpurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "active: +30% DMG for 5 sec. 1 min CD.", 0.0f, "", 0f)
-        var stid12 = Items(5012, 13, 999,0,0f, 0, 0f, 0, "BombermXn", R.drawable.bombpurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "start with 5 bombs, bombs +10% dmg, bombs 50% cheaper", 0.0f, "", 0f)
+        var stid12 = Items(5012, 13, 999,0,0f, 0, 0f, 0, "BombermXn", R.drawable.bombpurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "start with 5 bombs", 0.0f, "bombs +10% dmg, bombs 50% cheaper", 0f)
         var stid13 = Items(5013, 14, 999,0,0f, 0, 0f, 0, "Wise", R.drawable.talentpurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "enemies drop 10% more XP", 0.0f, "", 0f)
 
-        var stid15 = Items(5015, 15, 999,0,0f, 0, 0f, 0, "Wizard", R.drawable.wizardpueple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Bombshell: +40% spelldmg scaling bomb, Lightning Bolt: +1 target", 0.0f, "", 0f)
+        var stid15 = Items(5015, 15, 999,0,0f, 0, 0f, 0, "Wizard", R.drawable.wizardpueple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Bombshell: +40% spelldmg scaling bomb", 0.0f, "Lightning Bolt: +1 target", 0f)
         var stid16 = Items(5016, 15, 999,0,0f, 0, 0f, 0, "Bouncer", R.drawable.bouncepurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "bounce targets doubled ", 0.0f, "", 0f)
-        var stid17 = Items(5017, 15, 999,0,0f, 0, 0f, 0, "Upgrader", R.drawable.upgraderitem, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "all items 2x upgrade slots, starts with 3 UPG points", 0.0f, "", 0f)
+        var stid17 = Items(5017, 15, 999,0,0f, 0, 0f, 0, "Upgrader", R.drawable.upgraderitem, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "all items 2x upgrade slots", 0.0f, "starts with 3 UPG points", 0f)
 
         var startItemList = mutableListOf<Items>(stid0)
         var startItemHiddenList = mutableListOf<Items>(stid1, stid2, stid3, stid4, stid5, stid6, stid7, stid8, stid10, stid11, stid12, stid13, stid15, stid16, stid17)
@@ -519,7 +520,6 @@ class Companion: Serializable {
         var id7 = Items(7, 1, 999, 0, 0f, 0, 0f, 0, "Upgrader", R.drawable.upgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: gain UP", 1f, "", 0f)
         // id8 = DIA green
         var id9 = Items(9, 1, 999, 0, 0f, 0, 0f, 0, "Experiencer", R.drawable.xpgreen, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 0, "Consumable: gain xp", 0f, "", 0f)
-        var id10 = Items(10, 1, 999, 0, 0f, 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 1, "", 0f, "plus itemchance", 15f)
         var id11 = Items(11, 1, 999, 0, 0f, 0, 0f, 0, "Lucky Charm", R.drawable.luckycharmgrey, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0f, 0.0f, 1, "", 0f, "", 0f)
 
         // rare items
@@ -529,7 +529,6 @@ class Companion: Serializable {
         var id102  = Items(102, 1, 999,0,30f, 0,0f, 0, "Rare Bow", R.drawable.pdoubleswordsgrey, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,7.5f, 0.0f, 0.0f, 1, "", 0f, "", 0f)
         var id103  = Items(103, 1, 999,0,30f, 0, 0f, 0,"Rare Bow", R.drawable.pdoubleswordsgrey, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,7.5f, 0.0f, 0.0f, 1, "", 0f, "", 0f)
         var id104  = Items(104, 30, 999,0,(10f), 0, 0f, 0,"Lucky Charm", R.drawable.luckycharmblue, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0f, 0.0f, 0, "plus itemquality",  10.0f, "", 0f)
-        var id105  = Items(105, 1, 999, 0, 0f, 1, 0f, 0,"Piggy Bank", R.drawable.luckycharmblue, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0f, 0.0f, 0, "10% more XP from enemies", 0f, "", 0f)
         var id106 = Items(106, 10, 999, 0, 0f, 0, 0f, 0,"Heart", R.drawable.luckycharmblue, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0f, 0.0f, 0, "+1 live", 1f, "", 0f)
         var id107 = Items(107, 10, 999, 0, 0f, 0, 0f, 0,"Number One", R.drawable.heartgreen, R.drawable.overlaytransparent,0.0f, 0.0f,0.0f,0.0f, 0f, 0.0f, 0, "+1 talent point", 1f, "", 0f)
         // epic items
@@ -574,8 +573,8 @@ class Companion: Serializable {
         var id315 = Items(315, 50, 999, 0, 0f, 0, 0f, 0, "Legendary Magic Braker", R.drawable.magicbrakerpurple, R.drawable.overlaytransparent,0f, 0.0f,0.0f,((6.0f * lvlScaler) + (level * 0.15f)), 0f, 0f, 0, "reduces magic armor by X per hit", 0.5f, "", 0f)
         var id316 = Items(316, 20, 999, 0, 0f, 0, 0f, 0, "Buddha", R.drawable.braindamageorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 3, "+1% dmg/% towerlvl", 0f, "", 0f)
 
-        var itemListReserveNormal = mutableListOf<Items>(id0, id1, id2, id3, id4, id5, id9, id10)
-        var itemListReserveRare = mutableListOf<Items>(id100, id101, id102, id103, id104, id105, id106, id107)
+        var itemListReserveNormal = mutableListOf<Items>(id0, id1, id2, id3, id4, id5, id9)
+        var itemListReserveRare = mutableListOf<Items>(id100, id101, id102, id103, id104, id106, id107)
         var itemListReserveEpic = mutableListOf<Items>(id200, id201, id202, id203, id204, id205, id206, id207, id208, id209, id210, id211, id212, id213, id214, id215, id216, id217, id218)
         var itemListReserveLegendary = mutableListOf<Items>(id300, id301, id302, id303, id304, id305, id306, id307, id308, id309, id310, id311, id312, id313, id314, id315, id316)
         var greyItems = mutableListOf<Int>(0, 1, 2, 3, 4, 10)

@@ -48,17 +48,17 @@ class DisplayScale : AppCompatActivity() {
 
         if(firstStart == 1) {
             scaleBackground = 4f * screenDensityX
-            scaleTextMain = 10f * screenDensityX
+            scaleTextMain = 4f * screenDensityX
             showTextMainScaleTV.text = scaleTextMain.toString()
             levelTVX.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextMain.toFloat())
             levelShowTVX.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextMain.toFloat())
             livesTVX.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextMain.toFloat())
             livesShowTVX.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaleTextMain.toFloat())
 
-            scaleTextNews= 10f * screenDensityX
+            scaleTextNews= 4f * screenDensityX
             showTextNewsScaleTV.text = scaleTextNews.toString()
 
-            scaleTextStats = 10f * screenDensityX
+            scaleTextStats = 4f * screenDensityX
             showTextStatsScaleTV.text = scaleTextStats.toString()
             xpTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()
             useNumberTV.layoutParams.height = (scaleTextStats * scalePicPlace).toInt()

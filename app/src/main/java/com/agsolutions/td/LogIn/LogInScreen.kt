@@ -2,9 +2,9 @@ package com.agsolutions.td.LogIn
 
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.Main.MainActivity
 import com.agsolutions.td.R
 import com.google.android.material.snackbar.Snackbar
@@ -64,7 +64,7 @@ class LogInScreen : AppCompatActivity() {
         if (!inputValidation!!.isInputEditTextFilled(
                 textInputEditTextUsername!!,
                 textInputLayoutUsername!!,
-                getString(R.string.error_message_email))) {
+                "Please enter a valid username")) {
             return
         } else if (!inputValidation!!.isInputEditTextFilled(
                 textInputEditTextPassword!!,
@@ -94,6 +94,9 @@ class LogInScreen : AppCompatActivity() {
 
                     }
                     emptyInputEditText()
+                    var editor = sharedPrefZ!!.edit()
+                    editor.putInt("firstStart", 1)
+                    editor.apply()
                     val intent = Intent(activity, MainActivity::class.java)
                     intent.putExtra("id", id)
                     startActivity(intent)

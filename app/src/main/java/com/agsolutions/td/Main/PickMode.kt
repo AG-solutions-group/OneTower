@@ -55,7 +55,7 @@ class PickMode : AppCompatActivity() {
                         "You lose a life when enemies reach the portal. The game ends when you have no lives left."
                 }
                 circularQBtn.setOnClickListener(){
-                    modeQTV.text = "Enemies circulate. The game ends when there are more than 30 enemies on the map."
+                    modeQTV.text = "Enemies circle. The game ends when there are more than 30 enemies on the map."
                 }
 
 
