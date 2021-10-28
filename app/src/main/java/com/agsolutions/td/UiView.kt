@@ -91,7 +91,6 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
     //-------------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------------
 
-    @InternalCoroutinesApi
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
@@ -481,7 +480,6 @@ class UiViewTalentWindow(context: Context, attributes: AttributeSet) : View(cont
 
     }
 
-    @InternalCoroutinesApi
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
@@ -549,7 +547,6 @@ class UiViewStartItems(context: Context, attributes: AttributeSet) : View(contex
 
     }
 
-    @InternalCoroutinesApi
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 

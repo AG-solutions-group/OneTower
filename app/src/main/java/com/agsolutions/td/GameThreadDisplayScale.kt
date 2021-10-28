@@ -14,7 +14,6 @@ class GameThreadDisplayScale(private val surfaceHolder: SurfaceHolder, private v
     private val targetFPS =
         60 // frames per second, the rate at which you would like to refresh the Canvas
 
-    @InternalCoroutinesApi
     override fun run() {
         var startTime: Long
         var timeMillis: Long

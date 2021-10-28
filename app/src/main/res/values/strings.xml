@@ -26,7 +26,7 @@
     <!--tutorial message-->
     <string name="tutorial_welcome1">Welcome to One TD!</string>
     <string name="tutorial_welcome2">How to play One TD</string>
-    <string name="tutorial_welcome3">Stop invading enemies to reach the portal by improving your One Tower with items and talents!</string>
+    <string name="tutorial_welcome3">Stop invading enemies to reach the portal by building towers and improving them with items and talents!</string>
     <string name="tutorial_welcome4">Each round all enemies get stronger. In turn you have to upgrade your tower by collecting resources like Gold, DIA (diamonds) and TP (talent points) in order to buy ITEMS or learn TALENTS. </string>
 
     <string name="tutorial_item_found">You found an item!</string>

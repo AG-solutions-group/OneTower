@@ -85,6 +85,7 @@ class DarkTalentFragment : Fragment() {
 
                     if (companionList.towerList[companionList.towerClickID].darkRow1Item1 == 1){
                         companionList.towerList[companionList.towerClickID].towerLevelBool = true
+                        companionList.towerList[companionList.towerClickID].talentPoints +=3
                         darkRow1Item2IB.isClickable = false
                         darkRow1Item2IBPick.setImageResource(R.drawable.crossedout)
                     }

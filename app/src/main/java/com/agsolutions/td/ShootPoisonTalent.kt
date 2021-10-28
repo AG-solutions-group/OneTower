@@ -35,67 +35,63 @@ class ShootPoisonTalent {
 
     fun update() {
 
-        GameActivity.companionList.readLockEnemy.lock ()
-        try {
             if (GameActivity.companionList.enemyList.isNotEmpty()) {
-                var enemy = GameActivity.companionList.enemyList.last()
 
-                fun xSpeed(): Int {
-                    var speed = 0
-                    when (enemy.circleXMovement) {
-                        "xminus" -> speed = (enemy.speed.toInt()) * (-1)
-                        "xplus" -> speed = (enemy.speed.toInt())
-                    }
-                    return speed
-                }
-
-                fun ySpeed(): Int {
-                    var speed = 0
-                    when (enemy.circleYMovement) {
-                        "yminus" -> speed = (enemy.speed.toInt()) * (-1)
-                        "yplus" -> speed = (enemy.speed.toInt())
-                    }
-                    return speed
-                }
-
-                var nx =
-                    if (poisonCloud.x > (enemy.circle!!.x + xSpeed())) ((poisonCloud.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-                    else (((enemy.circle!!.x + xSpeed().toFloat()) - poisonCloud.x) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-                var ny =
-                    if (poisonCloud.y > (enemy.circle!!.y + xSpeed())) ((poisonCloud.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-                    else (((enemy.circle!!.y + ySpeed().toFloat()) - poisonCloud.y) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-
-                var n =
-                    if (nx > ny) (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / nx
-                    else (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / ny
-
-
-                if (cross(enemy)) {
-                    poisonCloudPosition = 2
-                } else if (poisonCloudPosition == 2) {
+                if (poisonCloudPosition == 2) {
                     poisonCloud.x += 0
                     poisonCloud.y += 0
                 } else {
-                    if (poisonCloud.x > (enemy.circle!!.x + xSpeed())) {
-                        poisonCloud.x -= (nx * n)
-                    } else {
-                        poisonCloud.x += (nx * n)
-                    }
+                        var enemy = GameActivity.companionList.enemyList.last()
 
-                    if (poisonCloud.y > (enemy.circle!!.y + xSpeed())) {
-                        poisonCloud.y -= (ny * n)
-                    } else {
-                        poisonCloud.y += (ny * n)
-                    }
+                        fun xSpeed(): Int {
+                            var speed = 0
+                            when (enemy.circleXMovement) {
+                                "xminus" -> speed = (enemy.speed.toInt()) * (-1)
+                                "xplus" -> speed = (enemy.speed.toInt())
+                            }
+                            return speed
+                        }
+
+                        fun ySpeed(): Int {
+                            var speed = 0
+                            when (enemy.circleYMovement) {
+                                "yminus" -> speed = (enemy.speed.toInt()) * (-1)
+                                "yplus" -> speed = (enemy.speed.toInt())
+                            }
+                            return speed
+                        }
+
+                        var nx =
+                            if (poisonCloud.x > (enemy.circle!!.x + xSpeed())) ((poisonCloud.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                            else (((enemy.circle!!.x + xSpeed().toFloat()) - poisonCloud.x) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                        var ny =
+                            if (poisonCloud.y > (enemy.circle!!.y + xSpeed())) ((poisonCloud.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                            else (((enemy.circle!!.y + ySpeed().toFloat()) - poisonCloud.y) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+
+                        var n =
+                            if (nx > ny) (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / nx
+                            else (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / ny
+
+                        if (cross(enemy)) {
+                            poisonCloudPosition = 2
+                        } else {
+                            if (poisonCloud.x > (enemy.circle!!.x + xSpeed())) {
+                                poisonCloud.x -= (nx * n)
+                            } else {
+                                poisonCloud.x += (nx * n)
+                            }
+
+                            if (poisonCloud.y > (enemy.circle!!.y + xSpeed())) {
+                                poisonCloud.y -= (ny * n)
+                            } else {
+                                poisonCloud.y += (ny * n)
+                            }
+                        }
                 }
             } else {
-                poisonCloudPosition = 2
-                poisonCloud.x += 0
-                poisonCloud.y += 0
+                broken = 1
             }
-        }finally {
-            GameActivity.companionList.readLockEnemy.unlock()
-        }
+
     }
 
     fun cross (it: Enemy) : Boolean {

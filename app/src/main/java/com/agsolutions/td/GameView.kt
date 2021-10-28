@@ -442,8 +442,6 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     //-------------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------------
 
-
-    @InternalCoroutinesApi
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 

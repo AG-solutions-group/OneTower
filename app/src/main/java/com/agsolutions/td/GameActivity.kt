@@ -126,6 +126,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         ActivityThread.runningActivity = true
         companionList.globalSoundMusic = sharedPref!!.getFloat("Global Music", 30f)
         companionList.globalSoundEffects = sharedPref!!.getFloat("Global Effects", 30f)
+        companionList.musicChanged = true
     }
 
      override fun onTrimMemory(level: Int) {
@@ -133,9 +134,11 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
             companionList.globalSoundMusic = 0f
             companionList.globalSoundEffects = 0f
+            companionList.musicChanged = true
         }else {
             companionList.globalSoundMusic = sharedPref!!.getFloat("Global Music", 30f)
             companionList.globalSoundEffects = sharedPref!!.getFloat("Global Effects", 30f)
+            companionList.musicChanged = true
         }
 
     }
@@ -379,7 +382,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         soundIds[2] = soundPool.load(baseContext, R.raw.leak, 1)
         companionList.logVolume = (1f-(log10(companionList.maxVolume - companionList.globalSoundMusic) / log10(companionList.maxVolume)))
         companionList.logVolumeEffects = (1f-(log10(companionList.maxVolume - companionList.globalSoundEffects) / log10(companionList.maxVolume)))
-
+        companionList.musicChanged = true
     }
 
     //----------------------------------------------------------------------------
@@ -640,10 +643,10 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     fun update() {
 
-        companionList.logVolume = (1f-(log10(companionList.maxVolume - companionList.globalSoundMusic) / log10(companionList.maxVolume)))
-        companionList.logVolumeEffects = (1f-(log10(companionList.maxVolume - companionList.globalSoundEffects) / log10(companionList.maxVolume)))
-        if (mediaPlayer != null) mediaPlayer!!.setVolume(companionList.logVolume, companionList.logVolume)
-
+        if (companionList.musicChanged) {
+            companionList.musicChanged = false
+            updateMusic()
+        }
         dropItem2()
 
         runOnUiThread {
@@ -981,6 +984,15 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     //----------------------------------------------------------------------------
 
+
+    private fun updateMusic(){
+        companionList.logVolume = (1f-(log10(companionList.maxVolume - companionList.globalSoundMusic) / log10(companionList.maxVolume)))
+        companionList.logVolumeEffects = (1f-(log10(companionList.maxVolume - companionList.globalSoundEffects) / log10(companionList.maxVolume)))
+        if (mediaPlayer != null) mediaPlayer!!.setVolume(companionList.logVolume, companionList.logVolume)
+    }
+
+    //----------------------------------------------------------------------------
+
     private fun startItems() {
         //from StartItems class
         if (StartItems.startItems > 0) {
@@ -1165,7 +1177,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             companionList.writeLockDisplayDrop.lock()
             try {
                 var dmgDisplayListIterator = companionList.dmgDisplayDropList.listIterator()
-                dmgDisplayListIterator.add(DropDisplay(posXY[0] + height, posXY[1] + width, "ip", 1, 50))
+                dmgDisplayListIterator.add(DropDisplay(posXY[0] , posXY[1] + (width / 2), "ip", 1, 50))
             } finally {
                 companionList.writeLockDisplayDrop.unlock()
             }
@@ -1786,7 +1798,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                         if (it.hp < 0) {
                             it.killerId = companionList.towerList.indexOf(companionList.towerList.random())
-                            companionList.enemyKilledList.add(it)
+                            it.preDead = true
                         }
                     }
 
@@ -1989,7 +2001,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 // item aqu
                                 tower.itemListBag.forEach() {
                                     it.lvlAqu++
-                                    if (companionList.mapMode != 2) {
+                                    if (companionList.mapMode == 1) {
                                         if (it.id == 205) if (Utils.divisible(it.lvlAqu, 10)) companionList.lives += it.specialFloat.toInt()
                                     }
                                     else {
@@ -3265,7 +3277,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                              xp2 = it.xpGoal2
                              it.dmg += (it.towerLevel /2)
                              it.towerLevel ++
-                             it.talentPoints ++
                              it.towerRarityMultiplier += 0.02f
                          }
                          it.xpTower = it.xpGoal1
@@ -3722,7 +3733,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                 if (it.hp < 0){
                                     it.killerId = it.fireDebuffTowerId
-                                    companionList.enemyKilledList.add(it)
+                                    it.preDead = true
                                 }
                             }
                             it.fireDebuff += 1
@@ -3808,7 +3819,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         it.hp -= dmg
                                         if (it.hp < 0) {
                                             it.killerId = companionList.towerList.indexOf(tower)
-                                            companionList.enemyKilledList.add(it)
+                                            it.preDead = true
                                         }
                                     }
                                 }
@@ -3940,7 +3951,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 if (it.hp < 0){
                                     if (companionList.towerList[it.poisonDebuffTowerId].experiencePoisonKill) towerExperience(it.poisonDebuffTowerId, it.xpDrop * 0.25f)
                                     it.killerId = it.poisonDebuffTowerId
-                                    companionList.enemyKilledList.add(it)
+                                    it.preDead = true
                                 }
                             }
                             it.poisonDebuff += 1
@@ -4138,7 +4149,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     it.hp -= (it.maxHp * (companionList.towerList[it.darkTalentLaserTowerId].darkTalentLaser / 100))
                                     if (it.hp < 0) {
                                         it.killerId = it.darkTalentLaserTowerId
-                                        companionList.enemyKilledList.add(it)
+                                        it.preDead = true
                                     }
                                 }
                             } else {
@@ -4191,7 +4202,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                 if (it.hp < 0){
                                     it.killerId = it.wizardBombTowerId
-                                    companionList.enemyKilledList.add(it)
+                                    it.preDead = true
                                 }
                             }
                             var enemyListIteratorZ = companionList.enemyList.listIterator()
@@ -4232,7 +4243,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         }
                                         if (otherEnemy.hp < 0) {
                                             otherEnemy.killerId = it.wizardBombTowerId
-                                            companionList.enemyKilledList.add(otherEnemy)
+                                            otherEnemy.preDead = true
                                         }
                                     }
                                 }
@@ -4343,7 +4354,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                             }
                                             if (it.hp < 0){
                                                 it.killerId = companionList.towerList.indexOf(tower)
-                                                companionList.enemyKilledList.add(it)
+                                                it.preDead = true
                                             }
                                         }
                                         if (it.name == "speed") it.extraSpeed =
@@ -4392,7 +4403,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                                         if (otherEnemy.hp < 0){
                                                             otherEnemy.killerId = companionList.towerList.indexOf(tower)
-                                                            companionList.enemyKilledList.add(otherEnemy)
+                                                            otherEnemy.preDead = true
                                                         }
 
                                                     }
@@ -4478,7 +4489,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                                 if (it.hp < 0){
                                                     it.killerId = companionList.towerList.indexOf(tower)
-                                                    companionList.enemyKilledList.add(it)
+                                                    it.preDead = true
                                                 }
                                             }
                                         }
@@ -4541,7 +4552,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                                         if (otherEnemy.hp < 0){
                                                             otherEnemy.killerId = companionList.towerList.indexOf(tower)
-                                                            companionList.enemyKilledList.add(otherEnemy)
+                                                            otherEnemy.preDead = true
                                                         }
 
                                                     }
@@ -4657,7 +4668,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                             if (it.hp < 0) {
                                                 it.killerId = companionList.towerList.indexOf(tower)
-                                                companionList.enemyKilledList.add(it)
+                                                it.preDead = true
                                             }
 
                                         }
@@ -4734,7 +4745,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                         if (it.hp < 0) {
                                             it.killerId = companionList.towerList.indexOf(tower)
-                                            companionList.enemyKilledList.add(it)
+                                            it.preDead = true
                                         }
                                         it.talentMoonlightAlreadyAffected += 0.33f
                                         it.talentMoonlightDraw = 1
@@ -5167,7 +5178,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 if (it.hp < 0) {
                                     if (companionList.towerList[towerId].particleDmgBool) companionList.towerList[towerId].particleDmg += (it.hp * -1)
                                     it.killerId = towerId
-                                    companionList.enemyKilledList.add(it)
+                                    it.preDead = true
                                 }
                                 //    splashListIterator.remove()
                             }
@@ -5259,7 +5270,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                                         }
                                     it.killerId = towerId
-                                    companionList.enemyKilledList.add(it)
+                                    it.preDead = true
                                 }
                             }
                         }
@@ -5431,7 +5442,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         if (it.hp < 0) {
                                             dmgDoneX = 0f
                                             it.killerId = bullet.towerId
-                                            companionList.enemyKilledList.add(it)
+                                            it.preDead = true
                                         }
                                     }
                                 }
@@ -5461,7 +5472,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                         if (it.hp < 0) {
                                             dmgDoneX = 0f
                                             it.killerId = bullet.towerId
-                                            companionList.enemyKilledList.add(it)
+                                            it.preDead = true
                                         }
                                     }
                                 }
@@ -5480,7 +5491,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                 it.hp = -1.0f
                                                 it.killerId = bullet.towerId
                                                 it.instaKilled = 2
-                                                companionList.enemyKilledList.add(it)
+                                                it.preDead = true
                                             }
                                         }
                                     }
@@ -5625,7 +5636,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         if (it.hp < 0) {
                             it.killerId = bullet.towerId
                             companionList.towerList[bullet.towerId].chainLightningBonusDmg += (it.xpEnemy * 0.2f)
-                            companionList.enemyKilledList.add(it)
+                            it.preDead = true
                         }
                     }
                     }
@@ -6349,14 +6360,14 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         private fun dead () {
 
-            if (companionList.enemyKilledList.isNotEmpty()) {
+            if (companionList.enemyList.isNotEmpty()) {
                 companionList.writeLockEnemy.lock()
                 try {
-                    var removeKilledPlace = mutableListOf<Enemy>()
-                    var enemyListIterator = companionList.enemyKilledList.listIterator()
+                    var enemyListIterator = companionList.enemyList.listIterator()
                     while (enemyListIterator.hasNext()) {
                         var enemy = enemyListIterator.next()
 
+                        if (enemy.preDead){
                         // enemy DEAD
 
                         if (enemy.name == "split" && enemy.hp <= 0 && !enemy.dead) {
@@ -6406,7 +6417,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                             }
                                             if (otherEnemy.hp <= 0) {
                                                 otherEnemy.killerId = enemy.wizardBombTowerId
-                                                if (!companionList.enemyKilledList.contains(otherEnemy)) companionList.enemyKilledList.add(otherEnemy)
+                                                if (!otherEnemy.preDead) otherEnemy.preDead = true
                                             }
                                         }
                                     }
@@ -6476,25 +6487,24 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
                             companionList.writeLockTower.lock()
                             try {
-                            var towerListIterator = companionList.towerList.listIterator()
-                            while (towerListIterator.hasNext()) {
-                                var tower = towerListIterator.next()
+                                var towerListIterator = companionList.towerList.listIterator()
+                                while (towerListIterator.hasNext()) {
+                                    var tower = towerListIterator.next()
 
-                                if (tower.randomEnemyForShotChain == enemy) tower.randomEnemyChainBool =
-                                    true
-                                if (tower.randomEnemyForShot == enemy) tower.randomEnemyForShotBool =
-                                    true
-                            }
-                                } finally {
+                                    if (tower.randomEnemyForShotChain == enemy) tower.randomEnemyChainBool =
+                                        true
+                                    if (tower.randomEnemyForShot == enemy) tower.randomEnemyForShotBool =
+                                        true
+                                }
+                            } finally {
                                 companionList.writeLockTower.unlock()
                             }
 
                             enemy.dead = true
-
                         }
-                        removeKilledPlace.add(enemy)
+                        }
+                        enemy.preDead = false
                     }
-                    companionList.enemyKilledList.removeAll(removeKilledPlace)
                 } finally {
                     companionList.writeLockEnemy.unlock()
                 }

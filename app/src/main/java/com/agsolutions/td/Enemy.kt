@@ -18,6 +18,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
     var reachedPortal = false
     var status = -1
     var dead = false
+    var preDead = false
     var flag = 0
     var squaredDistance = 0f
     var selected = false

@@ -45,6 +45,7 @@ class GameSettings : AppCompatActivity() {
                 soundEffectsBar.progress = i
                 soundEffectsNumberTV.text = (i * 10).toString()
                 GameActivity.companionList.globalSoundEffects = i*10.toFloat()
+                GameActivity.companionList.musicChanged = true
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -63,6 +64,7 @@ class GameSettings : AppCompatActivity() {
                 soundMusicBar.progress = i
                 soundMusicNumberTV.text = (i * 10).toString()
                 GameActivity.companionList.globalSoundMusic = i*10.toFloat()
+                GameActivity.companionList.musicChanged = true
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {

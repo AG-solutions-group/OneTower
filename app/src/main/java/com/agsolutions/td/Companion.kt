@@ -49,7 +49,7 @@ class Companion: Serializable {
         var itemBeingMovedSave = 0
         var itemBeingMovedSaveList = mutableListOf<Enemy>()
         var enemyListDeadSplit = mutableListOf<Enemy>()
-        var enemyKilledList = mutableListOf<Enemy>()
+
         var enemyRemoveList = mutableListOf<Enemy>()
 
         var level = 0
@@ -371,6 +371,7 @@ class Companion: Serializable {
         var globalSoundMusic = 30f
         var globalSoundEffects = 30f
         var maxVolume = 100.0f
+    var musicChanged = false
 
         // animations ------------------------------------------------
         var rotationTowerX = 0f

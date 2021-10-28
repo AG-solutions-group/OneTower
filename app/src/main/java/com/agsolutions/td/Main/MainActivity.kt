@@ -551,7 +551,6 @@ class GameViewStartScreen(context: Context, attributes: AttributeSet) : SurfaceV
         thread.interrupt()
     }
 
-    @InternalCoroutinesApi
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
@@ -755,7 +754,6 @@ class GameThreadStartScreen(private val surfaceHolder: SurfaceHolder, private va
     private val targetFPS =
         60 // frames per second, the rate at which you would like to refresh the Canvas
 
-    @InternalCoroutinesApi
     override fun run() {
         var startTime: Long
         var timeMillis: Long

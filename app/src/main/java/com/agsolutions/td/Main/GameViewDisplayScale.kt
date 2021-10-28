@@ -67,7 +67,6 @@ class GameViewDisplayScale(context: Context, attributes: AttributeSet) : Surface
     //-------------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------------
 
-    @InternalCoroutinesApi
     override fun draw(canvas: Canvas) {
 
         super.draw(canvas)

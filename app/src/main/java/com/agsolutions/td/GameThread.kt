@@ -13,7 +13,6 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
     private val targetFPS =
         60 * GameActivity.companionList.gameSpeedAdjuster // frames per second, the rate at which you would like to refresh the Canvas
 
-    @InternalCoroutinesApi
     override fun run() {
         var startTime: Long
         var timeMillis: Long
