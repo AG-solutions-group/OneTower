@@ -507,15 +507,15 @@ class Shoot (): Serializable {
                     }
 
                     val nx =
-                        if (bullet.x > (enemy.circle!!.x + xSpeed())) ((bullet.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-                        else (((enemy.circle!!.x + xSpeed().toFloat()) - bullet.x) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                        if (bullet.x > (enemy.circle!!.x + xSpeed())) ((bullet.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed ))
+                        else (((enemy.circle!!.x + xSpeed().toFloat()) - bullet.x) / (bulletSpeed ))
                     val ny =
-                        if (bullet.y > (enemy.circle!!.y + xSpeed())) ((bullet.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-                        else (((enemy.circle!!.y + ySpeed().toFloat()) - bullet.y) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                        if (bullet.y > (enemy.circle!!.y + xSpeed())) ((bullet.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed ))
+                        else (((enemy.circle!!.y + ySpeed().toFloat()) - bullet.y) / (bulletSpeed ))
 
                     val n =
-                        if (nx > ny) (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / nx
-                        else (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / ny
+                        if (nx > ny) (bulletSpeed ) / nx
+                        else (bulletSpeed ) / ny
 
 
                     if (GameActivity.companionList.enemyList.contains(enemy)) {
@@ -571,15 +571,15 @@ class Shoot (): Serializable {
                 }
 
                 var nx =
-                    if (bullet.x > (enemy.circle!!.x + xSpeed())) ((bullet.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-                    else (((enemy.circle!!.x + xSpeed().toFloat()) - bullet.x) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                    if (bullet.x > (enemy.circle!!.x + xSpeed())) ((bullet.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed))
+                    else (((enemy.circle!!.x + xSpeed().toFloat()) - bullet.x) / (bulletSpeed))
                 var ny =
-                    if (bullet.y > (enemy.circle!!.y + xSpeed())) ((bullet.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-                    else (((enemy.circle!!.y + ySpeed().toFloat()) - bullet.y) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                    if (bullet.y > (enemy.circle!!.y + xSpeed())) ((bullet.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed))
+                    else (((enemy.circle!!.y + ySpeed().toFloat()) - bullet.y) / (bulletSpeed))
 
                 var n =
-                    if (nx > ny) (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / nx
-                    else (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / ny
+                    if (nx > ny) (bulletSpeed ) / nx
+                    else (bulletSpeed ) / ny
 
                 if (sniper) {
                     if (GameActivity.companionList.towerList[towerId].crossesNoneList.contains(enemy)) {

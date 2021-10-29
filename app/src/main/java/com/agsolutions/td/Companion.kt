@@ -428,7 +428,6 @@ class Companion: Serializable {
         var autoSpawn = false
         var autoSpawnCount = 0
         var touchCount = 0
-        var clipRect = Rect()
 
         var toastGlobal = false
         var toastText = ""

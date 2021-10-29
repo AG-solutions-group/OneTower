@@ -3,13 +3,15 @@ package com.agsolutions.td
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import com.agsolutions.td.GameView.Companion.paintMine
+import java.io.Serializable
 
 
-class ShootMineTalent {
+class ShootMineTalent : Serializable {
     companion object {
 
     }
-    var paint: Paint
+
     var mineRadius = TowerRadius(600.0f, 750.0f, 30.0f)
     var newMine = true
     var broken = false
@@ -17,16 +19,11 @@ class ShootMineTalent {
     var mineNextPic = 0
 
     init {
-        paint = Paint()
-        paint.isAntiAlias
-        paint.isFilterBitmap
-        paint.color = Color.parseColor("#653F05")
-
     }
 
     fun draw(canvas: Canvas) {
 
-        canvas.drawCircle(mineRadius.x.toFloat(), mineRadius.y.toFloat(), mineRadius.r.toFloat(), paint)
+        canvas.drawCircle(mineRadius.x.toFloat(), mineRadius.y.toFloat(), mineRadius.r.toFloat(), paintMine!!)
 
     }
 

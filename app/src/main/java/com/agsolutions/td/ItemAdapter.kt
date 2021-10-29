@@ -1,5 +1,6 @@
 package com.agsolutions.td
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,47 +54,49 @@ class ItemAdapter (
 
             if (companionList.towerClick) {
 
-                    var it = companionList.towerList[companionList.towerClickID]
+                var it = companionList.towerList[companionList.towerClickID]
 
-                        if (!companionList.day && companionList.moonTalentItemCost > 0) companionList.gold -= (companionList.itemList[pos].goldCost - (companionList.itemList[pos].goldCost * companionList.moonTalentItemCost))
-                        else if (companionList.midnightMadnessMidasGoldCost > 0) companionList.gold -= (companionList.itemList[pos].goldCost + (companionList.itemList[pos].goldCost * companionList.midnightMadnessMidasGoldCost))
-                        else companionList.gold -= companionList.itemList[pos].goldCost
-                        companionList.diamonds -= companionList.itemList[pos].diaCost
+                if (!companionList.day && companionList.moonTalentItemCost > 0) companionList.gold -= (companionList.itemList[pos].goldCost - (companionList.itemList[pos].goldCost * companionList.moonTalentItemCost))
+                else if (companionList.midnightMadnessMidasGoldCost > 0) companionList.gold -= (companionList.itemList[pos].goldCost + (companionList.itemList[pos].goldCost * companionList.midnightMadnessMidasGoldCost))
+                else companionList.gold -= companionList.itemList[pos].goldCost
+                companionList.diamonds -= companionList.itemList[pos].diaCost
 
-                        companionList.itemList[pos].goldCost = 0f
-                        companionList.itemList[pos].diaCost = 0
+                companionList.itemList[pos].goldCost = 0f
+                companionList.itemList[pos].diaCost = 0
 
-                        statsAdd(pos, it, false)
+                statsAdd(pos, it, false)
 
-                        if ((companionList.itemList[pos] == companionList.eearth || companionList.itemList[pos] == companionList.ebutterfly || companionList.itemList[pos] == companionList.ewind || companionList.itemList[pos] == companionList.emoon)) {
-                            if (it.itemListBag.contains(companionList.eearth) || it.itemListBag.contains(companionList.ebutterfly) || it.itemListBag.contains(companionList.ewind) || it.itemListBag.contains(companionList.emoon) ){
+                if ((companionList.itemList[pos] == companionList.eearth || companionList.itemList[pos] == companionList.ebutterfly || companionList.itemList[pos] == companionList.ewind || companionList.itemList[pos] == companionList.emoon)) {
+                    if (it.itemListBag.contains(companionList.eearth) || it.itemListBag.contains(companionList.ebutterfly) || it.itemListBag.contains(companionList.ewind) || it.itemListBag.contains(companionList.emoon)) {
 
-                            }else {
-                                when (companionList.itemList[pos]){
-                                    companionList.eearth -> it.towerPrimaryElement = "earth"
-                                    companionList.ebutterfly -> it.towerPrimaryElement = "butterfly"
-                                    companionList.ewind -> it.towerPrimaryElement = "wind"
-                                    companionList.emoon -> it.towerPrimaryElement = "moon"
-                                }
-                            }
+                    } else {
+                        when (companionList.itemList[pos]) {
+                            companionList.eearth -> it.towerPrimaryElement = "earth"
+                            companionList.ebutterfly -> it.towerPrimaryElement = "butterfly"
+                            companionList.ewind -> it.towerPrimaryElement = "wind"
+                            companionList.emoon -> it.towerPrimaryElement = "moon"
                         }
-                        if ((companionList.itemList[pos] == companionList.eearth || companionList.itemList[pos] == companionList.ebutterfly || companionList.itemList[pos] == companionList.ewind || companionList.itemList[pos] == companionList.emoon || companionList.itemList[pos] == companionList.epoison ||
-                                    companionList.itemList[pos] == companionList.eice || companionList.itemList[pos] == companionList.efire || companionList.itemList[pos] == companionList.edark || companionList.itemList[pos] == companionList.eutils || companionList.itemList[pos] == companionList.ewizard)) {
-                                        it.talentPoints++
-                                        companionList.itemList[pos].element = true
-                        }
+                    }
+                }
+                if ((companionList.itemList[pos] == companionList.eearth || companionList.itemList[pos] == companionList.ebutterfly || companionList.itemList[pos] == companionList.ewind || companionList.itemList[pos] == companionList.emoon || companionList.itemList[pos] == companionList.epoison ||
+                            companionList.itemList[pos] == companionList.eice || companionList.itemList[pos] == companionList.efire || companionList.itemList[pos] == companionList.edark || companionList.itemList[pos] == companionList.eutils || companionList.itemList[pos] == companionList.ewizard)
+                ) {
+                    it.talentPoints++
+                    companionList.itemList[pos].element = true
+                }
 
-                        companionList.fragmentItemCurrentItem = -1
+                companionList.fragmentItemCurrentItem = -1
 
-                        if (companionList.itemList[pos].id == 306 || companionList.itemList[pos].id == 5 || companionList.itemList[pos].id == 6 || companionList.itemList[pos].id == 7 || companionList.itemList[pos].id == 8 || companionList.itemList[pos].id == 9 || companionList.itemList[pos].id == 106 || companionList.itemList[pos].id == 313 || companionList.itemList[pos].id == 107 || companionList.itemList[pos].id == 5010 || companionList.itemList[pos].id == 5014) {
-                        } else {
-                            if (it.bagSizeElementCount == 0) it.itemListBag.add(0, companionList.itemList[pos])
-                            else it.itemListBag.add(1, companionList.itemList[pos])
-                            companionList.insertItemBag += 1
-                        }
+                if (companionList.itemList[pos].id == 306 || companionList.itemList[pos].id == 5 || companionList.itemList[pos].id == 6 || companionList.itemList[pos].id == 7 || companionList.itemList[pos].id == 8 || companionList.itemList[pos].id == 9 || companionList.itemList[pos].id == 106 || companionList.itemList[pos].id == 313 || companionList.itemList[pos].id == 107 || companionList.itemList[pos].id == 5010 || companionList.itemList[pos].id == 5014) {
+                } else {
+                    if (it.bagSizeElementCount == 0) it.itemListBag.add(0, companionList.itemList[pos])
+                    else it.itemListBag.add(1, companionList.itemList[pos])
+                    companionList.insertItemBag += 1
+                }
 
-                        companionList.itemList.removeAt(pos)
-                        notifyDataSetChanged()
+                companionList.itemList.removeAt(pos)
+                notifyDataSetChanged()
+
             } else {
                 if (companionList.itemList[pos].id == 5) {
                     if (companionList.activeAbilityList.contains(aAid1)) {

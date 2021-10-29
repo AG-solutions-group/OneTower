@@ -14,9 +14,6 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.math.atan2
 
 
-
-
-
 class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context, attributes),
     SurfaceHolder.Callback {
 
@@ -31,9 +28,13 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         var paintWizardDmgDone = Paint ()
         var paintMoonDmgDone = Paint ()
         var paintBombDmgDone = Paint ()
+        var paintIceWizard = Paint ()
+        var paintPoisonUlti = Paint ()
+        var paintMine = Paint ()
 
         var towerBase: Bitmap? = null
-        var dragRect = Rect(0, 0, 0, 0)
+        var dragRect : Rect? = null
+        var clipRect : Rect? = null
         var dragRectList = mutableListOf<Rect>()
         var dragRectListTower = mutableListOf<DragRectListData>()
 
@@ -84,7 +85,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     var creepOutline: Bitmap? = null
     var talentP: Bitmap? = null
 
-    var rectExplosion = Rect(0, 0, 24, 29)
+    var rectForAll = Rect(0, 0, 0, 0)
     var paintRange = Paint()
     var paintLaser = Paint ()
     var paintHpBar = Paint()
@@ -115,10 +116,25 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     var elementWind : Bitmap? = null
     var elementWizard : Bitmap? = null
 
+    var icon: Bitmap? = null
+
 
     //initialize items----------------------------------------------------------------------------
 
     init {
+        dragRect = Rect()
+        clipRect = Rect()
+
+        paintIceWizard.isAntiAlias
+        paintIceWizard.isFilterBitmap
+        paintIceWizard.color = Color.WHITE
+        paintMine.isAntiAlias
+        paintMine.isFilterBitmap
+        paintMine.color = Color.parseColor("#653F05")
+        paintPoisonUlti.isAntiAlias
+        paintPoisonUlti.isFilterBitmap
+        paintPoisonUlti.color = Color.GREEN
+
         paintHpBarBack.color = Color.BLACK
         paintHpBar.color = Color.parseColor("#00B300")
         paintHpBarNight.color = Color.parseColor("#005900")
@@ -220,6 +236,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             backgroundMap1Mode2NightBmp = BitmapFactory.decodeResource(context.resources, R.drawable.map2blurnight)
         explosion = BitmapFactory.decodeResource(context.resources, R.drawable.explosion)
         explosion2 = BitmapFactory.decodeResource(context.resources, R.drawable.explosiontwo)
+        icon = goldDrop
 
         shootBulletPic = BitmapFactory.decodeResource(context.resources, R.drawable.bulletbig)
         shootSplashPic = BitmapFactory.decodeResource(context.resources, R.drawable.rock)
@@ -326,13 +343,13 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
                 if (tower(x, y, scaler)) {
                     return super.onTouchEvent(event)
-                } else if ((!companionList.autoSpawn && companionList.enemyList.isEmpty() && x > ((875 * scaler) - (companionList.clipRect.left * scaler)) && x < ((1025 * scaler) - (companionList.clipRect.left * scaler)) && y > ((1145 * scaler) - (companionList.clipRect.top * scaler)) && y < ((1275 * scaler) - (companionList.clipRect.top * scaler))) && companionList.mapMode == 1) {
+                } else if ((!companionList.autoSpawn && companionList.enemyList.isEmpty() && x > ((875 * scaler) - (GameView.clipRect!!.left * scaler)) && x < ((1025 * scaler) - (GameView.clipRect!!.left * scaler)) && y > ((1145 * scaler) - (GameView.clipRect!!.top * scaler)) && y < ((1275 * scaler) - (GameView.clipRect!!.top * scaler))) && companionList.mapMode == 1) {
                     companionList.towerClick = false
                     companionList.build = true
                     companionList.buildClickBool = true
                     companionList.spawnEnemy = true
                     return super.onTouchEvent(event)
-                } else if ((x > ((875 * scaler) - (companionList.clipRect.left * scaler)) && x < ((1025 * scaler) - (companionList.clipRect.left * scaler)) && y > ((1145 * scaler) - (companionList.clipRect.top * scaler)) && y < ((1275 * scaler) - (companionList.clipRect.top * scaler))) && companionList.mapMode == 1)  {
+                } else if ((x > ((875 * scaler) - (GameView.clipRect!!.left * scaler)) && x < ((1025 * scaler) - (GameView.clipRect!!.left * scaler)) && y > ((1145 * scaler) - (GameView.clipRect!!.top * scaler)) && y < ((1275 * scaler) - (GameView.clipRect!!.top * scaler))) && companionList.mapMode == 1)  {
                     companionList.towerClick = false
                     companionList.build = true
                     companionList.buildClickBool = true
@@ -373,8 +390,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         var enemyListIteratorZ = companionList.enemyList.listIterator()
         while (enemyListIteratorZ.hasNext()) {
             var it = enemyListIteratorZ.next()
-            val distanceX = (x + (companionList.clipRect.left * scaler)) - (it.circle!!.x * scaler)
-            val distanceY = (y + (companionList.clipRect.top * scaler)) - (it.circle!!.y * scaler)
+            val distanceX = (x + (GameView.clipRect!!.left * scaler)) - (it.circle!!.x * scaler)
+            val distanceY = (y + (GameView.clipRect!!.top * scaler)) - (it.circle!!.y * scaler)
 
             val squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
 
@@ -411,8 +428,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         var towerListIteratorZ = companionList.towerList.listIterator()
         while (towerListIteratorZ.hasNext()) {
             var it = towerListIteratorZ.next()
-            val distanceX = (x + (companionList.clipRect.left * scaler)) - (it.towerRange.x * scaler)
-            val distanceY = (y + (companionList.clipRect.top * scaler)) - (it.towerRange.y * scaler)
+            val distanceX = (x + (GameView.clipRect!!.left * scaler)) - (it.towerRange.x * scaler)
+            val distanceY = (y + (GameView.clipRect!!.top * scaler)) - (it.towerRange.y * scaler)
 
             val squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
 
@@ -446,368 +463,328 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         super.draw(canvas)
 
 
-                // ------------------------------------------------------------------------------------------------------------------------------------------------
-                // ------------------------------------------------------------------------------------------------------------------------------------------------
-                // ------------------------------------------------------------------------------------------------------------------------------------------------
-                //  MAIN ACTIVITY ---------------------------------------------------------------------------------------------------------------------------------
+        // ------------------------------------------------------------------------------------------------------------------------------------------------
+        // ------------------------------------------------------------------------------------------------------------------------------------------------
+        // ------------------------------------------------------------------------------------------------------------------------------------------------
+        //  MAIN ACTIVITY ---------------------------------------------------------------------------------------------------------------------------------
 
-                //scale canvas for different devices
+        //scale canvas for different devices
 
-                focusVar = scaleFactor - 1
-                canvas.translate(focusCanvasX * (focusVar) * -1, focusCanvasY * (focusVar) * -1)
-                canvas.scale(
-                    ((companionList.scaleScreen / 10) * scaleFactor), ((companionList.scaleScreen / 10) * scaleFactor)
-                )
+        focusVar = scaleFactor - 1
+        canvas.translate(focusCanvasX * (focusVar) * -1, focusCanvasY * (focusVar) * -1)
+        canvas.scale(
+            ((companionList.scaleScreen / 10) * scaleFactor), ((companionList.scaleScreen / 10) * scaleFactor)
+        )
 
-                companionList.clipRect = canvas.clipBounds
+        GameView.clipRect = canvas.clipBounds
 
-                //draw background
-                if (companionList.mapPick == 0 || companionList.mapPick == 1) {
-                    if (companionList.mapMode != 2) {
-                        if (companionList.day) canvas.drawBitmap(backgroundMap1DayBmp!!, null, rectBackground, null)
-                        else canvas.drawBitmap(backgroundMap1NightBmp!!, null, rectBackground, null)
+        //draw background
+        if (companionList.mapPick == 0 || companionList.mapPick == 1) {
+            if (companionList.mapMode != 2) {
+                if (companionList.day) canvas.drawBitmap(backgroundMap1DayBmp!!, null, rectBackground, null)
+                else canvas.drawBitmap(backgroundMap1NightBmp!!, null, rectBackground, null)
+            } else {
+                if (companionList.day) canvas.drawBitmap(backgroundMap1Mode2DayBmp!!, null, rectBackground, null)
+                else canvas.drawBitmap(backgroundMap1Mode2NightBmp!!, null, rectBackground, null)
+            }
+        } else if (companionList.mapPick == 2) {
+            if (companionList.day) canvas.drawBitmap(backgroundDayMap2!!, null, rectBackground, null)
+            else canvas.drawBitmap(backgroundNightMap2!!, null, rectBackground, null)
+        }
+
+        // draw text
+        if (companionList.mapMode == 1) {
+            if (companionList.autoSpawn) canvas.drawText("ON", 910f, 1225f, paintText)
+            else if (companionList.enemyList.isEmpty()) canvas.drawText("NXT", 910f, 1225f, paintText)
+            else canvas.drawText("OFF", 910f, 1225f, paintText)
+        }
+
+        //draw tower
+
+        if (companionList.towerList.size > 0) {
+            companionList.writeLockTower.lock()
+            try {
+                var towerListIterator = companionList.towerList.listIterator()
+                while (towerListIterator.hasNext()) {
+                    var it = towerListIterator.next()
+                    if (it.towerFallingCount > 0) {
+                        if (!GameActivity.paused) it.towerFallingCount += (8 * companionList.gameSpeedAdjuster).toInt()
+                        var rect =
+                            Rect((it.towerRange.x - 80).toInt(), it.towerFallingCount, it.towerRange.x.toInt() + 80, it.towerFallingCount + 160)
+                        canvas.drawBitmap(towerFalling!!, null, rect, null)
+                        if (it.towerFallingCount > it.towerRange.y.toInt() - 80) it.towerFallingCount =
+                            0
                     } else {
-                        if (companionList.day) canvas.drawBitmap(backgroundMap1Mode2DayBmp!!, null, rectBackground, null)
-                        else canvas.drawBitmap(backgroundMap1Mode2NightBmp!!, null, rectBackground, null)
-                    }
-                } else if (companionList.mapPick == 2) {
-                    if (companionList.day) canvas.drawBitmap(backgroundDayMap2!!, null, rectBackground, null)
-                    else canvas.drawBitmap(backgroundNightMap2!!, null, rectBackground, null)
-                }
+                        var rect =
+                            Rect((it.towerRange.x - 80).toInt(), (it.towerRange.y - 80).toInt(), (it.towerRange.x + 80).toInt(), (it.towerRange.y + 80).toInt())
+                        canvas.drawBitmap(towerBase!!, null, rect, null)
 
-                // draw text
-                if (companionList.mapMode == 1) {
-                    if (companionList.autoSpawn) canvas.drawText("ON", 910f, 1225f, paintText)
-                    else if (companionList.enemyList.isEmpty()) canvas.drawText("NXT", 910f, 1225f, paintText)
-                    else canvas.drawText("OFF", 910f, 1225f, paintText)
-                }
-
-                //draw tower
-
-                if (companionList.towerList.size > 0) {
-                    companionList.writeLockTower.lock()
-                    try {
-                        var towerListIterator = companionList.towerList.listIterator()
-                        while (towerListIterator.hasNext()) {
-                            var it = towerListIterator.next()
-                            if (it.towerFallingCount > 0) {
-                                if (companionList.refresh) it.towerFallingCount += 8
-                                var rectBaseS =
-                                    Rect((it.towerRange.x - 80).toInt(), it.towerFallingCount, it.towerRange.x.toInt() + 80, it.towerFallingCount + 160)
-                                canvas.drawBitmap(towerFalling!!, null, rectBaseS, null)
-                                if (it.towerFallingCount > it.towerRange.y.toInt() - 80) it.towerFallingCount = 0
-                            } else {
-                                var rectBase =
-                                    Rect((it.towerRange.x - 80).toInt(), (it.towerRange.y - 80).toInt(), (it.towerRange.x + 80).toInt(), (it.towerRange.y + 80).toInt())
-                                canvas.drawBitmap(towerBase!!, null, rectBase, null)
-
-                                if (companionList.towerClick && it.selected) canvas.drawCircle(it.towerRange.x, it.towerRange.y, it.towerR, paintRange)
-                                if (companionList.towerClick && it.selected && it.itemListBag.contains(GameActivity.companionList.eutils)) canvas.drawCircle(it.towerRange.x, it.towerRange.y, 150f, paintRange)
-                                var rectTalent = Rect((it.towerRange.x - 60).toInt(), (it.towerRange.y + 30).toInt(), it.towerRange.x.toInt() - 30, it.towerRange.y.toInt() + 60)
-                                if (it.talentPoints > 0) canvas.drawBitmap(talentP!!, null, rectTalent, null)
-                                var textsize = paintTowerDmgDone.measureText(it.towerLevel.toString())
-                                canvas.drawText(it.towerLevel.toString(), (it.towerRange.x + 55 - (textsize /2)), (it.towerRange.y + 60), paintTowerDmgDone)
-                                if(it.bagSizeElementCount > 0) {
-                                    var yBool = 0
-                                    var bitmap = elementButterfly
-                                        for (item in it.itemListBag) {
-                                            var elementIsThere = false
-                                            when (item) {
-                                                companionList.eearth -> {
-                                                    bitmap = elementEarth
-                                                    elementIsThere = true
-                                                }
-                                                companionList.ebutterfly -> {
-                                                    bitmap = elementButterfly
-                                                    elementIsThere = true
-                                                }
-                                                companionList.ewind -> {
-                                                    bitmap = elementWind
-                                                    elementIsThere = true
-                                                }
-                                                companionList.emoon -> {
-                                                    bitmap = elementMoon
-                                                    elementIsThere = true
-                                                }
-                                                companionList.epoison -> {
-                                                    bitmap = elementPoison
-                                                    elementIsThere = true
-                                                }
-                                                companionList.eice -> {
-                                                    bitmap = elementIce
-                                                    elementIsThere = true
-                                                }
-                                                companionList.efire -> {
-                                                    bitmap = elementFire
-                                                    elementIsThere = true
-                                                }
-                                                companionList.edark -> {
-                                                    bitmap = elementDark
-                                                    elementIsThere = true
-                                                }
-                                                companionList.eutils -> {
-                                                    bitmap = elementUtils
-                                                    elementIsThere = true
-                                                }
-                                                companionList.ewizard -> {
-                                                    bitmap = elementWizard
-                                                    elementIsThere = true
-                                                }
-                                            }
-                                            if (elementIsThere) {
-                                                var rectTalent =
-                                                    Rect((it.towerRange.x + 35).toInt(), (it.towerRange.y + yBool).toInt(), it.towerRange.x.toInt() + 75, it.towerRange.y.toInt() + yBool + 40)
-                                                canvas.drawBitmap(bitmap!!, null, rectTalent, null)
-                                                yBool -= 35
-                                            }
-                                        }
+                        if (companionList.towerClick && it.selected) canvas.drawCircle(it.towerRange.x, it.towerRange.y, it.towerR, paintRange)
+                        if (companionList.towerClick && it.selected && it.itemListBag.contains(GameActivity.companionList.eutils)) canvas.drawCircle(it.towerRange.x, it.towerRange.y, 150f, paintRange)
+                        var rect2 =
+                            Rect((it.towerRange.x - 60).toInt(), (it.towerRange.y + 30).toInt(), it.towerRange.x.toInt() - 30, it.towerRange.y.toInt() + 60)
+                        if (it.talentPoints > 0) canvas.drawBitmap(talentP!!, null, rect2, null)
+                        var textsize = paintTowerDmgDone.measureText(it.towerLevel.toString())
+                        canvas.drawText(it.towerLevel.toString(), (it.towerRange.x + 55 - (textsize / 2)), (it.towerRange.y + 60), paintTowerDmgDone)
+                        if (it.bagSizeElementCount > 0) {
+                            var yBool = 0
+                            var bitmap = elementButterfly
+                            for (item in it.itemListBag) {
+                                var elementIsThere = false
+                                when (item) {
+                                    companionList.eearth -> {
+                                        bitmap = elementEarth
+                                        elementIsThere = true
                                     }
-
-                                    canvas.save()
-                                    canvas.rotate(getAngle(it), it.towerRange.x, it.towerRange.y)
-                                    var rectTower =
-                                        Rect((it.towerRange.x - 84).toInt(), (it.towerRange.y - 64).toInt(), it.towerRange.x.toInt() + 172, it.towerRange.y.toInt() + 64)
-                                    when (it.towerLevel ){
-                                        in 1..4 -> canvas.drawBitmap(towerGunBasic!!, null, rectTower, null)
-                                        in 5..9 -> canvas.drawBitmap(towerGunBlue!!, null, rectTower, null)
-                                        in 10..14 -> canvas.drawBitmap(towerGunOrange!!, null, rectTower, null)
-                                        in 15..999 -> canvas.drawBitmap(towerGunPurple!!, null, rectTower, null)
+                                    companionList.ebutterfly -> {
+                                        bitmap = elementButterfly
+                                        elementIsThere = true
                                     }
-                                    canvas.restore()
-                            }
-                            if (it.disrupted) canvas.drawCircle(it.towerRange.x, it.towerRange.y,30f, paintDisrupt)
-                        }
-                } finally {
-                        companionList.writeLockTower.unlock()
-                }
-                }
-
-                    //draw poison talent
-                    if (companionList.poisonCloud > 0 && companionList.shootListPoison.isNotEmpty()) {
-                        companionList.writeLockPoison.lock()
-                        try {
-                            var shootListPoisonIterator = companionList.shootListPoison.listIterator()
-                            while (shootListPoisonIterator.hasNext()) {
-                                var it = shootListPoisonIterator.next()
-                                if (it.broken == 1) {
-                                    shootListPoisonIterator.remove()
-                                } else {
-                                    it.update()
-                                    var baseShootPoison =
-                                        Rect((it.poisonCloud.x - (it.poisonCloud.r * 1.5)).toInt(), (it.poisonCloud.y - (it.poisonCloud.r * 1.5)).toInt(), (it.poisonCloud.x + (it.poisonCloud.r * 1.5)).toInt(), (it.poisonCloud.y + (it.poisonCloud.r * 1.5)).toInt())
-                                    it.poisonPicCounter++
-                                    if (it.poisonPicCounter >= 5) {
-                                        it.poisonPicCounter = 0
-                                        it.poisonNextPic++
-                                        if (it.poisonNextPic >= 2) it.poisonNextPic = 0
+                                    companionList.ewind -> {
+                                        bitmap = elementWind
+                                        elementIsThere = true
                                     }
-                                    canvas.drawBitmap(shootPoisonArray!![it.poisonNextPic], null, baseShootPoison, null)
+                                    companionList.emoon -> {
+                                        bitmap = elementMoon
+                                        elementIsThere = true
+                                    }
+                                    companionList.epoison -> {
+                                        bitmap = elementPoison
+                                        elementIsThere = true
+                                    }
+                                    companionList.eice -> {
+                                        bitmap = elementIce
+                                        elementIsThere = true
+                                    }
+                                    companionList.efire -> {
+                                        bitmap = elementFire
+                                        elementIsThere = true
+                                    }
+                                    companionList.edark -> {
+                                        bitmap = elementDark
+                                        elementIsThere = true
+                                    }
+                                    companionList.eutils -> {
+                                        bitmap = elementUtils
+                                        elementIsThere = true
+                                    }
+                                    companionList.ewizard -> {
+                                        bitmap = elementWizard
+                                        elementIsThere = true
+                                    }
+                                }
+                                if (elementIsThere) {
+                                    var rect =
+                                        Rect((it.towerRange.x + 35).toInt(), (it.towerRange.y + yBool).toInt(), it.towerRange.x.toInt() + 75, it.towerRange.y.toInt() + yBool + 40)
+                                    canvas.drawBitmap(bitmap!!, null, rect, null)
+                                    yBool -= 35
                                 }
                             }
-                        } finally {
-                            companionList.writeLockPoison.unlock()
                         }
-                    }
 
-                    //draw tornado talent
-                    if (companionList.shootListTornado.size > 0) {
-                        companionList.writeLockTornado.lock()
-                        try {
-                            var shootListTornadoIterator = companionList.shootListTornado.listIterator()
-                            while (shootListTornadoIterator.hasNext()) {
-                                var it = shootListTornadoIterator.next()
-                                if (it.broken == 1) {
-                                    shootListTornadoIterator.remove()
-                                } else if (companionList.shootListTornado.size > 0) {
-                                    it.update()
-                                    companionList.rotateTornado += 5
-                                    if (companionList.rotateTornado >= 360) companionList.rotateTornado = 0f
-                                    canvas.save()
-                                    canvas.rotate(companionList.rotateTornado, it.tornadoRadius.x, it.tornadoRadius.y)
-                                    var baseShootTornado =
-                                        Rect((it.tornadoRadius.x - (it.tornadoRadius.r)).toInt(), (it.tornadoRadius.y - (it.tornadoRadius.r)).toInt(), (it.tornadoRadius.x + (it.tornadoRadius.r)).toInt(), (it.tornadoRadius.y + (it.tornadoRadius.r)).toInt())
-                                    if (companionList.day) canvas.drawBitmap(shootMultiPicDay!!, null, baseShootTornado, null)
-                                    else canvas.drawBitmap(shootMultiPic!!, null, baseShootTornado, null)
-                                    canvas.restore()
+                        canvas.save()
+                        canvas.rotate(getAngle(it), it.towerRange.x, it.towerRange.y)
+                        var rect3 =
+                            Rect((it.towerRange.x - 84).toInt(), (it.towerRange.y - 64).toInt(), it.towerRange.x.toInt() + 172, it.towerRange.y.toInt() + 64)
+                        when (it.towerLevel) {
+                            in 1..4 -> canvas.drawBitmap(towerGunBasic!!, null, rect3, null)
+                            in 5..9 -> canvas.drawBitmap(towerGunBlue!!, null, rect3, null)
+                            in 10..14 -> canvas.drawBitmap(towerGunOrange!!, null, rect3, null)
+                            in 15..999 -> canvas.drawBitmap(towerGunPurple!!, null, rect3, null)
+                        }
+                        canvas.restore()
+                    }
+                    if (it.disrupted) canvas.drawCircle(it.towerRange.x, it.towerRange.y, 30f, paintDisrupt)
+                }
+            } finally {
+                companionList.writeLockTower.unlock()
+            }
+        }
+
+        //draw poison talent
+        if (companionList.poisonCloud > 0 && companionList.shootListPoison.isNotEmpty()) {
+            companionList.writeLockPoison.lock()
+            try {
+                var shootListPoisonIterator = companionList.shootListPoison.listIterator()
+                while (shootListPoisonIterator.hasNext()) {
+                    var it = shootListPoisonIterator.next()
+                    var rect =
+                            Rect((it.poisonCloud.x - (it.poisonCloud.r * 1.5)).toInt(), (it.poisonCloud.y - (it.poisonCloud.r * 1.5)).toInt(), (it.poisonCloud.x + (it.poisonCloud.r * 1.5)).toInt(), (it.poisonCloud.y + (it.poisonCloud.r * 1.5)).toInt())
+                        it.poisonPicCounter++
+                        if (it.poisonPicCounter >= 5) {
+                            it.poisonPicCounter = 0
+                            it.poisonNextPic++
+                            if (it.poisonNextPic >= 2) it.poisonNextPic = 0
+                        }
+                        canvas.drawBitmap(shootPoisonArray!![it.poisonNextPic], null, rect, null)
+
+                }
+            } finally {
+                companionList.writeLockPoison.unlock()
+            }
+        }
+
+        //draw tornado talent
+        if (companionList.shootListTornado.size > 0) {
+            companionList.writeLockTornado.lock()
+            try {
+                var shootListTornadoIterator = companionList.shootListTornado.listIterator()
+                while (shootListTornadoIterator.hasNext()) {
+                    var it = shootListTornadoIterator.next()
+                        companionList.rotateTornado++
+                        if (companionList.rotateTornado >= 360) companionList.rotateTornado = 0f
+                        canvas.save()
+                        canvas.rotate(companionList.rotateTornado, it.tornadoRadius.x, it.tornadoRadius.y)
+                    var rect =
+                            Rect((it.tornadoRadius.x - (it.tornadoRadius.r)).toInt(), (it.tornadoRadius.y - (it.tornadoRadius.r)).toInt(), (it.tornadoRadius.x + (it.tornadoRadius.r)).toInt(), (it.tornadoRadius.y + (it.tornadoRadius.r)).toInt())
+                        if (companionList.day) canvas.drawBitmap(shootMultiPicDay!!, null, rectForAll, null)
+                        else canvas.drawBitmap(shootMultiPic!!, null, rect, null)
+                        canvas.restore()
+                    }
+            } finally {
+                companionList.writeLockTornado.unlock()
+            }
+        }
+
+        //draw mine talent
+        if (companionList.wizardMine) {
+            companionList.writeLockMine.lock()
+            try {
+                var shootListMineIterator = companionList.shootListMine.listIterator()
+                while (shootListMineIterator.hasNext()) {
+                    var it = shootListMineIterator.next()
+                    var rect =
+                            Rect((it.mineRadius.x - (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.y - (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.x + (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.y + (it.mineRadius.r * 1.25)).toInt())
+                        it.minePicCounter++
+                        if (it.minePicCounter >= 5) {
+                            it.minePicCounter = 0
+                            it.mineNextPic++
+                            if (it.mineNextPic >= 5) it.mineNextPic = 0
+                        }
+                        canvas.drawBitmap(mineArray!![it.mineNextPic], null, rect, null)
+
+                }
+            } finally {
+                companionList.writeLockMine.unlock()
+            }
+        }
+
+        //draw enemy
+
+        if (companionList.enemyList.size > 0) {
+            companionList.writeLockEnemy.lock()
+            try {
+                    var enemyListIterator = companionList.enemyList.listIterator()
+                    while (enemyListIterator.hasNext()) {
+                        var it = enemyListIterator.next()
+                        it.draw(canvas)
+
+                        canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 42).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 18).toFloat(), paintHpBarBack)
+                        if (companionList.day) canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 40).toFloat(), (it.circle!!.x.toFloat() - it.enemyRight + 35.0F), (it.circle!!.y - 20).toFloat(), paintHpBar)
+                        else canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 40).toFloat(), (it.circle!!.x.toFloat() - it.enemyRight + 35.0F), (it.circle!!.y - 20).toFloat(), paintHpBarNight)
+
+                        if (it.manaShield > 0) {
+                            canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 54).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 44).toFloat(), paintHpBarBack)
+                            canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 52).toFloat(), (it.circle!!.x.toFloat() - it.enemyRightManaShield + 35.0F), (it.circle!!.y - 42).toFloat(), paintManaShield)
+                        }
+                        if (it.shield > 0) {
+                            canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 54).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 44).toFloat(), paintHpBarBack)
+                            canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 52).toFloat(), (it.circle!!.x.toFloat() - it.enemyRightShield + 35.0F), (it.circle!!.y - 42).toFloat(), paintShield)
+                        }
+                        if (it.hit) {
+                            it.explosionCounter++
+                            when (it.explosionCounter) {
+                                in 1..4 -> {
+                                    var rect =
+                                        Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
+                                    canvas.drawBitmap(explosion!!, null, rect, null)
+                                }
+                                in 5..10 -> {
+                                    var rect =
+                                        Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
+                                    canvas.drawBitmap(explosion2!!, null, rect, null)
+                                }
+                                in 11..999 -> {
+                                    it.explosionCounter = 0
+                                    it.hit = false
                                 }
                             }
-                        } finally {
-                            companionList.writeLockTornado.unlock()
                         }
-                    }
 
-                    //draw mine talent
-                    if (companionList.wizardMine) {
-                        companionList.writeLockMine.lock()
-                        try {
-                            var shootListMineIterator = companionList.shootListMine.listIterator()
-                            while (shootListMineIterator.hasNext()) {
-                                var it = shootListMineIterator.next()
-                                if (it.broken) shootListMineIterator.remove()
-                                else {
-                                    if (companionList.refresh) it.update()
-                                    var baseMine =
-                                        Rect((it.mineRadius.x - (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.y - (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.x + (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.y + (it.mineRadius.r * 1.25)).toInt())
-                                    it.minePicCounter++
-                                    if (it.minePicCounter >= 5) {
-                                        it.minePicCounter = 0
-                                        it.mineNextPic++
-                                        if (it.mineNextPic >= 5) it.mineNextPic = 0
-                                    }
-                                    canvas.drawBitmap(mineArray!![it.mineNextPic], null, baseMine, null)
-                                }
-                            }
-                        } finally {
-                            companionList.writeLockMine.unlock()
-                        }
-                    }
+                        if (it.fireDebuff > 0) it.drawBurn(canvas)
+                        if (it.poisonDebuff > 0) it.drawPoisonDebuff(canvas)
+                        if (it.poisonTalentPestDamage > 0) it.drawPoisonTalentPest(canvas)
+                        if (it.iceDebuff > 0 || it.itemFrostAlreadyAffected > 0 || it.iceNovaAlreadyAffected) it.drawIceSlow(canvas)
+                        if (it.entangled) it.drawEntangle(canvas)
+                        if (it.feared) it.drawFear(canvas)
+                        if (it.darkSlowAlreadyAffected) it.draw5(canvas)
+                        if (it.talentMoonlightDraw > 0) it.drawMoonlight(canvas)
+                        if (it.markOfTheButterflyCounter > 0) it.drawButterfly(canvas)
+                        if (it.wizardBombActive > 0) it.drawBomb(canvas)
+                        if (it.markOfTheButterflySlow > 0) it.drawButterflySlow(canvas)
+                        if (it.wizardMissedLightningActiveHit >= 1) it.drawLightning(canvas)
+                        if (it.mineAlreadyAffected) it.drawMine(canvas)
+                        if (it.throwBoulderHitAlreadyEffected) it.drawBoulder(canvas)
+                        if (it.itemLassoAlreadyAffected > 0) canvas.drawLine(companionList.towerList[it.itemLassoAlreadyAffectedTowerId].towerRange.x, companionList.towerList[it.itemLassoAlreadyAffectedTowerId].towerRange.y, it.circle!!.x, it.circle!!.y, paintLasso)
+                        if (it.darkTalentLaserAlreadyAffected > 0) canvas.drawLine(companionList.towerList[it.darkTalentLaserTowerId].towerRange.x, companionList.towerList[it.darkTalentLaserTowerId].towerRange.y, it.circle!!.x, it.circle!!.y, paintLaser)
 
-                        //draw enemy
-
-                            if (companionList.level > 0) level()
-                            if (companionList.enemyList.size > 0) {
-                                companionList.writeLockEnemy.lock()
-                                try {
-                                    companionList.enemyList.removeAll(companionList.enemyRemoveList)
-                                    companionList.enemyRemoveList.removeAll(companionList.enemyRemoveList)
-                                    if (companionList.enemyList.size > 0) {
-                                    var enemyListIterator = companionList.enemyList.listIterator()
-                                    while (enemyListIterator.hasNext()) {
-                                        var it = enemyListIterator.next()
-                                        // enemy out of screen
-                                        if (companionList.refresh && !it.dead) {
-                                            it.update()
-                                        }
-                                        // draw
-                                        it.draw(canvas)
-
-                                        canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 42).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 18).toFloat(), paintHpBarBack)
-                                        if (companionList.day) canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 40).toFloat(), (it.circle!!.x.toFloat() - it.enemyRight + 35.0F), (it.circle!!.y - 20).toFloat(), paintHpBar)
-                                        else canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 40).toFloat(), (it.circle!!.x.toFloat() - it.enemyRight + 35.0F), (it.circle!!.y - 20).toFloat(), paintHpBarNight)
-
-                                        if (it.manaShield > 0) {
-                                            canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 54).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 44).toFloat(), paintHpBarBack)
-                                            canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 52).toFloat(), (it.circle!!.x.toFloat() - it.enemyRightManaShield + 35.0F), (it.circle!!.y - 42).toFloat(), paintManaShield)
-                                        }
-                                        if (it.shield > 0) {
-                                            canvas.drawRect((it.circle!!.x - 37).toFloat(), (it.circle!!.y - 54).toFloat(), (it.circle!!.x + 37).toFloat(), (it.circle!!.y - 44).toFloat(), paintHpBarBack)
-                                            canvas.drawRect((it.circle!!.x - 35).toFloat(), (it.circle!!.y - 52).toFloat(), (it.circle!!.x.toFloat() - it.enemyRightShield + 35.0F), (it.circle!!.y - 42).toFloat(), paintShield)
-                                        }
-                                        if (it.hit) {
-                                            it.explosionCounter++
-                                            when (it.explosionCounter) {
-                                                in 1..4 -> {
-                                                    var rectExplosion =
-                                                        Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
-                                                    canvas.drawBitmap(explosion!!, null, rectExplosion, null)
-                                                }
-                                                in 5..10 -> {
-                                                    var rectExplosion =
-                                                        Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
-                                                    canvas.drawBitmap(explosion2!!, null, rectExplosion, null)
-                                                }
-                                                in 11..999 -> {
-                                                    it.explosionCounter = 0
-                                                    it.hit = false
-                                                }
-                                            }
-                                        }
-
-                                        if (it.fireDebuff > 0) it.drawBurn(canvas)
-                                        if (it.poisonDebuff > 0) it.drawPoisonDebuff(canvas)
-                                        if (it.poisonTalentPestDamage > 0) it.drawPoisonTalentPest(canvas)
-                                        if (it.iceDebuff > 0 || it.itemFrostAlreadyAffected > 0 || it.iceNovaAlreadyAffected) it.drawIceSlow(canvas)
-                                        if (it.entangled) it.drawEntangle(canvas)
-                                        if (it.feared) it.drawFear(canvas)
-                                        if (it.darkSlowAlreadyAffected) it.draw5(canvas)
-                                        if (it.talentMoonlightDraw > 0) it.drawMoonlight(canvas)
-                                        if (it.markOfTheButterflyCounter > 0) it.drawButterfly(canvas)
-                                        if (it.wizardBombActive > 0) it.drawBomb(canvas)
-                                        if (it.markOfTheButterflySlow > 0) it.drawButterflySlow(canvas)
-                                        if (it.wizardMissedLightningActiveHit >= 1) it.drawLightning(canvas)
-                                        if (it.mineAlreadyAffected) it.drawMine(canvas)
-                                        if (it.throwBoulderHitAlreadyEffected) it.drawBoulder(canvas)
-                                        if (it.itemLassoAlreadyAffected > 0) canvas.drawLine(companionList.towerList[it.itemLassoAlreadyAffectedTowerId].towerRange.x, companionList.towerList[it.itemLassoAlreadyAffectedTowerId].towerRange.y, it.circle!!.x, it.circle!!.y, paintLasso)
-                                        if (it.darkTalentLaserAlreadyAffected > 0) canvas.drawLine(companionList.towerList[it.darkTalentLaserTowerId].towerRange.x, companionList.towerList[it.darkTalentLaserTowerId].towerRange.y, it.circle!!.x, it.circle!!.y, paintLaser)
-
-                                        if (companionList.dmgDisplayList.isNotEmpty()) {
-                                            //  coroutineScope {
-                                            //      launch {
-                                            companionList.writeLockDisplay.lock()
-                                            try {
-                                                var dmgDisplayListIterator =
-                                                    companionList.dmgDisplayList.listIterator()
-                                                while (dmgDisplayListIterator.hasNext()) {
-                                                    var display = dmgDisplayListIterator.next()
-
-                                                    //        for (display in dmgDisplayList) {
-                                                    //            Log.d("thread", Thread.currentThread().name)
-                                                    if (display.indexx == it) {
-                                                        display.dmgCount++
-                                                        if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
-                                                        else display.dmgCountPosition -= 2
-                                                        if (it.circleYMovement == "yminus" || it.circleYMovement == "yplus") canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x + display.dmgCountPosition)), (it.circle!!.y - (it.circle!!.r / 2) + display.positionY), display.paint)
-                                                        else canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x - (it.circle!!.r / 2)) + display.positionX), (it.circle!!.y - display.dmgCountPosition), display.paint)
-                                                        if (display.dmgCount > 25) {
-                                                            //   display.burnDmgDelete = fireDmgDisplay.indexOf(display)
-                                                            display.displayDmgDelete = true
-                                                        }
-                                                    }
-                                                }
-                                            } finally {
-                                                companionList.writeLockDisplay.unlock()
-                                            }
-                                        }
-                                    }
-                                    }
-                                } finally {
-                                    companionList.writeLockEnemy.unlock()
-                                }
-                            }
-
-                        // dmg display
-                companionList.writeLockDisplay.lock()
-                        try {
-                            if (companionList.dmgDisplayList.isNotEmpty()) {
-                                var dmgDisplayListIterator = companionList.dmgDisplayList.listIterator()
+                        if (companionList.dmgDisplayList.isNotEmpty()) {
+                            companionList.writeLockDisplay.lock()
+                            try {
+                                var dmgDisplayListIterator =
+                                    companionList.dmgDisplayList.listIterator()
                                 while (dmgDisplayListIterator.hasNext()) {
                                     var display = dmgDisplayListIterator.next()
-                                    if (display.displayDmgDelete) dmgDisplayListIterator.remove()
+
+                                    //        for (display in dmgDisplayList) {
+                                    //            Log.d("thread", Thread.currentThread().name)
+                                    if (display.indexx == it) {
+                                        display.dmgCount++
+                                        if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
+                                        else display.dmgCountPosition -= 2
+                                        if (it.circleYMovement == "yminus" || it.circleYMovement == "yplus") canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x + display.dmgCountPosition)), (it.circle!!.y - (it.circle!!.r / 2) + display.positionY), display.paint)
+                                        else canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x - (it.circle!!.r / 2)) + display.positionX), (it.circle!!.y - display.dmgCountPosition), display.paint)
+                                        if (display.dmgCount > 25) {
+                                            //   display.burnDmgDelete = fireDmgDisplay.indexOf(display)
+                                            display.displayDmgDelete = true
+                                        }
+                                    }
                                 }
+                            } finally {
+                                companionList.writeLockDisplay.unlock()
                             }
-                        } finally {
-                            companionList.writeLockDisplay.unlock()
                         }
+                }
+            } finally {
+                companionList.writeLockEnemy.unlock()
+            }
+        }
 
-        companionList.writeLockDisplayDrop.lock()
-        try {
-            var dmgDisplayListIterator = companionList.dmgDisplayDropList.listIterator()
-            while (dmgDisplayListIterator.hasNext()) {
-                var display = dmgDisplayListIterator.next()
+        if (companionList.dmgDisplayDropList.isNotEmpty()) {
+            companionList.writeLockDisplayDrop.lock()
+            try {
+                var dmgDisplayListIterator = companionList.dmgDisplayDropList.listIterator()
+                while (dmgDisplayListIterator.hasNext()) {
+                    var display = dmgDisplayListIterator.next()
 
-                //        for (display in dmgDisplayList) {
-                //            Log.d("thread", Thread.currentThread().name)
+                    //        for (display in dmgDisplayList) {
+                    //            Log.d("thread", Thread.currentThread().name)
                     display.dmgCount++
                     if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
                     else display.dmgCountPosition -= 2
-                var icon = if(display.icon == "gold") goldDrop else if (display.icon == "ip") ipDrop else upDrop
-                var rectPlace = Rect((display.indexx - 25), (display.indexy - 75 - display.dmgCountPosition), (display.indexx + 25), (display.indexy - 25 - display.dmgCountPosition))
-                    canvas.drawBitmap(icon!!, null, rectPlace, null)
+                    icon =
+                        if (display.icon == "gold") goldDrop else if (display.icon == "ip") ipDrop else upDrop
+                    var rect =
+                        Rect((display.indexx - 25), (display.indexy - 75 - display.dmgCountPosition), (display.indexx + 25), (display.indexy - 25 - display.dmgCountPosition))
+                    canvas.drawBitmap(icon!!, null, rect, null)
                     if (display.dmgCount > 25) {
                         //   display.burnDmgDelete = fireDmgDisplay.indexOf(display)
                         display.displayDmgDelete = true
                     }
                 }
-
-            if (companionList.dmgDisplayDropList.isNotEmpty()) {
-                var dmgDisplayListIteratorZ = companionList.dmgDisplayDropList.listIterator()
-                while (dmgDisplayListIteratorZ.hasNext()) {
-                    var displayZ = dmgDisplayListIteratorZ.next()
-                    if (displayZ.displayDmgDelete) dmgDisplayListIteratorZ.remove()
-                }
+            } finally {
+                companionList.writeLockDisplayDrop.unlock()
             }
-        } finally {
-            companionList.writeLockDisplayDrop.unlock()
         }
 
 
@@ -817,35 +794,25 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                             companionList.writeLockShot.lock()
                             companionList.writeLockEnemy.lock()
                             try {
-                                var shootListIteratorZ = companionList.shootList.listIterator()
-                                while (shootListIteratorZ.hasNext()) {
-                                    var itZ = shootListIteratorZ.next()
-                                    if (itZ.broken == 1) {
-                                        shootListIteratorZ.remove()
-                                    }
-                                }
                                 if (companionList.shootList.size > 0) {
                                 var shootListIterator = companionList.shootList.listIterator()
                                 while (shootListIterator.hasNext()) {
                                     var it = shootListIterator.next()
-                                    if (companionList.refresh) {
-                                        it.update()
-                                    }
                                     if (it.sniper) {
                                         if (!crossTowerBullet(it)) {
                                             canvas.save()
                                             canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                            var baseShootBullet =
+                                            var rect =
                                                 Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                            canvas.drawBitmap(shootBulletPic!!, null, baseShootBullet, null)
+                                            canvas.drawBitmap(shootBulletPic!!, null, rect, null)
                                             canvas.restore()
                                         }
                                     } else if (it.chainLightning) {
                                         canvas.save()
                                         canvas.rotate(getAngleBullet(it) - 75, it.bullet.x, it.bullet.y)
-                                        var baseShootChain =
+                                        var rect =
                                             Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
-                                        canvas.drawBitmap(shootChainLightningPic!!, null, baseShootChain, null)
+                                        canvas.drawBitmap(shootChainLightningPic!!, null, rect, null)
                                         canvas.restore()
                                     } else if (companionList.towerList[it.towerId].towerPrimaryElement == "moon") {
                                         if (!crossTowerBullet(it)) {
@@ -854,9 +821,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                                 0f
                                             canvas.save()
                                             canvas.rotate(companionList.rotateShotBounce, it.bullet.x, it.bullet.y)
-                                            var baseShootBounce =
+                                            var rect =
                                                 Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                            canvas.drawBitmap(shootBouncePic!!, null, baseShootBounce, null)
+                                            canvas.drawBitmap(shootBouncePic!!, null, rect, null)
                                             canvas.restore()
                                         }
                                     } else if (it.multiShotBullet && companionList.towerList[it.towerId].towerPrimaryElement == "wind") {
@@ -865,43 +832,43 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                             0f
                                         canvas.save()
                                         canvas.rotate(companionList.rotateShotMulti, it.bullet.x, it.bullet.y)
-                                        var baseShootMulti =
+                                        var rect =
                                             Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
-                                        if (companionList.day) canvas.drawBitmap(shootMultiPicDay!!, null, baseShootMulti, null)
-                                        else canvas.drawBitmap(shootMultiPic!!, null, baseShootMulti, null)
+                                        if (companionList.day) canvas.drawBitmap(shootMultiPicDay!!, null, rect, null)
+                                        else canvas.drawBitmap(shootMultiPic!!, null, rect, null)
                                         canvas.restore()
                                     } else if (companionList.towerList[it.towerId].towerPrimaryElement == "earth") {
                                         if (!crossTowerBullet(it)) {
                                             canvas.save()
                                             canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                            var baseShootSplash =
+                                            var rect =
                                                 Rect((it.bullet.x - (it.bullet.r * 8)).toInt(), (it.bullet.y - (it.bullet.r * 8)).toInt(), (it.bullet.x + (it.bullet.r * 8)).toInt(), (it.bullet.y + (it.bullet.r * 8)).toInt())
-                                            canvas.drawBitmap(shootSplashPic!!, null, baseShootSplash, null)
+                                            canvas.drawBitmap(shootSplashPic!!, null, rect, null)
                                             canvas.restore()
                                         }
                                     } else if (companionList.towerList[it.towerId].towerPrimaryElement == "butterfly") {
                                         if (!crossTowerBullet(it)) {
                                             canvas.save()
                                             canvas.rotate(getAngleBullet(it) - 90, it.bullet.x, it.bullet.y)
-                                            var baseShootButterfly =
+                                            var rect =
                                                 Rect((it.bullet.x - (it.bullet.r * 7)).toInt(), (it.bullet.y - (it.bullet.r * 7)).toInt(), (it.bullet.x + (it.bullet.r * 7)).toInt(), (it.bullet.y + (it.bullet.r * 7)).toInt())
-                                            it.butterflyPicCounter++
+                                            it.butterflyPicCounter ++
                                             if (it.butterflyPicCounter > 2) {
                                                 it.butterflyPicCounter = 0
-                                                it.butterflyNextPic++
+                                                it.butterflyNextPic ++
                                                 if (it.butterflyNextPic >= 4) it.butterflyNextPic =
                                                     0
                                             }
-                                            canvas.drawBitmap(shootButterflyArray!![it.butterflyNextPic], null, baseShootButterfly, null)
+                                            canvas.drawBitmap(shootButterflyArray!![it.butterflyNextPic], null, rect, null)
                                             canvas.restore()
                                         }
                                     } else {
                                         if (!crossTowerBullet(it)) {
                                             canvas.save()
                                             canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                            var baseShootBullet =
+                                            var rect =
                                                 Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                            canvas.drawBitmap(shootBulletPic!!, null, baseShootBullet, null)
+                                            canvas.drawBitmap(shootBulletPic!!, null, rect, null)
                                             canvas.restore()
                                         }
                                     }
@@ -928,7 +895,6 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                         var shootListIceIterator = it.shootListIce.listIterator()
                                         while (shootListIceIterator.hasNext()) {
                                             var shard = shootListIceIterator.next()
-                                            if (companionList.refresh) shard.update()
                                             shard.draw(canvas)
                                         }
                                     }
@@ -994,948 +960,6 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
             return angle
     }
 
-
-    private fun level() {
-
-        // Normal orange:  #f39c12
-        // Armor grey:  #566573
-        // Magic Armor purple:  #af7ac5
-        // Immune dark green: #117a65
-        // Speed blue:  #284ae2
-        // Evade light grey:  #d5dbdb
-        // Mass red: #f64545
-        // Hp-reg yellow:  #fff116
-        // Boss white: #ffffff
-        // Shortcut brown: #4C4137
-        // ManaShield blue:
-        // Shield brown:
-
-        if (Utils.divisible(companionList.level, 50)) challenge(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-        else if (Utils.divisible(companionList.level, 10)) boss(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-        else {
-            when (companionList.levelStatus) {
-                "undef" ->
-                    if (companionList.levelList.contains("tank") && companionList.tankBool) {
-                        tank(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                        companionList.tankBool = false
-                    } else {
-                        when (companionList.levelList.random()) {
-                            // 0 -> base (hp, armor, magicArmor, evade, hpReg, xp, speed)
-                            "armor" -> armor(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "normal" -> normal(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "speed" -> speed(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "mass" -> mass(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "regeneration" -> reg(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "evade" -> evade(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "magic armor" -> magicArmor(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "immune" -> immune(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "shortcut" -> shortcut(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "split" -> split(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "shield" -> shield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "manaShield" -> manaShield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                            "invu" -> invu(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                        }
-                    }
-                "armor", "normal", "speed", "mass", "regeneration", "evade", "magic armor", "immune", "shortcut", "split", "shield", "manaShield", "invu" ->
-                    if (companionList.levelStatus != "boss" && companionList.levelStatus != "mass" && companionList.levelStatus != "challenge") {
-                        when ((0..5).random()) {
-                            0 -> {
-                                if (companionList.levelList.contains("healer") && companionList.levelList.contains("disruptor")) {
-                                        when ((0..1).random()) {
-                                            0 -> healer(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                            1 -> disruptor(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                        }
-                                } else if (companionList.levelList.contains("healer")){
-                                    healer(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                } else if (companionList.levelList.contains("disruptor")){
-                                    disruptor(companionList.lvlHp, companionList.lvlArmor, companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-                                } else levelStatus()
-                                }
-                            in 1..5 -> {
-                                levelStatus()
-                            }
-                        }
-                    } else {
-                        levelStatus()
-                    }
-            }
-        }
-    }
-
-    fun levelStatus (){
-        when (companionList.levelStatus) {
-            "armor" -> armor(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "normal" -> normal(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "speed" -> speed(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "mass" -> mass(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "regeneration" -> reg(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "evade" -> evade(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "magic armor" -> magicArmor(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "immune" -> immune(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "shortcut" -> shortcut(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "split" -> split(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "shield" -> shield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "manaShield" -> manaShield(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-            "invu" -> invu(companionList.lvlHp, companionList.lvlArmor,companionList.lvlMagicArmor, companionList.lvlEvade, companionList.lvlHpReg, companionList.lvlXp, companionList.lvlSpd)
-        }
-    }
-
-    private fun armor(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-            if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-                var eliteMob = 1
-                if (companionList.timerEliteMob == 0) {
-                    eliteMob = 1
-                } else {
-                    when((0..1).random()){
-                        0 -> eliteMob = 2
-                        1 -> eliteMob = 3
-                    }
-                }
-                val enemyListIterator = companionList.enemyList.listIterator()
-                var manaShield = 0f
-                var shield = 0f
-                if (!companionList.allShieldsBool) {
-                    companionList.allShieldsBool = true
-                    if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
-                        when ((0..2).random()) {
-                            0 -> companionList.manaShieldBool = true
-                            1 -> companionList.shieldBool = true
-                        }
-                    } else if (companionList.levelList.contains("manaShield")) {
-                        when ((0..2).random()) {
-                            0 -> companionList.manaShieldBool = true
-                        }
-                    } else if (companionList.levelList.contains("shield")) {
-                        when ((0..2).random()) {
-                            0 -> companionList.shieldBool = true
-                        }
-                    }
-                }
-                if (companionList.manaShieldBool) manaShield = (hp * 0.2f) * companionList.shieldBrakerItem
-                if (companionList.shieldBool) shield = (hp * 0.2f) * companionList.shieldBrakerItem
-
-                var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-                var x: Enemy =
-                    Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, (armor * 10f), magicArmor * 0.5f,
-                        evade * 0.5f, hpReg * 0, xpMob, speed, Color.parseColor("#566573"))
-                if (companionList.level > 50) x =
-                    Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, (armor * 15f), magicArmor * 0.5f,
-                        evade * 0.5f, hpReg * 0, xpMob, speed, Color.parseColor("#566573"))
-                if (eliteMob == 2) x.eliteMob = true
-                if (eliteMob == 3) x.elementalMob = true
-                if (eliteMob == 3) eliteMob = 2
-                x.name = "armor"
-                x.baseSpeed = x.speed
-                x.invuTime = 120
-                enemyListIterator.add(x)
-                companionList.enemySpawned += 1 * eliteMob
-                when ((0..5).random()) {
-                    0 -> companionList.timerEliteMob = 1
-                    in 1..5 -> companionList.timerEliteMob = 0
-                }
-                companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-                else 25
-                companionList.levelStatus = "armor"
-                companionList.levelCountSecondBool = true
-
-            }
-        } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun magicArmor(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-            var eliteMob = 1
-            if (companionList.timerEliteMob == 0) {
-                eliteMob = 1
-            } else {
-                when((0..3).random()){
-                    0,1,2 -> eliteMob = 2
-                    3 -> eliteMob = 3
-                }
-            }
-            val enemyListIterator = companionList.enemyList.listIterator()
-            var manaShield = 0f
-            var shield = 0f
-            if (!companionList.allShieldsBool) {
-                companionList.allShieldsBool = true
-                if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                        1 -> companionList.shieldBool = true
-                    }
-                } else if (companionList.levelList.contains("manaShield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                    }
-                } else if (companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.shieldBool = true
-                    }
-                }
-            }
-            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
-            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-            var x: Enemy =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor * 0.5f, (magicArmor * 10f) * companionList.wizardMagicArmorSmasher, evade * 0.5f, hpReg * 0, xpMob, speed, Color.parseColor("#af7ac5"))
-            if (companionList.level > 50) x =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor * 0.5f, (magicArmor * 15f) * companionList.wizardMagicArmorSmasher, evade * 0.5f, hpReg * 0, xpMob, speed, Color.parseColor("#af7ac5"))
-            if (eliteMob == 2) x.eliteMob = true
-            if (eliteMob == 3) x.elementalMob = true
-            if (eliteMob == 3) eliteMob = 2
-            x.name = "magicArmor"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1 * eliteMob
-            when ((0..5).random()) {
-                0 -> companionList.timerEliteMob = 1
-                in 1..5 -> companionList.timerEliteMob = 0
-            }
-            companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-            else 25
-            companionList.levelStatus = "magic armor"
-            companionList.levelCountSecondBool = true
-
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun normal(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-            var eliteMob = 1
-            if (companionList.timerEliteMob == 0) {
-                eliteMob = 1
-            } else {
-                when((0..3).random()){
-                    0,1,2 -> eliteMob = 2
-                    3 -> eliteMob = 3
-                }
-            }
-            val enemyListIterator = companionList.enemyList.listIterator()
-            var manaShield = 0f
-            var shield = 0f
-            if (!companionList.allShieldsBool) {
-                companionList.allShieldsBool = true
-                if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                        1 -> companionList.shieldBool = true
-                    }
-                } else if (companionList.levelList.contains("manaShield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                    }
-                } else if (companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.shieldBool = true
-                    }
-                }
-            }
-            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
-            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-            val x: Enemy =
-                Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, Color.parseColor("#6FBCAF"))
-            if (eliteMob == 2) x.eliteMob = true
-            if (eliteMob == 3) x.elementalMob = true
-            if (eliteMob == 3) eliteMob = 2
-            x.name = "normal"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1 * eliteMob
-            when ((0..5).random()) {
-                0 -> companionList.timerEliteMob = 1
-                in 1..5 -> companionList.timerEliteMob = 0
-            }
-            companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-            else 25
-            companionList.levelStatus = "normal"
-            companionList.levelCountSecondBool = true
-
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun invu(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-            if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-                var eliteMob = 1
-                if (companionList.timerEliteMob == 0) {
-                    eliteMob = 1
-                } else {
-                    when((0..3).random()){
-                        0,1,2 -> eliteMob = 2
-                        3 -> eliteMob = 3
-                    }
-                }
-                val enemyListIterator = companionList.enemyList.listIterator()
-                var manaShield = 0f
-                var shield = 0f
-                if (!companionList.allShieldsBool) {
-                    companionList.allShieldsBool = true
-                    if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
-                        when ((0..2).random()) {
-                            0 -> companionList.manaShieldBool = true
-                            1 -> companionList.shieldBool = true
-                        }
-                    } else if (companionList.levelList.contains("manaShield")) {
-                        when ((0..2).random()) {
-                            0 -> companionList.manaShieldBool = true
-                        }
-                    } else if (companionList.levelList.contains("shield")) {
-                        when ((0..2).random()) {
-                            0 -> companionList.shieldBool = true
-                        }
-                    }
-                }
-                if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
-                if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
-                var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-                val x: Enemy =
-                    Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, Color.parseColor("#6FBCAF"))
-                if (eliteMob == 2) x.eliteMob = true
-                if (eliteMob == 3) x.elementalMob = true
-                if (eliteMob == 3) eliteMob = 2
-                x.name = "invu"
-                x.baseSpeed = x.speed
-                x.invuTime = 120
-                enemyListIterator.add(x)
-                companionList.enemySpawned += 1 * eliteMob
-                when ((0..5).random()) {
-                    0 -> companionList.timerEliteMob = 1
-                    in 1..5 -> companionList.timerEliteMob = 0
-                }
-                companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-                else 25
-                companionList.levelStatus = "invu"
-                companionList.levelCountSecondBool = true
-
-            }
-        } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun shortcut(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-            var eliteMob = 1
-            if (companionList.timerEliteMob == 0) {
-                eliteMob = 1
-            } else {
-                when((0..3).random()){
-                    0,1,2 -> eliteMob = 2
-                    3 -> eliteMob = 3
-                }
-            }
-            val enemyListIterator = companionList.enemyList.listIterator()
-            var manaShield = 0f
-            var shield = 0f
-            if (!companionList.allShieldsBool) {
-                companionList.allShieldsBool = true
-                if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                        1 -> companionList.shieldBool = true
-                    }
-                } else if (companionList.levelList.contains("manaShield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                    }
-                } else if (companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.shieldBool = true
-                    }
-                }
-            }
-            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
-            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-            val x: Enemy =
-                Enemy(hp * eliteMob, hp * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed * 1.2f, resources.getColor(R.color.shortcut))
-            if (eliteMob == 2) x.eliteMob = true
-            if (eliteMob == 3) x.elementalMob = true
-            if (eliteMob == 3) eliteMob = 2
-            x.name = "shortcut"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1 * eliteMob
-            when ((0..5).random()) {
-                0 -> companionList.timerEliteMob = 1
-                in 1..5 -> companionList.timerEliteMob = 0
-            }
-            companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-            else 25
-            companionList.levelStatus = "shortcut"
-            companionList.levelCountSecondBool = true
-
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun speed(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-            var eliteMob = 1
-            if (companionList.timerEliteMob == 0) {
-                eliteMob = 1
-            } else {
-                when((0..3).random()){
-                    0,1,2 -> eliteMob = 2
-                    3 -> eliteMob = 3
-                }
-            }
-            val enemyListIterator = companionList.enemyList.listIterator()
-            var manaShield = 0f
-            var shield = 0f
-            if (!companionList.allShieldsBool) {
-                companionList.allShieldsBool = true
-                if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                        1 -> companionList.shieldBool = true
-                    }
-                } else if (companionList.levelList.contains("manaShield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                    }
-                } else if (companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.shieldBool = true
-                    }
-                }
-            }
-            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
-            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-            val x: Enemy =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, resources.getColor(R.color.fast))
-            if (eliteMob == 2) x.eliteMob = true
-            if (eliteMob == 3) x.elementalMob = true
-            if (eliteMob == 3) eliteMob = 2
-            x.name = "speed"
-            x.baseSpeed = x.speed
-            x.extraSpeed = 3.0f
-            x.invuTime = 90
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1 * eliteMob
-            when ((0..5).random()) {
-                0 -> companionList.timerEliteMob = 1
-                in 1..5 -> companionList.timerEliteMob = 0
-            }
-            companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-            else 25
-            companionList.levelStatus = "speed"
-            companionList.levelCountSecondBool = true
-
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun mass(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 20 && companionList.enemySpawned < (companionList.enemySpawnedCount * 2) + (companionList.midnightMadnessExtraSpawn *2) ) {
-            val enemyListIterator = companionList.enemyList.listIterator()
-            var manaShield = 0f
-            var shield = 0f
-            if (!companionList.allShieldsBool) {
-                companionList.allShieldsBool = true
-                if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                        1 -> companionList.shieldBool = true
-                    }
-                } else if (companionList.levelList.contains("manaShield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                    }
-                } else if (companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.shieldBool = true
-                    }
-                }
-            }
-            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
-            val x: Enemy =
-                Enemy(hp * 0.7f, hp * 0.7f, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xp, speed, Color.parseColor("#f64545"))
-            x.name = "mass"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1
-            companionList.timer = 0
-            companionList.levelStatus = "mass"
-            companionList.levelCountSecondBool = true
-
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun reg(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-            var eliteMob = 1
-            if (companionList.timerEliteMob == 0) {
-                eliteMob = 1
-            } else {
-                when((0..3).random()){
-                    0,1,2 -> eliteMob = 2
-                    3 -> eliteMob = 3
-                }
-            }
-            val enemyListIterator = companionList.enemyList.listIterator()
-            var manaShield = 0f
-            var shield = 0f
-            if (!companionList.allShieldsBool) {
-                companionList.allShieldsBool = true
-                if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                        1 -> companionList.shieldBool = true
-                    }
-                } else if (companionList.levelList.contains("manaShield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                    }
-                } else if (companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.shieldBool = true
-                    }
-                }
-            }
-            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
-            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-            val x: Enemy =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * (hp / 500), xpMob, speed, Color.parseColor("#fff116"))
-            if (eliteMob == 2) x.eliteMob = true
-            if (eliteMob == 3) x.elementalMob = true
-            if (eliteMob == 3) eliteMob = 2
-            x.name = "regeneration"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1 * eliteMob
-            when ((0..5).random()) {
-                0 -> companionList.timerEliteMob = 1
-                in 1..5 -> companionList.timerEliteMob = 0
-            }
-            companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-            else 25
-            companionList.levelStatus = "regeneration"
-            companionList.levelCountSecondBool = true
-
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun evade(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-            var eliteMob = 1
-            if (companionList.timerEliteMob == 0) {
-                eliteMob = 1
-            } else {
-                when((0..3).random()){
-                    0,1,2 -> eliteMob = 2
-                    3 -> eliteMob = 3
-                }
-            }
-            val enemyListIterator = companionList.enemyList.listIterator()
-            var manaShield = 0f
-            var shield = 0f
-            if (!companionList.allShieldsBool) {
-                companionList.allShieldsBool = true
-                if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                        1 -> companionList.shieldBool = true
-                    }
-                } else if (companionList.levelList.contains("manaShield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                    }
-                } else if (companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.shieldBool = true
-                    }
-                }
-            }
-            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
-            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-            var x: Enemy =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade * 5f, hpReg * 0, xpMob, speed, Color.parseColor("#d5dbdb"))
-            if (companionList.level > 50) x =
-                Enemy(hp * 0.7f * eliteMob, hp * 0.7f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade * 7.5f, hpReg * 0, xpMob, speed, Color.parseColor("#d5dbdb"))
-            if (eliteMob == 2) x.eliteMob = true
-            if (eliteMob == 3) x.elementalMob = true
-            if (eliteMob == 3) eliteMob = 2
-            x.name = "evade"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1 * eliteMob
-            when ((0..5).random()) {
-                0 -> companionList.timerEliteMob = 1
-                in 1..5 -> companionList.timerEliteMob = 0
-            }
-            companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-            else 25
-            companionList.levelStatus = "evade"
-            companionList.levelCountSecondBool = true
-
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun boss(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 20 && companionList.enemySpawned < 1) {
-            val enemyListIterator = companionList.enemyList.listIterator()
-            val x: Enemy =
-                Enemy(hp * 6.0f, hp * 6.0f, 0f, 0f, 0f, 0f, armor, magicArmor, evade, hpReg * (hp / 1000), xp * 6f, speed, resources.getColor(R.color.boss))
-            x.name = "boss"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1
-            companionList.timer = 0
-            companionList.levelStatus = "boss"
-            companionList.levelCountSecondBool = true
-
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun challenge(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 20 && companionList.enemySpawned < 1) {
-            val enemyListIterator = companionList.enemyList.listIterator()
-            val x: Enemy =
-                Enemy(hp * 15.0f, hp * 15.0f, 0f, 0f, 0f, 0f, armor * 4, magicArmor * 4, evade * 0, hpReg * 0, xp * 0, speed, resources.getColor(R.color.challenge))
-            x.name = "challenge"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1
-            companionList.timer = 0
-            companionList.levelStatus = "challenge"
-            companionList.levelCountSecondBool = true
-
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun immune(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-
-        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-            var eliteMob = 1
-            if (companionList.timerEliteMob == 0) {
-                eliteMob = 1
-            } else {
-                when((0..3).random()){
-                    0,1,2 -> eliteMob = 2
-                    3 -> eliteMob = 3
-                }
-            }
-            val enemyListIterator = companionList.enemyList.listIterator()
-            var manaShield = 0f
-            var shield = 0f
-            if (!companionList.allShieldsBool) {
-                companionList.allShieldsBool = true
-                if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                        1 -> companionList.shieldBool = true
-                    }
-                } else if (companionList.levelList.contains("manaShield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                    }
-                } else if (companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.shieldBool = true
-                    }
-                }
-            }
-            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
-            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-            val x: Enemy =
-                Enemy((hp * 0.7f * eliteMob), (hp * 0.7f * eliteMob), manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, resources.getColor(R.color.immune))
-            if (eliteMob == 2) x.eliteMob = true
-            if (eliteMob == 3) x.elementalMob = true
-            if (eliteMob == 3) eliteMob = 2
-            x.name = "immune"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1 * eliteMob
-            when ((0..5).random()) {
-                0 -> companionList.timerEliteMob = 1
-                in 1..5 -> companionList.timerEliteMob = 0
-            }
-            companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-            else 25
-            companionList.levelStatus = "immune"
-            companionList.levelCountSecondBool = true
-
-        }
-        } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun split(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-            var eliteMob = 1
-            if (companionList.timerEliteMob == 0) {
-                eliteMob = 1
-            } else {
-                when((0..3).random()){
-                    0,1,2 -> eliteMob = 2
-                    3 -> eliteMob = 3
-                }
-            }
-            val enemyListIterator = companionList.enemyList.listIterator()
-            var manaShield = 0f
-            var shield = 0f
-            if (!companionList.allShieldsBool) {
-                companionList.allShieldsBool = true
-                if (companionList.levelList.contains("manaShield") && companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                        1 -> companionList.shieldBool = true
-                    }
-                } else if (companionList.levelList.contains("manaShield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.manaShieldBool = true
-                    }
-                } else if (companionList.levelList.contains("shield")) {
-                    when ((0..2).random()) {
-                        0 -> companionList.shieldBool = true
-                    }
-                }
-            }
-            if (companionList.manaShieldBool) manaShield = (hp * 0.2f)* companionList.shieldBrakerItem
-            if (companionList.shieldBool) shield = (hp * 0.2f)* companionList.shieldBrakerItem
-            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-            val x: Enemy =
-                Enemy(hp * 0.5f * eliteMob, hp * 0.5f * eliteMob, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, resources.getColor(R.color.split))
-            if (eliteMob == 2) x.eliteMob = true
-            if (eliteMob == 3) x.elementalMob = true
-            if (eliteMob == 3) eliteMob = 2
-            x.name = "split"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1 * eliteMob
-            when ((0..5).random()) {
-                0 -> companionList.timerEliteMob = 1
-                in 1..5 -> companionList.timerEliteMob = 0
-            }
-            companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-            else 25
-            companionList.levelStatus = "split"
-            companionList.levelCountSecondBool = true
-
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun shield(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-            var eliteMob = 1
-            if (companionList.timerEliteMob == 0) {
-                eliteMob = 1
-            } else {
-                when((0..3).random()){
-                    0,1,2 -> eliteMob = 2
-                    3 -> eliteMob = 3
-                }
-            }
-            val enemyListIterator = companionList.enemyList.listIterator()
-            var manaShield = 0f
-            var shield = 0f
-            if (!companionList.allShieldsBool) {
-                companionList.allShieldsBool = true
-                companionList.shieldBool = true
-            }
-            if (companionList.shieldBool) shield = (hp * 0.4f * eliteMob)* companionList.shieldBrakerItem
-            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-            val x: Enemy =
-                Enemy(hp * 0.1f, hp * 0.1f, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, resources.getColor(R.color.Shield))
-            if (eliteMob == 2) x.eliteMob = true
-            if (eliteMob == 3) x.elementalMob = true
-            if (eliteMob == 3) eliteMob = 2
-            x.name = "shield"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1 * eliteMob
-            when ((0..5).random()) {
-                0 -> companionList.timerEliteMob = 1
-                in 1..5 -> companionList.timerEliteMob = 0
-            }
-            companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-            else 25
-            companionList.levelStatus = "shield"
-            companionList.levelCountSecondBool = true
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun manaShield(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount + companionList.midnightMadnessExtraSpawn) {
-            var eliteMob = 1
-            if (companionList.timerEliteMob == 0) {
-                eliteMob = 1
-            } else {
-                when((0..3).random()){
-                    0,1,2 -> eliteMob = 2
-                    3 -> eliteMob = 3
-                }
-            }
-            val enemyListIterator = companionList.enemyList.listIterator()
-            var manaShield = 0f
-            var shield = 0f
-            if (!companionList.allShieldsBool) {
-                companionList.allShieldsBool = true
-                companionList.manaShieldBool = true
-            }
-            if (companionList.manaShieldBool) manaShield = (hp * 0.4f * eliteMob)* companionList.shieldBrakerItem
-            var xpMob = if (eliteMob == 2 || eliteMob == 3) (eliteMob / 2).toFloat() else eliteMob.toFloat()
-            val x: Enemy =
-                Enemy(hp * 0.1f, hp * 0.1f, manaShield, manaShield, shield, shield, armor, magicArmor, evade, hpReg * 0, xpMob, speed, resources.getColor(R.color.ManaShield))
-            if (eliteMob == 2) x.eliteMob = true
-            if (eliteMob == 3) x.elementalMob = true
-            if (eliteMob == 3) eliteMob = 2
-            x.name = "manaShield"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1 * eliteMob
-            when ((0..5).random()) {
-                0 -> companionList.timerEliteMob = 1
-                in 1..5 -> companionList.timerEliteMob = 0
-            }
-            companionList.timer = if (eliteMob == 2 || companionList.timerEliteMob == 1) 0
-            else 25
-            companionList.levelStatus = "manaShield"
-            companionList.levelCountSecondBool = true
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun healer(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-        if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount) {
-            val enemyListIterator = companionList.enemyList.listIterator()
-            val x: Enemy =
-                Enemy(hp * 1.0f, hp * 1.0f, 0f, 0f, 0f, 0f, armor * 0, magicArmor * 0, evade, hpReg * 0, xp * 1.5f, speed, resources.getColor(R.color.healer))
-            x.name = "healer"
-            x.baseSpeed = x.speed
-            x.invuTime = 120
-            enemyListIterator.add(x)
-            companionList.enemySpawned += 1
-            companionList.timer = 25
-        }
-            } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun disruptor(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-            if (companionList.timer >= 50 && companionList.enemySpawned < companionList.enemySpawnedCount) {
-                val enemyListIterator = companionList.enemyList.listIterator()
-                val x: Enemy =
-                    Enemy(hp * 1.0f, hp * 1.0f, 0f, 0f, 0f, 0f, armor * 0, magicArmor * 0, evade, hpReg * 0, xp * 1.5f, speed, Color.parseColor("#F22B79"))
-                x.name = "disruptor"
-                x.baseSpeed = x.speed
-                x.invuTime = 120
-                enemyListIterator.add(x)
-                companionList.enemySpawned += 1
-                companionList.timer = 25
-            }
-        } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
-
-    private fun tank(hp: Float, armor: Float, magicArmor: Float, evade: Float, hpReg: Float, xp: Float, speed: Float) {
-        companionList.writeLockEnemy.lock()
-        try {
-            if (companionList.timer >= 50) {
-                val enemyListIterator = companionList.enemyList.listIterator()
-                val x: Enemy =
-                    Enemy(hp * 1.5f, hp * 1.5f, 0f, 0f, 0f, 0f, armor * 3, magicArmor * 3, evade * 0, hpReg * 0, xp * 1.5f, speed, resources.getColor(R.color.tank))
-                x.name = "tank"
-                x.baseSpeed = x.speed
-                x.invuTime = 120
-                enemyListIterator.add(x)
-                companionList.enemySpawned += 1
-                companionList.timer = 25
-            }
-        } finally {
-            companionList.writeLockEnemy.unlock()
-        }
-    }
 }
 
 

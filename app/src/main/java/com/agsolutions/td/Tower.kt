@@ -86,7 +86,7 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var disruptedCounter = 0
 
     // talent
-    var talentPoints = 1
+    var talentPoints = 60
     var xpTower = 0f
     var xpGoal1 = 0f
     var xpGoal2 = 1f
@@ -335,12 +335,12 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
 }
 
 
-class DmgDisplay (var indexx: Enemy, var dmgReceived: String, var dmgCount: Int, var dmgCountPosition: Int, var paint: Paint, var positionX: Int, var positionY: Int){
+class DmgDisplay (var indexx: Enemy, var dmgReceived: String, var dmgCount: Int, var dmgCountPosition: Int, var paint: Paint, var positionX: Int, var positionY: Int) : Serializable{
 
     var displayDmgDelete = false
 }
 
-class DropDisplay (var indexx: Int, var indexy: Int, var icon: String, var dmgCount: Int, var dmgCountPosition: Int){
+class DropDisplay (var indexx: Int, var indexy: Int, var icon: String, var dmgCount: Int, var dmgCountPosition: Int) : Serializable{
 
     var displayDmgDelete = false
 }

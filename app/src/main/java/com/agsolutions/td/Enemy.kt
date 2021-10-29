@@ -685,24 +685,24 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
                 circleXMovement = "xnull"
             }else if (circle!!.x.toInt() < path[point].first) {
                 circleXMovement = "xplus"
-                if (circle!!.x + (speed * companionList.gameSpeedAdjuster) > path[point].first) circle!!.x = path[point].first.toFloat()
-                else circle!!.x += (speed * companionList.gameSpeedAdjuster)
+                if (circle!!.x + (speed) > path[point].first) circle!!.x = path[point].first.toFloat()
+                else circle!!.x += (speed)
             } else {
                 circleXMovement = "xminus"
-                if (circle!!.x - (speed * companionList.gameSpeedAdjuster) < path[point].first) circle!!.x = path[point].first.toFloat()
-                else circle!!.x -= (speed * companionList.gameSpeedAdjuster)
+                if (circle!!.x - (speed) < path[point].first) circle!!.x = path[point].first.toFloat()
+                else circle!!.x -= (speed)
             }
 
             if (circle!!.y.toInt() == path[point].second) {
                 circleYMovement = "ynull"
             }else if (circle!!.y.toInt() < path[point].second) {
                 circleYMovement = "yplus"
-                if (circle!!.y + (speed * companionList.gameSpeedAdjuster) > path[point].second) circle!!.y = path[point].second.toFloat()
-                else circle!!.y += (speed * companionList.gameSpeedAdjuster)
+                if (circle!!.y + (speed) > path[point].second) circle!!.y = path[point].second.toFloat()
+                else circle!!.y += (speed)
             } else {
                 circleYMovement = "yminus"
-                if (circle!!.y - (speed * companionList.gameSpeedAdjuster) < path[point].second) circle!!.y = path[point].second.toFloat()
-                else circle!!.y -= (speed * companionList.gameSpeedAdjuster)
+                if (circle!!.y - (speed) < path[point].second) circle!!.y = path[point].second.toFloat()
+                else circle!!.y -= (speed)
             }
             if (circle!!.x.toInt() == path[point].first && circle!!.y.toInt() == path[point].second){
                 if (circle!!.x == 800f && circle!!.y == 1000f) point = 1

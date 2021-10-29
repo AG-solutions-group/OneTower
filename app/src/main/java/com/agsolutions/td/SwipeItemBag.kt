@@ -11,7 +11,7 @@ class SwipeItemBag (var adapter: ItemBagAdapter) : ItemTouchHelper.SimpleCallbac
         viewHolder: RecyclerView.ViewHolder
     ): Int {
         if (GameActivity.companionList.towerClick) {
-            var pos = viewHolder.bindingAdapterPosition
+            var pos = viewHolder.absoluteAdapterPosition
             if (pos < 0 || pos >= GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.size){
                 return 0
             } else {
@@ -35,7 +35,7 @@ class SwipeItemBag (var adapter: ItemBagAdapter) : ItemTouchHelper.SimpleCallbac
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         if (!GameActivity.companionList.build) {
-            var pos = viewHolder.bindingAdapterPosition
+            var pos = viewHolder.absoluteAdapterPosition
             adapter.deleteItemBag(pos)
         }
 

@@ -1,6 +1,7 @@
 package com.agsolutions.td
 
 import android.graphics.Canvas
+import android.util.Log
 import android.view.SurfaceHolder
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -9,18 +10,19 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
     companion object {
         var running: Boolean = false
         private var canvas: Canvas? = null
+        var targetTime = 0L
     }
     private val targetFPS =
-        60 * GameActivity.companionList.gameSpeedAdjuster // frames per second, the rate at which you would like to refresh the Canvas
+        60  // frames per second, the rate at which you would like to refresh the Canvas
+    val targetTimeMax = (1000 / targetFPS ).toLong()
 
     override fun run() {
         var startTime: Long
         var timeMillis: Long
         var waitTime: Long
-        var targetTime: Long
 
         while (running) {
-            targetTime = (1000 / (targetFPS * GameActivity.companionList.gameSpeedAdjuster)).toLong()
+            if (targetTime < targetTimeMax) targetTime = targetTimeMax
             startTime = System.nanoTime()
 
                 try {
@@ -30,14 +32,13 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
                         canvas = this.surfaceHolder.lockCanvas()
                         if (canvas != null) {
                             this.gameView.draw(canvas!!)
-                    //        this.gameView.update()
+
 
                             surfaceHolder.unlockCanvasAndPost(canvas)
                     //        activityThreadBool = false
                     //        gameThreadBool = true
 
                         }
-
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -46,6 +47,8 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
 
                 timeMillis = (System.nanoTime() - startTime) / 1000000
                 waitTime = targetTime - timeMillis
+
+                if (waitTime > 0) targetTime-- else targetTime++
 
                 try {
                     if (waitTime > 0) sleep(waitTime)

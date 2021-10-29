@@ -3,15 +3,16 @@ package com.agsolutions.td
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import com.agsolutions.td.GameView.Companion.paintPoisonUlti
+import java.io.Serializable
 
 
-class ShootPoisonTalent {
+class ShootPoisonTalent : Serializable {
     companion object {
         var bulletSpeed: Float = 12.0F
 
 
     }
-    var paint: Paint
     var poisonCloud = TowerRadius(600.0f, 750.0f, 50.0f)
     var poisonCloudPosition = 0
     var broken = 0
@@ -19,17 +20,12 @@ class ShootPoisonTalent {
     var poisonNextPic = 0
 
     init {
-        paint = Paint()
-        paint.isAntiAlias
-        paint.isFilterBitmap
-        paint.color = Color.GREEN
-
 
     }
 
     fun draw(canvas: Canvas) {
 
-        canvas.drawCircle(poisonCloud.x.toFloat(), poisonCloud.y.toFloat(), poisonCloud.r.toFloat(), paint)
+        canvas.drawCircle(poisonCloud.x.toFloat(), poisonCloud.y.toFloat(), poisonCloud.r.toFloat(), paintPoisonUlti)
 
     }
 
@@ -62,15 +58,15 @@ class ShootPoisonTalent {
                         }
 
                         var nx =
-                            if (poisonCloud.x > (enemy.circle!!.x + xSpeed())) ((poisonCloud.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-                            else (((enemy.circle!!.x + xSpeed().toFloat()) - poisonCloud.x) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                            if (poisonCloud.x > (enemy.circle!!.x + xSpeed())) ((poisonCloud.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed ))
+                            else (((enemy.circle!!.x + xSpeed().toFloat()) - poisonCloud.x) / (bulletSpeed ))
                         var ny =
-                            if (poisonCloud.y > (enemy.circle!!.y + xSpeed())) ((poisonCloud.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-                            else (((enemy.circle!!.y + ySpeed().toFloat()) - poisonCloud.y) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                            if (poisonCloud.y > (enemy.circle!!.y + xSpeed())) ((poisonCloud.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed ))
+                            else (((enemy.circle!!.y + ySpeed().toFloat()) - poisonCloud.y) / (bulletSpeed ))
 
                         var n =
-                            if (nx > ny) (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / nx
-                            else (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / ny
+                            if (nx > ny) (bulletSpeed ) / nx
+                            else (bulletSpeed ) / ny
 
                         if (cross(enemy)) {
                             poisonCloudPosition = 2

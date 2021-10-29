@@ -1,7 +1,9 @@
 package com.agsolutions.td
 
+import java.io.Serializable
 
-class ShootTornadoTalent {
+
+class ShootTornadoTalent : Serializable {
     companion object {
         var bulletSpeed: Float = 12.0F
 
@@ -48,15 +50,15 @@ class ShootTornadoTalent {
         }
 
                 var nx =
-                    if (tornadoRadius.x > (enemy.circle!!.x + xSpeed())) ((tornadoRadius.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-                    else (((enemy.circle!!.x + xSpeed().toFloat()) - tornadoRadius.x) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                    if (tornadoRadius.x > (enemy.circle!!.x + xSpeed())) ((tornadoRadius.x - (enemy.circle!!.x + xSpeed().toFloat())) / (bulletSpeed))
+                    else (((enemy.circle!!.x + xSpeed().toFloat()) - tornadoRadius.x) / (bulletSpeed ))
                 var ny =
-                    if (tornadoRadius.y > (enemy.circle!!.y + xSpeed())) ((tornadoRadius.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
-                    else (((enemy.circle!!.y + ySpeed().toFloat()) - tornadoRadius.y) / (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster))
+                    if (tornadoRadius.y > (enemy.circle!!.y + xSpeed())) ((tornadoRadius.y - (enemy.circle!!.y + ySpeed().toFloat())) / (bulletSpeed))
+                    else (((enemy.circle!!.y + ySpeed().toFloat()) - tornadoRadius.y) / (bulletSpeed ))
 
                 var n =
-                    if (nx > ny) (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / nx
-                    else (bulletSpeed * GameActivity.companionList.gameSpeedAdjuster) / ny
+                    if (nx > ny) (bulletSpeed ) / nx
+                    else (bulletSpeed ) / ny
 
 
 

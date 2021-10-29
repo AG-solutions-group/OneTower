@@ -1,6 +1,8 @@
 package com.agsolutions.td
 
+import android.util.Log
 import com.agsolutions.td.Fragments.EarthTalentFragment
+import com.agsolutions.td.GameActivity.Companion.companionList
 
 
 class ActivityThread(private val gameActivity: GameActivity) : Thread() {
@@ -8,19 +10,13 @@ class ActivityThread(private val gameActivity: GameActivity) : Thread() {
         var runningActivity: Boolean = false
     }
     var talents = Talents ()
-    var talentsEarth = EarthTalentFragment()
-
-    private val targetFPS =
-        60  * GameActivity.companionList.gameSpeedAdjuster// frames per second, the rate at which you would like to refresh the Canvas
 
     override fun run() {
         var startTime: Long
         var timeMillis: Long
         var waitTime: Long
-        var targetTime: Long
 
         while (runningActivity) {
-            targetTime = (1000 / (targetFPS * GameActivity.companionList.gameSpeedAdjuster)).toLong()
             startTime = System.nanoTime()
 
 
@@ -36,7 +32,7 @@ class ActivityThread(private val gameActivity: GameActivity) : Thread() {
                 }
 
                 timeMillis = (System.nanoTime() - startTime) / 1000000
-                waitTime = targetTime - timeMillis
+                waitTime = (GameThread.targetTime / companionList.gameSpeedAdjuster).toLong() - timeMillis
 
                 try {
                     if (waitTime > 0) sleep(waitTime)

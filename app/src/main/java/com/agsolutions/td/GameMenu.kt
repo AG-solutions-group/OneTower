@@ -7,6 +7,7 @@ import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.GameActivity.Companion.companionList
+import com.agsolutions.td.GameActivity.Companion.paused
 import com.agsolutions.td.Main.MainActivity
 import kotlinx.android.synthetic.main.game_menu.*
 import java.io.File
@@ -47,6 +48,7 @@ class GameMenu : AppCompatActivity() {
         }
 
         saveAndQuitBtn.setOnClickListener() {
+            paused = true
             var editor = sharedPref!!.edit()
             editor.putBoolean("continueGame", true)
             editor.putInt("continueGameMapPick", companionList.mapPick)
@@ -56,6 +58,9 @@ class GameMenu : AppCompatActivity() {
             companionList.shootList.removeAll(companionList.shootList)
             companionList.shootListPoison.removeAll(companionList.shootListPoison)
             companionList.shootListTornado.removeAll(companionList.shootListTornado)
+            companionList.dmgDisplayList.removeAll(companionList.dmgDisplayList)
+            companionList.dmgDisplayDropList.removeAll(companionList.dmgDisplayDropList)
+
 
             val textFile = File("$filesDir/saveGame.dat")
             if (!textFile.exists()) {
