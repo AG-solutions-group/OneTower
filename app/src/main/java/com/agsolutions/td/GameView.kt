@@ -4,11 +4,8 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
-import android.view.MotionEvent
-import android.view.ScaleGestureDetector
+import android.view.*
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
-import android.view.SurfaceHolder
-import android.view.SurfaceView
 import com.agsolutions.td.GameActivity.Companion.companionList
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.math.atan2
@@ -42,6 +39,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         var focusCanvasX = 0f
         var focusCanvasY = 0f
         var focusVar = 0f
+
     }
 
     private var thread: GameThread
@@ -51,13 +49,14 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     var MIN_ZOOM = 1f
     var MAX_ZOOM = 3f
 
-
     var detector = ScaleGestureDetector(getContext(), ScaleListener())
     var lastTouchX = 0f
     var lastTouchY = 0f
     var pressDuration = 0
+    var countTowerDraw = 0
+    var boooly = true
+    var savecount = 0
 
-    var rectBackground = Rect(0, 0, 1200, 1800)
     var rectBackgroundStartScreen = Rect(0, 0, 1200, 1800)
     var creepRect = Rect(0, 0, 0, 0)
     var towerFalling: Bitmap? = null
@@ -105,6 +104,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     var upDrop: Bitmap? = null
     var ipDrop: Bitmap? = null
 
+    var icon: Bitmap? = null
+
     var elementButterfly : Bitmap? = null
     var elementDark : Bitmap? = null
     var elementEarth : Bitmap? = null
@@ -116,8 +117,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     var elementWind : Bitmap? = null
     var elementWizard : Bitmap? = null
 
-    var icon: Bitmap? = null
-
+    var rectBackground = Rect(0, 0, 1200, 1800)
 
     //initialize items----------------------------------------------------------------------------
 
@@ -315,7 +315,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 val x = event!!.x
                 val y = event.y
 
-        if (event!!.action == MotionEvent.ACTION_MOVE) {
+        if (event.action == MotionEvent.ACTION_MOVE) {
             pressDuration++
 
             if (pressDuration > 15){
@@ -326,16 +326,16 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 focusCanvasX -= dx
                 focusCanvasY -= dy
 
-                lastTouchX = x;
-                lastTouchY = y;
+                lastTouchX = x
+                lastTouchY = y
 
-                invalidate();
+                invalidate()
             }
         }
-        else if (event!!.action == MotionEvent.ACTION_UP) {
+        else if (event.action == MotionEvent.ACTION_UP) {
             pressDuration = 0
 
-        }else if (event!!.action == MotionEvent.ACTION_DOWN) {
+        }else if (event.action == MotionEvent.ACTION_DOWN) {
             lastTouchX = x
             lastTouchY = y
 
@@ -459,9 +459,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     //-------------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------------
 
+
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
-
 
         // ------------------------------------------------------------------------------------------------------------------------------------------------
         // ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -471,36 +471,33 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         //scale canvas for different devices
 
         focusVar = scaleFactor - 1
-        canvas.translate(focusCanvasX * (focusVar) * -1, focusCanvasY * (focusVar) * -1)
-        canvas.scale(
-            ((companionList.scaleScreen / 10) * scaleFactor), ((companionList.scaleScreen / 10) * scaleFactor)
-        )
-
         GameView.clipRect = canvas.clipBounds
 
-        //draw background
-        if (companionList.mapPick == 0 || companionList.mapPick == 1) {
-            if (companionList.mapMode != 2) {
-                if (companionList.day) canvas.drawBitmap(backgroundMap1DayBmp!!, null, rectBackground, null)
-                else canvas.drawBitmap(backgroundMap1NightBmp!!, null, rectBackground, null)
-            } else {
-                if (companionList.day) canvas.drawBitmap(backgroundMap1Mode2DayBmp!!, null, rectBackground, null)
-                else canvas.drawBitmap(backgroundMap1Mode2NightBmp!!, null, rectBackground, null)
-            }
-        } else if (companionList.mapPick == 2) {
-            if (companionList.day) canvas.drawBitmap(backgroundDayMap2!!, null, rectBackground, null)
-            else canvas.drawBitmap(backgroundNightMap2!!, null, rectBackground, null)
-        }
+        canvas.translate(focusCanvasX * (focusVar) * -1, focusCanvasY * (focusVar) * -1)
+        canvas.scale(((companionList.scaleScreen / 10) * scaleFactor), ((companionList.scaleScreen / 10) * scaleFactor))
 
-        // draw text
-        if (companionList.mapMode == 1) {
-            if (companionList.autoSpawn) canvas.drawText("ON", 910f, 1225f, paintText)
-            else if (companionList.enemyList.isEmpty()) canvas.drawText("NXT", 910f, 1225f, paintText)
-            else canvas.drawText("OFF", 910f, 1225f, paintText)
-        }
+            //draw background
+            if (companionList.mapPick == 0 || companionList.mapPick == 1) {
+                if (companionList.mapMode != 2) {
+                    if (companionList.day) canvas.drawBitmap(backgroundMap1DayBmp!!, null, rectBackground, null)
+                    else canvas.drawBitmap(backgroundMap1NightBmp!!, null, rectBackground, null)
+                } else {
+                    if (companionList.day) canvas.drawBitmap(backgroundMap1Mode2DayBmp!!, null, rectBackground, null)
+                    else canvas.drawBitmap(backgroundMap1Mode2NightBmp!!, null, rectBackground, null)
+                }
+            } else if (companionList.mapPick == 2) {
+                if (companionList.day) canvas.drawBitmap(backgroundDayMap2!!, null, rectBackground, null)
+                else canvas.drawBitmap(backgroundNightMap2!!, null, rectBackground, null)
+            }
+
+            // draw text
+            if (companionList.mapMode == 1) {
+                if (companionList.autoSpawn) canvas.drawText("ON", 910f, 1225f, paintText)
+                else if (companionList.enemyList.isEmpty()) canvas.drawText("NXT", 910f, 1225f, paintText)
+                else canvas.drawText("OFF", 910f, 1225f, paintText)
+            }
 
         //draw tower
-
         if (companionList.towerList.size > 0) {
             companionList.writeLockTower.lock()
             try {
@@ -508,93 +505,64 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 while (towerListIterator.hasNext()) {
                     var it = towerListIterator.next()
                     if (it.towerFallingCount > 0) {
-                        if (!GameActivity.paused) it.towerFallingCount += (8 * companionList.gameSpeedAdjuster).toInt()
-                        var rect =
+                        if (!GameActivity.paused) it.towerFallingCount += (8).toInt()
+                        rectForAll =
                             Rect((it.towerRange.x - 80).toInt(), it.towerFallingCount, it.towerRange.x.toInt() + 80, it.towerFallingCount + 160)
-                        canvas.drawBitmap(towerFalling!!, null, rect, null)
-                        if (it.towerFallingCount > it.towerRange.y.toInt() - 80) it.towerFallingCount =
-                            0
+                        canvas.drawBitmap(towerFalling!!, null, rectForAll, null)
+                        if (it.towerFallingCount > it.towerRange.y.toInt() - 80) it.towerFallingCount = 0
                     } else {
-                        var rect =
+                        rectForAll =
                             Rect((it.towerRange.x - 80).toInt(), (it.towerRange.y - 80).toInt(), (it.towerRange.x + 80).toInt(), (it.towerRange.y + 80).toInt())
-                        canvas.drawBitmap(towerBase!!, null, rect, null)
+                        canvas.drawBitmap(towerBase!!, null, rectForAll, null)
 
                         if (companionList.towerClick && it.selected) canvas.drawCircle(it.towerRange.x, it.towerRange.y, it.towerR, paintRange)
                         if (companionList.towerClick && it.selected && it.itemListBag.contains(GameActivity.companionList.eutils)) canvas.drawCircle(it.towerRange.x, it.towerRange.y, 150f, paintRange)
-                        var rect2 =
+                        rectForAll =
                             Rect((it.towerRange.x - 60).toInt(), (it.towerRange.y + 30).toInt(), it.towerRange.x.toInt() - 30, it.towerRange.y.toInt() + 60)
-                        if (it.talentPoints > 0) canvas.drawBitmap(talentP!!, null, rect2, null)
+                        if (it.talentPoints > 0) canvas.drawBitmap(talentP!!, null, rectForAll, null)
                         var textsize = paintTowerDmgDone.measureText(it.towerLevel.toString())
                         canvas.drawText(it.towerLevel.toString(), (it.towerRange.x + 55 - (textsize / 2)), (it.towerRange.y + 60), paintTowerDmgDone)
-                        if (it.bagSizeElementCount > 0) {
-                            var yBool = 0
-                            var bitmap = elementButterfly
-                            for (item in it.itemListBag) {
-                                var elementIsThere = false
-                                when (item) {
-                                    companionList.eearth -> {
-                                        bitmap = elementEarth
-                                        elementIsThere = true
-                                    }
-                                    companionList.ebutterfly -> {
-                                        bitmap = elementButterfly
-                                        elementIsThere = true
-                                    }
-                                    companionList.ewind -> {
-                                        bitmap = elementWind
-                                        elementIsThere = true
-                                    }
-                                    companionList.emoon -> {
-                                        bitmap = elementMoon
-                                        elementIsThere = true
-                                    }
-                                    companionList.epoison -> {
-                                        bitmap = elementPoison
-                                        elementIsThere = true
-                                    }
-                                    companionList.eice -> {
-                                        bitmap = elementIce
-                                        elementIsThere = true
-                                    }
-                                    companionList.efire -> {
-                                        bitmap = elementFire
-                                        elementIsThere = true
-                                    }
-                                    companionList.edark -> {
-                                        bitmap = elementDark
-                                        elementIsThere = true
-                                    }
-                                    companionList.eutils -> {
-                                        bitmap = elementUtils
-                                        elementIsThere = true
-                                    }
-                                    companionList.ewizard -> {
-                                        bitmap = elementWizard
-                                        elementIsThere = true
-                                    }
-                                }
-                                if (elementIsThere) {
-                                    var rect =
-                                        Rect((it.towerRange.x + 35).toInt(), (it.towerRange.y + yBool).toInt(), it.towerRange.x.toInt() + 75, it.towerRange.y.toInt() + yBool + 40)
-                                    canvas.drawBitmap(bitmap!!, null, rect, null)
-                                    yBool -= 35
-                                }
-                            }
-                        }
 
                         canvas.save()
                         canvas.rotate(getAngle(it), it.towerRange.x, it.towerRange.y)
-                        var rect3 =
+                        rectForAll =
                             Rect((it.towerRange.x - 84).toInt(), (it.towerRange.y - 64).toInt(), it.towerRange.x.toInt() + 172, it.towerRange.y.toInt() + 64)
                         when (it.towerLevel) {
-                            in 1..4 -> canvas.drawBitmap(towerGunBasic!!, null, rect3, null)
-                            in 5..9 -> canvas.drawBitmap(towerGunBlue!!, null, rect3, null)
-                            in 10..14 -> canvas.drawBitmap(towerGunOrange!!, null, rect3, null)
-                            in 15..999 -> canvas.drawBitmap(towerGunPurple!!, null, rect3, null)
+                            in 1..4 -> canvas.drawBitmap(towerGunBasic!!, null, rectForAll, null)
+                            in 5..9 -> canvas.drawBitmap(towerGunBlue!!, null, rectForAll, null)
+                            in 10..14 -> canvas.drawBitmap(towerGunOrange!!, null, rectForAll, null)
+                            in 15..999 -> canvas.drawBitmap(towerGunPurple!!, null, rectForAll, null)
                         }
                         canvas.restore()
+
+                        if (it.disrupted) canvas.drawCircle(it.towerRange.x, it.towerRange.y, 30f, paintDisrupt)
+                        //draw ice talent
+                        for (element in it.elementList) {
+                            rectForAll =
+                                Rect((it.towerRange.x + 35).toInt(), (it.towerRange.y + element.yBool).toInt(), it.towerRange.x.toInt() + 75, it.towerRange.y.toInt() + element.yBool + 40)
+                            var bit = elementEarth
+                            when (element.bitmap) {
+                                "earth" -> bit = elementEarth
+                                "butterfly" -> bit = elementButterfly
+                                "wind" -> bit = elementWind
+                                "moon" -> bit = elementMoon
+                                "poison" -> bit = elementPoison
+                                "ice" -> bit = elementIce
+                                "fire" -> bit = elementFire
+                                "dark" -> bit = elementDark
+                                "utils" -> bit = elementUtils
+                                "wizard" -> bit = elementWizard
+                            }
+                            canvas.drawBitmap(bit!!, null, rectForAll, null)
+                        }
+                        if (it.iceShard > 0) {
+                            var shootListIceIterator = it.shootListIce.listIterator()
+                            while (shootListIceIterator.hasNext()) {
+                                var shard = shootListIceIterator.next()
+                                shard.draw(canvas)
+                            }
+                        }
                     }
-                    if (it.disrupted) canvas.drawCircle(it.towerRange.x, it.towerRange.y, 30f, paintDisrupt)
                 }
             } finally {
                 companionList.writeLockTower.unlock()
@@ -608,7 +576,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 var shootListPoisonIterator = companionList.shootListPoison.listIterator()
                 while (shootListPoisonIterator.hasNext()) {
                     var it = shootListPoisonIterator.next()
-                    var rect =
+                    rectForAll =
                             Rect((it.poisonCloud.x - (it.poisonCloud.r * 1.5)).toInt(), (it.poisonCloud.y - (it.poisonCloud.r * 1.5)).toInt(), (it.poisonCloud.x + (it.poisonCloud.r * 1.5)).toInt(), (it.poisonCloud.y + (it.poisonCloud.r * 1.5)).toInt())
                         it.poisonPicCounter++
                         if (it.poisonPicCounter >= 5) {
@@ -616,7 +584,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                             it.poisonNextPic++
                             if (it.poisonNextPic >= 2) it.poisonNextPic = 0
                         }
-                        canvas.drawBitmap(shootPoisonArray!![it.poisonNextPic], null, rect, null)
+                        canvas.drawBitmap(shootPoisonArray!![it.poisonNextPic], null, rectForAll, null)
 
                 }
             } finally {
@@ -635,10 +603,10 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                         if (companionList.rotateTornado >= 360) companionList.rotateTornado = 0f
                         canvas.save()
                         canvas.rotate(companionList.rotateTornado, it.tornadoRadius.x, it.tornadoRadius.y)
-                    var rect =
+                    rectForAll =
                             Rect((it.tornadoRadius.x - (it.tornadoRadius.r)).toInt(), (it.tornadoRadius.y - (it.tornadoRadius.r)).toInt(), (it.tornadoRadius.x + (it.tornadoRadius.r)).toInt(), (it.tornadoRadius.y + (it.tornadoRadius.r)).toInt())
                         if (companionList.day) canvas.drawBitmap(shootMultiPicDay!!, null, rectForAll, null)
-                        else canvas.drawBitmap(shootMultiPic!!, null, rect, null)
+                        else canvas.drawBitmap(shootMultiPic!!, null, rectForAll, null)
                         canvas.restore()
                     }
             } finally {
@@ -653,7 +621,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 var shootListMineIterator = companionList.shootListMine.listIterator()
                 while (shootListMineIterator.hasNext()) {
                     var it = shootListMineIterator.next()
-                    var rect =
+                    rectForAll =
                             Rect((it.mineRadius.x - (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.y - (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.x + (it.mineRadius.r * 1.25)).toInt(), (it.mineRadius.y + (it.mineRadius.r * 1.25)).toInt())
                         it.minePicCounter++
                         if (it.minePicCounter >= 5) {
@@ -661,7 +629,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                             it.mineNextPic++
                             if (it.mineNextPic >= 5) it.mineNextPic = 0
                         }
-                        canvas.drawBitmap(mineArray!![it.mineNextPic], null, rect, null)
+                        canvas.drawBitmap(mineArray!![it.mineNextPic], null, rectForAll, null)
 
                 }
             } finally {
@@ -695,14 +663,14 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                             it.explosionCounter++
                             when (it.explosionCounter) {
                                 in 1..4 -> {
-                                    var rect =
+                                    rectForAll =
                                         Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
-                                    canvas.drawBitmap(explosion!!, null, rect, null)
+                                    canvas.drawBitmap(explosion!!, null, rectForAll, null)
                                 }
                                 in 5..10 -> {
-                                    var rect =
+                                    rectForAll =
                                         Rect((it.circle!!.x - 12).toInt(), (it.circle!!.y - 15).toInt(), (it.circle!!.x + 12).toInt(), (it.circle!!.y + 14).toInt())
-                                    canvas.drawBitmap(explosion2!!, null, rect, null)
+                                    canvas.drawBitmap(explosion2!!, null, rectForAll, null)
                                 }
                                 in 11..999 -> {
                                     it.explosionCounter = 0
@@ -731,8 +699,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                         if (companionList.dmgDisplayList.isNotEmpty()) {
                             companionList.writeLockDisplay.lock()
                             try {
-                                var dmgDisplayListIterator =
-                                    companionList.dmgDisplayList.listIterator()
+                                var dmgDisplayListIterator = companionList.dmgDisplayList.listIterator()
                                 while (dmgDisplayListIterator.hasNext()) {
                                     var display = dmgDisplayListIterator.next()
 
@@ -744,10 +711,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                         else display.dmgCountPosition -= 2
                                         if (it.circleYMovement == "yminus" || it.circleYMovement == "yplus") canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x + display.dmgCountPosition)), (it.circle!!.y - (it.circle!!.r / 2) + display.positionY), display.paint)
                                         else canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x - (it.circle!!.r / 2)) + display.positionX), (it.circle!!.y - display.dmgCountPosition), display.paint)
-                                        if (display.dmgCount > 25) {
-                                            //   display.burnDmgDelete = fireDmgDisplay.indexOf(display)
-                                            display.displayDmgDelete = true
-                                        }
+
                                     }
                                 }
                             } finally {
@@ -766,21 +730,15 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 var dmgDisplayListIterator = companionList.dmgDisplayDropList.listIterator()
                 while (dmgDisplayListIterator.hasNext()) {
                     var display = dmgDisplayListIterator.next()
-
-                    //        for (display in dmgDisplayList) {
-                    //            Log.d("thread", Thread.currentThread().name)
                     display.dmgCount++
                     if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
                     else display.dmgCountPosition -= 2
                     icon =
                         if (display.icon == "gold") goldDrop else if (display.icon == "ip") ipDrop else upDrop
-                    var rect =
+                    rectForAll =
                         Rect((display.indexx - 25), (display.indexy - 75 - display.dmgCountPosition), (display.indexx + 25), (display.indexy - 25 - display.dmgCountPosition))
-                    canvas.drawBitmap(icon!!, null, rect, null)
-                    if (display.dmgCount > 25) {
-                        //   display.burnDmgDelete = fireDmgDisplay.indexOf(display)
-                        display.displayDmgDelete = true
-                    }
+                    canvas.drawBitmap(icon!!, null, rectForAll, null)
+
                 }
             } finally {
                 companionList.writeLockDisplayDrop.unlock()
@@ -802,17 +760,17 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                         if (!crossTowerBullet(it)) {
                                             canvas.save()
                                             canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                            var rect =
+                                            rectForAll =
                                                 Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                            canvas.drawBitmap(shootBulletPic!!, null, rect, null)
+                                            canvas.drawBitmap(shootBulletPic!!, null, rectForAll, null)
                                             canvas.restore()
                                         }
                                     } else if (it.chainLightning) {
                                         canvas.save()
                                         canvas.rotate(getAngleBullet(it) - 75, it.bullet.x, it.bullet.y)
-                                        var rect =
+                                        rectForAll =
                                             Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
-                                        canvas.drawBitmap(shootChainLightningPic!!, null, rect, null)
+                                        canvas.drawBitmap(shootChainLightningPic!!, null, rectForAll, null)
                                         canvas.restore()
                                     } else if (companionList.towerList[it.towerId].towerPrimaryElement == "moon") {
                                         if (!crossTowerBullet(it)) {
@@ -821,9 +779,9 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                                 0f
                                             canvas.save()
                                             canvas.rotate(companionList.rotateShotBounce, it.bullet.x, it.bullet.y)
-                                            var rect =
+                                            rectForAll =
                                                 Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                            canvas.drawBitmap(shootBouncePic!!, null, rect, null)
+                                            canvas.drawBitmap(shootBouncePic!!, null, rectForAll, null)
                                             canvas.restore()
                                         }
                                     } else if (it.multiShotBullet && companionList.towerList[it.towerId].towerPrimaryElement == "wind") {
@@ -832,25 +790,25 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                             0f
                                         canvas.save()
                                         canvas.rotate(companionList.rotateShotMulti, it.bullet.x, it.bullet.y)
-                                        var rect =
+                                        rectForAll =
                                             Rect((it.bullet.x - (it.bullet.r * 3)).toInt(), (it.bullet.y - (it.bullet.r * 3)).toInt(), (it.bullet.x + (it.bullet.r * 3)).toInt(), (it.bullet.y + (it.bullet.r * 3)).toInt())
-                                        if (companionList.day) canvas.drawBitmap(shootMultiPicDay!!, null, rect, null)
-                                        else canvas.drawBitmap(shootMultiPic!!, null, rect, null)
+                                        if (companionList.day) canvas.drawBitmap(shootMultiPicDay!!, null, rectForAll, null)
+                                        else canvas.drawBitmap(shootMultiPic!!, null, rectForAll, null)
                                         canvas.restore()
                                     } else if (companionList.towerList[it.towerId].towerPrimaryElement == "earth") {
                                         if (!crossTowerBullet(it)) {
                                             canvas.save()
                                             canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                            var rect =
+                                            rectForAll =
                                                 Rect((it.bullet.x - (it.bullet.r * 8)).toInt(), (it.bullet.y - (it.bullet.r * 8)).toInt(), (it.bullet.x + (it.bullet.r * 8)).toInt(), (it.bullet.y + (it.bullet.r * 8)).toInt())
-                                            canvas.drawBitmap(shootSplashPic!!, null, rect, null)
+                                            canvas.drawBitmap(shootSplashPic!!, null, rectForAll, null)
                                             canvas.restore()
                                         }
                                     } else if (companionList.towerList[it.towerId].towerPrimaryElement == "butterfly") {
                                         if (!crossTowerBullet(it)) {
                                             canvas.save()
                                             canvas.rotate(getAngleBullet(it) - 90, it.bullet.x, it.bullet.y)
-                                            var rect =
+                                            rectForAll =
                                                 Rect((it.bullet.x - (it.bullet.r * 7)).toInt(), (it.bullet.y - (it.bullet.r * 7)).toInt(), (it.bullet.x + (it.bullet.r * 7)).toInt(), (it.bullet.y + (it.bullet.r * 7)).toInt())
                                             it.butterflyPicCounter ++
                                             if (it.butterflyPicCounter > 2) {
@@ -859,16 +817,16 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                                 if (it.butterflyNextPic >= 4) it.butterflyNextPic =
                                                     0
                                             }
-                                            canvas.drawBitmap(shootButterflyArray!![it.butterflyNextPic], null, rect, null)
+                                            canvas.drawBitmap(shootButterflyArray!![it.butterflyNextPic], null, rectForAll, null)
                                             canvas.restore()
                                         }
                                     } else {
                                         if (!crossTowerBullet(it)) {
                                             canvas.save()
                                             canvas.rotate(getAngleBullet(it), it.bullet.x, it.bullet.y)
-                                            var rect =
+                                            rectForAll =
                                                 Rect((it.bullet.x - (it.bullet.r * 4)).toInt(), (it.bullet.y - (it.bullet.r * 4)).toInt(), (it.bullet.x + (it.bullet.r * 4)).toInt(), (it.bullet.y + (it.bullet.r * 4)).toInt())
-                                            canvas.drawBitmap(shootBulletPic!!, null, rect, null)
+                                            canvas.drawBitmap(shootBulletPic!!, null, rectForAll, null)
                                             canvas.restore()
                                         }
                                     }
@@ -877,30 +835,6 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                             } finally {
                                 companionList.writeLockShot.unlock()
                                 companionList.writeLockEnemy.unlock()
-                            }
-                        }
-
-
-
-
-                    //draw ice talent
-
-                        if (companionList.towerList.isNotEmpty()) {
-                            companionList.writeLockTower.lock()
-                            try {
-                                var towerListIterator = companionList.towerList.listIterator()
-                                while (towerListIterator.hasNext()) {
-                                    var it = towerListIterator.next()
-                                    if (it.iceShard > 0) {
-                                        var shootListIceIterator = it.shootListIce.listIterator()
-                                        while (shootListIceIterator.hasNext()) {
-                                            var shard = shootListIceIterator.next()
-                                            shard.draw(canvas)
-                                        }
-                                    }
-                                }
-                            } finally {
-                                companionList.writeLockTower.unlock()
                             }
                         }
 
@@ -924,7 +858,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
                 val squaredDistance = (distanceX * distanceX) + (distanceY * distanceY)
 
-                val sumOfRadius = 95
+                val sumOfRadius = if (companionList.towerList[it.towerId].towerLevel >= 15) 95 else 40
 
                 if (squaredDistance <= sumOfRadius * sumOfRadius) {
                     check = true
@@ -937,7 +871,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     fun getAngle(it:Tower): Float {
 
             var angle =
-                Math.toDegrees(atan2((companionList.rotationTowerY - it.towerRange.y).toDouble(), (companionList.rotationTowerX - it.towerRange.x).toDouble()))
+                Math.toDegrees(atan2((it.rotationTowerY - it.towerRange.y).toDouble(), (it.rotationTowerX - it.towerRange.x).toDouble()))
                     .toFloat()
             if (angle < 0) {
                 angle += 360f
@@ -949,10 +883,10 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
                     var angle = 0f
             if (bullet.alreadyBounced > 0) angle =
-                (Math.toDegrees(atan2((companionList.rotationEnemyY - (companionList.rotationBulletY)).toDouble(), (companionList.rotationEnemyX - (companionList.rotationBulletX)).toDouble()))
+                (Math.toDegrees(atan2((bullet.rotationEnemyY - (bullet.rotationBulletY)).toDouble(), (bullet.rotationEnemyX - (bullet.rotationBulletX)).toDouble()))
                     .toFloat())
             else angle =
-                Math.toDegrees(atan2((companionList.rotationEnemyY - companionList.towerList[bullet.towerId].towerRange.y).toDouble(), (companionList.rotationEnemyX - companionList.towerList[bullet.towerId].towerRange.x).toDouble()))
+                Math.toDegrees(atan2((bullet.rotationEnemyY - companionList.towerList[bullet.towerId].towerRange.y).toDouble(), (bullet.rotationEnemyX - companionList.towerList[bullet.towerId].towerRange.x).toDouble()))
                     .toFloat()
             if (angle < 0) {
                 angle += 360f
@@ -964,4 +898,4 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
 
 
-// TODO Item insert : Gameactivty - Items fragment - itemAdapter - ItemBagAdapter - Itemupgradefragment - Gameactivity Load Game
+// TODO Item insert : Gameactivty - Items fragment - itemAdapter - ItemBagAdapter - Itemupgradefragment

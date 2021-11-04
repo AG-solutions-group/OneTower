@@ -17,6 +17,10 @@ class SwipeItemBag (var adapter: ItemBagAdapter) : ItemTouchHelper.SimpleCallbac
             } else {
                 if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] == GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[0]) return 0
                 if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos].crossedOut) return 0
+                if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] == GameActivity.companionList.eearth || GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] ==GameActivity.companionList.ebutterfly || GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] ==GameActivity.companionList.ewind || GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] ==GameActivity.companionList.emoon ||
+                    GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] ==GameActivity.companionList.eice || GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] ==GameActivity.companionList.epoison || GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] ==GameActivity.companionList.ewizard || GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] ==GameActivity.companionList.efire ||
+                    GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] ==GameActivity.companionList.eutils || GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag[pos] ==GameActivity.companionList.edark) return 0
+            if (GameActivity.companionList.lockEverything) return 0
             }
 
             return super.getMovementFlags(recyclerView, viewHolder)

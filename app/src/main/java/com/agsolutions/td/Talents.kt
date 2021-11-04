@@ -93,7 +93,7 @@ class Talents : AppCompatActivity() {
         three = 0
 
         if (GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].bagSizeElementCount > 0){
-                GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag.forEach {
+                for (it in GameActivity.companionList.towerList[GameActivity.companionList.towerClickID].itemListBag) {
                 if (it.id == 3000 || it.id == 3001 || it.id == 3002 || it.id == 3003 || it.id == 3004 || it.id == 3005 || it.id == 3006 || it.id == 3007 || it.id == 3008 || it.id == 3009){
                     when (count){
                         1 ->{

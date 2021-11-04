@@ -81,10 +81,8 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
 
             GameActivity.companionList.readLockTower.lock()
             try {
-                var towerListIterator = GameActivity.companionList.towerList.listIterator()
-                while (towerListIterator.hasNext()) {
-                    var tower = towerListIterator.next()
-                    if (tower.selected) {
+                    var tower = GameActivity.companionList.towerList[GameActivity.companionList.towerClickID]
+
 
                         if (tower.itemListBag[position].upgrade < 1 || GameActivity.companionList.upgradePoints <= 0) {
                             upBTN.visibility = View.INVISIBLE
@@ -496,8 +494,6 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
                             } else {
                                 upBTN.visibility = View.VISIBLE
                             }
-                        }
-                    }
                 }
             } finally {
                 GameActivity.companionList.readLockTower.unlock()

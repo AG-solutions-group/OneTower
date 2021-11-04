@@ -28,12 +28,11 @@ class Shoot (): Serializable {
     var hitEnemyId = -1
     var hitEnemyIdChain = -1
     var collisionCount = 0
+    var rotationEnemyX = 0f
+    var rotationEnemyY = 0f
+    var rotationBulletX = 0f
+    var rotationBulletY = 0f
 
-    fun draw(canvas: Canvas) {
-
-    //    canvas.drawCircle(bullet.x.toFloat(), bullet.y.toFloat(), bullet.r.toFloat(), paint)
-
-    }
 
     fun update() {
 
@@ -519,8 +518,8 @@ class Shoot (): Serializable {
 
 
                     if (GameActivity.companionList.enemyList.contains(enemy)) {
-                        GameActivity.companionList.rotationEnemyX = enemy.circle!!.x
-                        GameActivity.companionList.rotationEnemyY = enemy.circle!!.y
+                       rotationEnemyX = enemy.circle!!.x
+                       rotationEnemyY = enemy.circle!!.y
 
                         if (bullet.x > (enemy.circle!!.x + xSpeed())) {
                             bullet.x -= (nx * n)
@@ -583,8 +582,8 @@ class Shoot (): Serializable {
 
                 if (sniper) {
                     if (GameActivity.companionList.towerList[towerId].crossesNoneList.contains(enemy)) {
-                        GameActivity.companionList.rotationEnemyX = enemy.circle!!.x
-                        GameActivity.companionList.rotationEnemyY = enemy.circle!!.y
+                       rotationEnemyX = enemy.circle!!.x
+                       rotationEnemyY = enemy.circle!!.y
 
                         if (bullet.x > (enemy.circle!!.x + xSpeed())) {
                             bullet.x -= (nx * n)
@@ -627,8 +626,8 @@ class Shoot (): Serializable {
                     }
 
                 } else if (alreadyBounced > 0 && (GameActivity.companionList.towerList[towerId].towerPrimaryElement == "moon")) {
-                    GameActivity.companionList.rotationEnemyX = enemy.circle!!.x
-                    GameActivity.companionList.rotationEnemyY = enemy.circle!!.y
+                    rotationEnemyX = enemy.circle!!.x
+                    rotationEnemyY = enemy.circle!!.y
                     if (GameActivity.companionList.enemyList.contains(enemy)) {
                         if (bullet.x > (enemy.circle!!.x + xSpeed())) {
                             bullet.x -= (nx * n)
@@ -652,10 +651,10 @@ class Shoot (): Serializable {
 
                 } else {
                     if (GameActivity.companionList.enemyList.contains(enemy)) {
-                        GameActivity.companionList.rotationTowerX = enemy.circle!!.x
-                        GameActivity.companionList.rotationTowerY = enemy.circle!!.y
-                        GameActivity.companionList.rotationEnemyX = enemy.circle!!.x
-                        GameActivity.companionList.rotationEnemyY = enemy.circle!!.y
+                        GameActivity.companionList.towerList[towerId].rotationTowerX = enemy.circle!!.x
+                        GameActivity.companionList.towerList[towerId].rotationTowerY = enemy.circle!!.y
+                        rotationEnemyX = enemy.circle!!.x
+                        rotationEnemyY = enemy.circle!!.y
                         if (bullet.x > (enemy.circle!!.x + xSpeed())) {
                             bullet.x -= nx * n
                         } else {

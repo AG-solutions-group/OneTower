@@ -32,7 +32,8 @@ class ActivityThread(private val gameActivity: GameActivity) : Thread() {
                 }
 
                 timeMillis = (System.nanoTime() - startTime) / 1000000
-                waitTime = (GameThread.targetTime / companionList.gameSpeedAdjuster).toLong() - timeMillis
+                waitTime = (GameThread.targetTime / (companionList.gameSpeedAdjuster + companionList.gameSpeedAdjusterPlus)).toLong() - timeMillis
+            Log.d("blablaadd", (companionList.gameSpeedAdjuster + companionList.gameSpeedAdjusterPlus).toString())
 
                 try {
                     if (waitTime > 0) sleep(waitTime)

@@ -1,7 +1,9 @@
 package com.agsolutions.td
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import java.io.Serializable
 import kotlin.random.Random
 
@@ -20,6 +22,10 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var towerLevelBool = false
     var canBuild = false
     var canBuildEach = false
+
+    var rotationTowerX = 0f
+    var rotationTowerY = 0f
+    var elementList = mutableListOf<Elements>()
 
     var particleDmg = 0f
     var particleDmgBool = false
@@ -284,7 +290,7 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var utilsRow4Item1 = 0
     var itemQualityAura = 0f
     var itemChanceAura = 0f
-    var utilsUltimate = 1f
+    var utilsUltimate = 0f
     var utilsUpgrader = 0f
 
     // wind
@@ -343,4 +349,8 @@ class DmgDisplay (var indexx: Enemy, var dmgReceived: String, var dmgCount: Int,
 class DropDisplay (var indexx: Int, var indexy: Int, var icon: String, var dmgCount: Int, var dmgCountPosition: Int) : Serializable{
 
     var displayDmgDelete = false
+}
+
+class Elements (var bitmap: String, var yBool: Int) : Serializable{
+
 }

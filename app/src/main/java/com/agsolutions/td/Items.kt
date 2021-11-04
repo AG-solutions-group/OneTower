@@ -18,6 +18,7 @@ class Items (val id: Int, val minLvl: Int, val maxLvl: Int, var lvlAqu: Int, var
     var itemQuality = 0f
     var goldIncome = 0f
     var xpGain = 0f
+    var buddhaUsed = false
 }
 
 

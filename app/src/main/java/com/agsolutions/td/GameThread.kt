@@ -3,7 +3,6 @@ package com.agsolutions.td
 import android.graphics.Canvas
 import android.util.Log
 import android.view.SurfaceHolder
-import kotlinx.coroutines.InternalCoroutinesApi
 
 class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView: GameView) :
     Thread() {
@@ -14,7 +13,8 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
     }
     private val targetFPS =
         60  // frames per second, the rate at which you would like to refresh the Canvas
-    val targetTimeMax = (1000 / targetFPS ).toLong()
+    private val targetTimeMax = (1000 / targetFPS ).toLong()
+    var multiplier = 0.00f
 
     override fun run() {
         var startTime: Long
@@ -32,12 +32,7 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
                         canvas = this.surfaceHolder.lockCanvas()
                         if (canvas != null) {
                             this.gameView.draw(canvas!!)
-
-
                             surfaceHolder.unlockCanvasAndPost(canvas)
-                    //        activityThreadBool = false
-                    //        gameThreadBool = true
-
                         }
                     }
                 } catch (e: Exception) {
@@ -48,7 +43,15 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
                 timeMillis = (System.nanoTime() - startTime) / 1000000
                 waitTime = targetTime - timeMillis
 
+            Log.d("blabla", waitTime.toString())
+            Log.d("blablatarget", targetTime.toString())
+
+
                 if (waitTime > 0) targetTime-- else targetTime++
+
+            if (targetTime > 40) multiplier = ((targetTime - 39)*0.0025f) else multiplier = 0f
+            if (targetTime > 11) GameActivity.companionList.gameSpeedAdjusterPlus = (0.1f + ((targetTime - 10) * (0.06f + multiplier))) * GameActivity.companionList.gameSpeedAdjuster
+            else GameActivity.companionList.gameSpeedAdjusterPlus = 0.0f
 
                 try {
                     if (waitTime > 0) sleep(waitTime)

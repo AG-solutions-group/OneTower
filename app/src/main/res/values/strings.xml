@@ -41,6 +41,9 @@
     <string name="tutorial_enemies">A boss is approaching!</string>
     <string name="tutorial_enemies2">One TD has a variety of different enemy types. Some have increased armor, some are super fast. Boss type enemies will spawn every 10 waves to challenge you! They come alone but have vastly increased attributes. You can check the whole list at the wiki page: Menu -> Wiki. \n  \n  Be prepared!</string>
 
+    <string name="tutorial_gameend">You completed Phase 1!</string>
+    <string name="tutorial_gameend2">You will no longer be able to build towers or use items. Sit back and survive for as long as possible!</string>
+
     <string name="tutorial_end">You completed the tutorial!</string>
     <string name="tutorial_end2">These basics will enable you to start exploring the rest of the game for yourself. \n If you have further questions you can consult the wiki. \n\nEnjoy the game and good luck! </string>
 

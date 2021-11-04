@@ -22,7 +22,7 @@ class SecretShop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
 
         var sid4 = Items(1004, 1, 999,0,0f, 0, 0f, 1,"Particle Collector", R.drawable.particlered, R.drawable.overlaytransparent, 0.0f,0.0f,0.0f, 0.0f, 0.0f, 0.0f, 0, "Free Slot, collects excess dmg", 0f, "", 0f)
         var sid5 = Items(1005, 1, 999,0,0f, 0, 0f, 1, "True Sniper", R.drawable.sniperred, R.drawable.overlaytransparent,((1.0f * GameActivity.companionList.lvlScaler) + (GameActivity.companionList.level * 0.15f)),0.0f,0.0f, 0f, 0f, 0f, 0, "snipes a single target with bonus dmg for distance", 0.0f, "", 0f)
-        var sid6 = Items(1006, 1, 999,0,0f, 0, 0f, 1, "Fast Draw", R.drawable.itemadditionalbulletred, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, ((1.0f * GameActivity.companionList.lvlScaler) + (GameActivity.companionList.level * 0.15f)), 0f, 0, "each multicrit spawns one additional bullet", 0.0f, "", 0f)
+        var sid6 = Items(1006, 1, 999,0,0f, 0, 0f, 1, "Fast Draw", R.drawable.itemadditionalbulletred, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, ((4.0f * GameActivity.companionList.lvlScaler) + (GameActivity.companionList.level * 0.15f)), 0f, 0, "multicrits can spawns one additional bullet (20%)", 0.0f, "", 0f)
         var sid7 = Items(1007, 1, 999,0,0f, 0, 0f, 1, "Helping Hand", R.drawable.helpinghandred, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "Free Slot. +30% DMG for 5 sec. Cost: 10 IP. 1 min CD.", 0.0f, "", 0f)
         var sid8 = Items(1008, 1, 999,0,0f, 0, 0f, 1, "Boring", R.drawable.itemboringred, R.drawable.overlaytransparent,0f, 0.0f,0.0f,0f, 0f, 0f, 0, "+20% DMG & SPD; cannot CRIT", 0.0f, "", 0f)
 

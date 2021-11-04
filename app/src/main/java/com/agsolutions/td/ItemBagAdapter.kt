@@ -15,6 +15,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.GameActivity.Companion.paused
+import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.item.view.*
 
 class ItemBagAdapter (
@@ -41,6 +42,8 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
 
         if (companionList.towerClick) {
 
+            companionList.writeLockTower.lock()
+            try {
                 var it = companionList.towerList[companionList.towerClickID]
 
                     if (it.itemListBag[pos].crossedOut) {
@@ -59,11 +62,16 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
 
                         companionList.itemListInsertItem.add(it.itemListBag[pos])
                         it.itemListBag.removeAt(pos)
+
                         companionList.itemListBagInserter.clear()
                         notifyDataSetChanged()
                         companionList.itemListBagInserter.addAll(it.itemListBag)
                         notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
+
                     }
+            } finally {
+                companionList.writeLockTower.unlock()
+            }
         }
     }
 
@@ -269,7 +277,6 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
             it.bonusTowerDmg -= it.itemListBag[pos].specialFloat
             it.darkSoulCollector = false
         }
-
     }
 
     override fun getItemCount() = itemList2.size
@@ -288,8 +295,8 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
         override fun onLongClick(v: View?):Boolean {
             if (!companionList.towerClick) {
                 paused = true
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
+                val position = absoluteAdapterPosition
+                if (position != RecyclerView.NO_POSITION && !GameActivity.companionList.lockEverything) {
                     listener2.onBagLongClick(position, v)
                 }
 
@@ -313,7 +320,7 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
         }
 
         override fun onClick(v: View?) {
-            val position = adapterPosition
+            val position = absoluteAdapterPosition
             if (position != RecyclerView.NO_POSITION) {
                 listener.onBagClick(position, v)
             }

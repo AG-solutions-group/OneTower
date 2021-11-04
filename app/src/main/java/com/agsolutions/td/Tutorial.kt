@@ -90,6 +90,32 @@ class TutorialStart : AppCompatActivity() {
 
 }
 
+class TutorialGameEnd : AppCompatActivity() {
+
+    var mHandler = Handler ()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.tutorial_gameend)
+
+
+        window.setLayout((600.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
+        window.setElevation(10F)
+
+
+        okayBTN.setOnClickListener() {
+            mHandler.postDelayed({
+                GameActivity.paused = false
+                finish()
+            }, 50)
+        }
+
+    }
+    override fun onBackPressed() {
+    }
+
+}
+
 class TutorialTalents : AppCompatActivity() {
 
     var mHandler = Handler ()

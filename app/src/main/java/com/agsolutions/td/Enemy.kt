@@ -652,31 +652,7 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
 
 
     fun update() {
-
-        if (introBool) {
-            introBool = false
-
-            path.add(Triple(950, 1000, 1))
-            path.add(Triple(400, 1000, 2))
-            if (name == "shortcut") path.add(Triple(400, 500, 3))
-            else if (GameActivity.companionList.levelList.contains("shortcut")) {
-                when ((0..3).random()) {
-                    0 -> path.add(Triple(400, 500, 3))
-                    in 1..3 -> {
-                        path.add(Triple(200, 1000, 2))
-                        path.add(Triple(200, 500, 3))
-                        path.add(Triple(400, 500, 4))
-                    }
-                }
-            } else {
-                path.add(Triple(200, 1000, 2))
-                path.add(Triple(200, 500, 3))
-                path.add(Triple(400, 500, 4))
-            }
-            path.add(Triple(800, 500, 4))
-            if (companionList.mapMode == 2) path.add(Triple(800, 1000, 5))
-            else path.add(Triple(800, 1200, 5))
-        }
+        if (introBool) getPath()
 
         if (point >= path.size) {
             reachedPortal = true
@@ -705,7 +681,10 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
                 else circle!!.y -= (speed)
             }
             if (circle!!.x.toInt() == path[point].first && circle!!.y.toInt() == path[point].second){
-                if (circle!!.x == 800f && circle!!.y == 1000f) point = 1
+                if (companionList.mapMode == 2 && circle!!.x == 800f && circle!!.y == 1000f) {
+                    point = 1
+                    getPath()
+                }
                 else point++
             }
         }
@@ -720,5 +699,33 @@ class Enemy(var hp: Float, var maxHp: Float, var manaShield: Float, var manaShie
             (((manaShieldMax * 70.0) - (manaShield * 70.0)) / manaShieldMax).toFloat()
         enemyRightShield = (((shieldMax * 70.0) - (shield * 70.0)) / shieldMax).toFloat()
 
+    }
+
+    fun getPath(){
+        var pathbool = mutableListOf<Triple<Int,Int,Int>>()
+        introBool = false
+
+        pathbool.add(Triple(950, 1000, 1))
+        pathbool.add(Triple(400, 1000, 2))
+        if (name == "shortcut") pathbool.add(Triple(400, 500, 3))
+        else if (GameActivity.companionList.levelList.contains("shortcut")) {
+            when ((0..3).random()) {
+                0 -> pathbool.add(Triple(400, 500, 3))
+                in 1..3 -> {
+                    pathbool.add(Triple(200, 1000, 2))
+                    pathbool.add(Triple(200, 500, 3))
+                    pathbool.add(Triple(400, 500, 4))
+                }
+            }
+        } else {
+            pathbool.add(Triple(200, 1000, 2))
+            pathbool.add(Triple(200, 500, 3))
+            pathbool.add(Triple(400, 500, 4))
+        }
+        pathbool.add(Triple(800, 500, 4))
+        if (companionList.mapMode == 2) pathbool.add(Triple(800, 1000, 5))
+        else pathbool.add(Triple(800, 1200, 5))
+
+        path = pathbool
     }
 }

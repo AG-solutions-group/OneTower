@@ -19,6 +19,7 @@ class Companion: Serializable {
         var itemListInsertItem = mutableListOf<Items>()
         var dropItemList = 0
         var insertItemBag = 0
+        var removeItemBag = 0
         var overallXp = 0.0f
         var enemyList = mutableListOf<Enemy>()
         var shootList = mutableListOf<Shoot>()
@@ -29,6 +30,7 @@ class Companion: Serializable {
         var itemFragmentEnemyList = mutableListOf<ItemFragmentStrings>()
         var itemListStartItems = mutableListOf<ItemFragmentStrings>()
         var menuItemItems = mutableListOf<ItemFragmentStrings>()
+        var lockEverything = false
 
         // tutorial
         var enemiesKilled = 0
@@ -41,6 +43,7 @@ class Companion: Serializable {
         var itemPoints = 0f
         var mysteryPoints = 0
         var gameSpeedAdjuster = 1f
+        var gameSpeedAdjusterPlus = 0f
 
         var overallSpdMultiplier = 0f
         var globalDmgMultiplier = 0f
@@ -82,6 +85,7 @@ class Companion: Serializable {
         var shieldBool = false
         var allShieldsBool = false
         var enemySizeBoss = 0
+        var enemySizeEndBoss = 0f
         var bigNumberScaler = 1f
         var highscore = 0
         var personalHighscore = 0
@@ -374,12 +378,8 @@ class Companion: Serializable {
     var musicChanged = false
 
         // animations ------------------------------------------------
-        var rotationTowerX = 0f
-        var rotationTowerY = 0f
-        var rotationBulletX = 0f
-        var rotationBulletY = 0f
-        var rotationEnemyX = 0f
-        var rotationEnemyY = 0f
+
+
 
         // shoot
         var advancedList5 = mutableListOf<Enemy>()

@@ -146,7 +146,7 @@ class UtilsTalentFragment : Fragment() {
                         if (companionList.towerList[companionList.towerClickID].utilsRow2Item1 == 2) companionList.interest += 0.01f
                         if (companionList.towerList[companionList.towerClickID].utilsRow2Item1 == 3) companionList.interest += 0.01f
 
-                        if (companionList.towerList[companionList.towerClickID].utilsRow2Item1 + companionList.towerList[companionList.towerClickID].utilsRow2Item2 >= 3) backgroundUtilsRow3.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].utilsRow2Item1 + companionList.towerList[companionList.towerClickID].utilsRow2Item2 + companionList.towerList[companionList.towerClickID].utilsRow2Item3 >= 3) backgroundUtilsRow3.setBackgroundResource(R.drawable.backgroundplankslight)
 
                         utilsRow2Item1ShowTV.text =
                             companionList.towerList[companionList.towerClickID].utilsRow2Item1.toString()
@@ -175,7 +175,7 @@ class UtilsTalentFragment : Fragment() {
                         if (companionList.towerList[companionList.towerClickID].utilsRow2Item2 == 2) companionList.towerList[companionList.towerClickID].utilsUpgrader += 1f
                         if (companionList.towerList[companionList.towerClickID].utilsRow2Item2 == 3) companionList.towerList[companionList.towerClickID].utilsUpgrader += 1f
 
-                        if (companionList.towerList[companionList.towerClickID].utilsRow2Item1 + companionList.towerList[companionList.towerClickID].utilsRow2Item2 >= 3) backgroundUtilsRow3.setBackgroundResource(R.drawable.backgroundplankslight)
+                        if (companionList.towerList[companionList.towerClickID].utilsRow2Item1 + companionList.towerList[companionList.towerClickID].utilsRow2Item2 + companionList.towerList[companionList.towerClickID].utilsRow2Item3 >= 3) backgroundUtilsRow3.setBackgroundResource(R.drawable.backgroundplankslight)
 
                         utilsRow2Item2ShowTV.text = companionList.towerList[companionList.towerClickID].utilsRow2Item2.toString()
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1
@@ -220,7 +220,7 @@ class UtilsTalentFragment : Fragment() {
             utilsDisplayTalentTV.text = "Increases item chance of nearby towers by 20%/35%/50%"
             utilsUpgradeBTN.isClickable = false
 
-            if (companionList.towerList[companionList.towerClickID].utilsRow2Item1 + companionList.towerList[companionList.towerClickID].utilsRow2Item2 >= 3) {
+            if (companionList.towerList[companionList.towerClickID].utilsRow2Item1 + companionList.towerList[companionList.towerClickID].utilsRow2Item2 + companionList.towerList[companionList.towerClickID].utilsRow2Item3 >= 3) {
                 utilsUpgradeBTN.isClickable = true
 
                 utilsUpgradeBTN.setOnClickListener() {
@@ -249,7 +249,7 @@ class UtilsTalentFragment : Fragment() {
             utilsDisplayTalentTV.text = "Increases item quality of nearby towers by 2%/4%/6%"
             utilsUpgradeBTN.isClickable = false
 
-            if (companionList.towerList[companionList.towerClickID].utilsRow2Item1 + companionList.towerList[companionList.towerClickID].utilsRow2Item2 >= 3) {
+            if (companionList.towerList[companionList.towerClickID].utilsRow2Item1 + companionList.towerList[companionList.towerClickID].utilsRow2Item2 + companionList.towerList[companionList.towerClickID].utilsRow2Item3 >= 3) {
                 utilsUpgradeBTN.isClickable = true
 
                 utilsUpgradeBTN.setOnClickListener() {

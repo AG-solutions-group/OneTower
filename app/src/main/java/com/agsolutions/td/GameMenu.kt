@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.GameActivity.Companion.paused
 import com.agsolutions.td.Main.MainActivity
+import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.game_menu.*
 import java.io.File
 import java.io.FileOutputStream
@@ -60,7 +61,6 @@ class GameMenu : AppCompatActivity() {
             companionList.shootListTornado.removeAll(companionList.shootListTornado)
             companionList.dmgDisplayList.removeAll(companionList.dmgDisplayList)
             companionList.dmgDisplayDropList.removeAll(companionList.dmgDisplayDropList)
-
 
             val textFile = File("$filesDir/saveGame.dat")
             if (!textFile.exists()) {

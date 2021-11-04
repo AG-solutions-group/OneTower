@@ -75,17 +75,6 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
 
     }
 
-    // on Touch------------------------------------------------------
-
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-
-       // var x = event!!.x
-       // var y = event!!.y
-
-        return super.onTouchEvent(event)
-    }
-
-
     //-------------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------------

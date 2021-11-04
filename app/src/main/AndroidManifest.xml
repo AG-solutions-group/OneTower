@@ -57,6 +57,10 @@
             android:theme="@style/AppTheme.StartItems"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".TutorialGameEnd"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".TutorialTouchScreen"
             android:theme="@style/AppTheme.StartItems"
             android:screenOrientation="portrait" />

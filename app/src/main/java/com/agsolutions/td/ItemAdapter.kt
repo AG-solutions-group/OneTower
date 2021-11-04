@@ -44,16 +44,19 @@ class ItemAdapter (
 
             if (companionList.level == 0) companionList.buildListBag.add(0, companionList.itemList[pos])
             else companionList.buildListBag.add(1, companionList.itemList[pos])
+
             companionList.insertItemBag += 1
 
             companionList.fragmentItemCurrentItem = -1
 
             companionList.itemList.removeAt(pos)
-            notifyItemRemoved(pos)
+            notifyDataSetChanged()
         } else {
 
             if (companionList.towerClick) {
 
+                companionList.writeLockTower.lock()
+                try {
                 var it = companionList.towerList[companionList.towerClickID]
 
                 if (!companionList.day && companionList.moonTalentItemCost > 0) companionList.gold -= (companionList.itemList[pos].goldCost - (companionList.itemList[pos].goldCost * companionList.moonTalentItemCost))
@@ -97,6 +100,10 @@ class ItemAdapter (
                 companionList.itemList.removeAt(pos)
                 notifyDataSetChanged()
 
+                } finally {
+                    companionList.writeLockTower.unlock()
+                }
+
             } else {
                 if (companionList.itemList[pos].id == 5) {
                     if (companionList.activeAbilityList.contains(aAid1)) {
@@ -112,6 +119,8 @@ class ItemAdapter (
 
                     companionList.itemList.removeAt(pos)
                     notifyDataSetChanged()
+               //     callback.invoke()
+
                 }
             }
         }
@@ -286,7 +295,16 @@ class ItemAdapter (
             itemListPos[pos].specialFloat *= it.towerRarityMultiplier
             it.magicPenPerHit += itemListPos[pos].specialFloat
         }
-        if (itemListPos[pos].id == 316) it.bonusDamageMultiplyer += itemListPos[pos].specialFloat
+        if (itemListPos[pos].id == 316){
+            if (itemListPos[pos].buddhaUsed){
+                itemListPos[pos].specialFloat = 0.1f
+                it.bonusDamageMultiplyer += itemListPos[pos].specialFloat
+            } else {
+                itemListPos[pos].specialFloat = (it.xpTower / it.xpGoal2).toFloat()
+                it.bonusDamageMultiplyer += itemListPos[pos].specialFloat
+                itemListPos[pos].buddhaUsed = true
+            }
+        }
 
         if (itemListPos[pos].id == 1004) it.particleDmgBool = true
         if (itemListPos[pos].id == 1005) {
@@ -391,11 +409,10 @@ class ItemAdapter (
         }
 
         override fun onClick(v: View?) {
-              val position = adapterPosition
+              val position = absoluteAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     listener.onClick(position)
                   }
-        //    callback.invoke()
             }
 
         }

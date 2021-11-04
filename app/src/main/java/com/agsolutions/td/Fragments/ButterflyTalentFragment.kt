@@ -90,8 +90,7 @@ class ButterflyTalentFragment : Fragment() {
 
                         if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                        butterflyRow1Item1ShowTV.text =
-                            companionList.towerList[companionList.towerClickID].butterflyRow1Item1.toString()
+                        butterflyRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow1Item1.toString()
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
@@ -122,8 +121,7 @@ class ButterflyTalentFragment : Fragment() {
 
                         if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                        butterflyRow1Item1ShowTV.text =
-                            companionList.towerList[companionList.towerClickID].butterflyRow1Item2.toString()
+                        butterflyRow1Item2ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow1Item2.toString()
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
