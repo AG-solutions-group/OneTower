@@ -280,6 +280,7 @@ class ItemAdapter (
         if (itemListPos[pos].id == 307) {
             it.shotBounceTargets += itemListPos[pos].specialFloat.toInt()
         }
+
         if (itemListPos[pos].id == 310) it.bonusmultiCrit += itemListPos[pos].specialFloat.toInt()
         if (itemListPos[pos].id == 312) it.itemSlowDeath += itemListPos[pos].specialFloat
         if (itemListPos[pos].id == 313) {

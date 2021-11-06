@@ -3600,7 +3600,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                      var talentBonusSpeed = 0f
                      if (it.itemListBag.contains(companionList.ewind)) talentBonusSpeed += companionList.windTalentBonusSpeed
                      companionList.levelScalerSpeedBool =
-                         (it.bonusTowerSpeed + talentBonusSpeed) * it.utilsUltimate * companionList.levelScalerSpeed
+                         (it.bonusTowerSpeed + talentBonusSpeed) * (1+it.utilsUltimate) * companionList.levelScalerSpeed
                      when {
                          (companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 1000 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
@@ -3610,7 +3610,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 32f)) +
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 64f)) +
                                              (((it.overallTowerSpd * ((100f) / 100f)) / 128f)) +
-                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 1000f) / 100f)) / 256f)))
+                                             (((it.overallTowerSpd * ((companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber - 500f) / 100f)) / 256)))
                          }
                          (companionList.levelScalerSpeedBool + it.bonusSpeedWindTalentPercent + it.markOfTheButterflySpdBoostActiveNumber) > 500 -> {
                              it.towerAttackSpeed = it.overallTowerSpd -
@@ -3673,7 +3673,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                      // tower crit
                      var talentFireBonusCrit= 0f
                      if (it.itemListBag.contains(companionList.efire)) talentFireBonusCrit += 10f
-                     var levelScalerCritBool = (it.bonusCrit + talentFireBonusCrit) * it.utilsUltimate * companionList.levelScalerCrit
+                     var levelScalerCritBool = (it.bonusCrit + talentFireBonusCrit) * (1+it.utilsUltimate) * companionList.levelScalerCrit
                      it.overallCrit = ((((it.crit + levelScalerCritBool) * 0.03f) / (1 + (0.03f * (it.crit + levelScalerCritBool + 50)))) * 100)
 
                      // crit damage
@@ -4891,14 +4891,17 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         // item lasso
                         if (tower.itemLasso > 0) tower.itemLassoCount++
                         if (tower.itemLasso > 0 && tower.itemLassoCount >= (300 / tower.itemLasso).toInt()) {
+                            tower.itemLassoCount = 0
+                            repeat(tower.itemLasso) {
+                                for (it in tower.crossesAllList.shuffled()) {
+                                    if (it.itemLassoAlreadyAffected != 0) {
+                                    } else {
+                                        it.itemLassoAlreadyAffected = 1
+                                        it.itemLassoAlreadyAffectedTowerId =
+                                            companionList.towerList.indexOf(tower)
 
-                            for (it in tower.crossesAllList.shuffled()) {
-                                if (it.itemLassoAlreadyAffected != 0) {
-                                } else {
-                                    it.itemLassoAlreadyAffected = 1
-                                    it.itemLassoAlreadyAffectedTowerId = companionList.towerList.indexOf(tower)
-                                    tower.itemLassoCount = 0
-                                    break
+                                        break
+                                    }
                                 }
                             }
                         }
@@ -5795,13 +5798,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     }
                                 }
                                 // Butterfly talent
-
-                                /*
-
-                                if enemy stack from this tower > 0 -> stack +1
-                                rest stacks from this tower 0
-
-                                 */
 
                                 if (companionList.towerList[bullet.towerId].towerPrimaryElement == "butterfly") {
                                     if (companionList.towerList[bullet.towerId].markOfTheButterflyEnemyId < companionList.enemyList.size) {
@@ -6747,7 +6743,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             } else if (enemy.name == "challenge") {    // challenge
                                 if (companionList.mapMode != 2) companionList.lives += 5
                                 else companionList.livesMode2 += 5
-                                companionList.itemListInsertItem.add(Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
+                                companionList.itemListInsertItem.add(Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.itembag, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
                                 companionList.challengesKilled += 1
                                 if (companionList.activeAbilityList.contains(aAid1)) {
                                     companionList.bombActiveAbility += 5
@@ -7092,7 +7088,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                     }
                                 304 -> x = Items(304, 20, 100, 0, (companionList.costLegendary * companionList.lvlXp * 0.5f), companionList.costDia, 0f, 0, "Frost Aura", R.drawable.iceaurapurple, R.drawable.overlaytransparent, ((1.0f * companionList.lvlScaler) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((1.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0, "Slow aura X%", 20f, "", 0f)
                                 305 -> x = Items(305, 1, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Disruptor", R.drawable.disruptorpurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "Adds X dmg per enemy in tower range", (2f * companionList.lvlScaler)* tower.towerRarityMultiplier, "", 0f)
-                                306 -> x = Items(306, 50, 999, 0, 0f, companionList.costDia, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f)
+                                306 -> x = Items(306, 50, 999, 0, 0f, companionList.costDia, 0f, 0, "Beggar", R.drawable.itembag, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f)
                                 307 -> x = Items(307, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Multibarrel", R.drawable.bouncepurple, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, ((4.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 5, "+2 bounce", 2f, "", 0f)
                                 308 -> x = Items(308, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Freezer", R.drawable.frostlila, R.drawable.overlaytransparent, ((1.0f * companionList.lvlScaler) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((4.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, ((3.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 5, "slows a random unit for 30%", 30.0f, "", 0f)
                                 309 -> x = Items(309, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Lasso", R.drawable.lassopurple, R.drawable.overlaytransparent, ((1.0f * companionList.lvlScaler) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0.0f, 0.0f, 0f, 0.0f, 0.0f, 5, "throws X lassos that stun", 3.0f, "", 0f)
@@ -7400,7 +7396,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     fun towerExperience(towerId: Int, xpGain: Float){
         var xpGain2 = xpGain * companionList.towerList[towerId].bonusXpMultiplier
-        if (companionList.towerList[towerId].experienceMoonNight) xpGain2 *= 2
+        if (companionList.towerList[towerId].experienceMoonNight && !companionList.day) xpGain2 *= 2
         companionList.towerList[towerId].xpTower += xpGain2
         towerExperienceGainUtilAura(xpGain2, towerId)
         if (companionList.towerList[towerId].experienceShareUtilsAura) towerExperienceShareUtilAura(xpGain2, towerId)

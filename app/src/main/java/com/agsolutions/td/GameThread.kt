@@ -43,14 +43,10 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
                 timeMillis = (System.nanoTime() - startTime) / 1000000
                 waitTime = targetTime - timeMillis
 
-            Log.d("blabla", waitTime.toString())
-            Log.d("blablatarget", targetTime.toString())
-
-
                 if (waitTime > 0) targetTime-- else targetTime++
 
-            if (targetTime > 40) multiplier = ((targetTime - 39)*0.0025f) else multiplier = 0f
-            if (targetTime > 11) GameActivity.companionList.gameSpeedAdjusterPlus = (0.1f + ((targetTime - 10) * (0.06f + multiplier))) * GameActivity.companionList.gameSpeedAdjuster
+            if (targetTime > 30) multiplier = ((targetTime - 39)*0.0025f) else multiplier = 0f
+            if (targetTime > 20) GameActivity.companionList.gameSpeedAdjusterPlus = (0.1f + ((targetTime - 19) * (0.06f + multiplier))) * GameActivity.companionList.gameSpeedAdjuster
             else GameActivity.companionList.gameSpeedAdjusterPlus = 0.0f
 
                 try {

@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.*
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import com.agsolutions.td.GameActivity.Companion.companionList
+import com.agsolutions.td.GameActivity.Companion.paused
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.math.atan2
 
@@ -471,10 +472,11 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
         //scale canvas for different devices
 
         focusVar = scaleFactor - 1
-        GameView.clipRect = canvas.clipBounds
 
         canvas.translate(focusCanvasX * (focusVar) * -1, focusCanvasY * (focusVar) * -1)
         canvas.scale(((companionList.scaleScreen / 10) * scaleFactor), ((companionList.scaleScreen / 10) * scaleFactor))
+
+        GameView.clipRect = canvas.clipBounds
 
             //draw background
             if (companionList.mapPick == 0 || companionList.mapPick == 1) {
@@ -706,7 +708,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                     //        for (display in dmgDisplayList) {
                                     //            Log.d("thread", Thread.currentThread().name)
                                     if (display.indexx == it) {
-                                        display.dmgCount++
+                                        if (!paused) display.dmgCount++
                                         if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
                                         else display.dmgCountPosition -= 2
                                         if (it.circleYMovement == "yminus" || it.circleYMovement == "yplus") canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x + display.dmgCountPosition)), (it.circle!!.y - (it.circle!!.r / 2) + display.positionY), display.paint)
@@ -730,7 +732,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 var dmgDisplayListIterator = companionList.dmgDisplayDropList.listIterator()
                 while (dmgDisplayListIterator.hasNext()) {
                     var display = dmgDisplayListIterator.next()
-                    display.dmgCount++
+                    if (!paused) display.dmgCount++
                     if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
                     else display.dmgCountPosition -= 2
                     icon =

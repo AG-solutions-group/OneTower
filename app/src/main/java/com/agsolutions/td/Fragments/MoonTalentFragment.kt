@@ -278,7 +278,7 @@ class MoonTalentFragment : Fragment() {
                         if (companionList.towerList[companionList.towerClickID].moonRow4Item1 == 3) {
                             companionList.moonTalentEvadeNight = true
                             if (companionList.endlessNight < 3) companionList.endlessNight += 1
-                            companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
+                            companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.itembag, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
                         }
 
                         moonRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].moonRow4Item1.toString()

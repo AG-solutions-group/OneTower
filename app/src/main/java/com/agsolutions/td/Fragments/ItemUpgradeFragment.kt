@@ -53,7 +53,7 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
                 if (position == 0) {
                     return 2
                 } else {
-                    if (GameActivity.companionList.itemFragmentEnemyList[position].stats.length > 12) return 2
+                    if (GameActivity.companionList.itemFragmentEnemyList[position].stats.length > 10) return 2
                     else return 1
                 }
             }

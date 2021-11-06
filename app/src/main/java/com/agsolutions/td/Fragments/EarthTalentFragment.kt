@@ -311,7 +311,7 @@ class EarthTalentFragment : Fragment() {
                         if (companionList.towerList[companionList.towerClickID].earthRow4Item1 == 1) companionList.towerList[companionList.towerClickID].earthTalentPhyDmgMultiplier += 0.1f
                         if (companionList.towerList[companionList.towerClickID].earthRow4Item1 == 2) companionList.towerList[companionList.towerClickID].earthTalentPhyDmgMultiplier += 0.1f
                         if (companionList.towerList[companionList.towerClickID].earthRow4Item1 == 3) {
-                            companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.bagicon3, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
+                            companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.itembag, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
                             companionList.towerList[companionList.towerClickID].earthTalentPhyDmgMultiplier += 0.1f
                         }
 
