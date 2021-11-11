@@ -7,6 +7,8 @@ import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.tutorial_items.okayBTN
 import kotlinx.android.synthetic.main.tutorial_start.*
+import kotlinx.android.synthetic.main.tutorial_start.checkBoxHints
+import kotlinx.android.synthetic.main.tutorial_start_display.*
 
 class TutorialEnemies : AppCompatActivity() {
 
@@ -90,6 +92,25 @@ class TutorialStart : AppCompatActivity() {
 
 }
 
+class DisplayTutorialStart : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.tutorial_start_display)
+
+        window.setLayout(600 , 900 )
+        window.setElevation(10F)
+
+        okayBTNDisplay.setOnClickListener() {
+                finish()
+        }
+
+    }
+    override fun onBackPressed() {
+    }
+
+}
+
 class TutorialGameEnd : AppCompatActivity() {
 
     var mHandler = Handler ()
@@ -98,10 +119,8 @@ class TutorialGameEnd : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tutorial_gameend)
 
-
         window.setLayout((600.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
-
 
         okayBTN.setOnClickListener() {
             mHandler.postDelayed({

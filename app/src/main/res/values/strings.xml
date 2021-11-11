@@ -52,6 +52,8 @@
     <string name="tutorial_touch_screen3">Want to know more about your enemies? Click on one to see enemy attributes in the bottom right corner.</string>
     <string name="tutorial_touch_screen4">To get back to the resources screen tap the icon on the bottom left.</string>
 
+    <string name="tutorial_display">Please scale your UI to your liking. \n One Tower works best when the whole path is clearly visible.</string>
+
     <!--wiki message-->
     <string name="wiki_level">Levels 1-9 : normal \n
         each 10 levels: boss \n

@@ -309,7 +309,7 @@ class WizardTalentFragment : Fragment() {
             setImagePick(41)
 
             wizardNameDisplayTalentTV.text = "Chain Lightning"
-            wizardDisplayTalentTV.text = "Casts a chain lightning that jumps to 2/4/6 targets. Increases danage for each enemy killed by chain lightning. +1 bag space item at 3/3." +
+            wizardDisplayTalentTV.text = "Casts a chain lightning that jumps to 2/4/6 targets. Increases damage for each enemy killed by chain lightning. +1 bag space item at 3/3." +
                     "Spell CD reduced for each tower with wizard element."
             wizardUpgradeBTN.isClickable = false
 

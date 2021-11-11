@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.GameActivity.Companion.paused
@@ -23,7 +24,6 @@ class GameMenu : AppCompatActivity() {
     var mHandler = Handler ()
     private var PRIVATE_MODE = 0
     var sharedPref: SharedPreferences? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +61,8 @@ class GameMenu : AppCompatActivity() {
             companionList.shootListTornado.removeAll(companionList.shootListTornado)
             companionList.dmgDisplayList.removeAll(companionList.dmgDisplayList)
             companionList.dmgDisplayDropList.removeAll(companionList.dmgDisplayDropList)
+            companionList.soundBoolDay = true
+            companionList.soundBoolNight = true
 
             val textFile = File("$filesDir/saveGame.dat")
             if (!textFile.exists()) {
@@ -96,11 +98,9 @@ class GameMenu : AppCompatActivity() {
         }
 
         wikiBtn.setOnClickListener(){
-            intent = Intent(this, GameWiki::class.java)
-            startActivity(intent)
+            companionList.toastGlobal = true
+            companionList.toastText = "Coming Soon"
         }
-
-
     }
     override fun onBackPressed() {
     }

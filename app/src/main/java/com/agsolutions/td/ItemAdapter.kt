@@ -301,7 +301,7 @@ class ItemAdapter (
                 itemListPos[pos].specialFloat = 0.1f
                 it.bonusDamageMultiplyer += itemListPos[pos].specialFloat
             } else {
-                itemListPos[pos].specialFloat = (it.xpTower / it.xpGoal2).toFloat()
+                itemListPos[pos].specialFloat = ((it.xpTower / it.xpGoal2) /2).toFloat()
                 it.bonusDamageMultiplyer += itemListPos[pos].specialFloat
                 itemListPos[pos].buddhaUsed = true
             }

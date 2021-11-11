@@ -6,7 +6,9 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.activity_game.view.*
+import kotlinx.coroutines.*
 
 
 class UiView(context: Context, attributes: AttributeSet) : View(context, attributes) {
@@ -20,10 +22,11 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
         var yRecyclerBag = 0f
         var xTalents = 0f
         var yTalents = 0f
-        var xLevelCount = 0f
-        var yLevelCount = 0f
+        var xLevelCount = (Resources.getSystem().displayMetrics.widthPixels / 2).toFloat()
+        var yLevelCount = (Resources.getSystem().displayMetrics.heightPixels / 2).toFloat()
     }
 
+    var firstBootInit = true
     var paintText = Paint ()
     var paintBlocked = Paint ()
     var paintBlocked2 = Paint ()
@@ -44,37 +47,6 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
     var fingerClickToToggle2: Bitmap? = null
     var fingerClickToToggle3: Bitmap? = null
 
-    //initialize items----------------------------------------------------------------------------
-
-    init {
-        paintBlocked.color = Color.parseColor("#80AA2E25")
-        paintBlocked.style = Paint.Style.FILL
-        paintBlocked2.color = Color.BLACK
-        paintBlocked2.style = Paint.Style.STROKE
-        paintText.color = Color.BLUE
-        paintText.style = Paint.Style.FILL_AND_STROKE
-        paintText.isAntiAlias = true
-        paintText.textSize = 48f * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor)
-        paintText.setShadowLayer(10f, 0f, 0f, Color.WHITE)
-
-        swipeDown = BitmapFactory.decodeResource(context.resources, R.drawable.fingerswipedowntouse)
-        swipeUp = BitmapFactory.decodeResource(context.resources, R.drawable.fingerswipeuptodel)
-        fingerClick = BitmapFactory.decodeResource(context.resources, R.drawable.fingerclick)
-        fingerClickDragDrop = BitmapFactory.decodeResource(context.resources, R.drawable.fingerdragdrop)
-        one = BitmapFactory.decodeResource(context.resources, R.drawable.one)
-        two = BitmapFactory.decodeResource(context.resources, R.drawable.two)
-        three = BitmapFactory.decodeResource(context.resources, R.drawable.three)
-        beat = BitmapFactory.decodeResource(context.resources, R.drawable.startslogan1)
-        the = BitmapFactory.decodeResource(context.resources, R.drawable.startslogan2)
-        highscore = BitmapFactory.decodeResource(context.resources, R.drawable.startslogan3)
-
-        fingerClickToSpawn = BitmapFactory.decodeResource(context.resources, R.drawable.fingerclicktospawn)
-        fingerClickToToggle = BitmapFactory.decodeResource(context.resources, R.drawable.fingerclicktotoggle)
-        fingerClickToToggle2 = BitmapFactory.decodeResource(context.resources, R.drawable.fingerclicktotoggle2)
-        fingerClickToToggle3 = BitmapFactory.decodeResource(context.resources, R.drawable.fingerclicktotoggle3)
-
-    }
-
     //-------------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------------
@@ -82,6 +54,7 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
+        if (firstBootInit) firstBootInit()
 
         canvas.translate(GameView.focusCanvasX * (GameView.focusVar) * -1, GameView.focusCanvasY * (GameView.focusVar) * -1)
 
@@ -356,6 +329,47 @@ class UiView(context: Context, attributes: AttributeSet) : View(context, attribu
                 canvas.drawText(GameActivity.companionList.personalHighscore.toString(), xLevelCountD, yLevelCountD, paintText)
             }
         }
+    }
+
+    fun firstBootInit() {
+        firstBootInit = false
+
+                    paintBlocked.color = Color.parseColor("#80AA2E25")
+                    paintBlocked.style = Paint.Style.FILL
+                    paintBlocked2.color = Color.BLACK
+                    paintBlocked2.style = Paint.Style.STROKE
+                    paintText.color = Color.BLUE
+                    paintText.style = Paint.Style.FILL_AND_STROKE
+                    paintText.isAntiAlias = true
+                    paintText.textSize =
+                        48f * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor)
+                    paintText.setShadowLayer(10f, 0f, 0f, Color.WHITE)
+
+                    swipeDown =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.fingerswipedowntouse)
+                    swipeUp =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.fingerswipeuptodel)
+                    fingerClick =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.fingerclick)
+                    fingerClickDragDrop =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.fingerdragdrop)
+                    one = BitmapFactory.decodeResource(context.resources, R.drawable.one)
+                    two = BitmapFactory.decodeResource(context.resources, R.drawable.two)
+                    three = BitmapFactory.decodeResource(context.resources, R.drawable.three)
+                    beat = BitmapFactory.decodeResource(context.resources, R.drawable.startslogan1)
+                    the = BitmapFactory.decodeResource(context.resources, R.drawable.startslogan2)
+                    highscore =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.startslogan3)
+
+                    fingerClickToSpawn =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.fingerclicktospawn)
+                    fingerClickToToggle =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.fingerclicktotoggle)
+                    fingerClickToToggle2 =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.fingerclicktotoggle2)
+                    fingerClickToToggle3 =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.fingerclicktotoggle3)
+
     }
 }
 

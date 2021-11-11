@@ -53,6 +53,10 @@
             android:theme="@style/AppTheme.StartItems"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".DisplayTutorialStart"
+            android:theme="@style/AppTheme.StartItems"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".TutorialTalents"
             android:theme="@style/AppTheme.StartItems"
             android:screenOrientation="portrait" />

@@ -167,7 +167,7 @@ class WindTalentFragment : Fragment() {
             setImagePick(22)
 
             windNameDisplayTalentTV.text = "High Ground"
-            windDisplayTalentTV.text = "Increases Wind tower range by 15/30/45 units and all towers by 5/10/15."
+            windDisplayTalentTV.text = "Increases Wind tower range by 10/20/30 units and all towers by 3/6/9 units."
             windUpgradeBTN.isClickable = false
 
             if (companionList.towerList[companionList.towerClickID].windRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].windRow1Item2 == 1) {
@@ -178,16 +178,16 @@ class WindTalentFragment : Fragment() {
                         companionList.towerList[companionList.towerClickID].windRow2Item2 += 1
 
                         if (companionList.towerList[companionList.towerClickID].windRow2Item2 == 1) {
-                            companionList.globalBonusTowerRange += 5
-                            companionList.towerList[companionList.towerClickID].windTowerBonusTowerRange += 15
+                            companionList.globalBonusTowerRange += 3
+                            companionList.towerList[companionList.towerClickID].windTowerBonusTowerRange += 10
                         }
                         if (companionList.towerList[companionList.towerClickID].windRow2Item2 == 2) {
-                            companionList.globalBonusTowerRange += 5
-                            companionList.towerList[companionList.towerClickID].windTowerBonusTowerRange += 15
+                            companionList.globalBonusTowerRange += 3
+                            companionList.towerList[companionList.towerClickID].windTowerBonusTowerRange += 10
                         }
                         if (companionList.towerList[companionList.towerClickID].windRow2Item2 == 3) {
-                            companionList.globalBonusTowerRange += 5
-                            companionList.towerList[companionList.towerClickID].windTowerBonusTowerRange += 15
+                            companionList.globalBonusTowerRange += 3
+                            companionList.towerList[companionList.towerClickID].windTowerBonusTowerRange += 10
                         }
 
                         if (companionList.towerList[companionList.towerClickID].windRow2Item1 + companionList.towerList[companionList.towerClickID].windRow2Item2 + companionList.towerList[companionList.towerClickID].windRow3Item3 >= 3) backgroundWindRow3.setBackgroundResource(R.drawable.backgroundplankslight)

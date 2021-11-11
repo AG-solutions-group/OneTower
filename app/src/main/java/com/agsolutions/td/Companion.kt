@@ -1,6 +1,5 @@
 package com.agsolutions.td
 
-import android.graphics.Rect
 import java.io.Serializable
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
@@ -31,6 +30,7 @@ class Companion: Serializable {
         var itemListStartItems = mutableListOf<ItemFragmentStrings>()
         var menuItemItems = mutableListOf<ItemFragmentStrings>()
         var lockEverything = false
+        var changeBackground = false
 
         // tutorial
         var enemiesKilled = 0
@@ -168,7 +168,7 @@ class Companion: Serializable {
 
         // new level----------------------------
 
-        var levelCount = 600
+        var levelCount = 0
         var levelCountPlace = 1140
         var enemySpawned = 0
         var enemySpawnedCount = 8

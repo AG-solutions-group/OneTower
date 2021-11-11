@@ -11,14 +11,13 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.util.Log
-import android.view.DragEvent
-import android.view.Gravity
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.core.view.iterator
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -41,15 +40,13 @@ import com.agsolutions.td.GameView.Companion.paintWizardDmgDone
 import com.agsolutions.td.GameView.Companion.towerBase
 import com.agsolutions.td.LogIn.HttpTask
 import com.agsolutions.td.Main.MainActivity
-import com.agsolutions.td.UiView.Companion.xLevelCount
-import com.agsolutions.td.UiView.Companion.yLevelCount
 import com.agsolutions.td.Utils.round
 import com.agsolutions.td.databinding.ActivityGameBinding
 import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_personal_highscore.*
 import kotlinx.android.synthetic.main.talents.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -66,9 +63,10 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         var paused = false
         var gameEnd = 1
         var companionList = Companion()
+        var whileStart = true
     }
 
-    var mHandler = Handler()
+    var mHandler = Handler(Looper.getMainLooper())
     lateinit var adapter : ItemAdapter
     lateinit var bagAdapter : ItemBagAdapter
     lateinit var activeAbilityAdapter: ActiveAbilityAdapter
@@ -81,16 +79,17 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
     var fragmentStatsEnemy = StatsEnemyFragment(updateViewModel)
     var fragmentItem = ItemFragment()
     var fragmentUpgradeItem = ItemUpgradeFragment()
-    var talents = Talents()
+    var fragmentTalents = Talents()
     private var activityThread: ActivityThread = ActivityThread(this)
-    val attr = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
+    private val soundAttr = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build()
-    val soundPool = Builder().setMaxStreams(10).setAudioAttributes(attr).build()
-    val soundIds = arrayListOf<Int>(0, 1, 2)
+    private val soundPool = Builder().setMaxStreams(10).setAudioAttributes(soundAttr).build()
+    private val soundIds = arrayListOf<Int>(0, 1, 2)
     private var mediaPlayer: MediaPlayer? = null
     private var PRIVATE_MODE = 0
     var sharedPref: SharedPreferences? = null
-
+    val viewModelJob = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,38 +97,43 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         binding.updateViewModel = updateViewModel
         binding.lifecycleOwner = this
         setContentView(binding.root)
+        progressBarGame.visibility = View.VISIBLE
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        loadBasics()
-        sound()
-        initialize()
-        update()
-        fragments()
-        continueGame()
-
-        ActivityThread.runningActivity = true
-        activityThread.start()
-
-        // show start item screen at start
-
-
+        uiScope.launch {
+            withContext(Dispatchers.IO) {
+                loadBasics()
+                sound()
+                initialize()
+                withContext(Dispatchers.Main){
+                    initializeUI()
+                    continueGame()
+                }
+                startThread()
+                withContext(Dispatchers.Main) {
+                    extra()
+                    onResume()
+                }
+            }
+        }
     }
 
     //----------------------------------------------------------------------------
 
     override fun onPause() {
         super.onPause()
+        paused = true
         activityThread.interrupt()
-
     }
 
     override fun onResume() {
         super.onResume()
-        ActivityThread.runningActivity = true
-        companionList.globalSoundMusic = sharedPref!!.getFloat("Global Music", 30f)
-        companionList.globalSoundEffects = sharedPref!!.getFloat("Global Effects", 30f)
-        companionList.musicChanged = true
+        if (!whileStart) {
+            ActivityThread.runningActivity = true
+            companionList.globalSoundMusic = sharedPref!!.getFloat("Global Music", 30f)
+            companionList.globalSoundEffects = sharedPref!!.getFloat("Global Effects", 30f)
+            companionList.musicChanged = true
+            paused = false
+        }
     }
 
     override fun onTrimMemory(level: Int) {
@@ -143,10 +147,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             companionList.globalSoundEffects = sharedPref!!.getFloat("Global Effects", 30f)
             companionList.musicChanged = true
         }
-
     }
-
-    //----------------------------------------------------------------------------
 
     override fun onBackPressed() {
     }
@@ -400,7 +401,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         companionList.screenDensityHeight =
             (Resources.getSystem().displayMetrics.heightPixels * 0.8).toInt()
 
-
         companionList.scaleScreen = sharedPref!!.getFloat("ScaleBackground", 10f)
         companionList.scaleTextMain = sharedPref!!.getFloat("ScaleTextMain", 9f)
         companionList.scaleTextNews = sharedPref!!.getFloat("ScaleTextNews", 8f)
@@ -409,10 +409,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         companionList.scaleTextBig = companionList.scaleTextMain * 1.25f
 
         companionList.hintsBool = sharedPref!!.getBoolean("Global Hints", true)
-
-        if (companionList.mapMode == 2) {
-            livesTV.text = "NME"
-        }
 
         // Rect
         GameView.dragRectList.addAll(mutableListOf(
@@ -426,6 +422,18 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         ))
         if (companionList.mapMode == 1) GameView.dragRectList.add(Rect((760).toInt(), (475).toInt(), (850).toInt(), (1240).toInt()))
         else if (companionList.mapMode == 2) GameView.dragRectList.add(Rect((760).toInt(), (475).toInt(), (850).toInt(), (1050).toInt()))
+
+    }
+
+    //----------------------------------------------------------------------------
+
+       private fun initializeUI (){
+
+           window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+            if (companionList.mapMode == 2) {
+                livesTV.text = "NME"
+            }
 
         gameSpeedBtn.setOnClickListener {
             if (companionList.level > 100){
@@ -502,31 +510,19 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             startActivity(intent)
         }
 
-    }
+            coinIV.setOnClickListener {
+                paused = true
+                intent = Intent(this, Shop::class.java)
+                startActivity(intent)
+            }
 
-    //----------------------------------------------------------------------------
+            shopiconmystery.visibility = View.INVISIBLE
+            shopiconmystery.setOnClickListener {
+                paused = true
+                intent = Intent(this, SecretShop::class.java)
+                startActivity(intent)
 
-    private fun fragments() {
-
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment, fragmentStats)
-                .addToBackStack(null)
-                .commit()
-        }
-
-        coinIV.setOnClickListener {
-            paused = true
-            intent = Intent(this, Shop::class.java)
-            startActivity(intent)
-        }
-
-        shopiconmystery.visibility = View.INVISIBLE
-        shopiconmystery.setOnClickListener {
-            paused = true
-            intent = Intent(this, SecretShop::class.java)
-            startActivity(intent)
-
-        }
+            }
 
     }
 
@@ -535,31 +531,16 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
     private fun continueGame() {
 
         var continueGame = intent.getBooleanExtra("LoadGame", false)
-        if (continueGame){
-            loadGame()
-            recycler()
-        }
-        else {
-            recycler()
-            if (companionList.mapMode == 2) companionList.lvlHp * 1.3f
-            paused = true
-            mHandler.postDelayed({
-                intent = Intent(this, TutorialStart::class.java)
-                startActivity(intent)
-            }, 1000)
-        }
+        if (continueGame) loadGame()
+        recycler()
+
     }
 
     //----------------------------------------------------------------------------
 
     fun loadGame() {
 
-        //   var editor = sharedPref!!.edit()
-        // editor.putBoolean("continueGame", false)
-        // editor.apply()
-
         progressGameBar.visibility = View.VISIBLE
-
 
         var fis: InputStream? = null
         var ois: InputStream? = null
@@ -576,49 +557,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 companionList.enemyClick = false
                 companionList.build = true
                 companionList.buildClickBool = true
-
-                /*
-                adapter = ItemAdapter(companionList.itemList, this)
-                bagAdapter = ItemBagAdapter(companionList.itemListBagInserter, this, this)
-                activeAbilityAdapter = ActiveAbilityAdapter(companionList.activeAbilityList, this)
-                radioAdapter = RadioAdapter(companionList.radioList)
-
-                recyclerCurrentItem.adapter = adapter
-                var manager = LinearLayoutManagerWrapper(this, LinearLayoutManager.HORIZONTAL, false)
-                recyclerCurrentItem.layoutManager = manager
-                adapter.notifyDataSetChanged()
-
-                recyclerBagItem.adapter = bagAdapter
-                recyclerBagItem.layoutManager =
-                    LinearLayoutManagerWrapper(this, LinearLayoutManager.HORIZONTAL, false)
-                recyclerBagItem.setHasFixedSize(true)
-                bagAdapter.notifyDataSetChanged()
-
-                recyclerActiveAbility.adapter = activeAbilityAdapter
-                recyclerActiveAbility.layoutManager =
-                    LinearLayoutManagerWrapper(this, LinearLayoutManager.HORIZONTAL, false)
-                activeAbilityAdapter.notifyDataSetChanged()
-
-                recyclerRadio.adapter = radioAdapter
-                recyclerRadio.layoutManager =
-                    LinearLayoutManagerWrapper(this, LinearLayoutManager.VERTICAL, false)
-                recyclerRadio.setHasFixedSize(true)
-                radioAdapter.notifyDataSetChanged()
-
-                itemTouchHelper = ItemTouchHelper(SwipeItem(adapter))
-                itemTouchHelper2 = ItemTouchHelper(SwipeItemBag(bagAdapter))
-
-                itemTouchHelper.attachToRecyclerView(recyclerCurrentItem)
-                itemTouchHelper2.attachToRecyclerView(recyclerBagItem)
-
-                fragmentStats = StatsFragment(updateViewModel)
-                fragmentStatsTower = StatsTowerFragment(updateViewModel)
-                fragmentStatsEnemy = StatsEnemyFragment(updateViewModel)
-                fragmentItem = ItemFragment()
-                fragmentUpgradeItem = ItemUpgradeFragment()
-
-                 */
-
                 companionList.levelCount = 720
                 paused = true
             }
@@ -681,7 +619,43 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         fragmentStatsEnemy = StatsEnemyFragment(updateViewModel)
         fragmentItem = ItemFragment()
         fragmentUpgradeItem = ItemUpgradeFragment()
-        talents = Talents()
+        fragmentTalents = Talents()
+
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fragment, fragmentStats)
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
+    //----------------------------------------------------------------------------
+
+    private fun startThread() {
+        ActivityThread.runningActivity = true
+        activityThread.start()
+    }
+
+
+    private fun extra () {
+        var continueGame = intent.getBooleanExtra("LoadGame", false)
+        if (!continueGame) {
+            if (companionList.mapMode == 2) companionList.lvlHp * 1.3f
+            paused = true
+            mHandler.postDelayed({
+                companionList.changeBackground = true
+            }, 1000)
+            mHandler.postDelayed({
+                intent = Intent(this, TutorialStart::class.java)
+                startActivity(intent)
+            }, 50)
+        }
+        else {
+            mHandler.postDelayed({
+                companionList.changeBackground = true
+            }, 1000)
+        }
+        whileStart = false
+        progressBarGame.visibility = View.INVISIBLE
     }
 
     //----------------------------------------------------------------------------
@@ -695,6 +669,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         dropItem2()
 
         runOnUiThread {
+            if (companionList.changeBackground) uiView.setBackgroundResource(R.drawable.overlaytransparent)
             startItems()
             insertItem()
             unusedItems()
@@ -716,8 +691,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 bagAdapter.notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
                 recyclerBagItem.smoothScrollToPosition(0)
 
-                if (buildBtn.background != getResources().getDrawable(R.drawable.bagicon3))
-                    buildBtn.background = getResources().getDrawable(R.drawable.bagicon3)
+                if (buildBtn.background != ContextCompat.getDrawable(this, R.drawable.bagicon3))
+                    buildBtn.background = ContextCompat.getDrawable(this, R.drawable.bagicon3)
 
                 if (supportFragmentManager.findFragmentById(R.id.fragment) != fragmentStatsTower) {
                     supportFragmentManager.beginTransaction().apply {
@@ -740,8 +715,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 bagAdapter.notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
                 recyclerBagItem.smoothScrollToPosition(0)
 
-                if (buildBtn.background != getResources().getDrawable(R.drawable.talentsutils))
-                    buildBtn.background = getResources().getDrawable(R.drawable.talentsutils)
+                if (buildBtn.background != ContextCompat.getDrawable(this, R.drawable.talentsutils))
+                    buildBtn.background = ContextCompat.getDrawable(this, R.drawable.talentsutils)
 
                 if (supportFragmentManager.findFragmentById(R.id.fragment) != fragmentStats) {
                     supportFragmentManager.beginTransaction().apply {
@@ -1003,10 +978,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             if (companionList.levelCount == companionList.levelCountPlace - 1 || companionList.levelCount == companionList.levelCountPlace - 60 || companionList.levelCount == companionList.levelCountPlace - 120 || companionList.levelCount == companionList.levelCountPlace - 180 ||
                 companionList.levelCount == companionList.levelCountPlace - 300 || companionList.levelCount == companionList.levelCountPlace - 340 || companionList.levelCount == companionList.levelCountPlace - 380 || companionList.levelCount == companionList.levelCountPlace - 420
             ) {
-                xLevelCount =
-                    (Resources.getSystem().getDisplayMetrics().widthPixels / 2).toFloat()
-                yLevelCount =
-                    (Resources.getSystem().getDisplayMetrics().heightPixels / 2).toFloat()
                 companionList.invalidate++
             }
         }
@@ -1255,7 +1226,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     //----------------------------------------------------------------------------
 
-
     private fun updateMusic(){
         companionList.logVolume = (1f-(log10(companionList.maxVolume - companionList.globalSoundMusic) / log10(companionList.maxVolume)))
         companionList.logVolumeEffects = (1f-(log10(companionList.maxVolume - companionList.globalSoundEffects) / log10(companionList.maxVolume)))
@@ -1362,7 +1332,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         in 0..(companionList.towerList[enemy.killerId].overallItemChance * 10).toInt() -> {
                             var itemX = getItem(companionList.towerList[enemy.killerId])
                             if (itemX.id == 6){
-                                companionList.gold += (((0..(enemy.overallGold * 10).toInt()).random()) + 0.01f) * 0.1f
+                                companionList.gold += (((0..(enemy.overallGold * (1 + (companionList.towerList[enemy.killerId].bonusGoldMultiplier / 100)) * 10).toInt()).random()) + 0.01f) * 0.1f
                                 companionList.writeLockDisplayDrop.lock()
                                 try {
                                     var dmgDisplayListIterator = companionList.dmgDisplayDropList.listIterator()
@@ -2170,7 +2140,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         dead()
         dead2()
 
-
     }
 
         fun onLvlUp () {
@@ -2181,7 +2150,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             if (companionList.enemyList.isEmpty() && companionList.levelCountSecondBool) {
                 companionList.levelCountSecondBool = false
                 if (companionList.level == 0 && companionList.hintsBool) companionList.levelCount = companionList.levelCountPlace - 900
-                else if (companionList.level == 0) companionList.levelCount = companionList.levelCountPlace - 480
+                else if (companionList.level == 0) companionList.levelCount = companionList.levelCountPlace - 600
                 else companionList.levelCount = companionList.levelCountPlace - 180
                 companionList.levelCountBool = true
             }
@@ -2257,15 +2226,18 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 if (companionList.levelList.contains("speed")) companionList.lvlSpd *= (1.0f + (listOf<Float>(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.03f).random()))
 
                 if (companionList.lvlHp > 100000000) {
+                    paused = true
                     companionList.lvlHp /= 1000
                     companionList.bigNumberScaler /= 1000
                     companionList.lvlXp /= 1000
                     companionList.gold /= 1000
 
-                    companionList.itemList.forEach {
-                        it.dmg /= 1000
-                        it.atkDmg /= 1000
-                        it.mgcDmg /= 1000
+                    if (companionList.itemList.isNotEmpty()) {
+                        companionList.itemList.forEach {
+                            it.dmg /= 1000
+                            it.atkDmg /= 1000
+                            it.mgcDmg /= 1000
+                        }
                     }
                     companionList.writeLockTower.lock ()
                     try {
@@ -2299,9 +2271,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     }finally {
                         companionList.writeLockEnemy.unlock()
                     }
-
-
-                    paused = true
                     mHandler.postDelayed({
                         intent = Intent(this, CuttingStatsEvent::class.java)
                         startActivity(intent)
@@ -3127,8 +3096,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 it.goldDropDebuff = 1f + butterflyDebuffEnemyGoldXpAlreadyEffectedPlace
 
                 it.overallXp = it.xpEnemy * it.xpDropDebuff * companionList.wiseMan
-                it.xpDrop = 1 * it.xpDropDebuff * companionList.wiseMan
-                it.overallGold = it.xpEnemy * it.goldDropDebuff * companionList.midnightMadnessMidasGold
+                it.xpDrop = it.xpDropDebuff * companionList.wiseMan
+                it.overallGold = (it.xpEnemy * 1.1f) * it.goldDropDebuff * companionList.midnightMadnessMidasGold
 
             }
         }finally {
@@ -5649,7 +5618,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 if (companionList.towerList[bullet.towerId].goldDrop) {
                                     when ((0..299).random()) {
                                         0 -> {
-                                            companionList.gold += (((0..(it.overallGold * 10).toInt()).random()) + 0.01f) * 0.1f
+                                            companionList.gold += (((0..((it.overallGold * (1+(companionList.towerList[bullet.towerId].bonusGoldMultiplier / 100)))* 10).toInt()).random()) + 0.01f) * 0.1f
                                             companionList.writeLockDisplayDrop.lock()
                                             try {
                                                 var dmgDisplayListIterator = companionList.dmgDisplayDropList.listIterator()
@@ -6758,7 +6727,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                             }
 
                             companionList.overallXp += enemy.overallXp
-                            companionList.gold += enemy.overallGold * companionList.towerList[enemy.killerId].bonusGoldMultiplier
+                            companionList.gold += enemy.overallGold * (1 + (companionList.towerList[enemy.killerId].bonusGoldMultiplier / 100))
 
                             var xpGain: Float =
                                 if (enemy.name == "boss") ((enemy.xpDrop * companionList.wiseMan * 5) * (0.2f + companionList.towerList[enemy.killerId].experienceKill))
@@ -6851,7 +6820,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             }
             x.itemChance = (15f + ((ceil(companionList.level / 10.0f)) * 4 * tower.towerRarityMultiplier)) / 3 * pointsItemChance
             x.itemQuality = (2f + ((ceil(companionList.level / 10.0f)) * tower.towerRarityMultiplier)) / 3 * pointsItemQuality
-            x.goldIncome = (15f) / 3 * pointsGoldIncome
+            x.goldIncome = (15f + ((ceil(companionList.level / 10.0f)) * 4 * tower.towerRarityMultiplier)) / 3 * pointsGoldIncome
             x.xpGain = (15f + ((ceil(companionList.level / 10.0f)) * 4 * tower.towerRarityMultiplier)) / 3 * pointsXpGain
         }
 
@@ -7033,7 +7002,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 217 -> x =
                                     Items(217, 1, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "Snowman", R.drawable.snowmanorange, R.drawable.overlaytransparent, ((0.5f * companionList.lvlScaler) + (companionList.level * 0.05f))* tower.towerRarityMultiplier, 0.0f, 0.0f, ((4f * companionList.lvlScalerSecond) + (companionList.level * 0.05f))* tower.towerRarityMultiplier, ((3f * companionList.lvlScalerSecond) + (companionList.level * 0.05f))* tower.towerRarityMultiplier, 0f, 3, "+10% slow on hit", 0f, "", 0f)
                                 218 -> x =
-                                    Items(218, 20, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "Brain Damage", R.drawable.braindamageorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 3, "+1% dmg/towerlvl", tower.towerLevel.toFloat(), "", 0f)
+                                    Items(218, 20, 999, 0, (companionList.costEpic * companionList.lvlXp), 0, 0f, 0, "Brain Damage", R.drawable.braindamageorange, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 3, "+2% dmg/towerlvl", (tower.towerLevel * 2).toFloat(), "", 0f)
                             }
                         }
                     7,8 -> {
@@ -7098,7 +7067,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 313 -> x = Items(313, 10, 999, 0, 0f, companionList.costDia, 0f, 0, "Lovely!", R.drawable.heartdiagreen, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "+5 lives", 5f, "", 0f)
                                 314 -> x = Items(314, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Shredder", R.drawable.shredderpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, ((6.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0f, 0f, 0, "reduces armor by X per hit", 0.5f* tower.towerRarityMultiplier, "", 0f)
                                 315 -> x = Items(315, 30, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Legendary Magic Braker", R.drawable.magicbrakerpurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, ((6.0f * companionList.lvlScalerSecond) + (companionList.level * 0.15f))* tower.towerRarityMultiplier, 0f, 0f, 0, "reduces magic armor by X per hit", 0.5f* tower.towerRarityMultiplier, "", 0f)
-                                316 -> x = Items(316, 20, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Buddha", R.drawable.buddhapurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "+1% dmg/% of current towerlvl", 0f, "", 0f)
+                                316 -> x = Items(316, 20, 999, 0, (companionList.costLegendary * companionList.lvlXp), companionList.costDia, 0f, 0, "Buddha", R.drawable.buddhapurple, R.drawable.overlaytransparent, 0f, 0.0f, 0.0f, 0f, 0f, 0f, 0, "+0.5% dmg/% of current towerlvl", 0f, "", 0f)
                             }
                         }
                     7,8 -> {

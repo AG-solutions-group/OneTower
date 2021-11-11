@@ -8,7 +8,6 @@ import android.view.*
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.GameActivity.Companion.paused
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.math.atan2
 
 
@@ -46,6 +45,7 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     private var thread: GameThread
     val enemy = Enemy(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0)
     var firstBoot = true
+    var firstBootInit = true
 
     var MIN_ZOOM = 1f
     var MAX_ZOOM = 3f
@@ -123,147 +123,6 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
     //initialize items----------------------------------------------------------------------------
 
     init {
-        dragRect = Rect()
-        clipRect = Rect()
-
-        paintIceWizard.isAntiAlias
-        paintIceWizard.isFilterBitmap
-        paintIceWizard.color = Color.WHITE
-        paintMine.isAntiAlias
-        paintMine.isFilterBitmap
-        paintMine.color = Color.parseColor("#653F05")
-        paintPoisonUlti.isAntiAlias
-        paintPoisonUlti.isFilterBitmap
-        paintPoisonUlti.color = Color.GREEN
-
-        paintHpBarBack.color = Color.BLACK
-        paintHpBar.color = Color.parseColor("#00B300")
-        paintHpBarNight.color = Color.parseColor("#005900")
-        paintLasso.color = Color.YELLOW
-        paintRange.color = Color.YELLOW
-        paintRange.style = Paint.Style.STROKE
-        paintManaShield.color = resources.getColor(R.color.ManaShield)
-        paintShield.color = resources.getColor(R.color.Shield)
-        paintLaser.color = Color.YELLOW
-        paintLaser.style = Paint.Style.STROKE
-        paintLaser.strokeWidth = 4f
-        paintText.color = Color.RED
-        paintText.style = Paint.Style.FILL_AND_STROKE
-        paintText.isAntiAlias = true
-        paintText.textSize = 40f
-        paintText.setShadowLayer(10f,10f, 10f, Color.BLACK)
-        paintDisrupt.color = Color.parseColor("#500E28")
-        paintTowerDmgDone.color = Color.WHITE
-        paintTowerDmgDone.style = Paint.Style.FILL_AND_STROKE
-        paintTowerDmgDone.isAntiAlias = true
-        paintTowerDmgDone.textSize = 30f
-        paintTowerDmgDone.letterSpacing = -0.15f
-        paintTowerDmgDone.setShadowLayer(5f,0f, 0f, Color.BLACK)
-        paintBurnDmgDone.color = Color.parseColor("#F6546A")
-        paintBurnDmgDone.style = Paint.Style.FILL_AND_STROKE
-        paintBurnDmgDone.isAntiAlias = true
-        paintBurnDmgDone.textSize = 30f
-        paintBurnDmgDone.letterSpacing = -0.15f
-        paintBurnDmgDone.setShadowLayer(5f,0f, 0f, Color.BLACK)
-        paintPoisonDmgDone.color = Color.parseColor("#ADEAAD")
-        paintPoisonDmgDone.style = Paint.Style.FILL_AND_STROKE
-        paintPoisonDmgDone.isAntiAlias = true
-        paintPoisonDmgDone.textSize = 30f
-        paintPoisonDmgDone.letterSpacing = -0.15f
-        paintPoisonDmgDone.setShadowLayer(5f,0f, 0f, Color.BLACK)
-        paintPestDmgDone.color = Color.parseColor("#3C8227")
-        paintPestDmgDone.style = Paint.Style.FILL_AND_STROKE
-        paintPestDmgDone.isAntiAlias = true
-        paintPestDmgDone.textSize = 30f
-        paintPestDmgDone.letterSpacing = -0.15f
-        paintPestDmgDone.setShadowLayer(5f,0f, 0f, Color.BLACK)
-        paintIceDmgDone.color = Color.parseColor("#7FB3FF")
-        paintIceDmgDone.style = Paint.Style.FILL_AND_STROKE
-        paintIceDmgDone.isAntiAlias = true
-        paintIceDmgDone.textSize = 30f
-        paintIceDmgDone.letterSpacing = -0.15f
-        paintIceDmgDone.setShadowLayer(5f,0f, 0f, Color.BLACK)
-        paintEarthDmgDone.color = Color.parseColor("#55253A")
-        paintEarthDmgDone.style = Paint.Style.FILL_AND_STROKE
-        paintEarthDmgDone.isAntiAlias = true
-        paintEarthDmgDone.textSize = 30f
-        paintEarthDmgDone.letterSpacing = -0.15f
-        paintEarthDmgDone.setShadowLayer(1f,0f, 0f, Color.BLACK)
-        paintEarthDmgDone.setShadowLayer(5f,0f, 0f, Color.WHITE)
-        paintWizardDmgDone.color = Color.parseColor("#FFEC9E")
-        paintWizardDmgDone.style = Paint.Style.FILL_AND_STROKE
-        paintWizardDmgDone.isAntiAlias = true
-        paintWizardDmgDone.textSize = 30f
-        paintWizardDmgDone.letterSpacing = -0.15f
-        paintWizardDmgDone.setShadowLayer(5f,0f, 0f, Color.BLACK)
-        paintMoonDmgDone.color = Color.parseColor("#0C1593")
-        paintMoonDmgDone.style = Paint.Style.FILL_AND_STROKE
-        paintMoonDmgDone.isAntiAlias = true
-        paintMoonDmgDone.textSize = 30f
-        paintMoonDmgDone.letterSpacing = -0.15f
-        paintMoonDmgDone.setShadowLayer(1f,0f, 0f, Color.BLACK)
-        paintMoonDmgDone.setShadowLayer(5f,0f, 0f, Color.WHITE)
-        paintBombDmgDone.color = Color.BLACK
-        paintBombDmgDone.style = Paint.Style.FILL_AND_STROKE
-        paintBombDmgDone.isAntiAlias = true
-        paintBombDmgDone.textSize = 30f
-        paintBombDmgDone.letterSpacing = -0.15f
-        paintBombDmgDone.setShadowLayer(5f,0f, 0f, Color.WHITE)
-
-         elementButterfly = BitmapFactory.decodeResource(context.resources, R.drawable.talentsbutterfly)
-         elementDark = BitmapFactory.decodeResource(context.resources, R.drawable.talentsdark)
-         elementEarth = BitmapFactory.decodeResource(context.resources, R.drawable.talentsearth)
-         elementFire = BitmapFactory.decodeResource(context.resources, R.drawable.talentsfire)
-         elementIce = BitmapFactory.decodeResource(context.resources, R.drawable.talentsice)
-         elementMoon = BitmapFactory.decodeResource(context.resources, R.drawable.moon)
-         elementPoison = BitmapFactory.decodeResource(context.resources, R.drawable.talentspoison)
-         elementUtils = BitmapFactory.decodeResource(context.resources, R.drawable.talentsutils)
-         elementWind = BitmapFactory.decodeResource(context.resources, R.drawable.talentswind)
-         elementWizard = BitmapFactory.decodeResource(context.resources, R.drawable.talentswizard)
-
-        goldDrop = BitmapFactory.decodeResource(context.resources, R.drawable.goldicon)
-        upDrop = BitmapFactory.decodeResource(context.resources, R.drawable.upgradepointsicon)
-        ipDrop = BitmapFactory.decodeResource(context.resources, R.drawable.itempointsicon)
-        talentP = BitmapFactory.decodeResource(context.resources, R.drawable.talenticondraw)
-        towerBase = BitmapFactory.decodeResource(context.resources, R.drawable.towerbasesmall)
-        towerFalling = BitmapFactory.decodeResource(context.resources, R.drawable.towerfalling)
-        towerGunBasic = BitmapFactory.decodeResource(context.resources, R.drawable.towergunbasic)
-        towerGunBlue = BitmapFactory.decodeResource(context.resources, R.drawable.towergunblue)
-        towerGunOrange = BitmapFactory.decodeResource(context.resources, R.drawable.towergunorange)
-        towerGunPurple = BitmapFactory.decodeResource(context.resources, R.drawable.towergunbig)
-            backgroundMap1DayBmp = BitmapFactory.decodeResource(context.resources, R.drawable.map1blur)
-            backgroundMap1NightBmp = BitmapFactory.decodeResource(context.resources, R.drawable.map1blurnight)
-            backgroundMap1Mode2DayBmp = BitmapFactory.decodeResource(context.resources, R.drawable.map2blur)
-            backgroundMap1Mode2NightBmp = BitmapFactory.decodeResource(context.resources, R.drawable.map2blurnight)
-        explosion = BitmapFactory.decodeResource(context.resources, R.drawable.explosion)
-        explosion2 = BitmapFactory.decodeResource(context.resources, R.drawable.explosiontwo)
-        icon = goldDrop
-
-        shootBulletPic = BitmapFactory.decodeResource(context.resources, R.drawable.bulletbig)
-        shootSplashPic = BitmapFactory.decodeResource(context.resources, R.drawable.rock)
-        shootBouncePic = BitmapFactory.decodeResource(context.resources, R.drawable.glaive)
-        shootMultiPic = BitmapFactory.decodeResource(context.resources, R.drawable.windmulti)
-        shootMultiPicDay = BitmapFactory.decodeResource(context.resources, R.drawable.windmultiday)
-        shootChainLightningPic = BitmapFactory.decodeResource(context.resources, R.drawable.lightning)
-        val shootButterflyPic1 = BitmapFactory.decodeResource(context.resources, R.drawable.butterfly11)
-        val shootButterflyPic2 = BitmapFactory.decodeResource(context.resources, R.drawable.butterfly22)
-        val shootButterflyPic3 = BitmapFactory.decodeResource(context.resources, R.drawable.butterfly33)
-        shootButterflyArray = arrayListOf<Bitmap>(shootButterflyPic1, shootButterflyPic2, shootButterflyPic3, shootButterflyPic2)
-        val shootPoisonPic1 = BitmapFactory.decodeResource(context.resources, R.drawable.poisoncloud1)
-        val shootPoisonPic2 = BitmapFactory.decodeResource(context.resources, R.drawable.poisoncloud2)
-        shootPoisonArray = arrayListOf<Bitmap>(shootPoisonPic1, shootPoisonPic2)
-        val minePic1 = BitmapFactory.decodeResource(context.resources, R.drawable.mine1)
-        val minePic2 = BitmapFactory.decodeResource(context.resources, R.drawable.mine2)
-        mineArray = arrayListOf<Bitmap>(minePic2, minePic2, minePic1, minePic2, minePic2)
-        val touchPic1 = BitmapFactory.decodeResource(context.resources, R.drawable.touch1)
-        val touchPic2 = BitmapFactory.decodeResource(context.resources, R.drawable.touch2)
-        val touchPic3 = BitmapFactory.decodeResource(context.resources, R.drawable.touch3)
-        touchArray = arrayListOf<Bitmap>(touchPic1, touchPic2, touchPic3, touchPic3)
-
-        fingerClick = BitmapFactory.decodeResource(context.resources, R.drawable.fingerclick)
-
-        creepOutline = BitmapFactory.decodeResource(context.resources, R.drawable.creepoutline2)
-
         // add callback
         holder.addCallback(this)
 
@@ -463,6 +322,8 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
+
+        if (firstBootInit)(firstBootInit())
 
         // ------------------------------------------------------------------------------------------------------------------------------------------------
         // ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -708,9 +569,11 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                                     //        for (display in dmgDisplayList) {
                                     //            Log.d("thread", Thread.currentThread().name)
                                     if (display.indexx == it) {
-                                        if (!paused) display.dmgCount++
-                                        if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
-                                        else display.dmgCountPosition -= 2
+                                        if (!paused) {
+                                            display.dmgCount++
+                                            if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
+                                            else display.dmgCountPosition -= 2
+                                        }
                                         if (it.circleYMovement == "yminus" || it.circleYMovement == "yplus") canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x + display.dmgCountPosition)), (it.circle!!.y - (it.circle!!.r / 2) + display.positionY), display.paint)
                                         else canvas.drawText(display.dmgReceived.toString(), ((it.circle!!.x - (it.circle!!.r / 2)) + display.positionX), (it.circle!!.y - display.dmgCountPosition), display.paint)
 
@@ -732,9 +595,11 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 var dmgDisplayListIterator = companionList.dmgDisplayDropList.listIterator()
                 while (dmgDisplayListIterator.hasNext()) {
                     var display = dmgDisplayListIterator.next()
-                    if (!paused) display.dmgCount++
-                    if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
-                    else display.dmgCountPosition -= 2
+                    if (!paused){
+                        display.dmgCount++
+                        if (display.dmgCountPosition > 1) display.dmgCountPosition += 2
+                        else display.dmgCountPosition -= 2
+                    }
                     icon =
                         if (display.icon == "gold") goldDrop else if (display.icon == "ip") ipDrop else upDrop
                     rectForAll =
@@ -894,6 +759,194 @@ class GameView(context: Context, attributes: AttributeSet) : SurfaceView(context
                 angle += 360f
             }
             return angle
+    }
+
+    fun firstBootInit() {
+        firstBootInit = false
+
+                    dragRect = Rect()
+                    clipRect = Rect()
+
+                    paintIceWizard.isAntiAlias
+                    paintIceWizard.isFilterBitmap
+                    paintIceWizard.color = Color.WHITE
+                    paintMine.isAntiAlias
+                    paintMine.isFilterBitmap
+                    paintMine.color = Color.parseColor("#653F05")
+                    paintPoisonUlti.isAntiAlias
+                    paintPoisonUlti.isFilterBitmap
+                    paintPoisonUlti.color = Color.GREEN
+
+                    paintHpBarBack.color = Color.BLACK
+                    paintHpBar.color = Color.parseColor("#00B300")
+                    paintHpBarNight.color = Color.parseColor("#005900")
+                    paintLasso.color = Color.YELLOW
+                    paintRange.color = Color.YELLOW
+                    paintRange.style = Paint.Style.STROKE
+                    paintManaShield.color = resources.getColor(R.color.ManaShield)
+                    paintShield.color = resources.getColor(R.color.Shield)
+                    paintLaser.color = Color.YELLOW
+                    paintLaser.style = Paint.Style.STROKE
+                    paintLaser.strokeWidth = 4f
+                    paintText.color = Color.RED
+                    paintText.style = Paint.Style.FILL_AND_STROKE
+                    paintText.isAntiAlias = true
+                    paintText.textSize = 40f
+                    paintText.setShadowLayer(10f, 10f, 10f, Color.BLACK)
+                    paintDisrupt.color = Color.parseColor("#500E28")
+                    paintTowerDmgDone.color = Color.WHITE
+                    paintTowerDmgDone.style = Paint.Style.FILL_AND_STROKE
+                    paintTowerDmgDone.isAntiAlias = true
+                    paintTowerDmgDone.textSize = 30f
+                    paintTowerDmgDone.letterSpacing = -0.15f
+                    paintTowerDmgDone.setShadowLayer(5f, 0f, 0f, Color.BLACK)
+                    paintBurnDmgDone.color = Color.parseColor("#F6546A")
+                    paintBurnDmgDone.style = Paint.Style.FILL_AND_STROKE
+                    paintBurnDmgDone.isAntiAlias = true
+                    paintBurnDmgDone.textSize = 30f
+                    paintBurnDmgDone.letterSpacing = -0.15f
+                    paintBurnDmgDone.setShadowLayer(5f, 0f, 0f, Color.BLACK)
+                    paintPoisonDmgDone.color = Color.parseColor("#ADEAAD")
+                    paintPoisonDmgDone.style = Paint.Style.FILL_AND_STROKE
+                    paintPoisonDmgDone.isAntiAlias = true
+                    paintPoisonDmgDone.textSize = 30f
+                    paintPoisonDmgDone.letterSpacing = -0.15f
+                    paintPoisonDmgDone.setShadowLayer(5f, 0f, 0f, Color.BLACK)
+                    paintPestDmgDone.color = Color.parseColor("#3C8227")
+                    paintPestDmgDone.style = Paint.Style.FILL_AND_STROKE
+                    paintPestDmgDone.isAntiAlias = true
+                    paintPestDmgDone.textSize = 30f
+                    paintPestDmgDone.letterSpacing = -0.15f
+                    paintPestDmgDone.setShadowLayer(5f, 0f, 0f, Color.BLACK)
+                    paintIceDmgDone.color = Color.parseColor("#7FB3FF")
+                    paintIceDmgDone.style = Paint.Style.FILL_AND_STROKE
+                    paintIceDmgDone.isAntiAlias = true
+                    paintIceDmgDone.textSize = 30f
+                    paintIceDmgDone.letterSpacing = -0.15f
+                    paintIceDmgDone.setShadowLayer(5f, 0f, 0f, Color.BLACK)
+                    paintEarthDmgDone.color = Color.parseColor("#55253A")
+                    paintEarthDmgDone.style = Paint.Style.FILL_AND_STROKE
+                    paintEarthDmgDone.isAntiAlias = true
+                    paintEarthDmgDone.textSize = 30f
+                    paintEarthDmgDone.letterSpacing = -0.15f
+                    paintEarthDmgDone.setShadowLayer(1f, 0f, 0f, Color.BLACK)
+                    paintEarthDmgDone.setShadowLayer(5f, 0f, 0f, Color.WHITE)
+                    paintWizardDmgDone.color = Color.parseColor("#FFEC9E")
+                    paintWizardDmgDone.style = Paint.Style.FILL_AND_STROKE
+                    paintWizardDmgDone.isAntiAlias = true
+                    paintWizardDmgDone.textSize = 30f
+                    paintWizardDmgDone.letterSpacing = -0.15f
+                    paintWizardDmgDone.setShadowLayer(5f, 0f, 0f, Color.BLACK)
+                    paintMoonDmgDone.color = Color.parseColor("#0C1593")
+                    paintMoonDmgDone.style = Paint.Style.FILL_AND_STROKE
+                    paintMoonDmgDone.isAntiAlias = true
+                    paintMoonDmgDone.textSize = 30f
+                    paintMoonDmgDone.letterSpacing = -0.15f
+                    paintMoonDmgDone.setShadowLayer(1f, 0f, 0f, Color.BLACK)
+                    paintMoonDmgDone.setShadowLayer(5f, 0f, 0f, Color.WHITE)
+                    paintBombDmgDone.color = Color.BLACK
+                    paintBombDmgDone.style = Paint.Style.FILL_AND_STROKE
+                    paintBombDmgDone.isAntiAlias = true
+                    paintBombDmgDone.textSize = 30f
+                    paintBombDmgDone.letterSpacing = -0.15f
+                    paintBombDmgDone.setShadowLayer(5f, 0f, 0f, Color.WHITE)
+
+                    elementButterfly =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.talentsbutterfly)
+                    elementDark =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.talentsdark)
+                    elementEarth =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.talentsearth)
+                    elementFire =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.talentsfire)
+                    elementIce =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.talentsice)
+                    elementMoon = BitmapFactory.decodeResource(context.resources, R.drawable.moon)
+                    elementPoison =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.talentspoison)
+                    elementUtils =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.talentsutils)
+                    elementWind =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.talentswind)
+                    elementWizard =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.talentswizard)
+
+                    goldDrop = BitmapFactory.decodeResource(context.resources, R.drawable.goldicon)
+                    upDrop =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.upgradepointsicon)
+                    ipDrop =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.itempointsicon)
+                    talentP =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.talenticondraw)
+                    towerBase =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.towerbasesmall)
+                    towerFalling =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.towerfalling)
+                    towerGunBasic =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.towergunbasic)
+                    towerGunBlue =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.towergunblue)
+                    towerGunOrange =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.towergunorange)
+                    towerGunPurple =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.towergunbig)
+                    backgroundMap1DayBmp =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.map1blur)
+                    backgroundMap1NightBmp =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.map1blurnight)
+                    backgroundMap1Mode2DayBmp =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.map2blur)
+                    backgroundMap1Mode2NightBmp =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.map2blurnight)
+                    explosion =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.explosion)
+                    explosion2 =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.explosiontwo)
+                    icon = goldDrop
+
+                    shootBulletPic =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.bulletbig)
+                    shootSplashPic =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.rock)
+                    shootBouncePic =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.glaive)
+                    shootMultiPic =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.windmulti)
+                    shootMultiPicDay =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.windmultiday)
+                    shootChainLightningPic =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.lightning)
+                    val shootButterflyPic1 =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.butterfly11)
+                    val shootButterflyPic2 =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.butterfly22)
+                    val shootButterflyPic3 =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.butterfly33)
+                    shootButterflyArray =
+                        arrayListOf<Bitmap>(shootButterflyPic1, shootButterflyPic2, shootButterflyPic3, shootButterflyPic2)
+                    val shootPoisonPic1 =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.poisoncloud1)
+                    val shootPoisonPic2 =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.poisoncloud2)
+                    shootPoisonArray = arrayListOf<Bitmap>(shootPoisonPic1, shootPoisonPic2)
+                    val minePic1 = BitmapFactory.decodeResource(context.resources, R.drawable.mine1)
+                    val minePic2 = BitmapFactory.decodeResource(context.resources, R.drawable.mine2)
+                    mineArray =
+                        arrayListOf<Bitmap>(minePic2, minePic2, minePic1, minePic2, minePic2)
+                    val touchPic1 =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.touch1)
+                    val touchPic2 =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.touch2)
+                    val touchPic3 =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.touch3)
+                    touchArray = arrayListOf<Bitmap>(touchPic1, touchPic2, touchPic3, touchPic3)
+
+                    fingerClick =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.fingerclick)
+
+                    creepOutline =
+                        BitmapFactory.decodeResource(context.resources, R.drawable.creepoutline2)
+
     }
 
 }

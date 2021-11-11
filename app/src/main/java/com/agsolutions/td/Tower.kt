@@ -92,7 +92,7 @@ class Tower(var dmg: Float, var phyDmg: Float, var mgcDmg: Float, var speed: Flo
     var disruptedCounter = 0
 
     // talent
-    var talentPoints = 60
+    var talentPoints = 1
     var xpTower = 0f
     var xpGoal1 = 0f
     var xpGoal2 = 1f

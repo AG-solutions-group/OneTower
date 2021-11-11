@@ -7,9 +7,11 @@ import android.os.Handler
 import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.agsolutions.td.DisplayTutorialStart
 import com.agsolutions.td.Main.GameViewDisplayScale.Companion.scaleBackground
 import com.agsolutions.td.R
 import com.agsolutions.td.RadioAdapterDisplayScale
+import com.agsolutions.td.TutorialStart
 import kotlinx.android.synthetic.main.activity_display_scale.*
 
 class DisplayScale : AppCompatActivity() {
@@ -148,6 +150,11 @@ class DisplayScale : AppCompatActivity() {
             radioAdapter.notifyDataSetChanged()
         }
         showBackgroundScaleTV.text = scaleBackground.toString()
+
+        mHandler.postDelayed({
+            intent = Intent(this, DisplayTutorialStart::class.java)
+            startActivity(intent)
+        }, 1000)
 
         plusButton.setOnClickListener() {
             scaleBackground += 1

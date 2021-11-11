@@ -158,7 +158,7 @@ class PoisonTalentFragment : Fragment() {
             setImagePick(22)
 
             poisonNameDisplayTalentTV.text = "Poison Overload"
-            poisonDisplayTalentTV.text = "tower increases attack speed for 1.66 seconds every 40/30/20 seconds"
+            poisonDisplayTalentTV.text = "Tower increases attack speed for 1.66 seconds every 40/30/20 seconds."
             poisonUpgradeBTN.isClickable = false
 
             if (companionList.towerList[companionList.towerClickID].poisonRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].poisonRow1Item2 == 1 ) {
