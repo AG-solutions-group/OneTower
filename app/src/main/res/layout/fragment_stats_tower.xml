@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".Fragments.StatsTowerFragment"
-    android:layout_gravity="center_horizontal">
-    <data>
-        <variable name="updateViewModel" type="com.agsolutions.td.UpdateViewModel"/>
-    </data>
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".Fragments.StatsTowerFragment"
+        android:layout_gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:paddingTop="5dp"
@@ -32,7 +27,6 @@
                 android:layout_height="wrap_content"
                 >
 
-
                 <ImageView
                     android:id="@+id/rarityTV"
                     android:layout_width="24dp"
@@ -51,8 +45,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.towerRarity.toString()}"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/rarityTV"
                     app:layout_constraintStart_toEndOf="@+id/rarityTV"
                     app:layout_constraintTop_toTopOf="@+id/rarityTV" />
@@ -64,8 +56,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.towerRarityMultiplier.toString()}"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/rarityTV"
                     app:layout_constraintStart_toEndOf="@+id/rarityShowTV"
                     app:layout_constraintTop_toTopOf="@+id/rarityTV" />
@@ -77,9 +67,6 @@
                     android:layout_height="20dp"
                     android:layout_marginStart="10dp"
                     android:background="@color/backgroundButton"
-                    android:max="@{updateViewModel.towerLevelXp}"
-                    android:min="@{updateViewModel.towerLevelXpMin}"
-                    android:progress="@{updateViewModel.towerLevelXpProg}"
                     android:progressBackgroundTint="@color/backgroundButton"
                     android:progressTint="#1E9823"
                     app:layout_constraintBottom_toBottomOf="@+id/rarityTV"
@@ -92,9 +79,7 @@
                     android:layout_height="wrap_content"
                     android:elevation="1dp"
                     android:gravity="center_vertical"
-                    android:text="@{updateViewModel.towerLevel.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/xpBar"
                     app:layout_constraintEnd_toEndOf="@+id/xpBar"
                     app:layout_constraintStart_toStartOf="@+id/xpBar"
@@ -119,9 +104,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.itemChance.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/itemChanceTV"
                     app:layout_constraintStart_toEndOf="@+id/itemChanceTV"
                     app:layout_constraintTop_toTopOf="@+id/itemChanceTV" />
@@ -144,9 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.itemQuality.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/bonusItemQualityTV"
                     app:layout_constraintStart_toEndOf="@+id/bonusItemQualityTV"
                     app:layout_constraintTop_toTopOf="@+id/bonusItemQualityTV" />
@@ -169,9 +150,7 @@
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
                     android:minWidth="30dp"
-                    android:text="@{updateViewModel.bagString.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/bagSizeTV"
                     app:layout_constraintStart_toEndOf="@+id/bagSizeTV"
                     app:layout_constraintTop_toTopOf="@+id/bagSizeTV" />
@@ -194,9 +173,7 @@
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
                     android:minWidth="30dp"
-                    android:text="@{updateViewModel.bagStringElement.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/bagSizeTV"
                     app:layout_constraintStart_toEndOf="@+id/bagSizeElementTV"
                     app:layout_constraintTop_toTopOf="@+id/bagSizeTV" />
@@ -221,9 +198,7 @@
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
                     android:minWidth="40dp"
-                    android:text="@{updateViewModel.towerDmgString.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/dmgTV"
                     app:layout_constraintStart_toEndOf="@+id/dmgTV"
                     app:layout_constraintTop_toTopOf="@+id/dmgTV" />
@@ -246,9 +221,7 @@
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
                     android:minWidth="40dp"
-                    android:text="@{updateViewModel.towerPhyDmgString.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/phyDmgTV"
                     app:layout_constraintStart_toEndOf="@+id/phyDmgTV"
                     app:layout_constraintTop_toTopOf="@+id/phyDmgTV" />
@@ -272,9 +245,7 @@
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
                     android:minWidth="40dp"
-                    android:text="@{updateViewModel.towerMgcDmgString.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/spellDmgTV"
                     app:layout_constraintStart_toEndOf="@+id/spellDmgTV"
                     app:layout_constraintTop_toTopOf="@+id/spellDmgTV" />
@@ -298,9 +269,7 @@
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
                     android:minWidth="40dp"
-                    android:text="@{updateViewModel.towerRange.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/rangeTV"
                     app:layout_constraintStart_toEndOf="@+id/rangeTV"
                     app:layout_constraintTop_toTopOf="@+id/rangeTV" />
@@ -323,9 +292,7 @@
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
                     android:minWidth="40dp"
-                    android:text="@{updateViewModel.towerXpMulti.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/xpMultiTV"
                     app:layout_constraintStart_toEndOf="@+id/xpMultiTV"
                     app:layout_constraintTop_toTopOf="@+id/xpMultiTV" />
@@ -349,9 +316,7 @@
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
                     android:minWidth="40dp"
-                    android:text="@{updateViewModel.towerGoldMulti.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/goldMultiTV"
                     app:layout_constraintStart_toEndOf="@+id/goldMultiTV"
                     app:layout_constraintTop_toTopOf="@+id/goldMultiTV" />
@@ -375,9 +340,7 @@
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
                     android:minWidth="30dp"
-                    android:text="@{updateViewModel.towerSpd.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/speedTV"
                     app:layout_constraintStart_toEndOf="@+id/speedTV"
                     app:layout_constraintTop_toTopOf="@+id/speedTV" />
@@ -401,9 +364,7 @@
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
                     android:minWidth="30dp"
-                    android:text="@{updateViewModel.towerCrtString.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/critTV"
                     app:layout_constraintStart_toEndOf="@+id/critTV"
                     app:layout_constraintTop_toTopOf="@+id/critTV" />
@@ -425,9 +386,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.towerCrtDmg.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/critDmgTV"
                     app:layout_constraintStart_toEndOf="@+id/critDmgTV"
                     app:layout_constraintTop_toTopOf="@+id/critDmgTV" />
@@ -449,9 +408,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.towerMultiCrt.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/multiCrtTV"
                     app:layout_constraintStart_toEndOf="@+id/multiCrtTV"
                     app:layout_constraintTop_toTopOf="@+id/multiCrtTV" />
@@ -475,9 +432,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.towerHit.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/hitTV"
                     app:layout_constraintStart_toEndOf="@+id/hitTV"
                     app:layout_constraintTop_toTopOf="@+id/hitTV" />
@@ -499,9 +454,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.towerArmPen.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/armorPenTV"
                     app:layout_constraintStart_toEndOf="@+id/armorPenTV"
                     app:layout_constraintTop_toTopOf="@+id/armorPenTV" />
@@ -524,9 +477,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.towerMgcPen.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/magicPenTV"
                     app:layout_constraintStart_toEndOf="@+id/magicPenTV"
                     app:layout_constraintTop_toTopOf="@+id/magicPenTV" />
@@ -535,4 +486,3 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>

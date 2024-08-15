@@ -9,64 +9,59 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.agsolutions.td.*
 import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.Utils.round
-import kotlinx.android.synthetic.main.fragment_item.*
-import kotlinx.android.synthetic.main.fragment_upgrade_item.*
+import com.agsolutions.td.databinding.FragmentItemBinding
+import com.agsolutions.td.databinding.FragmentUpgradeItemBinding
 
-
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [StatsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener {
 
     val itemFragmentAdapter = ItemFragmentAdapter(GameActivity.companionList.itemFragmentEnemyList, this)
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private var _binding: FragmentUpgradeItemBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        var mLeak = inflater.inflate(R.layout.fragment_upgrade_item, container, false)
-        return mLeak
+    ): View {
+        _binding = FragmentUpgradeItemBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        upBTN.visibility = View.INVISIBLE
+        with(binding) {
+            upBTN.visibility = View.INVISIBLE
 
-        itemBagFragmentRecycler.adapter = itemFragmentAdapter
+            itemBagFragmentRecycler.adapter = itemFragmentAdapter
 
-        val spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                if (position == 0) {
-                    return 2
-                } else {
-                    if (GameActivity.companionList.itemFragmentEnemyList[position].stats.length > 10) return 2
-                    else return 1
+            val spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    if (position == 0) {
+                        return 2
+                    } else {
+                        if (GameActivity.companionList.itemFragmentEnemyList[position].stats.length > 10) return 2
+                        else return 1
+                    }
                 }
             }
+
+            val glm = GridLayoutManager(activity, 2)
+
+            glm.spanSizeLookup = spanSizeLookup
+            itemBagFragmentRecycler.layoutManager = glm
+            itemBagFragmentRecycler.setHasFixedSize(true)
+
         }
 
-        val glm = GridLayoutManager(activity, 2)
-
-        glm.spanSizeLookup = spanSizeLookup
-        itemBagFragmentRecycler.layoutManager = glm
-        itemBagFragmentRecycler.setHasFixedSize(true)
-
         refresh2 ()
-
     }
 
     fun refresh2 () {
@@ -85,12 +80,12 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
 
 
                         if (tower.itemListBag[position].upgrade < 1 || GameActivity.companionList.upgradePoints <= 0) {
-                            upBTN.visibility = View.INVISIBLE
+                            binding.upBTN.visibility = View.INVISIBLE
                         } else {
-                            upBTN.visibility = View.VISIBLE
+                            binding.upBTN.visibility = View.VISIBLE
                         }
 
-                        upBTN.setOnClickListener() {
+                    binding.upBTN.setOnClickListener() {
 
                             GameActivity.companionList.itemFragmentEnemyList.removeAll(GameActivity.companionList.itemFragmentEnemyList)
 
@@ -490,9 +485,9 @@ class ItemUpgradeFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener
                             itemFragmentAdapter.notifyDataSetChanged()
 
                             if (tower.itemListBag[position].upgrade < 1 || GameActivity.companionList.upgradePoints <= 0) {
-                                upBTN.visibility = View.INVISIBLE
+                                binding.upBTN.visibility = View.INVISIBLE
                             } else {
-                                upBTN.visibility = View.VISIBLE
+                                binding.upBTN.visibility = View.VISIBLE
                             }
                 }
             } finally {

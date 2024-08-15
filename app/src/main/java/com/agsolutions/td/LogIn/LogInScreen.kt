@@ -7,8 +7,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.Main.MainActivity
 import com.agsolutions.td.R
+import com.agsolutions.td.databinding.ActivityLogInScreenBinding
+import com.agsolutions.td.databinding.ActivityRegisterBinding
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_log_in_screen.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -18,10 +19,14 @@ class LogInScreen : AppCompatActivity() {
     private lateinit var inputValidation: InputValidation
     var sharedPrefZ: SharedPreferences? = null
     private var PRIVATE_MODE = 0
+    private lateinit var binding: ActivityLogInScreenBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_log_in_screen)
+        binding = ActivityLogInScreenBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
             sharedPrefZ = getSharedPreferences("Global", PRIVATE_MODE)
 
@@ -39,15 +44,15 @@ class LogInScreen : AppCompatActivity() {
     }
 
     private fun initViews() {
-        progressBar.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
     }
 
     private fun initListeners() {
 
-        appCompatButtonLogin!!.setOnClickListener(){
+        binding.appCompatButtonLogin!!.setOnClickListener(){
             verifyFromSQLite()
         }
-        textViewLinkRegister!!.setOnClickListener() {
+        binding.textViewLinkRegister!!.setOnClickListener() {
             val intentRegister = Intent(applicationContext, Register::class.java)
             startActivity(intentRegister)
         }
@@ -62,23 +67,23 @@ class LogInScreen : AppCompatActivity() {
     private fun verifyFromSQLite() {
 
         if (!inputValidation!!.isInputEditTextFilled(
-                textInputEditTextUsername!!,
-                textInputLayoutUsername!!,
+                binding.textInputEditTextUsername!!,
+                binding.textInputLayoutUsername!!,
                 "Please enter a valid username")) {
             return
         } else if (!inputValidation!!.isInputEditTextFilled(
-                textInputEditTextPassword!!,
-                textInputLayoutPassword!!,
+                binding.textInputEditTextPassword!!,
+                binding.textInputLayoutPassword!!,
                 getString(R.string.error_message_password))) {
             return
         } else {
             val json = JSONObject()
-            json.put("username", textInputEditTextUsername.text.toString())
-            json.put("password", textInputEditTextPassword.text.toString())
+            json.put("username", binding.textInputEditTextUsername.text.toString())
+            json.put("password", binding.textInputEditTextPassword.text.toString())
 
-            progressBar.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.VISIBLE
             HttpTask {
-                progressBar.visibility = View.INVISIBLE
+                binding.progressBar.visibility = View.INVISIBLE
                 if (it == null) {
                     println("connection error")
                     return@HttpTask
@@ -104,7 +109,7 @@ class LogInScreen : AppCompatActivity() {
                   //  Log.d("userdata Data:::::::", id.toString())
                 } else {
                   //  Log.d("post Data:::::::", json_res.getString("message"))
-                    Snackbar.make(nestedScrollView,
+                    Snackbar.make(binding.nestedScrollView,
                         json_res.getString("message"),
                         Snackbar.LENGTH_LONG
                     ).show()
@@ -117,8 +122,8 @@ class LogInScreen : AppCompatActivity() {
     }
 
     private fun emptyInputEditText() {
-        textInputEditTextUsername!!.text = null
-        textInputEditTextPassword!!.text = null
+        binding.textInputEditTextUsername!!.text = null
+        binding.textInputEditTextPassword!!.text = null
     }
 
 }

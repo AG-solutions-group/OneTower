@@ -1,6 +1,5 @@
 package com.agsolutions.td
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +7,6 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.agsolutions.td.ActiveAbility.Companion.aAid1
 import com.agsolutions.td.GameActivity.Companion.companionList
-import kotlinx.android.synthetic.main.item.view.*
 
 class ItemAdapter (
     private val itemList: MutableList<Items>,
@@ -402,8 +400,8 @@ class ItemAdapter (
 
     inner class ExampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
             View.OnClickListener {
-            val imageView: ImageView = itemView.item_view
-            val imageViewOverlay: ImageView = itemView.item_view_overlay
+            val imageView: ImageView = itemView.findViewById(R.id.item_view)
+            val imageViewOverlay: ImageView = itemView.findViewById(R.id.item_view_overlay)
 
         init {
             itemView.setOnClickListener(this)

@@ -4,12 +4,18 @@ import android.content.res.Resources
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.R
-import kotlinx.android.synthetic.main.tutorial_items.*
+import com.agsolutions.td.databinding.ActivityAboutBinding
+import com.agsolutions.td.databinding.ActivityLogInScreenBinding
 
 class About : AppCompatActivity() {
+
+    private lateinit var binding: ActivityAboutBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
+        binding = ActivityAboutBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         var screenwidth = (Resources.getSystem().displayMetrics.widthPixels * 0.9).toInt()
         var screenheight = (Resources.getSystem().displayMetrics.heightPixels * 0.8).toInt()
@@ -18,7 +24,7 @@ class About : AppCompatActivity() {
         window.setLayout((screenwidth * 0.7).toInt(), (screenheight* 0.7).toInt())
         window.setElevation(10F)
 
-        okayBTN.setOnClickListener() {
+        binding.okayBTN.setOnClickListener() {
             finish()
         }
 

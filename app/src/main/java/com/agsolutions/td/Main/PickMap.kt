@@ -6,17 +6,19 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
-import com.agsolutions.td.R
-import kotlinx.android.synthetic.main.activity_pick_map.*
+import com.agsolutions.td.databinding.ActivityPickMapBinding
 
 class PickMap : AppCompatActivity() {
     var mHandler = Handler()
     private var PRIVATE_MODE = 0
     var sharedPref: SharedPreferences? = null
+    private lateinit var binding: ActivityPickMapBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pick_map)
+        binding = ActivityPickMapBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         sharedPref = getSharedPreferences("Global", PRIVATE_MODE)
         var scaleScreen = sharedPref!!.getFloat("ScaleBackground", 10f)
@@ -44,7 +46,7 @@ class PickMap : AppCompatActivity() {
         }
 
          */
-        mapOneIV.setOnClickListener(){
+        binding.mapOneIV.setOnClickListener(){
             intent = Intent (this, PickMode::class.java)
             startActivity(intent)
         }
@@ -66,27 +68,3 @@ class PickMap : AppCompatActivity() {
         finish()
     }
 }
-
-/*
-
-<ImageView
-                android:id="@+id/mapTwoIV"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_marginTop="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/mapTwoTV"
-                app:srcCompat="@drawable/map2day" />
-
-            <TextView
-                android:id="@+id/mapTwoTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="Dark Woods"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/mapOneIV" />
-
- */

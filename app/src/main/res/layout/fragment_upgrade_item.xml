@@ -39,7 +39,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/upBTN"
             android:layout_width="35dp"
             android:layout_height="35dp"
@@ -51,9 +51,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:icon="@drawable/upgradepointsicon"
             app:iconTint="@null"
-            app:iconSize="20dp"
-            app:iconPadding="0dp"
-            app:iconGravity="textStart"
             android:insetLeft="0dp"
             android:insetTop="0dp"
             android:insetRight="0dp"

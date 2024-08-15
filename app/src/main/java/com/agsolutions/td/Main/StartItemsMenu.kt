@@ -11,16 +11,23 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.agsolutions.td.*
+import com.agsolutions.td.GameActivity
+import com.agsolutions.td.ItemFragmentAdapter
+import com.agsolutions.td.ItemFragmentStrings
+import com.agsolutions.td.Items
 import com.agsolutions.td.LogIn.HttpTask
+import com.agsolutions.td.R
+import com.agsolutions.td.StartItemAdapter
+import com.agsolutions.td.StartItemAdapter2
 import com.agsolutions.td.Utils.round
-import kotlinx.android.synthetic.main.activity_start_items_menu.*
-import kotlinx.android.synthetic.main.secret_shop.*
+import com.agsolutions.td.databinding.ActivityStartItemsMenuBinding
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.*
-import java.util.*
-import kotlin.collections.ArrayList
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 
 class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, StartItemAdapter2.OnHiddenClickListener, ItemFragmentAdapter.OnStatsClickListener   {
     companion object {
@@ -43,31 +50,35 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
     var newItem = 0
     var username : String? = "user"
 
+    private lateinit var binding: ActivityStartItemsMenuBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_start_items_menu)
+        binding = ActivityStartItemsMenuBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         sharedPref = getSharedPreferences("Global", PRIVATE_MODE)
         username = sharedPref!!.getString("username", "user")
 
-        startItemsMenuBar.visibility = View.INVISIBLE
+        with(binding) {
+            startItemsMenuBar.visibility = View.INVISIBLE
 
-        recyclerStartMenuItem.adapter = adapter
-        recyclerStartMenuItem.layoutManager =
-            GridLayoutManager(this, 6)
-        recyclerStartMenuItem.setHasFixedSize(true)
+            recyclerStartMenuItem.adapter = adapter
+            recyclerStartMenuItem.layoutManager =
+                GridLayoutManager(this@StartItemsMenu, 6)
+            recyclerStartMenuItem.setHasFixedSize(true)
 
-        recyclerStartMenuHiddenItem.adapter = adapterHidden
-        recyclerStartMenuHiddenItem.layoutManager =
-            GridLayoutManager(this, 6)
-        recyclerStartMenuHiddenItem.setHasFixedSize(true)
+            recyclerStartMenuHiddenItem.adapter = adapterHidden
+            recyclerStartMenuHiddenItem.layoutManager =
+                GridLayoutManager(this@StartItemsMenu, 6)
+            recyclerStartMenuHiddenItem.setHasFixedSize(true)
 
-        itemMenuStatsRecycler.adapter = showAdapter
-        itemMenuStatsRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        itemMenuStatsRecycler.setHasFixedSize(true)
-
-
+            itemMenuStatsRecycler.adapter = showAdapter
+            itemMenuStatsRecycler.layoutManager =
+                LinearLayoutManager(this@StartItemsMenu, LinearLayoutManager.VERTICAL, false)
+            itemMenuStatsRecycler.setHasFixedSize(true)
+        }
 
         userlevel = intent.getIntExtra("userLevel", 0)
 
@@ -131,7 +142,7 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
             adapter.notifyDataSetChanged()
         }
 
-        quitBTN.setOnClickListener {
+        binding.quitBTN.setOnClickListener {
             var idList = mutableListOf<Int>()
             if (isOnline(this)) {
                 HttpTask {
@@ -210,7 +221,7 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
     }
 
     override fun onClick(position: Int) {
-        buyItemBTN.visibility = View.INVISIBLE
+        binding.buyItemBTN.visibility = View.INVISIBLE
 
         GameActivity.companionList.menuItemItems.removeAll(GameActivity.companionList.menuItemItems)
 
@@ -229,21 +240,24 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
     }
 
     override fun onHiddenClick(position: Int) {
-        if (GameActivity.companionList.startItemHiddenList[position].minLvl <= userlevel) {
-        buyItemBTN.visibility = View.VISIBLE
-        buyItemBTN.setOnClickListener() {
-            GameActivity.companionList.startItemList.add(GameActivity.companionList.startItemHiddenList[position])
-            newItem = GameActivity.companionList.startItemHiddenList[position].id
-            GameActivity.companionList.startItemHiddenList.remove(GameActivity.companionList.startItemHiddenList[position])
-            buyItemBTN.visibility = View.INVISIBLE
 
-            adapter.notifyDataSetChanged()
-            adapterHidden.notifyItemRemoved(position)
+        with(binding) {
+            if (GameActivity.companionList.startItemHiddenList[position].minLvl <= userlevel) {
+                buyItemBTN.visibility = View.VISIBLE
+                buyItemBTN.setOnClickListener() {
+                    GameActivity.companionList.startItemList.add(GameActivity.companionList.startItemHiddenList[position])
+                    newItem = GameActivity.companionList.startItemHiddenList[position].id
+                    GameActivity.companionList.startItemHiddenList.remove(GameActivity.companionList.startItemHiddenList[position])
+                    buyItemBTN.visibility = View.INVISIBLE
 
-            if (isOnline(this)) postData(position)
-            else postData2(position)
-            }
-        }else buyItemBTN.visibility = View.INVISIBLE
+                    adapter.notifyDataSetChanged()
+                    adapterHidden.notifyItemRemoved(position)
+
+                    if (isOnline(this@StartItemsMenu)) postData(position)
+                    else postData2(position)
+                }
+            } else buyItemBTN.visibility = View.INVISIBLE
+        }
 
         GameActivity.companionList.menuItemItems.removeAll(GameActivity.companionList.menuItemItems)
 
@@ -269,9 +283,9 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
         json.put("username", username)
         json.put("itemid", newItem.toString())
 
-        startItemsMenuBar.visibility = View.VISIBLE
+        binding.startItemsMenuBar.visibility = View.VISIBLE
         HttpTask {
-            startItemsMenuBar.visibility = View.INVISIBLE
+            binding.startItemsMenuBar.visibility = View.INVISIBLE
             if (it == null) {
                 println("connection error")
                 return@HttpTask

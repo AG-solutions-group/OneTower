@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".Fragments.StatsEnemyFragment"
-    android:layout_gravity="center_horizontal">
-    <data>
-        <variable name="updateViewModel" type="com.agsolutions.td.UpdateViewModel"/>
-    </data>
-
-
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".Fragments.StatsEnemyFragment"
+        android:layout_gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@drawable/marmorcenter"
@@ -37,8 +32,6 @@
                 android:layout_marginEnd="10dp"
                 android:background="@color/backgroundButton"
                 android:progressTint="#704A3E"
-                android:max="@{updateViewModel.lvlMaxShieldBar}"
-                android:progress="@{updateViewModel.lvlShieldBar}"
                 android:progressBackgroundTint="@color/backgroundButton"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -51,9 +44,7 @@
                 android:layout_height="wrap_content"
                 android:elevation="1dp"
                 android:gravity="center_vertical"
-                android:text="@{updateViewModel.lvlShield.toString()}"
                 android:textColor="#ffffff"
-                android:textSize="@{updateViewModel.textMain}"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/shieldBar"
                 app:layout_constraintEnd_toStartOf="@+id/lvlMaxShieldShowTV"
@@ -68,9 +59,7 @@
                 android:layout_height="wrap_content"
                 android:elevation="1dp"
                 android:gravity="center_vertical"
-                android:text="@{updateViewModel.lvlMaxShield.toString()}"
                 android:textColor="#ffffff"
-                android:textSize="@{updateViewModel.textMain}"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/shieldBar"
@@ -88,8 +77,6 @@
                 android:layout_marginEnd="10dp"
                 android:background="@color/backgroundButton"
                 android:progressTint="#2196F3"
-                android:max="@{updateViewModel.lvlMaxManaShieldBar}"
-                android:progress="@{updateViewModel.lvlManaShieldBar}"
                 android:progressBackgroundTint="@color/backgroundButton"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -102,9 +89,7 @@
                 android:layout_height="wrap_content"
                 android:elevation="1dp"
                 android:gravity="center_vertical"
-                android:text="@{updateViewModel.lvlManaShield.toString()}"
                 android:textColor="#ffffff"
-                android:textSize="@{updateViewModel.textMain}"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/manaShieldBar"
                 app:layout_constraintEnd_toStartOf="@+id/lvlMaxManaShieldShowTV"
@@ -119,9 +104,7 @@
                 android:layout_height="wrap_content"
                 android:elevation="1dp"
                 android:gravity="center_vertical"
-                android:text="@{updateViewModel.lvlMaxManaShield.toString()}"
                 android:textColor="#ffffff"
-                android:textSize="@{updateViewModel.textMain}"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/manaShieldBar"
@@ -139,8 +122,6 @@
                 android:layout_marginEnd="10dp"
                 android:background="@color/backgroundButton"
                 android:progressTint="#1E9823"
-                android:max="@{updateViewModel.lvlMaxHpBar}"
-                android:progress="@{updateViewModel.lvlHpBar}"
                 android:progressBackgroundTint="@color/backgroundButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -152,9 +133,7 @@
                 android:layout_height="wrap_content"
                 android:elevation="1dp"
                 android:gravity="center_vertical"
-                android:text="@{updateViewModel.lvlHp.toString()}"
                 android:textColor="#ffffff"
-                android:textSize="@{updateViewModel.textMain}"
                 app:layout_constraintBottom_toBottomOf="@+id/hpBar"
                 app:layout_constraintEnd_toStartOf="@+id/lvlMaxHpShowTV"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -168,9 +147,7 @@
                 android:layout_height="wrap_content"
                 android:elevation="1dp"
                 android:gravity="center_vertical"
-                android:text="@{updateViewModel.lvlMaxHp.toString()}"
                 android:textColor="#ffffff"
-                android:textSize="@{updateViewModel.textMain}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/hpBar"
                 app:layout_constraintBottom_toBottomOf="@+id/hpBar"
@@ -184,9 +161,7 @@
                 android:layout_marginTop="8dp"
                 android:elevation="1dp"
                 android:gravity="center"
-                android:text="@{updateViewModel.enemyTypeSpecific.toString()}"
                 android:textColor="#ffffff"
-                android:textSize="@{updateViewModel.textMain}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hpBar" />
@@ -224,9 +199,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.lvlArmor.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/lvlArmorTV"
                     app:layout_constraintStart_toEndOf="@+id/lvlArmorRatingShowTV"
                     app:layout_constraintTop_toTopOf="@+id/lvlArmorTV" />
@@ -237,9 +210,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.lvlArmorRating.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/lvlArmorTV"
                     app:layout_constraintStart_toEndOf="@+id/lvlArmorTV"
                     app:layout_constraintTop_toTopOf="@+id/lvlArmorTV" />
@@ -262,9 +233,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.lvlMagicArmor.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/lvlMagicArmorTV"
                     app:layout_constraintStart_toEndOf="@+id/lvlMagicArmorRatingShowTV"
                     app:layout_constraintTop_toTopOf="@+id/lvlMagicArmorTV" />
@@ -276,9 +245,7 @@
                     android:layout_marginStart="2dp"
                     android:layout_marginTop="0dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.lvlMagicArmorRating.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintStart_toEndOf="@+id/lvlMagicArmorTV"
                     app:layout_constraintBottom_toBottomOf="@+id/lvlMagicArmorTV"
                     app:layout_constraintTop_toTopOf="@+id/lvlMagicArmorTV" />
@@ -301,9 +268,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.lvlEvade.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/lvlEvadeTV"
                     app:layout_constraintStart_toEndOf="@+id/lvlEvadeTV"
                     app:layout_constraintTop_toTopOf="@+id/lvlEvadeTV" />
@@ -326,9 +291,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.lvlHpReg.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/lvlHpRegTV"
                     app:layout_constraintStart_toEndOf="@+id/lvlHpRegTV"
                     app:layout_constraintTop_toTopOf="@+id/lvlHpRegTV" />
@@ -351,9 +314,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:elevation="1dp"
-                    android:text="@{updateViewModel.lvlSpd.toString()}"
                     android:textColor="#ffffff"
-                    android:textSize="@{updateViewModel.textStats}"
                     app:layout_constraintBottom_toBottomOf="@+id/lvlSpdTV"
                     app:layout_constraintStart_toEndOf="@+id/lvlSpdTV"
                     app:layout_constraintTop_toTopOf="@+id/lvlSpdTV" />
@@ -362,4 +323,3 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 </LinearLayout>
-</layout>

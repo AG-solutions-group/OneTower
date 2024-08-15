@@ -8,7 +8,8 @@ import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.GameActivity
 import com.agsolutions.td.R
-import kotlinx.android.synthetic.main.pick_mode.*
+import com.agsolutions.td.databinding.ActivityAboutBinding
+import com.agsolutions.td.databinding.PickModeBinding
 import kotlin.system.exitProcess
 
 
@@ -18,11 +19,14 @@ class PickMode : AppCompatActivity() {
     var mHandler = Handler ()
     private var PRIVATE_MODE = 0
     var sharedPref: SharedPreferences? = null
-
+    private lateinit var binding: PickModeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.pick_mode)
+
+        binding = PickModeBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         sharedPref = getSharedPreferences("Global", PRIVATE_MODE)
         var scaleScreen = sharedPref!!.getFloat("ScaleBackground", 10f)
@@ -32,7 +36,7 @@ class PickMode : AppCompatActivity() {
         window.setGravity(Gravity.RIGHT)
         window.setElevation(10F)
 
-        normalBtn.setOnClickListener(){
+        binding.normalBtn.setOnClickListener(){
             intent = Intent(this, GameActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.putExtra("pickMap", 1)
@@ -41,7 +45,7 @@ class PickMode : AppCompatActivity() {
             exitProcess(0)
         }
 
-        circularBtn.setOnClickListener(){
+        binding.circularBtn.setOnClickListener(){
             intent = Intent(this, GameActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.putExtra("pickMap", 1)
@@ -50,16 +54,16 @@ class PickMode : AppCompatActivity() {
             exitProcess(0)
         }
 
-                normalQBtn.setOnClickListener() {
-                    modeQTV.text =
-                        "You lose a life when enemies reach the portal. The game ends when you have no lives left."
-                }
-                circularQBtn.setOnClickListener(){
-                    modeQTV.text = "Enemies circle. The game ends when there are more than 30 enemies on the map."
-                }
+        with(binding) {
+            normalQBtn.setOnClickListener() {
+                modeQTV.text =
+                    "You lose a life when enemies reach the portal. The game ends when you have no lives left."
+            }
+            circularQBtn.setOnClickListener() {
+                modeQTV.text =
+                    "Enemies circle. The game ends when there are more than 30 enemies on the map."
+            }
 
-
-    }
-    override fun onBackPressed() {
+        }
     }
 }

@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".GameEnd"
-    android:layout_gravity="center_horizontal">
-    <data>
-        <variable name="updateViewModel" type="com.agsolutions.td.UpdateViewModel"/>
-    </data>
-
-<LinearLayout
+    android:layout_gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/marmorcenter"
@@ -33,7 +29,6 @@
             android:shadowDx="1.5"
             android:shadowDy="1.3"
             android:shadowRadius="1.6"
-            android:textSize="@{updateViewModel.textMain}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -49,7 +44,6 @@
             android:shadowRadius="1.6"
             android:text="LVL"
             android:textColor="#ffffff"
-            android:textSize="@{updateViewModel.textBig}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleTVX" />
@@ -85,9 +79,4 @@
 
     </FrameLayout>
 
-
-
-
-
 </LinearLayout>
-</layout>

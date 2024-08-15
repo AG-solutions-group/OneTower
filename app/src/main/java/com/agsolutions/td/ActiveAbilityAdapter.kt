@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.active_ability.view.*
 
 class ActiveAbilityAdapter (
     private val activeAbilityListX: MutableList<ActiveAbility>,
@@ -31,7 +30,7 @@ class ActiveAbilityAdapter (
 
     inner class ExampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        val imageView: ImageView = itemView.active_ability_view
+        val imageView: ImageView = itemView.findViewById(R.id.active_ability_view)
 
         init {
             itemView.setOnClickListener(this)
@@ -49,20 +48,3 @@ class ActiveAbilityAdapter (
         fun onActiveAbilityClick(position: Int)
     }
 }
-
-            /*
-
-        override fun onClick(v: View?) {
-              val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    listener.onActiveAbilityClick(position)
-                  }
-            }
-
-        }
-        interface OnActiveAbilityClickListener {
-            fun onActiveAbilityClick(position: Int)
-        }
-    }
-
-             */

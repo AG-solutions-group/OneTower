@@ -5,8 +5,8 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.R
+import com.agsolutions.td.databinding.ActivityRegisterBinding
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_register.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -14,13 +14,17 @@ class Register : AppCompatActivity() {
 
         private val activity = this@Register
         private lateinit var inputValidation: InputValidation
+    private lateinit var binding: ActivityRegisterBinding
 
-        operator fun JSONArray.iterator(): Iterator<JSONObject> =
+
+    operator fun JSONArray.iterator(): Iterator<JSONObject> =
             (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_register)
+            binding = ActivityRegisterBinding.inflate(layoutInflater)
+            val view = binding.root
+            setContentView(view)
 
             initViews()
             initListeners()
@@ -29,15 +33,15 @@ class Register : AppCompatActivity() {
         }
 
         private fun initViews() {
-            progressBar.visibility = View.INVISIBLE
+            binding.progressBar.visibility = View.INVISIBLE
         }
 
         /**     * This method is to initialize listeners     */
         private fun initListeners() {
-            appCompatButtonRegister!!.setOnClickListener() {
+            binding.appCompatButtonRegister!!.setOnClickListener() {
                 postData()
             }
-            appCompatTextViewLoginLink!!.setOnClickListener() {
+            binding.appCompatTextViewLoginLink!!.setOnClickListener() {
                 finish()
             }
 
@@ -49,30 +53,30 @@ class Register : AppCompatActivity() {
 
         private fun postData() {
             if (!inputValidation!!.isInputEditTextFilled(
-                    textInputEditTextName,
-                    textInputLayoutName,
+                    binding.textInputEditTextName,
+                    binding.textInputLayoutName,
                     getString(R.string.error_message_name))) {
                 return
             } else if (!inputValidation!!.isInputEditTextFilled(
-                    textInputEditTextPassword,
-                    textInputLayoutPassword,
+                    binding.textInputEditTextPassword,
+                    binding.textInputLayoutPassword,
                     getString(R.string.error_message_password))) {
                 return
             } else if (!inputValidation!!.isInputEditTextMatches(
-                    textInputEditTextPassword, textInputEditTextConfirmPassword,
-                    textInputLayoutConfirmPassword,
+                    binding.textInputEditTextPassword, binding.textInputEditTextConfirmPassword,
+                    binding.textInputLayoutConfirmPassword,
                     getString(R.string.error_password_match))) {
                 return
             } else{
-                Snackbar.make(nestedScrollView!!, getString(R.string.success_message), Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.nestedScrollView!!, getString(R.string.success_message), Snackbar.LENGTH_LONG).show()
 
                 val json = JSONObject()
-                json.put("username", textInputEditTextName.text.toString())
-                json.put("password", textInputEditTextPassword.text.toString())
+                json.put("username", binding.textInputEditTextName.text.toString())
+                json.put("password", binding.textInputEditTextPassword.text.toString())
 
-                progressBar.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.VISIBLE
                 HttpTask {
-                    progressBar.visibility = View.INVISIBLE
+                    binding.progressBar.visibility = View.INVISIBLE
                     if (it == null) {
                     println("connection error")
                     return@HttpTask
@@ -81,7 +85,7 @@ class Register : AppCompatActivity() {
                     val json_res = JSONObject(it)
                     if (json_res.getString("status").equals("true")) {
                         Snackbar.make(
-                            nestedScrollView!!,
+                            binding.nestedScrollView!!,
                             json_res.getString("message"),
                             Snackbar.LENGTH_LONG
                         ).show()
@@ -90,7 +94,7 @@ class Register : AppCompatActivity() {
                     } else {
                         Log.d("post Data:::::::", json_res.getString("message"))
                         Snackbar.make(
-                            nestedScrollView!!,
+                            binding.nestedScrollView!!,
                             json_res.getString("message"),
                             Snackbar.LENGTH_LONG
                         ).show()
@@ -101,9 +105,9 @@ class Register : AppCompatActivity() {
         }
 
         private fun emptyInputEditText() {
-            textInputEditTextName!!.text = null
-            textInputEditTextPassword!!.text = null
-            textInputEditTextConfirmPassword!!.text = null
+            binding.textInputEditTextName!!.text = null
+            binding.textInputEditTextPassword!!.text = null
+            binding.textInputEditTextConfirmPassword!!.text = null
         }
 
         companion object {

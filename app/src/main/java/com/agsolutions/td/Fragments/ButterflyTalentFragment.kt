@@ -9,28 +9,31 @@ import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import com.agsolutions.td.*
 import com.agsolutions.td.GameActivity.Companion.companionList
-import kotlinx.android.synthetic.main.fragment_butterfly_talent.*
-
+import com.agsolutions.td.databinding.FragmentButterflyTalentBinding
+import com.agsolutions.td.databinding.FragmentStatsTowerBinding
 
 class ButterflyTalentFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-    }
+    private var _binding: FragmentButterflyTalentBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-
-        var mainLayout = inflater.inflate(R.layout.fragment_butterfly_talent, container, false)
-
-        mainLayout.doOnLayout {
+    ): View {
+        _binding = FragmentButterflyTalentBinding.inflate(inflater, container, false)
+        val view = binding.root
+        view.doOnLayout {
             update()
         }
-        return mainLayout
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,34 +41,42 @@ class ButterflyTalentFragment : Fragment() {
 
         companionList.focusTalentFragment = true
 
-        butterflyRow1Item1ShowTV.text = GameActivity.companionList.towerList[companionList.towerClickID].butterflyRow1Item1.toString()
-        butterflyRow1Item2ShowTV.text = GameActivity.companionList.towerList[companionList.towerClickID].butterflyRow1Item2.toString()
-        butterflyRow2Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow2Item1.toString()
-        butterflyRow2Item2ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow2Item2.toString()
-        butterflyRow3Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow3Item1.toString()
-        butterflyRow3Item2ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow3Item2.toString()
-        butterflyRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow4Item1.toString()
+        with(binding) {
+            butterflyRow1Item1ShowTV.text =
+                GameActivity.companionList.towerList[companionList.towerClickID].butterflyRow1Item1.toString()
+            butterflyRow1Item2ShowTV.text =
+                GameActivity.companionList.towerList[companionList.towerClickID].butterflyRow1Item2.toString()
+            butterflyRow2Item1ShowTV.text =
+                companionList.towerList[companionList.towerClickID].butterflyRow2Item1.toString()
+            butterflyRow2Item2ShowTV.text =
+                companionList.towerList[companionList.towerClickID].butterflyRow2Item2.toString()
+            butterflyRow3Item1ShowTV.text =
+                companionList.towerList[companionList.towerClickID].butterflyRow3Item1.toString()
+            butterflyRow3Item2ShowTV.text =
+                companionList.towerList[companionList.towerClickID].butterflyRow3Item2.toString()
+            butterflyRow4Item1ShowTV.text =
+                companionList.towerList[companionList.towerClickID].butterflyRow4Item1.toString()
 
-        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1) {
-            butterflyRow1Item2IB.isClickable = false
-            butterflyRow1Item2IBPick.setImageResource(R.drawable.crossedout)
-        }
-        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) {
-            butterflyRow1Item1IB.isClickable = false
-            butterflyRow1Item1IBPick.setImageResource(R.drawable.crossedout)
-        }
+            if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1) {
+                butterflyRow1Item2IB.isClickable = false
+                butterflyRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+            }
+            if (companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) {
+                butterflyRow1Item1IB.isClickable = false
+                butterflyRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+            }
 
-        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
-        if (companionList.towerList[companionList.towerClickID].butterflyRow2Item1 + companionList.towerList[companionList.towerClickID].butterflyRow2Item2 >= 3) backgroundButterflyRow3.setBackgroundResource(R.drawable.backgroundplankslight)
-        if (companionList.towerList[companionList.towerClickID].butterflyRow3Item1 + companionList.towerList[companionList.towerClickID].butterflyRow3Item2 >= 3) backgroundButterflyRow4.setBackgroundResource(R.drawable.backgroundplankslight)
+            if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
+            if (companionList.towerList[companionList.towerClickID].butterflyRow2Item1 + companionList.towerList[companionList.towerClickID].butterflyRow2Item2 >= 3) backgroundButterflyRow3.setBackgroundResource(R.drawable.backgroundplankslight)
+            if (companionList.towerList[companionList.towerClickID].butterflyRow3Item1 + companionList.towerList[companionList.towerClickID].butterflyRow3Item2 >= 3) backgroundButterflyRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
-        butterflyRow1Item1IB.setOnClickListener() {
+            butterflyRow1Item1IB.setOnClickListener() {
 
-            var point = IntArray(2)
-            butterflyUpgradeBTN.getLocationInWindow(point)
-            UiViewTalentWindow.talentX = point[0].toFloat()
-            UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
-            uiViewTalentButterfly.invalidate()
+                var point = IntArray(2)
+                butterflyUpgradeBTN.getLocationInWindow(point)
+                UiViewTalentWindow.talentX = point[0].toFloat()
+                UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+                uiViewTalentButterfly.invalidate()
 
                 setImagePick(11)
 
@@ -90,13 +101,14 @@ class ButterflyTalentFragment : Fragment() {
 
                         if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                        butterflyRow1Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow1Item1.toString()
+                        butterflyRow1Item1ShowTV.text =
+                            companionList.towerList[companionList.towerClickID].butterflyRow1Item1.toString()
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
             }
 
-        butterflyRow1Item2IB.setOnClickListener() {
+            butterflyRow1Item2IB.setOnClickListener() {
 
                 setImagePick(12)
 
@@ -121,15 +133,16 @@ class ButterflyTalentFragment : Fragment() {
 
                         if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1 || companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                        butterflyRow1Item2ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow1Item2.toString()
+                        butterflyRow1Item2ShowTV.text =
+                            companionList.towerList[companionList.towerClickID].butterflyRow1Item2.toString()
                         companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
-        }
+            }
 
             butterflyRow2Item1IB.setOnClickListener() {
 
-                setImagePick (21)
+                setImagePick(21)
 
                 butterflyNameDisplayTalentTV.text = "Sting of the Butterfly"
                 butterflyDisplayTalentTV.text =
@@ -149,7 +162,8 @@ class ButterflyTalentFragment : Fragment() {
 
                             if (companionList.towerList[companionList.towerClickID].butterflyRow2Item1 + companionList.towerList[companionList.towerClickID].butterflyRow2Item2 >= 3) backgroundButterflyRow3.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                            butterflyRow2Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow2Item1.toString()
+                            butterflyRow2Item1ShowTV.text =
+                                companionList.towerList[companionList.towerClickID].butterflyRow2Item1.toString()
                             companionList.towerList[companionList.towerClickID].talentPoints -= 1
                         }
                     }
@@ -158,7 +172,7 @@ class ButterflyTalentFragment : Fragment() {
 
             butterflyRow2Item2IB.setOnClickListener() {
 
-                setImagePick (22)
+                setImagePick(22)
 
                 butterflyNameDisplayTalentTV.text = "Bite of the Butterfly"
                 butterflyDisplayTalentTV.text = "At mark 3/3: Attacks can stun or slow target."
@@ -169,13 +183,15 @@ class ButterflyTalentFragment : Fragment() {
 
                     butterflyUpgradeBTN.setOnClickListener() {
                         if (companionList.towerList[companionList.towerClickID].butterflyRow2Item2 <= 0 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
-                                companionList.towerList[companionList.towerClickID].butterflyRow2Item2 += 1
+                            companionList.towerList[companionList.towerClickID].butterflyRow2Item2 += 1
 
-                            if (companionList.towerList[companionList.towerClickID].butterflyRow2Item2 == 1) companionList.towerList[companionList.towerClickID].markOfTheButterflySlow = true
+                            if (companionList.towerList[companionList.towerClickID].butterflyRow2Item2 == 1) companionList.towerList[companionList.towerClickID].markOfTheButterflySlow =
+                                true
 
                             if (companionList.towerList[companionList.towerClickID].butterflyRow2Item1 + companionList.towerList[companionList.towerClickID].butterflyRow2Item2 >= 3) backgroundButterflyRow3.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                            butterflyRow2Item2ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow2Item2.toString()
+                            butterflyRow2Item2ShowTV.text =
+                                companionList.towerList[companionList.towerClickID].butterflyRow2Item2.toString()
                             companionList.towerList[companionList.towerClickID].talentPoints -= 1
                         }
                     }
@@ -184,7 +200,7 @@ class ButterflyTalentFragment : Fragment() {
 
             butterflyRow3Item1IB.setOnClickListener() {
 
-                setImagePick (31)
+                setImagePick(31)
 
                 butterflyNameDisplayTalentTV.text = "Wing Flap"
                 butterflyDisplayTalentTV.text =
@@ -204,56 +220,57 @@ class ButterflyTalentFragment : Fragment() {
 
                             if (companionList.towerList[companionList.towerClickID].butterflyRow3Item1 + companionList.towerList[companionList.towerClickID].butterflyRow3Item2 >= 3) backgroundButterflyRow4.setBackgroundResource(R.drawable.backgroundplankslight)
 
-                            butterflyRow3Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow3Item1.toString()
+                            butterflyRow3Item1ShowTV.text =
+                                companionList.towerList[companionList.towerClickID].butterflyRow3Item1.toString()
                             companionList.towerList[companionList.towerClickID].talentPoints -= 1
                         }
                     }
                 }
             }
 
-        butterflyRow3Item2IB.setOnClickListener() {
+            butterflyRow3Item2IB.setOnClickListener() {
 
-            setImagePick (32)
+                setImagePick(32)
 
-            butterflyNameDisplayTalentTV.text = "Hive Mind"
-            butterflyDisplayTalentTV.text =
-                "Triggered Mark of the Butterfly debuffs the ememy, taking + 5%/10%/15% damage and giving + 5%/10%/15% gold and xp for 5 seconds. Does refresh. Does not stack."
-            butterflyUpgradeBTN.isClickable = false
+                butterflyNameDisplayTalentTV.text = "Hive Mind"
+                butterflyDisplayTalentTV.text =
+                    "Triggered Mark of the Butterfly debuffs the ememy, taking + 5%/10%/15% damage and giving + 5%/10%/15% gold and xp for 5 seconds. Does refresh. Does not stack."
+                butterflyUpgradeBTN.isClickable = false
 
-            if (companionList.towerList[companionList.towerClickID].butterflyRow2Item1 + companionList.towerList[companionList.towerClickID].butterflyRow2Item2 >= 3) {
-                butterflyUpgradeBTN.isClickable = true
+                if (companionList.towerList[companionList.towerClickID].butterflyRow2Item1 + companionList.towerList[companionList.towerClickID].butterflyRow2Item2 >= 3) {
+                    butterflyUpgradeBTN.isClickable = true
 
-                butterflyUpgradeBTN.setOnClickListener() {
+                    butterflyUpgradeBTN.setOnClickListener() {
 
-                    if (companionList.towerList[companionList.towerClickID].butterflyRow3Item2 <= 2 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
-                        companionList.towerList[companionList.towerClickID].butterflyRow3Item2 += 1
+                        if (companionList.towerList[companionList.towerClickID].butterflyRow3Item2 <= 2 && companionList.towerList[companionList.towerClickID].talentPoints > 0) {
+                            companionList.towerList[companionList.towerClickID].butterflyRow3Item2 += 1
 
-                        if (companionList.towerList[companionList.towerClickID].butterflyRow3Item2 == 1) {
-                            companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyDmg += 0.05f
-                            companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyGoldXp += 0.05f
+                            if (companionList.towerList[companionList.towerClickID].butterflyRow3Item2 == 1) {
+                                companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyDmg += 0.05f
+                                companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyGoldXp += 0.05f
+                            }
+                            if (companionList.towerList[companionList.towerClickID].butterflyRow3Item2 == 2) {
+                                companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyDmg += 0.05f
+                                companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyGoldXp += 0.05f
+                            }
+                            if (companionList.towerList[companionList.towerClickID].butterflyRow3Item2 == 3) {
+                                companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyDmg += 0.05f
+                                companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyGoldXp += 0.05f
+                            }
+
+                            if (companionList.towerList[companionList.towerClickID].butterflyRow3Item1 + companionList.towerList[companionList.towerClickID].butterflyRow3Item2 >= 3) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
+
+                            butterflyRow3Item2ShowTV.text =
+                                companionList.towerList[companionList.towerClickID].butterflyRow3Item2.toString()
+                            companionList.towerList[companionList.towerClickID].talentPoints -= 1
                         }
-                        if (companionList.towerList[companionList.towerClickID].butterflyRow3Item2 == 2) {
-                            companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyDmg += 0.05f
-                            companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyGoldXp += 0.05f
-                        }
-                        if (companionList.towerList[companionList.towerClickID].butterflyRow3Item2 == 3) {
-                            companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyDmg += 0.05f
-                            companionList.towerList[companionList.towerClickID].butterflyDebuffEnemyGoldXp += 0.05f
-                        }
-
-                        if (companionList.towerList[companionList.towerClickID].butterflyRow3Item1 + companionList.towerList[companionList.towerClickID].butterflyRow3Item2 >= 3) backgroundButterflyRow2.setBackgroundResource(R.drawable.backgroundplankslight)
-
-                        butterflyRow3Item2ShowTV.text =
-                            companionList.towerList[companionList.towerClickID].butterflyRow3Item2.toString()
-                        companionList.towerList[companionList.towerClickID].talentPoints -= 1
                     }
                 }
             }
-        }
 
             butterflyRow4Item1IB.setOnClickListener() {
 
-                setImagePick (41)
+                setImagePick(41)
 
                 butterflyNameDisplayTalentTV.text = "Double up!"
                 butterflyDisplayTalentTV.text =
@@ -268,20 +285,27 @@ class ButterflyTalentFragment : Fragment() {
                             companionList.towerList[companionList.towerClickID].butterflyRow4Item1 += 1
 
                             if (companionList.towerList[companionList.towerClickID].butterflyRow4Item1 == 1) {
-                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShot = true
-                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShotDmg = 0.75f
+                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShot =
+                                    true
+                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShotDmg =
+                                    0.75f
                             }
                             if (companionList.towerList[companionList.towerClickID].butterflyRow4Item1 == 2) {
-                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShot = true
-                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShotDmg = 1.0f
+                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShot =
+                                    true
+                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShotDmg =
+                                    1.0f
                             }
                             if (companionList.towerList[companionList.towerClickID].butterflyRow4Item1 == 3) {
-                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShot = true
-                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShotDmg = 1.25f
-                                companionList.itemListInsertItem.add(0,Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.itembag, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
+                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShot =
+                                    true
+                                companionList.towerList[companionList.towerClickID].markOfTheButterflyExtraShotDmg =
+                                    1.25f
+                                companionList.itemListInsertItem.add(0, Items(306, 0, 999, 0, 0f, 0, 0f, 0, "Beggar", R.drawable.itembag, R.drawable.overlaytransparent, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0, "+1 bag slot", 1f, "", 0f))
                             }
 
-                            butterflyRow4Item1ShowTV.text = companionList.towerList[companionList.towerClickID].butterflyRow4Item1.toString()
+                            butterflyRow4Item1ShowTV.text =
+                                companionList.towerList[companionList.towerClickID].butterflyRow4Item1.toString()
                             companionList.towerList[companionList.towerClickID].talentPoints -= 1
                         }
                     }
@@ -289,6 +313,7 @@ class ButterflyTalentFragment : Fragment() {
 
             }
         }
+    }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -299,42 +324,46 @@ class ButterflyTalentFragment : Fragment() {
         if (GameActivity.companionList.focusTalentFragment) {
             if (GameActivity.companionList.hintsBool) {
                 var point = IntArray(2)
-                butterflyRow1Item1IB.getLocationInWindow(point)
-                UiViewTalentWindow.talentX = point[0].toFloat()
-                UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
-                uiViewTalentButterfly.invalidate()
+
+                with(binding) {
+                    butterflyRow1Item1IB.getLocationInWindow(point)
+                    UiViewTalentWindow.talentX = point[0].toFloat()
+                    UiViewTalentWindow.talentY = (point[1] - Talents.topBarHeight).toFloat()
+                    uiViewTalentButterfly.invalidate()
+                }
             }
         }
     }
 
     fun setImagePick (pick: Int) {
 
-        butterflyRow1Item1IBPick.setImageResource(R.drawable.overlaytransparent)
-        butterflyRow1Item2IBPick.setImageResource(R.drawable.overlaytransparent)
-        butterflyRow2Item1IBPick.setImageResource(R.drawable.overlaytransparent)
-        butterflyRow2Item2IBPick.setImageResource(R.drawable.overlaytransparent)
-        butterflyRow3Item1IBPick.setImageResource(R.drawable.overlaytransparent)
-        butterflyRow3Item2IBPick.setImageResource(R.drawable.overlaytransparent)
-        butterflyRow4Item1IBPick.setImageResource(R.drawable.overlaytransparent)
+        with(binding) {
+            butterflyRow1Item1IBPick.setImageResource(R.drawable.overlaytransparent)
+            butterflyRow1Item2IBPick.setImageResource(R.drawable.overlaytransparent)
+            butterflyRow2Item1IBPick.setImageResource(R.drawable.overlaytransparent)
+            butterflyRow2Item2IBPick.setImageResource(R.drawable.overlaytransparent)
+            butterflyRow3Item1IBPick.setImageResource(R.drawable.overlaytransparent)
+            butterflyRow3Item2IBPick.setImageResource(R.drawable.overlaytransparent)
+            butterflyRow4Item1IBPick.setImageResource(R.drawable.overlaytransparent)
 
-        when(pick){
-            11 -> butterflyRow1Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
-            12 -> butterflyRow1Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
-            21 -> butterflyRow2Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
-            22 -> butterflyRow2Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
-            31 -> butterflyRow3Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
-            32 -> butterflyRow3Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
-            41 -> butterflyRow4Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
-        }
+            when (pick) {
+                11 -> butterflyRow1Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+                12 -> butterflyRow1Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+                21 -> butterflyRow2Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+                22 -> butterflyRow2Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+                31 -> butterflyRow3Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+                32 -> butterflyRow3Item2IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+                41 -> butterflyRow4Item1IBPick.setImageResource(R.drawable.backgroundsymbolpick)
+            }
 
-        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1) {
-            butterflyRow1Item2IB.isClickable = false
-            butterflyRow1Item2IBPick.setImageResource(R.drawable.crossedout)
-        }
-        if (companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) {
-            butterflyRow1Item1IB.isClickable = false
-            butterflyRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+            if (companionList.towerList[companionList.towerClickID].butterflyRow1Item1 == 1) {
+                butterflyRow1Item2IB.isClickable = false
+                butterflyRow1Item2IBPick.setImageResource(R.drawable.crossedout)
+            }
+            if (companionList.towerList[companionList.towerClickID].butterflyRow1Item2 == 1) {
+                butterflyRow1Item1IB.isClickable = false
+                butterflyRow1Item1IBPick.setImageResource(R.drawable.crossedout)
+            }
         }
     }
-
 }

@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".GameSettings"
-    android:layout_gravity="center_horizontal">
-    <data>
-        <variable name="updateViewModel" type="com.agsolutions.td.UpdateViewModel"/>
-    </data>
-
-<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/marmorregularwindow"
     android:paddingBottom="20dp"
     >
-
 
     <TextView
         android:id="@+id/soundMusicTV"
@@ -24,7 +19,6 @@
         android:layout_marginTop="32dp"
         android:text="Music"
         android:textColor="#ffffff"
-        android:textSize="@{updateViewModel.textMain}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +30,6 @@
         android:layout_marginEnd="12dp"
         android:text="0"
         android:textColor="#ffffff"
-        android:textSize="@{updateViewModel.textMain}"
         app:layout_constraintBottom_toBottomOf="@+id/soundMusicBar"
         app:layout_constraintEnd_toStartOf="@+id/soundMusicBar"
         app:layout_constraintTop_toTopOf="@+id/soundMusicBar" />
@@ -60,7 +53,6 @@
         android:layout_marginTop="12dp"
         android:text="Sound Effects"
         android:textColor="#ffffff"
-        android:textSize="@{updateViewModel.textMain}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/soundMusicBar" />
@@ -72,7 +64,6 @@
         android:layout_marginEnd="12dp"
         android:text="0"
         android:textColor="#ffffff"
-        android:textSize="@{updateViewModel.textMain}"
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectsBar"
         app:layout_constraintEnd_toStartOf="@+id/soundEffectsBar"
         app:layout_constraintTop_toTopOf="@+id/soundEffectsBar" />
@@ -96,7 +87,6 @@
         android:layout_marginTop="12dp"
         android:text="Hints"
         android:textColor="#ffffff"
-        android:textSize="@{updateViewModel.textMain}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/soundEffectsBar" />
@@ -108,7 +98,6 @@
         android:layout_marginEnd="12dp"
         android:text="ON"
         android:textColor="#ffffff"
-        android:textSize="@{updateViewModel.textMain}"
         app:layout_constraintBottom_toBottomOf="@+id/hintsBar"
         app:layout_constraintEnd_toStartOf="@+id/hintsBar"
         app:layout_constraintTop_toTopOf="@+id/hintsBar" />
@@ -132,11 +121,9 @@
         android:layout_gravity="center"
         android:text="Okay"
         android:textColor="#ffffff"
-        android:textSize="@{updateViewModel.textButton}"
         android:background="@drawable/gamebuttonemptylongbw"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>

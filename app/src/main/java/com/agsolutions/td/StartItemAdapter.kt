@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item.view.*
 
 class StartItemAdapter (
     private val startItemList: MutableList<Items>,
@@ -31,8 +30,8 @@ class StartItemAdapter (
 
     inner class ExampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
             View.OnClickListener {
-            val imageView: ImageView = itemView.item_view
-            val imageViewOverlay: ImageView = itemView.item_view_overlay
+            val imageView: ImageView = itemView.findViewById(R.id.item_view)
+            val imageViewOverlay: ImageView = itemView.findViewById(R.id.item_view_overlay)
 
         init {
             itemView.setOnClickListener(this)
@@ -76,8 +75,8 @@ class StartTowerAdapter (
 
     inner class ExampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        val imageView: ImageView = itemView.item_view
-        val imageViewOverlay: ImageView = itemView.item_view_overlay
+        val imageView: ImageView = itemView.findViewById(R.id.item_view)
+        val imageViewOverlay: ImageView = itemView.findViewById(R.id.item_view_overlay)
 
         init {
             itemView.setOnClickListener(this)
@@ -96,30 +95,3 @@ class StartTowerAdapter (
         fun onTowerClick(position: Int)
     }
 }
-
-/*
-holder.itemView.setOnLongClickListener  {
-                val clipText = holder.adapterPosition.toString()
-                val item = ClipData.Item (clipText)
-                val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
-                val data = ClipData(clipText, mimeTypes, item)
-                val dragShadowBuilder = View.DragShadowBuilder(it)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    it.startDragAndDrop(data, dragShadowBuilder,it, 0)
-                }
-                else it.startDrag(data, dragShadowBuilder, it, 0)
-            }
-
- */
-
-/*    val clipText = "This is our ClipData text"
-               val item = ClipData.Item(clipText)
-               val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
-               val data = ClipData(clipText, mimeTypes, item)
-               val dragShadowBuilder = View.DragShadowBuilder(it)
-
-               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                   it.startDragAndDrop(data, dragShadowBuilder, it, 0)
-               }
-               else it.startDrag(data, dragShadowBuilder, it, 0)
-           } */

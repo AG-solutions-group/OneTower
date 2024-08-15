@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.agsolutions.td.Utils.round
-import kotlinx.android.synthetic.main.secret_shop.*
+import com.agsolutions.td.databinding.SecretShopBinding
 
 
 class SecretShop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFragmentAdapter.OnStatsClickListener {
@@ -15,10 +15,14 @@ class SecretShop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
 
     }
     private val showAdapter = ItemFragmentAdapter(GameActivity.companionList.itemListSecretShop, this)
+    private lateinit var binding: SecretShopBinding
+    var updateViewModel = UpdateViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.secret_shop)
+        binding = SecretShopBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         var sid4 = Items(1004, 1, 999,0,0f, 0, 0f, 1,"Particle Collector", R.drawable.particlered, R.drawable.overlaytransparent, 0.0f,0.0f,0.0f, 0.0f, 0.0f, 0.0f, 0, "Free Slot, collects excess dmg", 0f, "", 0f)
         var sid5 = Items(1005, 1, 999,0,0f, 0, 0f, 1, "True Sniper", R.drawable.sniperred, R.drawable.overlaytransparent,((1.0f * GameActivity.companionList.lvlScaler) + (GameActivity.companionList.level * 0.15f)),0.0f,0.0f, 0f, 0f, 0f, 0, "snipes a single target with bonus dmg for distance", 0.0f, "", 0f)
@@ -31,7 +35,6 @@ class SecretShop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
         window.setLayout((600.0f * (GameActivity.companionList.scaleScreen / 10)).toInt(), (1000.0f * ((GameActivity.companionList.scaleScreen) / 10)).toInt())
         window.setElevation(10F)
 
-        textView6.text = "Secret Shop"
 
         if (GameActivity.companionList.secretShopIconBool) {
             GameActivity.companionList.secretShopIconBool = false
@@ -51,33 +54,50 @@ class SecretShop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
             }
         }
 
-        recyclerSecretShop.adapter = adapter
-        recyclerSecretShop.layoutManager =
-            GridLayoutManager(this, 4)
-        recyclerSecretShop.setHasFixedSize(true)
+        with(binding) {
 
-        showItemStatsRecycler.adapter = showAdapter
-        showItemStatsRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        showItemStatsRecycler.setHasFixedSize(true)
+            textView6.text = "Secret Shop"
 
-        ipShowTV.text = GameActivity.companionList.itemPoints.toInt().toString()
-        mpShowTV.text = GameActivity.companionList.mysteryPoints.toString()
+            recyclerSecretShop.adapter = adapter
+            recyclerSecretShop.layoutManager =
+                GridLayoutManager(applicationContext, 4)
+            recyclerSecretShop.setHasFixedSize(true)
 
-        buyBTN.visibility = View.INVISIBLE
+            showItemStatsRecycler.adapter = showAdapter
+            showItemStatsRecycler.layoutManager =
+                LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+            showItemStatsRecycler.setHasFixedSize(true)
 
-        exitBTN.setOnClickListener() {
-            GameActivity.paused = false
-            finish()
+            ipShowTV.text = GameActivity.companionList.itemPoints.toInt().toString()
+            mpShowTV.text = GameActivity.companionList.mysteryPoints.toString()
+
+            buyBTN.visibility = View.INVISIBLE
+
+            exitBTN.setOnClickListener() {
+                GameActivity.paused = false
+                finish()
+            }
+        }
+
+        observeViewmodel()
+    }
+
+    fun observeViewmodel() {
+
+        with(updateViewModel) {
+            textBig.observe(this@SecretShop) { size ->
+                binding.textView6.setTextSize(size)
+            }
+            textMain.observe(this@SecretShop) { size ->
+                binding.ipShowTV.setTextSize(size)
+                binding.mpShowTV.setTextSize(size)
+            }
         }
     }
-    override fun onBackPressed() {
-    }
-
 
     override fun onClick(position: Int) {
 
-        buyBTN.visibility = View.INVISIBLE
+        binding.buyBTN.visibility = View.INVISIBLE
 
         GameActivity.companionList.itemListSecretShop.removeAll(GameActivity.companionList.itemListSecretShop)
 
@@ -102,9 +122,9 @@ class SecretShop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
 
         showAdapter.notifyDataSetChanged()
 
-        if (GameActivity.companionList.secretShopList[position].mpCost <= GameActivity.companionList.mysteryPoints && GameActivity.companionList.secretShopList[position].ipCost <= GameActivity.companionList.itemPoints) buyBTN.visibility = View.VISIBLE
+        if (GameActivity.companionList.secretShopList[position].mpCost <= GameActivity.companionList.mysteryPoints && GameActivity.companionList.secretShopList[position].ipCost <= GameActivity.companionList.itemPoints) binding.buyBTN.visibility = View.VISIBLE
 
-        buyBTN.setOnClickListener() {
+        binding.buyBTN.setOnClickListener() {
 
             GameActivity.companionList.mysteryPoints -= GameActivity.companionList.secretShopList[position].mpCost
             GameActivity.companionList.itemPoints -= GameActivity.companionList.secretShopList[position].ipCost
@@ -114,7 +134,7 @@ class SecretShop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFr
             finish()
         }
 
-        exitBTN.setOnClickListener() {
+        binding.exitBTN.setOnClickListener() {
             GameActivity.companionList.secretShopList.removeAll(GameActivity.companionList.secretShopList)
             GameActivity.paused = false
             finish()
@@ -152,15 +172,18 @@ class Shop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFragment
 
     }
     private val showAdapter = ItemFragmentAdapter(GameActivity.companionList.itemListSecretShop, this)
+    private lateinit var binding: SecretShopBinding
+    var updateViewModel = UpdateViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.secret_shop)
+        binding = SecretShopBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         window.setLayout((600.0f * (GameActivity.companionList.scaleScreen / 10)).toInt(), (1000.0f * ((GameActivity.companionList.scaleScreen) / 10)).toInt())
         window.setElevation(10F)
 
-        textView6.text = "Shop"
 
         GameActivity.companionList.shopList.removeAll(GameActivity.companionList.shopList)
 
@@ -172,34 +195,49 @@ class Shop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFragment
         GameActivity.companionList.shopList.add(Items(1002, 1, 999,0,0f, 0, 50f, 0,"Epic Cannon", R.drawable.canonorange, R.drawable.overlaytransparent,75.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f, 0, "", 0f, "", 0f))
         GameActivity.companionList.shopList.add(Items(1003, 1, 999,0,0f, 0, 100f, 0,"Legendary Cannon", R.drawable.canonpurple, R.drawable.overlaytransparent,200.0f, 0.0f,0.0f,0.0f, 0.0f, 0.0f, 0, "", 0f, "", 0f))
 
+        with(binding) {
 
-        recyclerSecretShop.adapter = adapter
-        recyclerSecretShop.layoutManager =
-            GridLayoutManager(this, 4)
-        recyclerSecretShop.setHasFixedSize(true)
+            textView6.text = "Shop"
+            recyclerSecretShop.adapter = adapter
+            recyclerSecretShop.layoutManager =
+                GridLayoutManager(applicationContext, 4)
+            recyclerSecretShop.setHasFixedSize(true)
 
-        showItemStatsRecycler.adapter = showAdapter
-        showItemStatsRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        showItemStatsRecycler.setHasFixedSize(true)
+            showItemStatsRecycler.adapter = showAdapter
+            showItemStatsRecycler.layoutManager =
+                LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+            showItemStatsRecycler.setHasFixedSize(true)
 
-        ipShowTV.text = GameActivity.companionList.itemPoints.toInt().toString()
-        mpShowTV.text = GameActivity.companionList.mysteryPoints.toString()
+            ipShowTV.text = GameActivity.companionList.itemPoints.toInt().toString()
+            mpShowTV.text = GameActivity.companionList.mysteryPoints.toString()
 
-        buyBTN.visibility = View.INVISIBLE
+            buyBTN.visibility = View.INVISIBLE
 
-        exitBTN.setOnClickListener() {
-            GameActivity.paused = false
-            finish()
+            exitBTN.setOnClickListener() {
+                GameActivity.paused = false
+                finish()
+            }
+        }
+
+        observeViewmodel()
+    }
+
+    fun observeViewmodel() {
+
+        with(updateViewModel) {
+            textBig.observe(this@Shop) { size ->
+                binding.textView6.setTextSize(size)
+            }
+            textMain.observe(this@Shop) { size ->
+                binding.ipShowTV.setTextSize(size)
+                binding.mpShowTV.setTextSize(size)
+            }
         }
     }
-    override fun onBackPressed() {
-    }
-
 
     override fun onClick(position: Int) {
 
-        buyBTN.visibility = View.INVISIBLE
+        binding.buyBTN.visibility = View.INVISIBLE
 
         GameActivity.companionList.itemListSecretShop.removeAll(GameActivity.companionList.itemListSecretShop)
 
@@ -224,9 +262,9 @@ class Shop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFragment
 
         showAdapter.notifyDataSetChanged()
 
-        if (GameActivity.companionList.shopList[position].mpCost <= GameActivity.companionList.mysteryPoints && GameActivity.companionList.shopList[position].ipCost <= GameActivity.companionList.itemPoints) buyBTN.visibility = View.VISIBLE
+        if (GameActivity.companionList.shopList[position].mpCost <= GameActivity.companionList.mysteryPoints && GameActivity.companionList.shopList[position].ipCost <= GameActivity.companionList.itemPoints) binding.buyBTN.visibility = View.VISIBLE
 
-        buyBTN.setOnClickListener() {
+        binding.buyBTN.setOnClickListener() {
 
             GameActivity.companionList.mysteryPoints -= GameActivity.companionList.shopList[position].mpCost
             GameActivity.companionList.itemPoints -= GameActivity.companionList.shopList[position].ipCost
@@ -236,7 +274,7 @@ class Shop : AppCompatActivity(), StartItemAdapter.OnClickListener, ItemFragment
             finish()
         }
 
-        exitBTN.setOnClickListener() {
+        binding.exitBTN.setOnClickListener() {
             GameActivity.companionList.shopList.removeAll(GameActivity.companionList.shopList)
             GameActivity.paused = false
             finish()

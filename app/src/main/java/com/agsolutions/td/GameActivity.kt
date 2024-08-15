@@ -42,10 +42,6 @@ import com.agsolutions.td.LogIn.HttpTask
 import com.agsolutions.td.Main.MainActivity
 import com.agsolutions.td.Utils.round
 import com.agsolutions.td.databinding.ActivityGameBinding
-import kotlinx.android.synthetic.main.activity_game.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_personal_highscore.*
-import kotlinx.android.synthetic.main.talents.*
 import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -73,6 +69,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
     lateinit var radioAdapter: RadioAdapter
     lateinit var itemTouchHelper: ItemTouchHelper
     lateinit var itemTouchHelper2: ItemTouchHelper
+    private lateinit var binding: ActivityGameBinding
     var updateViewModel = UpdateViewModel()
     var fragmentStats = StatsFragment(updateViewModel)
     var fragmentStatsTower = StatsTowerFragment(updateViewModel)
@@ -93,11 +90,12 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding: ActivityGameBinding = ActivityGameBinding.inflate(layoutInflater)
-        binding.updateViewModel = updateViewModel
-        binding.lifecycleOwner = this
-        setContentView(binding.root)
-        progressBarGame.visibility = View.VISIBLE
+        binding = ActivityGameBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        observeViewmodel()
+
+        binding.progressBarGame.visibility = View.VISIBLE
 
         uiScope.launch {
             withContext(Dispatchers.IO) {
@@ -116,6 +114,78 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             }
         }
     }
+
+    fun observeViewmodel() {
+
+        with(updateViewModel) {
+            dayNightPic.observe(this@GameActivity) { pic ->
+                binding.dayNightIV.setImageResource(pic)
+            }
+            dayNight.observe(this@GameActivity) { text ->
+                binding.dayNightTV.text = text
+            }
+            textMain.observe(this@GameActivity) { textSize ->
+                binding.dayNightTV.textSize = textSize
+                binding.levelTV.textSize = textSize
+                binding.livesTV.textSize = textSize
+                binding.levelShowTV.textSize = textSize
+                binding.livesShowTV.textSize = textSize
+                binding.enemyShowTV.textSize = textSize
+                binding.nextLvlTV.textSize = textSize
+
+            }
+            textStatsPic.observe(this@GameActivity) { textSize ->
+                binding.upgradeNumberShowTV.textSize = textSize
+                binding.interestShowTV.textSize = textSize
+                binding.diaShowTV.textSize = textSize
+                binding.xpShowTV.textSize = textSize
+                binding.unusedItemsShowTV.textSize = textSize
+            }
+            xpString.observe(this@GameActivity) { text ->
+                binding.xpShowTV.text = text
+            }
+            goldColor.observe(this@GameActivity) { color ->
+                binding.xpShowTV.setTextColor(color)
+            }
+            diamonds.observe(this@GameActivity) { text ->
+                binding.diaShowTV.text = text.toString()
+            }
+            diamondsColor.observe(this@GameActivity) { color ->
+                binding.diaShowTV.setTextColor(color)
+            }
+            interestString.observe(this@GameActivity) { text ->
+                binding.interestShowTV.text = text
+            }
+            interestColor.observe(this@GameActivity) { color ->
+                binding.interestShowTV.setTextColor(color)
+            }
+            upgradePoints.observe(this@GameActivity) { text ->
+                binding.upgradeNumberShowTV.text = text.toString()
+            }
+            upgradePointsColor.observe(this@GameActivity) { color ->
+                binding.upgradeNumberShowTV.setTextColor(color)
+            }
+            itemPoints.observe(this@GameActivity) { text ->
+                binding.unusedItemsShowTV.text = text.toString()
+            }
+            itemPointsColor.observe(this@GameActivity) { color ->
+                binding.unusedItemsShowTV.setTextColor(color)
+            }
+            level.observe(this@GameActivity) { text ->
+                binding.levelShowTV.text = text.toString()
+            }
+            lives.observe(this@GameActivity) { text ->
+                binding.livesShowTV.text = text
+            }
+            enemyType.observe(this@GameActivity) { text ->
+                binding.enemyShowTV.text = text
+            }
+            lvlCounter.observe(this@GameActivity) { text ->
+                binding.nextLvlTV.text = text
+            }
+        }
+    }
+
 
     //----------------------------------------------------------------------------
 
@@ -147,9 +217,6 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             companionList.globalSoundEffects = sharedPref!!.getFloat("Global Effects", 30f)
             companionList.musicChanged = true
         }
-    }
-
-    override fun onBackPressed() {
     }
 
     //----------------------------------------------------------------------------
@@ -429,101 +496,115 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
        private fun initializeUI (){
 
-           window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+           with(binding) {
 
-            if (companionList.mapMode == 2) {
-                livesTV.text = "NME"
-            }
+               window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        gameSpeedBtn.setOnClickListener {
-            if (companionList.level > 100){
-                gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttonfivex)
-                companionList.gameSpeedAdjuster = 5f
-            } else if (companionList.gameSpeedAdjuster == 1f) {
-                gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttononefivex)
-                companionList.gameSpeedAdjuster = 1.5f
-            } else if (companionList.gameSpeedAdjuster == 1.5f) {
-                gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttontwox)
-                companionList.gameSpeedAdjuster = 2f
-            } else if (companionList.gameSpeedAdjuster == 2f) {
-                gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttonthreex)
-                companionList.gameSpeedAdjuster = 3f
-            } else if (companionList.gameSpeedAdjuster == 3f) {
-                gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttonfivex)
-                companionList.gameSpeedAdjuster = 5f
-            } else if (companionList.gameSpeedAdjuster == 5f) {
-                gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttononex)
-                companionList.gameSpeedAdjuster = 1f
-            }
-        }
+               if (companionList.mapMode == 2) {
+                   livesTV.text = "NME"
+               }
 
-        playPauseBtn.setOnClickListener() {
-            if (paused) {
-                update()
-                paused = false
+               gameSpeedBtn.setOnClickListener {
+                   if (companionList.level > 100) {
+                       gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttonfivex)
+                       companionList.gameSpeedAdjuster = 5f
+                   } else if (companionList.gameSpeedAdjuster == 1f) {
+                       gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttononefivex)
+                       companionList.gameSpeedAdjuster = 1.5f
+                   } else if (companionList.gameSpeedAdjuster == 1.5f) {
+                       gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttontwox)
+                       companionList.gameSpeedAdjuster = 2f
+                   } else if (companionList.gameSpeedAdjuster == 2f) {
+                       gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttonthreex)
+                       companionList.gameSpeedAdjuster = 3f
+                   } else if (companionList.gameSpeedAdjuster == 3f) {
+                       gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttonfivex)
+                       companionList.gameSpeedAdjuster = 5f
+                   } else if (companionList.gameSpeedAdjuster == 5f) {
+                       gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttononex)
+                       companionList.gameSpeedAdjuster = 1f
+                   }
+               }
 
-            } else {
-                mHandler.removeCallbacksAndMessages(null)
-                paused = true
-            }
-        }
+               playPauseBtn.setOnClickListener() {
+                   if (paused) {
+                       update()
+                       paused = false
 
-        menuBtn.setOnClickListener() {
-            paused = true
-            intent = Intent(this, GameMenu::class.java)
-            startActivity(intent)
-        }
+                   } else {
+                       mHandler.removeCallbacksAndMessages(null)
+                       paused = true
+                   }
+               }
 
-        firstLastRandomBtn.setOnClickListener() {
+               menuBtn.setOnClickListener() {
+                   paused = true
+                   intent = Intent(applicationContext, GameMenu::class.java)
+                   startActivity(intent)
+               }
 
-            if (companionList.towerList[companionList.towerClickID].firstLastRandom == 0) {
-                companionList.towerList[companionList.towerClickID].firstLastRandomText = "last"
-                firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonlast)
-                companionList.towerList[companionList.towerClickID].firstLastRandom = 1
-                companionList.towerList[companionList.towerClickID].randomEnemyForShotBool = true
-                companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky = true
-            } else if (companionList.towerList[companionList.towerClickID].firstLastRandom == 1) {
-                companionList.towerList[companionList.towerClickID].firstLastRandomText = "random"
-                firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonrandom)
-                companionList.towerList[companionList.towerClickID].firstLastRandom = 2
-                companionList.towerList[companionList.towerClickID].randomEnemyForShotBool = true
-                companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky = true
-            } else if (companionList.towerList[companionList.towerClickID].firstLastRandom == 2) {
-                companionList.towerList[companionList.towerClickID].firstLastRandomText = "first"
-                firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonfirst)
-                companionList.towerList[companionList.towerClickID].firstLastRandom = 3
-                companionList.towerList[companionList.towerClickID].randomEnemyForShotBool = true
-                companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky = true
-            } else if (companionList.towerList[companionList.towerClickID].firstLastRandom == 3) {
-                companionList.towerList[companionList.towerClickID].firstLastRandomText = "sticky"
-                firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonsticky)
-                companionList.towerList[companionList.towerClickID].firstLastRandom = 0
-                companionList.towerList[companionList.towerClickID].randomEnemyForShotBool = true
-                companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky = true
-            }
+               firstLastRandomBtn.setOnClickListener() {
 
-        }
+                   if (companionList.towerList[companionList.towerClickID].firstLastRandom == 0) {
+                       companionList.towerList[companionList.towerClickID].firstLastRandomText =
+                           "last"
+                       firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonlast)
+                       companionList.towerList[companionList.towerClickID].firstLastRandom = 1
+                       companionList.towerList[companionList.towerClickID].randomEnemyForShotBool =
+                           true
+                       companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky =
+                           true
+                   } else if (companionList.towerList[companionList.towerClickID].firstLastRandom == 1) {
+                       companionList.towerList[companionList.towerClickID].firstLastRandomText =
+                           "random"
+                       firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonrandom)
+                       companionList.towerList[companionList.towerClickID].firstLastRandom = 2
+                       companionList.towerList[companionList.towerClickID].randomEnemyForShotBool =
+                           true
+                       companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky =
+                           true
+                   } else if (companionList.towerList[companionList.towerClickID].firstLastRandom == 2) {
+                       companionList.towerList[companionList.towerClickID].firstLastRandomText =
+                           "first"
+                       firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonfirst)
+                       companionList.towerList[companionList.towerClickID].firstLastRandom = 3
+                       companionList.towerList[companionList.towerClickID].randomEnemyForShotBool =
+                           true
+                       companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky =
+                           true
+                   } else if (companionList.towerList[companionList.towerClickID].firstLastRandom == 3) {
+                       companionList.towerList[companionList.towerClickID].firstLastRandomText =
+                           "sticky"
+                       firstLastRandomBtn.setBackgroundResource(R.drawable.gamebuttonsticky)
+                       companionList.towerList[companionList.towerClickID].firstLastRandom = 0
+                       companionList.towerList[companionList.towerClickID].randomEnemyForShotBool =
+                           true
+                       companionList.towerList[companionList.towerClickID].randomEnemyForShotSticky =
+                           true
+                   }
 
-        talentsBTN.setOnClickListener() {
-            paused = true
-            intent = Intent(this, Talents::class.java)
-            startActivity(intent)
-        }
+               }
 
-            coinIV.setOnClickListener {
-                paused = true
-                intent = Intent(this, Shop::class.java)
-                startActivity(intent)
-            }
+               talentsBTN.setOnClickListener() {
+                   paused = true
+                   intent = Intent(applicationContext, Talents::class.java)
+                   startActivity(intent)
+               }
 
-            shopiconmystery.visibility = View.INVISIBLE
-            shopiconmystery.setOnClickListener {
-                paused = true
-                intent = Intent(this, SecretShop::class.java)
-                startActivity(intent)
+               coinIV.setOnClickListener {
+                   paused = true
+                   intent = Intent(applicationContext, Shop::class.java)
+                   startActivity(intent)
+               }
 
-            }
+               shopiconmystery.visibility = View.INVISIBLE
+               shopiconmystery.setOnClickListener {
+                   paused = true
+                   intent = Intent(applicationContext, SecretShop::class.java)
+                   startActivity(intent)
 
+               }
+           }
     }
 
     // continue game -------------------------------------------------------------------
@@ -540,7 +621,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
     fun loadGame() {
 
-        progressGameBar.visibility = View.VISIBLE
+        binding.progressGameBar.visibility = View.VISIBLE
 
         var fis: InputStream? = null
         var ois: InputStream? = null
@@ -569,7 +650,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             }
         }
 
-        progressGameBar.visibility = View.INVISIBLE
+        binding.progressGameBar.visibility = View.INVISIBLE
 
     }
 
@@ -584,30 +665,28 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         itemTouchHelper = ItemTouchHelper(SwipeItem(adapter))
         itemTouchHelper2 = ItemTouchHelper(SwipeItemBag(bagAdapter))
 
-        recyclerCurrentItem.adapter = adapter
-        recyclerCurrentItem.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        with(binding) {
+            recyclerCurrentItem.adapter = adapter
+            recyclerCurrentItem.layoutManager =
+                LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
 
-        recyclerBagItem.adapter = bagAdapter
-        recyclerBagItem.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerBagItem.setHasFixedSize(true)
+            recyclerBagItem.adapter = bagAdapter
+            recyclerBagItem.layoutManager =
+                LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
+            recyclerBagItem.setHasFixedSize(true)
 
-        recyclerActiveAbility.adapter = activeAbilityAdapter
-        recyclerActiveAbility.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            recyclerActiveAbility.adapter = activeAbilityAdapter
+            recyclerActiveAbility.layoutManager =
+                LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
 
+            recyclerRadio.adapter = radioAdapter
+            recyclerRadio.layoutManager =
+                LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+            recyclerRadio.setHasFixedSize(true)
 
-        recyclerRadio.adapter = radioAdapter
-        recyclerRadio.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recyclerRadio.setHasFixedSize(true)
-
-
-
-        itemTouchHelper.attachToRecyclerView(recyclerCurrentItem)
-        itemTouchHelper2.attachToRecyclerView(recyclerBagItem)
-
+            itemTouchHelper.attachToRecyclerView(recyclerCurrentItem)
+            itemTouchHelper2.attachToRecyclerView(recyclerBagItem)
+        }
 
         adapter.notifyDataSetChanged()
         bagAdapter.notifyDataSetChanged()
@@ -655,7 +734,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             }, 1000)
         }
         whileStart = false
-        progressBarGame.visibility = View.INVISIBLE
+        binding.progressBarGame.visibility = View.INVISIBLE
     }
 
     //----------------------------------------------------------------------------
@@ -669,18 +748,18 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         dropItem2()
 
         runOnUiThread {
-            if (companionList.changeBackground) uiView.setBackgroundResource(R.drawable.overlaytransparent)
+            if (companionList.changeBackground) binding.uiView.setBackgroundResource(R.drawable.overlaytransparent)
             startItems()
             insertItem()
             unusedItems()
             activeAbilities()
-            if (paused) playPauseBtn.setBackgroundResource(R.drawable.gamebuttonplay)
-            else playPauseBtn.setBackgroundResource(R.drawable.gamebuttonpause)
+            if (paused) binding.playPauseBtn.setBackgroundResource(R.drawable.gamebuttonplay)
+            else binding.playPauseBtn.setBackgroundResource(R.drawable.gamebuttonpause)
 
             if (companionList.towerClick && companionList.towerClickBool) {
                 companionList.towerClickBool = false
-                talentsBTN.visibility = View.VISIBLE
-                firstLastRandomBtn.visibility = View.VISIBLE
+                binding.talentsBTN.visibility = View.VISIBLE
+                binding.firstLastRandomBtn.visibility = View.VISIBLE
 
 
                 companionList.itemListBagInserter.clear()
@@ -689,10 +768,10 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 companionList.itemListBagInserter.addAll(companionList.towerList[companionList.towerClickID].itemListBag)
 
                 bagAdapter.notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
-                recyclerBagItem.smoothScrollToPosition(0)
+                binding.recyclerBagItem.smoothScrollToPosition(0)
 
-                if (buildBtn.background != ContextCompat.getDrawable(this, R.drawable.bagicon3))
-                    buildBtn.background = ContextCompat.getDrawable(this, R.drawable.bagicon3)
+                if (binding.buildBtn.background != ContextCompat.getDrawable(this, R.drawable.bagicon3))
+                    binding.buildBtn.background = ContextCompat.getDrawable(this, R.drawable.bagicon3)
 
                 if (supportFragmentManager.findFragmentById(R.id.fragment) != fragmentStatsTower) {
                     supportFragmentManager.beginTransaction().apply {
@@ -706,17 +785,17 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
             if (companionList.build && companionList.buildClickBool) {
                 companionList.buildClickBool = false
-                talentsBTN.visibility = View.INVISIBLE
-                firstLastRandomBtn.visibility = View.INVISIBLE
+                binding.talentsBTN.visibility = View.INVISIBLE
+                binding.firstLastRandomBtn.visibility = View.INVISIBLE
 
                 companionList.itemListBagInserter.clear()
                 bagAdapter.notifyDataSetChanged()
                 companionList.itemListBagInserter.addAll(companionList.buildListBag)
                 bagAdapter.notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
-                recyclerBagItem.smoothScrollToPosition(0)
+                binding.recyclerBagItem.smoothScrollToPosition(0)
 
-                if (buildBtn.background != ContextCompat.getDrawable(this, R.drawable.talentsutils))
-                    buildBtn.background = ContextCompat.getDrawable(this, R.drawable.talentsutils)
+                if (binding.buildBtn.background != ContextCompat.getDrawable(this, R.drawable.talentsutils))
+                    binding.buildBtn.background = ContextCompat.getDrawable(this, R.drawable.talentsutils)
 
                 if (supportFragmentManager.findFragmentById(R.id.fragment) != fragmentStats) {
                     supportFragmentManager.beginTransaction().apply {
@@ -729,14 +808,14 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
             if (companionList.enemyClick && companionList.enemySelectedBool) {
                 companionList.enemySelectedBool = false
-                talentsBTN.visibility = View.INVISIBLE
-                firstLastRandomBtn.visibility = View.INVISIBLE
+                binding.talentsBTN.visibility = View.INVISIBLE
+                binding.firstLastRandomBtn.visibility = View.INVISIBLE
 
                 companionList.itemListBagInserter.clear()
                 bagAdapter.notifyDataSetChanged()
                 companionList.itemListBagInserter.addAll(companionList.buildListBag)
                 bagAdapter.notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
-                recyclerBagItem.smoothScrollToPosition(0)
+                binding.recyclerBagItem.smoothScrollToPosition(0)
 
                 if (supportFragmentManager.findFragmentById(R.id.fragment) != fragmentStatsEnemy) {
                     supportFragmentManager.beginTransaction().apply {
@@ -915,15 +994,15 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
             val posXY = IntArray(2)
             if (GameActivity.companionList.buildListBag.isEmpty()) {
-                recyclerCurrentItem.forEach {
-                    var a = recyclerCurrentItem.indexOfChild(it)
+                binding.recyclerCurrentItem.forEach {
+                    var a = binding.recyclerCurrentItem.indexOfChild(it)
                     if (a == containsStartItemPos) it.getLocationOnScreen(posXY)
                 }
                 UiView.xRecyclerTower = posXY[0].toFloat()
                 UiView.yRecyclerTower = posXY[1].toFloat()
                 companionList.invalidate++
             } else {
-                for (recycler in recyclerBagItem) {
+                for (recycler in binding.recyclerBagItem) {
                     recycler.getLocationOnScreen(posXY)
                     UiView.xRecyclerTower = posXY[0].toFloat()
                     UiView.yRecyclerTower = posXY[1].toFloat()
@@ -935,7 +1014,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         if (companionList.towerClick && companionList.towerList[companionList.towerClickID].itemListBag.size - companionList.towerList[companionList.towerClickID].bagSizeElementCount < 1 && companionList.itemList.isNotEmpty() && companionList.hintsBool) {
             val posXY = IntArray(2)
-            recyclerCurrentItem.getLocationOnScreen(posXY)
+            binding.recyclerCurrentItem.getLocationOnScreen(posXY)
             UiView.xRecycler = posXY[0].toFloat()
             UiView.yRecycler = posXY[1].toFloat()
             companionList.invalidate++
@@ -943,7 +1022,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
 
         if (companionList.towerClick && companionList.towerList[companionList.towerClickID].talentPoints > 1 && companionList.hintsBool) {
             val posXY = IntArray(2)
-            talentsBTN.getLocationOnScreen(posXY)
+            binding.talentsBTN.getLocationOnScreen(posXY)
             UiView.xTalents = posXY[0].toFloat()
             UiView.yTalents = posXY[1].toFloat()
             companionList.invalidate++
@@ -953,8 +1032,8 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             if (companionList.tutorialFirstUseItemCounter > 180) companionList.tutorialFirstUseItemBool =
                 false
             val posXY = IntArray(2)
-            for (it in recyclerBagItem) {
-                if (recyclerBagItem.indexOfChild(it) == 1) {
+            for (it in binding.recyclerBagItem) {
+                if (binding.recyclerBagItem.indexOfChild(it) == 1) {
                     it.getLocationOnScreen(posXY)
                     break
                 }
@@ -986,7 +1065,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         if (companionList.invalidate > 0 || companionList.level == 0 || companionList.uiRefreshCounter >= 60) {
             companionList.invalidate = 0
             companionList.uiRefreshCounter = 0
-            uiView.invalidate()
+            binding.uiView.invalidate()
         }
 
     }
@@ -1276,7 +1355,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     companionList.itemListBagInserter.addAll(companionList.buildListBag)
                 }
                 bagAdapter.notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
-                recyclerBagItem.smoothScrollToPosition(0)
+                binding.recyclerBagItem.smoothScrollToPosition(0)
 
             }
 
@@ -1287,7 +1366,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             if (companionList.radioAdd >= 1) {
                 companionList.radioAdd -= 1
                 radioAdapter.notifyDataSetChanged()
-                recyclerRadio.smoothScrollToPosition(companionList.radioList.size - 1)
+                binding.recyclerRadio.smoothScrollToPosition(companionList.radioList.size - 1)
             }
 
         // tell adapter active abilities to insert into recycler active ability
@@ -1391,13 +1470,13 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 adapter.notifyDataSetChanged()
                 companionList.itemListInserter.addAll(companionList.itemList)
                 adapter.notifyItemRangeInserted(0, companionList.itemListInserter.size)
-                recyclerCurrentItem.smoothScrollToPosition(0)
+                binding.recyclerCurrentItem.smoothScrollToPosition(0)
 
             val posXY = IntArray(2)
             var height = 0
             var width = 0
-            for (it in recyclerCurrentItem) {
-                if (recyclerCurrentItem.indexOfChild(it) == 6){
+            for (it in binding.recyclerCurrentItem) {
+                if (binding.recyclerCurrentItem.indexOfChild(it) == 6){
                     it.getLocationOnScreen(posXY)
                     height = it.height
                     width = it.width
@@ -1635,7 +1714,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                                 bagAdapter.notifyDataSetChanged()
                                                 companionList.itemListBagInserter.addAll(companionList.buildListBag)
                                                 bagAdapter.notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
-                                                recyclerBagItem.smoothScrollToPosition(0)
+                                                binding.recyclerBagItem.smoothScrollToPosition(0)
                                             }
                                  } finally {
                         companionList.writeLockTower.unlock()
@@ -1715,7 +1794,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                                 bagAdapter.notifyDataSetChanged()
                                 companionList.itemListBagInserter.addAll(companionList.buildListBag)
                                 bagAdapter.notifyItemRangeInserted(0, companionList.itemListBagInserter.size)
-                                recyclerBagItem.smoothScrollToPosition(0)
+                                binding.recyclerBagItem.smoothScrollToPosition(0)
                             }
                         }
                     }
@@ -1753,7 +1832,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
             }
         }
 
-        gameView.setOnDragListener(dragListen)
+        binding.gameView.setOnDragListener(dragListen)
     }
 
     override fun onBagClick(position: Int, it: View?) {
@@ -2189,7 +2268,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 if (companionList.level == 101) {
                     paused = true
                     companionList.lockEverything = true
-                    gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttonfivex)
+                    binding.gameSpeedBtn.setBackgroundResource(R.drawable.gamebuttonfivex)
                     companionList.gameSpeedAdjuster = 5f
                     mHandler.postDelayed({
                         intent = Intent(this, TutorialGameEnd::class.java)
@@ -2451,7 +2530,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
         if ((companionList.dayNightHour == 0 && companionList.dayNightMinute == 0) && companionList.mapPick != 0 && companionList.secretShopBool) {
             companionList.secretShopBool = false
             runOnUiThread() {
-                shopiconmystery.visibility = View.INVISIBLE
+                binding.shopiconmystery.visibility = View.INVISIBLE
             }
 
             companionList.radioList.remove(companionList.midnightMadnessEventRadio)
@@ -2730,7 +2809,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                         paused = true
                         companionList.midnightMadnessEvent = "Secret Shop"
                         runOnUiThread() {
-                            shopiconmystery.visibility = View.VISIBLE
+                            binding.shopiconmystery.visibility = View.VISIBLE
                         }
                         GameActivity.companionList.secretShopIconBool = true
                         mHandler.postDelayed({

@@ -8,46 +8,42 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
-import com.agsolutions.td.*
+import com.agsolutions.td.GameActivity
 import com.agsolutions.td.GameActivity.Companion.companionList
+import com.agsolutions.td.ItemFragmentAdapter
+import com.agsolutions.td.ItemFragmentStrings
+import com.agsolutions.td.R
 import com.agsolutions.td.Utils.round
-import kotlinx.android.synthetic.main.activity_game.*
-import kotlinx.android.synthetic.main.fragment_item.*
-import kotlinx.android.synthetic.main.fragment_stats_tower.*
+import com.agsolutions.td.databinding.FragmentItemBinding
 
-
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [StatsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ItemFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener{
 
     val itemFragmentAdapter = ItemFragmentAdapter(GameActivity.companionList.itemFragmentEnemyList, this )
 
     var mHandler = Handler()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var _binding: FragmentItemBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val mLeak = inflater.inflate(R.layout.fragment_item, container, false)
-        return mLeak
+    ): View {
+        _binding = FragmentItemBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        itemFragmentRecycler.adapter = itemFragmentAdapter
+        binding.itemFragmentRecycler.adapter = itemFragmentAdapter
 
         val spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -63,7 +59,7 @@ class ItemFragment : Fragment(), ItemFragmentAdapter.OnStatsClickListener{
         val glm = GridLayoutManager(activity, 2)
 
         glm.spanSizeLookup = spanSizeLookup
-        itemFragmentRecycler.layoutManager = glm
+        binding.itemFragmentRecycler.layoutManager = glm
 
     }
 

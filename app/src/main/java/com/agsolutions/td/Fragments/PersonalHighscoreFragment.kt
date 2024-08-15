@@ -13,9 +13,9 @@ import com.agsolutions.td.Main.Highscore.Companion.usernameX
 import com.agsolutions.td.Main.HighscoreAdapter
 import com.agsolutions.td.Main.HighscoreAtributes
 import com.agsolutions.td.R
-import kotlinx.android.synthetic.main.fragment_personal_highscore.*
-import kotlinx.android.synthetic.main.fragment_personal_highscore.personalHighscoreRecycler
-import kotlinx.android.synthetic.main.fragment_personal_highscore_mode_two.*
+import com.agsolutions.td.databinding.FragmentOverallHighscoreBinding
+import com.agsolutions.td.databinding.FragmentPersonalHighscoreBinding
+import com.agsolutions.td.databinding.FragmentPersonalHighscoreModeTwoBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -23,33 +23,39 @@ import org.json.JSONObject
 class PersonalHighscoreFragment : Fragment() {
     private val adapter = HighscoreAdapter(Highscore.personalHighscoreList)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private var _binding: FragmentPersonalHighscoreBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_personal_highscore, container, false)
+    ): View {
+        _binding = FragmentPersonalHighscoreBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        personalHighscoreRecycler.adapter = adapter
-        personalHighscoreRecycler.layoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        personalHighscoreRecycler.setHasFixedSize(true)
+        with(binding) {
+            personalHighscoreRecycler.adapter = adapter
+            personalHighscoreRecycler.layoutManager =
+                LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            personalHighscoreRecycler.setHasFixedSize(true)
 
-        Highscore.personalHighscoreList.removeAll { true }
-        personalHighscoreBar.visibility = View.VISIBLE
-
+            Highscore.personalHighscoreList.removeAll { true }
+            personalHighscoreBar.visibility = View.VISIBLE
+        }
 
         HttpTask {
-            personalHighscoreBar.visibility = View.INVISIBLE
+            binding.personalHighscoreBar.visibility = View.INVISIBLE
             if (it == null || it == "") {
                 println("connection error")
                 return@HttpTask
@@ -80,32 +86,39 @@ class PersonalHighscoreFragment : Fragment() {
 class PersonalHighscoreFragmentModeTwo : Fragment() {
     private val adapter = HighscoreAdapter(Highscore.personalHighscoreListModeTwo)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private var _binding: FragmentPersonalHighscoreModeTwoBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_personal_highscore_mode_two, container, false)
+    ): View {
+        _binding = FragmentPersonalHighscoreModeTwoBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        personalHighscoreRecycler.adapter = adapter
-        personalHighscoreRecycler.layoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        personalHighscoreRecycler.setHasFixedSize(true)
+        with(binding) {
+            personalHighscoreRecycler.adapter = adapter
+            personalHighscoreRecycler.layoutManager =
+                LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            personalHighscoreRecycler.setHasFixedSize(true)
 
-        Highscore.personalHighscoreListModeTwo.removeAll { true }
-        personalHighscoreBarModeTwo.visibility = View.VISIBLE
+            Highscore.personalHighscoreListModeTwo.removeAll { true }
+            personalHighscoreBarModeTwo.visibility = View.VISIBLE
+        }
 
         HttpTask {
-            personalHighscoreBarModeTwo.visibility = View.INVISIBLE
+            binding.personalHighscoreBarModeTwo.visibility = View.INVISIBLE
             if (it == null || it == "") {
                 println("connection error")
                 return@HttpTask

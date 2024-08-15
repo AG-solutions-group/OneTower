@@ -5,24 +5,30 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.tutorial_items.okayBTN
-import kotlinx.android.synthetic.main.tutorial_start.*
-import kotlinx.android.synthetic.main.tutorial_start.checkBoxHints
-import kotlinx.android.synthetic.main.tutorial_start_display.*
+import com.agsolutions.td.databinding.TutorialEnemiesBinding
+import com.agsolutions.td.databinding.TutorialGameendBinding
+import com.agsolutions.td.databinding.TutorialItemsBinding
+import com.agsolutions.td.databinding.TutorialStartBinding
+import com.agsolutions.td.databinding.TutorialStartDisplayBinding
+import com.agsolutions.td.databinding.TutorialTalentsBinding
+import com.agsolutions.td.databinding.TutorialTouchScreenBinding
+
 
 class TutorialEnemies : AppCompatActivity() {
 
     var mHandler = Handler ()
+    private lateinit var binding: TutorialEnemiesBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.tutorial_enemies)
-
+        binding = TutorialEnemiesBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         window.setLayout((1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1400.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
-        okayBTN.setOnClickListener() {
+        binding.okayBTN.setOnClickListener() {
             GameActivity.paused = false
             mHandler.postDelayed({
                 finish()
@@ -30,25 +36,25 @@ class TutorialEnemies : AppCompatActivity() {
         }
 
     }
-    override fun onBackPressed() {
-    }
-
 }
 
 class TutorialItems : AppCompatActivity() {
 
     var mHandler = Handler ()
+    private lateinit var binding: TutorialItemsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.tutorial_items)
+        binding = TutorialItemsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
 
         window.setLayout((1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1400.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setGravity(Gravity.TOP)
         window.setElevation(10F)
 
-        okayBTN.setOnClickListener() {
+        binding.okayBTN.setOnClickListener() {
             GameActivity.paused = false
             mHandler.postDelayed({
                 finish()
@@ -56,102 +62,101 @@ class TutorialItems : AppCompatActivity() {
         }
 
     }
-    override fun onBackPressed() {
-    }
-
 }
 
 class TutorialStart : AppCompatActivity() {
 
     var mHandler = Handler ()
+    private lateinit var binding: TutorialStartBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.tutorial_start)
+        binding = TutorialStartBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
 
         window.setLayout((600.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
-        checkBoxHints.isChecked = !GameActivity.companionList.hintsBool
-        checkBoxHints.setOnCheckedChangeListener { _, isChecked ->
-            GameActivity.companionList.hintsBool = !isChecked
+        with(binding) {
+            checkBoxHints.isChecked = !GameActivity.companionList.hintsBool
+            checkBoxHints.setOnCheckedChangeListener { _, isChecked ->
+                GameActivity.companionList.hintsBool = !isChecked
+            }
+
+            okayBTN.setOnClickListener() {
+                mHandler.postDelayed({
+                    intent = Intent(this@TutorialStart, StartItems::class.java)
+                    startActivity(intent)
+                    finish()
+                }, 50)
+            }
         }
-
-        okayBTN.setOnClickListener() {
-            mHandler.postDelayed({
-                intent = Intent(this, StartItems::class.java)
-                startActivity(intent)
-                finish()
-            }, 50)
-        }
-
     }
-    override fun onBackPressed() {
-    }
-
 }
 
 class DisplayTutorialStart : AppCompatActivity() {
 
+    private lateinit var binding: TutorialStartDisplayBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.tutorial_start_display)
+        binding = TutorialStartDisplayBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         window.setLayout(600 , 900 )
         window.setElevation(10F)
 
-        okayBTNDisplay.setOnClickListener() {
+        binding.okayBTNDisplay.setOnClickListener() {
                 finish()
         }
-
     }
-    override fun onBackPressed() {
-    }
-
 }
 
 class TutorialGameEnd : AppCompatActivity() {
 
     var mHandler = Handler ()
+    private lateinit var binding: TutorialGameendBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.tutorial_gameend)
+        binding = TutorialGameendBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         window.setLayout((600.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
-        okayBTN.setOnClickListener() {
+        binding.okayBTN.setOnClickListener() {
             mHandler.postDelayed({
                 GameActivity.paused = false
                 finish()
             }, 50)
         }
-
     }
-    override fun onBackPressed() {
-    }
-
 }
 
 class TutorialTalents : AppCompatActivity() {
 
     var mHandler = Handler ()
+    private lateinit var binding: TutorialTalentsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.tutorial_talents)
-
+        binding = TutorialTalentsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         window.setLayout((600.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (900.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setElevation(10F)
 
-        checkBoxHints.setOnCheckedChangeListener { _, isChecked ->
+        binding.checkBoxHints.setOnCheckedChangeListener { _, isChecked ->
             GameActivity.companionList.hintsBool = !isChecked
         }
 
-        okayBTN.setOnClickListener() {
+        binding.okayBTN.setOnClickListener() {
             GameActivity.paused = false
             mHandler.postDelayed({
                 finish()
@@ -159,25 +164,25 @@ class TutorialTalents : AppCompatActivity() {
         }
 
     }
-    override fun onBackPressed() {
-    }
-
 }
 
 class TutorialTouchScreen : AppCompatActivity() {
 
     var mHandler = Handler ()
+    private lateinit var binding: TutorialTouchScreenBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.tutorial_touch_screen)
+        binding = TutorialTouchScreenBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
 
         window.setLayout((1000.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt(), (1400.0f * ((GameActivity.companionList.scaleScreen) /10)).toInt())
         window.setGravity(Gravity.TOP)
         window.setElevation(10F)
 
-        okayBTN.setOnClickListener() {
+        binding.okayBTN.setOnClickListener() {
             GameActivity.paused = false
             mHandler.postDelayed({
                 finish()
@@ -185,7 +190,4 @@ class TutorialTouchScreen : AppCompatActivity() {
         }
 
     }
-    override fun onBackPressed() {
-    }
-
 }

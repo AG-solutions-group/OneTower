@@ -4,11 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
-import kotlinx.android.synthetic.main.activity_game.*
-import kotlinx.android.synthetic.main.activity_game.view.*
-import kotlinx.coroutines.*
 
 
 class UiView(context: Context, attributes: AttributeSet) : View(context, attributes) {

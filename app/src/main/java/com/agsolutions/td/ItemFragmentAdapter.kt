@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.stats.view.*
 import java.io.Serializable
 
 
@@ -35,7 +34,7 @@ class ItemFragmentAdapter (
     inner class ExampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener
              {
-                 val imageView: ImageView = itemView.statsNameTV
+                 val imageView: ImageView = itemView.findViewById(R.id.statsNameTV)
 
     init {
         itemView.setOnClickListener(this)
@@ -56,30 +55,3 @@ class ItemFragmentAdapter (
 
 
 class ItemFragmentStrings (var name: Int, var stats: String) : Serializable
-
-/*
-holder.itemView.setOnLongClickListener  {
-                val clipText = holder.adapterPosition.toString()
-                val item = ClipData.Item (clipText)
-                val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
-                val data = ClipData(clipText, mimeTypes, item)
-                val dragShadowBuilder = View.DragShadowBuilder(it)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    it.startDragAndDrop(data, dragShadowBuilder,it, 0)
-                }
-                else it.startDrag(data, dragShadowBuilder, it, 0)
-            }
-
- */
-
-/*    val clipText = "This is our ClipData text"
-               val item = ClipData.Item(clipText)
-               val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
-               val data = ClipData(clipText, mimeTypes, item)
-               val dragShadowBuilder = View.DragShadowBuilder(it)
-
-               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                   it.startDragAndDrop(data, dragShadowBuilder, it, 0)
-               }
-               else it.startDrag(data, dragShadowBuilder, it, 0)
-           } */

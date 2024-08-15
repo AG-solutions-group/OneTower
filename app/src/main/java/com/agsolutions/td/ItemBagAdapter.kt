@@ -15,8 +15,6 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.GameActivity.Companion.paused
-import kotlinx.android.synthetic.main.activity_game.*
-import kotlinx.android.synthetic.main.item.view.*
 
 class ItemBagAdapter (
 
@@ -284,8 +282,8 @@ RecyclerView.Adapter<ItemBagAdapter.ExampleViewHolder>() {
     inner class ExampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener, View.OnLongClickListener, View.OnDragListener {
 
-        val imageView: ImageView = itemView.item_view
-        val imageViewOverlay: ImageView = itemView.item_view_overlay
+        val imageView: ImageView = itemView.findViewById(R.id.item_view)
+        val imageViewOverlay: ImageView = itemView.findViewById(R.id.item_view_overlay)
 
         init {
             itemView.setOnClickListener(this)

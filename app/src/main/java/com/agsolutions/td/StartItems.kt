@@ -9,7 +9,8 @@ import com.agsolutions.td.UiViewStartItems.Companion.talentRecyclerElementX
 import com.agsolutions.td.UiViewStartItems.Companion.talentRecyclerPickX
 import com.agsolutions.td.UiViewStartItems.Companion.talentRecyclerX
 import com.agsolutions.td.Utils.round
-import kotlinx.android.synthetic.main.start_items.*
+import com.agsolutions.td.databinding.ActivityAboutBinding
+import com.agsolutions.td.databinding.StartItemsBinding
 
 
 class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartTowerAdapter.OnClickListener, ItemFragmentAdapter.OnStatsClickListener {
@@ -26,6 +27,8 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartT
 
     private val showAdapter = ItemFragmentAdapter(GameActivity.companionList.itemListStartItems, this)
 
+    private lateinit var binding: StartItemsBinding
+
     var clicks1 = false
     var clicks2 = false
     var position1 = 0
@@ -33,66 +36,62 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.start_items)
+        binding = StartItemsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         window.setLayout((600.0f * (GameActivity.companionList.scaleScreen /10)).toInt(), (1200.0f * (GameActivity.companionList.scaleScreen /10)).toInt())
         window.setElevation(10F)
 
-        recyclerStartItem.adapter = adapter
-        recyclerStartItem.layoutManager =
-            GridLayoutManager(this, 3)
-        recyclerStartItem.setHasFixedSize(true)
+        with(binding) {
+            recyclerStartItem.adapter = adapter
+            recyclerStartItem.layoutManager =
+                GridLayoutManager(this@StartItems, 3)
+            recyclerStartItem.setHasFixedSize(true)
 
-        recyclerStartTower.adapter = towerAdapter
-        recyclerStartTower.layoutManager =
-            GridLayoutManager(this, 3)
-        recyclerStartTower.setHasFixedSize(true)
+            recyclerStartTower.adapter = towerAdapter
+            recyclerStartTower.layoutManager =
+                GridLayoutManager(this@StartItems, 3)
+            recyclerStartTower.setHasFixedSize(true)
 
-        showStartItemStatsRecycler.adapter = showAdapter
+            showStartItemStatsRecycler.adapter = showAdapter
 
-        val spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                if (position == 0) {
-                    return 2
-                } else {
-                    if (GameActivity.companionList.itemListStartItems[position].stats.length > 10) return 2
-                    else return 1
+            val spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    if (position == 0) {
+                        return 2
+                    } else {
+                        if (GameActivity.companionList.itemListStartItems[position].stats.length > 10) return 2
+                        else return 1
+                    }
                 }
             }
+
+            val glm = GridLayoutManager(this@StartItems, 2)
+
+            glm.spanSizeLookup = spanSizeLookup
+            showStartItemStatsRecycler.layoutManager = glm
+
+            closeStartItemsBTN.visibility = View.INVISIBLE
+
+            recyclerStartItem.doOnLayout {
+                val posXY = IntArray(2)
+                recyclerStartItem.getChildAt(0).getLocationInWindow(posXY)
+                talentRecyclerX = posXY[0].toFloat()
+                UiViewStartItems.talentRecyclerY =
+                    (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
+                uiViewStartItem.invalidate()
+            }
+
+            recyclerStartTower.doOnLayout {
+                val posXY = IntArray(2)
+                recyclerStartTower.getChildAt(0).getLocationInWindow(posXY)
+                talentRecyclerElementX = posXY[0].toFloat()
+                UiViewStartItems.talentRecyclerElementY =
+                    (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
+                uiViewStartItem.invalidate()
+            }
         }
-
-        val glm = GridLayoutManager(this, 2)
-
-        glm.spanSizeLookup = spanSizeLookup
-        showStartItemStatsRecycler.layoutManager = glm
-
-        closeStartItemsBTN.visibility = View.INVISIBLE
-
-        recyclerStartItem.doOnLayout {
-            val posXY = IntArray(2)
-            recyclerStartItem.getChildAt(0).getLocationInWindow(posXY)
-            talentRecyclerX = posXY[0].toFloat()
-            UiViewStartItems.talentRecyclerY = (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
-            uiViewStartItem.invalidate()
-        }
-
-        recyclerStartTower.doOnLayout {
-            val posXY = IntArray(2)
-            recyclerStartTower.getChildAt(0).getLocationInWindow(posXY)
-            talentRecyclerElementX = posXY[0].toFloat()
-            UiViewStartItems.talentRecyclerElementY = (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
-            uiViewStartItem.invalidate()
-        }
-
-        items()
-
-
-    }
-    override fun onBackPressed() {
-    }
-
-    private fun items() {
-
     }
 
     override fun onClick(position: Int) {
@@ -130,18 +129,22 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartT
 
         clicks1 = true
         talentRecyclerX = 0f
-        uiViewStartItem.invalidate()
-        position1 = position
-        if (clicks1 && clicks2) {
-            closeStartItemsBTN.visibility = View.VISIBLE
-            val posXY = IntArray(2)
-            closeStartItemsBTN.getLocationInWindow(posXY)
-            talentRecyclerPickX = posXY[0].toFloat()
-            UiViewStartItems.talentRecyclerPickY = (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
-            uiViewStartItem.invalidate()
 
-            closeStartItemsBTN.setOnClickListener() {
-                close()
+        with(binding) {
+            uiViewStartItem.invalidate()
+            position1 = position
+            if (clicks1 && clicks2) {
+                closeStartItemsBTN.visibility = View.VISIBLE
+                val posXY = IntArray(2)
+                closeStartItemsBTN.getLocationInWindow(posXY)
+                talentRecyclerPickX = posXY[0].toFloat()
+                UiViewStartItems.talentRecyclerPickY =
+                    (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
+                uiViewStartItem.invalidate()
+
+                closeStartItemsBTN.setOnClickListener() {
+                    close()
+                }
             }
         }
     }
@@ -244,24 +247,27 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartT
 
         clicks2 = true
         talentRecyclerElementX = 0f
-        uiViewStartItem.invalidate()
-        position2 = position
-        if (clicks1 && clicks2) {
-            closeStartItemsBTN.visibility = View.VISIBLE
-            val posXY = IntArray(2)
-            closeStartItemsBTN.getLocationInWindow(posXY)
-            talentRecyclerPickX = posXY[0].toFloat()
-            UiViewStartItems.talentRecyclerPickY = (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
+
+        with(binding) {
             uiViewStartItem.invalidate()
+            position2 = position
+            if (clicks1 && clicks2) {
+                closeStartItemsBTN.visibility = View.VISIBLE
+                val posXY = IntArray(2)
+                closeStartItemsBTN.getLocationInWindow(posXY)
+                talentRecyclerPickX = posXY[0].toFloat()
+                UiViewStartItems.talentRecyclerPickY =
+                    (posXY[1] + (50 * ((GameActivity.companionList.scaleScreen / 10) * GameView.scaleFactor))).toFloat()
+                uiViewStartItem.invalidate()
 
 
-            closeStartItemsBTN.setOnClickListener() {
-                close()
+                closeStartItemsBTN.setOnClickListener() {
+                    close()
+                }
             }
         }
-
-
     }
+
     fun close (){
         GameActivity.companionList.startItemList[position1].imageOverlay = R.drawable.overlaytransparent
         GameActivity.companionList.startTowerList[position2].imageOverlay = R.drawable.overlaytransparent
@@ -285,6 +291,4 @@ class StartItems : AppCompatActivity(), StartItemAdapter.OnClickListener, StartT
         GameActivity.paused = false
         finish()
     }
-
-
 }

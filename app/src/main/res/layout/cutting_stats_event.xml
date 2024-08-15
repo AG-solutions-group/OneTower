@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".CuttingStatsEvent"
-    android:layout_gravity="center_horizontal">
-    <data>
-        <variable name="updateViewModel" type="com.agsolutions.td.UpdateViewModel"/>
-    </data>
-
-<LinearLayout
+    android:layout_gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -34,7 +30,6 @@
             android:text="Cut the s***!"
             android:textAlignment="center"
             android:textColor="#ffffff"
-            android:textSize="@{updateViewModel.textBig}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +46,6 @@
             android:shadowRadius="1.6"
             android:text="We are cutting all stats by 1000!"
             android:textColor="#ffffff"
-            android:textSize="@{updateViewModel.textMain}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleTVCut" />
@@ -68,7 +62,6 @@
             android:shadowRadius="1.6"
             android:text="Here is your reward: 5 Life"
             android:textColor="#ffffff"
-            android:textSize="@{updateViewModel.textMain}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleMysteryTVCut" />
@@ -115,4 +108,3 @@
     </FrameLayout>
 
 </LinearLayout>
-</layout>

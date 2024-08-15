@@ -16,22 +16,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.*
 import com.agsolutions.td.LogIn.HttpTask
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_display_scale.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.circularQBtn
-import kotlinx.android.synthetic.main.activity_main.normalQBtn
-import kotlinx.android.synthetic.main.activity_main.quitBTN
-import kotlinx.android.synthetic.main.activity_start_items_menu.*
-import kotlinx.android.synthetic.main.game_end.*
-import kotlinx.android.synthetic.main.pick_mode.*
-import kotlinx.coroutines.InternalCoroutinesApi
+import com.agsolutions.td.databinding.ActivityMainBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 import kotlin.math.atan2
 import kotlin.random.Random
 import kotlin.system.exitProcess
+
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -54,13 +46,16 @@ class MainActivity : AppCompatActivity() {
         var rotationEnemyY = 0f
     }
 
+    private lateinit var binding: ActivityMainBinding
     var pickAMap = false
     var sharedPrefZ: SharedPreferences? = null
     private var PRIVATE_MODE = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         startScreenBool = true
         screenDensity = resources.displayMetrics.density
@@ -80,12 +75,12 @@ class MainActivity : AppCompatActivity() {
         var continueGameZ = sharedPrefZ!!.getBoolean("continueGame", false)
 
         if (continueGameZ) {
-            continueGameBTN.visibility = View.VISIBLE
+            binding.continueGameBTN.visibility = View.VISIBLE
         }
 
         if (isOnline(this)) {
 
-            progressMainBar.visibility = View.VISIBLE
+            binding.progressMainBar.visibility = View.VISIBLE
 
             if (sharedPrefZ!!.getBoolean("wasOffline", false)) {
                 var editor = sharedPrefZ!!.edit()
@@ -96,7 +91,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             HttpTask {
-                progressMainBar.visibility = View.INVISIBLE
+                binding.progressMainBar.visibility = View.INVISIBLE
                 if (it == null) {
                     println("connection error")
                     return@HttpTask
@@ -113,7 +108,7 @@ class MainActivity : AppCompatActivity() {
                         userdata.xp = item.getDouble("xp")
                     }
                     Log.d("userdata Data:::::::", userdata.toString())
-                    showUserTV.text = userdata.username
+                    binding.showUserTV.text = userdata.username
                     overallXp = userdata.xp.toFloat()
                     username = userdata.username.toString()
                     var editor = sharedPrefZ!!.edit()
@@ -126,13 +121,11 @@ class MainActivity : AppCompatActivity() {
 
                 } else {
                     Log.d("post Data:::::::", json_res.getString("message"))
-                    Snackbar.make(findViewById(R.id.snackbar), json_res.getString("message") + id, Snackbar.LENGTH_LONG)
-                        .show()
                 }
             }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_detail.php?id=" + id)
 
         } else {
-            showUserTV.text = sharedPrefZ!!.getString("username", "user")
+            binding.showUserTV.text = sharedPrefZ!!.getString("username", "user")
             overallXp = sharedPrefZ!!.getFloat("overallxp", 0f)
             username = sharedPrefZ!!.getString("username", "user").toString()
             initViews()
@@ -201,268 +194,279 @@ class MainActivity : AppCompatActivity() {
         }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/update_xp.php", json.toString())
     }
 
-    override fun onBackPressed() {
-
-    }
-
     private fun initViews() {
 
-        if (firstDisplayScale == 1) {
-            newGameBtn.visibility = View.INVISIBLE
-            highScoreBTN.visibility = View.INVISIBLE
-            startItemsBTN.visibility = View.INVISIBLE
-            aboutBTN.visibility = View.INVISIBLE
-            wikiBTN.visibility = View.INVISIBLE
-            normalQBtn.visibility = View.INVISIBLE
-            circularQBtn.visibility = View.INVISIBLE
-        } else {
-            newGameBtn.visibility = View.VISIBLE
-            highScoreBTN.visibility = View.VISIBLE
-            startItemsBTN.visibility = View.VISIBLE
-            aboutBTN.visibility = View.VISIBLE
-            wikiBTN.visibility = View.VISIBLE
-            normalQBtn.visibility = View.INVISIBLE
-            circularQBtn.visibility = View.INVISIBLE
-        }
+        with(binding) {
+            if (firstDisplayScale == 1) {
+                newGameBtn.visibility = View.INVISIBLE
+                highScoreBTN.visibility = View.INVISIBLE
+                startItemsBTN.visibility = View.INVISIBLE
+                aboutBTN.visibility = View.INVISIBLE
+                wikiBTN.visibility = View.INVISIBLE
+                normalQBtn.visibility = View.INVISIBLE
+                circularQBtn.visibility = View.INVISIBLE
+            } else {
+                newGameBtn.visibility = View.VISIBLE
+                highScoreBTN.visibility = View.VISIBLE
+                startItemsBTN.visibility = View.VISIBLE
+                aboutBTN.visibility = View.VISIBLE
+                wikiBTN.visibility = View.VISIBLE
+                normalQBtn.visibility = View.INVISIBLE
+                circularQBtn.visibility = View.INVISIBLE
+            }
 
-        progressMainBar.visibility = View.INVISIBLE
+            progressMainBar.visibility = View.INVISIBLE
 
+            when (overallXp.toInt()) {
+                in 0..1500 -> {
+                    userLevel = 0
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 0
+                        userLevelProgressBar.max = 1500
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
 
+                in 1501..4000 -> {
+                    userLevel = 1
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 1501
+                        userLevelProgressBar.max = 4000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
 
+                in 4001..9000 -> {
+                    userLevel = 2
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 4001
+                        userLevelProgressBar.max = 9000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
 
-        when (overallXp.toInt()) {
-            in 0..1500 -> {
-                userLevel = 0
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 0
-                    userLevelProgressBar.max = 1500
-                    userLevelProgressBar.progress = overallXp.toInt()
+                in 9001..15000 -> {
+                    userLevel = 3
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 9001
+                        userLevelProgressBar.max = 15000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
                 }
-            }
-            in 1501..4000 -> {
-                userLevel = 1
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 1501
-                    userLevelProgressBar.max = 4000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 4001..9000 -> {
-                userLevel = 2
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 4001
-                    userLevelProgressBar.max = 9000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 9001..15000 -> {
-            userLevel = 3
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                userLevelProgressBar.min = 9001
-                userLevelProgressBar.max = 15000
-                userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 15001..25000 -> {
-                userLevel = 4
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 15001
-                    userLevelProgressBar.max = 25000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 25001..60000 -> {
-                userLevel = 5
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 25001
-                    userLevelProgressBar.max = 60000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 60001..125000 -> {
-                userLevel = 6
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 60001
-                    userLevelProgressBar.max = 125000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 125001..300000 -> {
-                userLevel = 7
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 125001
-                    userLevelProgressBar.max = 300000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 300001..625000 -> {
-                userLevel = 8
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 300001
-                    userLevelProgressBar.max = 625000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 625001..1500000 -> {
-                userLevel = 9
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 625001
-                    userLevelProgressBar.max = 1500000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 1500001..3125000 -> {
-                userLevel = 10
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 1500001
-                    userLevelProgressBar.max = 3125000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 3125001..8000000 -> {
-                userLevel = 11
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 3125001
-                    userLevelProgressBar.max = 8000000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 8000001..15625000 -> {
-                userLevel = 12
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 8000001
-                    userLevelProgressBar.max = 15625000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 15625001..40000000 -> {
-                userLevel = 13
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 15625001
-                    userLevelProgressBar.max = 40000000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 40000001..781250000 -> {
-                userLevel = 14
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 40000001
-                    userLevelProgressBar.max = 78125000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-            in 78125001..390625000 -> {
-                userLevel = 15
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    userLevelProgressBar.min = 78125001
-                    userLevelProgressBar.max = 390625000
-                    userLevelProgressBar.progress = overallXp.toInt()
-                }
-            }
-        }
 
-        var editor = sharedPrefZ!!.edit()
-        editor.putInt("userLevel", userLevel)
-        editor.apply()
+                in 15001..25000 -> {
+                    userLevel = 4
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 15001
+                        userLevelProgressBar.max = 25000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
 
-        showUserLevelTV.text = userLevel.toString()
+                in 25001..60000 -> {
+                    userLevel = 5
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 25001
+                        userLevelProgressBar.max = 60000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
 
-        continueGameBTN.setOnClickListener() {
-            var mapPickX = sharedPrefZ!!.getInt("continueGameMapPick", 0)
-            var mapModeX = sharedPrefZ!!.getInt("continueGameMapMode", 1)
-            intent = Intent(this, GameActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.putExtra("pickMap", mapPickX)
-            intent.putExtra("pickMode", mapModeX)
-            intent.putExtra("LoadGame", true)
-            startActivity(intent)
-            exitProcess(0)
-        }
+                in 60001..125000 -> {
+                    userLevel = 6
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 60001
+                        userLevelProgressBar.max = 125000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
 
-        newGameBtn.setOnClickListener() {
-            if (pickAMap){
-                    intent = Intent(this, GameActivity::class.java)
+                in 125001..300000 -> {
+                    userLevel = 7
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 125001
+                        userLevelProgressBar.max = 300000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
+
+                in 300001..625000 -> {
+                    userLevel = 8
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 300001
+                        userLevelProgressBar.max = 625000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
+
+                in 625001..1500000 -> {
+                    userLevel = 9
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 625001
+                        userLevelProgressBar.max = 1500000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
+
+                in 1500001..3125000 -> {
+                    userLevel = 10
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 1500001
+                        userLevelProgressBar.max = 3125000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
+
+                in 3125001..8000000 -> {
+                    userLevel = 11
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 3125001
+                        userLevelProgressBar.max = 8000000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
+
+                in 8000001..15625000 -> {
+                    userLevel = 12
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 8000001
+                        userLevelProgressBar.max = 15625000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
+
+                in 15625001..40000000 -> {
+                    userLevel = 13
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 15625001
+                        userLevelProgressBar.max = 40000000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
+
+                in 40000001..781250000 -> {
+                    userLevel = 14
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 40000001
+                        userLevelProgressBar.max = 78125000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
+
+                in 78125001..390625000 -> {
+                    userLevel = 15
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        userLevelProgressBar.min = 78125001
+                        userLevelProgressBar.max = 390625000
+                        userLevelProgressBar.progress = overallXp.toInt()
+                    }
+                }
+            }
+
+            var editor = sharedPrefZ!!.edit()
+            editor.putInt("userLevel", userLevel)
+            editor.apply()
+
+            showUserLevelTV.text = userLevel.toString()
+
+            continueGameBTN.setOnClickListener() {
+                var mapPickX = sharedPrefZ!!.getInt("continueGameMapPick", 0)
+                var mapModeX = sharedPrefZ!!.getInt("continueGameMapMode", 1)
+                val intent = Intent(applicationContext, GameActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.putExtra("pickMap", mapPickX)
+                intent.putExtra("pickMode", mapModeX)
+                intent.putExtra("LoadGame", true)
+                startActivity(intent)
+                exitProcess(0)
+            }
+
+            newGameBtn.setOnClickListener() {
+                if (pickAMap) {
+                    intent = Intent(applicationContext, GameActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     intent.putExtra("pickMap", 1)
                     intent.putExtra("pickMode", 1)
                     startActivity(intent)
                     exitProcess(0)
-            }else{
-               pickAMap = true
-                newGameBtn.setBackgroundResource(R.drawable.startbuttonnormal)
-                startItemsBTN.setBackgroundResource(R.drawable.startbuttoncircular)
-                highScoreBTN.setBackgroundResource(R.drawable.startbuttoncancel)
+                } else {
+                    pickAMap = true
+                    newGameBtn.setBackgroundResource(R.drawable.startbuttonnormal)
+                    startItemsBTN.setBackgroundResource(R.drawable.startbuttoncircular)
+                    highScoreBTN.setBackgroundResource(R.drawable.startbuttoncancel)
 
-                normalQBtn.visibility = View.VISIBLE
-                circularQBtn.visibility = View.VISIBLE
+                    normalQBtn.visibility = View.VISIBLE
+                    circularQBtn.visibility = View.VISIBLE
 
-                aboutBTN.visibility = View.INVISIBLE
-                wikiBTN.visibility = View.INVISIBLE
-                quitBTN.visibility = View.INVISIBLE
-                scaleBTN.visibility = View.INVISIBLE
+                    aboutBTN.visibility = View.INVISIBLE
+                    wikiBTN.visibility = View.INVISIBLE
+                    quitBTN.visibility = View.INVISIBLE
+                    scaleBTN.visibility = View.INVISIBLE
+                }
             }
-        }
-        startItemsBTN.setOnClickListener() {
-            if (pickAMap){
-                intent = Intent(this, GameActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                intent.putExtra("pickMap", 1)
-                intent.putExtra("pickMode", 2)
+            startItemsBTN.setOnClickListener() {
+                if (pickAMap) {
+                    intent = Intent(applicationContext, GameActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.putExtra("pickMap", 1)
+                    intent.putExtra("pickMode", 2)
+                    startActivity(intent)
+                    exitProcess(0)
+                } else {
+                    intent = Intent(applicationContext, StartItemsMenu::class.java)
+                    intent.putExtra("userLevel", userLevel)
+                    startActivity(intent)
+                    exitProcess(0)
+                }
+            }
+
+            normalQBtn.setOnClickListener() {
+                Toast.makeText(applicationContext, "You lose a life when enemies reach the portal. The game ends when you have no lives left.", Toast.LENGTH_LONG)
+                    .show()
+            }
+            circularQBtn.setOnClickListener() {
+                Toast.makeText(applicationContext, "Enemies circle. The game ends when there are more than 30 enemies on the map.", Toast.LENGTH_LONG)
+                    .show()
+            }
+
+            highScoreBTN.setOnClickListener() {
+                if (pickAMap) {
+                    pickAMap = false
+                    newGameBtn.setBackgroundResource(R.drawable.startbuttonnewgame)
+                    startItemsBTN.setBackgroundResource(R.drawable.startbuttonitems)
+                    highScoreBTN.setBackgroundResource(R.drawable.startbuttonscore)
+
+                    normalQBtn.visibility = View.INVISIBLE
+                    circularQBtn.visibility = View.INVISIBLE
+
+                    aboutBTN.visibility = View.VISIBLE
+                    wikiBTN.visibility = View.VISIBLE
+                    quitBTN.visibility = View.VISIBLE
+                    scaleBTN.visibility = View.VISIBLE
+
+                } else {
+                    intent = Intent(applicationContext, Highscore::class.java)
+                    startActivity(intent)
+                    exitProcess(0)
+                }
+            }
+            wikiBTN.setOnClickListener() {
+                Toast.makeText(applicationContext, "Coming Soon.", Toast.LENGTH_LONG).show()
+            }
+            aboutBTN.setOnClickListener() {
+                intent = Intent(applicationContext, About::class.java)
+                startActivity(intent)
+
+            }
+            quitBTN.setOnClickListener() {
+                this@MainActivity.finishAffinity()
+            }
+            scaleBTN.setOnClickListener() {
+                intent = Intent(applicationContext, DisplayScale::class.java)
                 startActivity(intent)
                 exitProcess(0)
-            }else {
-                intent = Intent(this, StartItemsMenu::class.java)
-                intent.putExtra("userLevel", userLevel)
-                startActivity(intent)
-                exitProcess(0)
             }
         }
-
-        normalQBtn.setOnClickListener() {
-            Toast.makeText(this, "You lose a life when enemies reach the portal. The game ends when you have no lives left.",Toast.LENGTH_LONG).show()
-        }
-        circularQBtn.setOnClickListener(){
-            Toast.makeText(this,"Enemies circle. The game ends when there are more than 30 enemies on the map.",Toast.LENGTH_LONG).show()
-        }
-
-        highScoreBTN.setOnClickListener() {
-            if (pickAMap){
-                pickAMap = false
-                newGameBtn.setBackgroundResource(R.drawable.startbuttonnewgame)
-                startItemsBTN.setBackgroundResource(R.drawable.startbuttonitems)
-                highScoreBTN.setBackgroundResource(R.drawable.startbuttonscore)
-
-                normalQBtn.visibility = View.INVISIBLE
-                circularQBtn.visibility = View.INVISIBLE
-
-                aboutBTN.visibility = View.VISIBLE
-                wikiBTN.visibility = View.VISIBLE
-                quitBTN.visibility = View.VISIBLE
-                scaleBTN.visibility = View.VISIBLE
-
-            } else {
-                intent = Intent(this, Highscore::class.java)
-                startActivity(intent)
-                exitProcess(0)
-            }
-        }
-        wikiBTN.setOnClickListener() {
-            Toast.makeText(this,"Coming Soon.",Toast.LENGTH_LONG).show()
-        }
-        aboutBTN.setOnClickListener() {
-            intent = Intent(this, About::class.java)
-            startActivity(intent)
-
-        }
-        quitBTN.setOnClickListener() {
-            this.finishAffinity()
-        }
-        scaleBTN.setOnClickListener() {
-            intent = Intent(this, DisplayScale::class.java)
-            startActivity(intent)
-            exitProcess(0)
-        }
-
     }
 
     fun isOnline(context: Context): Boolean {

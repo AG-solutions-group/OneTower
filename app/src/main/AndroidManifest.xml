@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.agsolutions.td">
 
@@ -11,118 +10,130 @@
         android:label="One Tower"
         android:roundIcon="@drawable/onetowerlogo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MaterialComponents.NoActionBar"
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Main.PickMap"
-            android:theme="@style/AppTheme.MapMode"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Main.PickMode"
-            android:theme="@style/AppTheme.MapMode"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Main.StartItemsMenu"
-            android:screenOrientation="portrait" />
-        <activity android:name=".Main.About"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
-        <activity android:name=".Main.Highscore"
-            android:screenOrientation="portrait" />
-        <activity android:name=".LogIn.Register"
-            android:screenOrientation="portrait" />
-        <activity android:name=".LogIn.LogInScreen"
-            android:exported="true"
-            android:screenOrientation="portrait">
+
+        <activity
+            android:name=".Main.PickMap"
+            android:exported="false"/>
+
+        <activity
+            android:name=".Main.PickMode"
+            android:exported="false"/>
+
+        <activity
+            android:name=".Main.StartItemsMenu"
+            android:exported="false"/>
+
+        <activity
+            android:name=".Main.About"
+            android:exported="false"/>
+
+        <activity
+            android:name=".Main.Highscore"
+            android:exported="false"/>
+
+        <activity
+            android:name=".LogIn.Register"
+            android:exported="false"/>
+
+        <activity
+            android:name=".LogIn.LogInScreen"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GameActivity"
-            android:screenOrientation="portrait"
-            />
+
+        <activity
+            android:name=".GameActivity"
+            android:exported="false"/>
+
         <activity
             android:name=".StartItems"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".TutorialItems"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".TutorialStart"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".DisplayTutorialStart"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".TutorialTalents"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".TutorialGameEnd"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".TutorialTouchScreen"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".TutorialEnemies"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".SecretShop"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".Shop"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".MysteryMessage"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".CuttingStatsEvent"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".Main.DisplayScale"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".MidnightMadness"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".GameMenu"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".GameSettings"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".GameWiki"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".Main.Wiki"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".GameEnd"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
+
         <activity
             android:name=".Talents"
-            android:theme="@style/AppTheme.StartItems"
-            android:screenOrientation="portrait" />
-        <activity android:name=".Main.MainActivity"
-            android:screenOrientation="portrait">
+            android:exported="false"/>
 
-        </activity>
+        <activity
+            android:name=".Main.MainActivity"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
