@@ -5,6 +5,8 @@ import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 
+const val MAIN_URL = "https://ag-solutions-group.com"
+
 class HttpTask (var callback: (String?) -> Unit) : AsyncTask<String, Unit, String>()  {
 
     override fun doInBackground(vararg params: String): String? {
@@ -41,6 +43,8 @@ class HttpTask (var callback: (String?) -> Unit) : AsyncTask<String, Unit, Strin
                 return data
             } else {
                 println("ERROR ${httpClient.responseCode}")
+                println("ERROR message ${httpClient.responseMessage}")
+
             }
         } catch (e: Exception) {
             e.printStackTrace()

@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.*
 import com.agsolutions.td.LogIn.HttpTask
+import com.agsolutions.td.LogIn.MAIN_URL
 import com.agsolutions.td.databinding.ActivityMainBinding
 import org.json.JSONArray
 import org.json.JSONObject
@@ -122,7 +123,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Log.d("post Data:::::::", json_res.getString("message"))
                 }
-            }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_detail.php?id=" + id)
+            }.execute("GET", "$MAIN_URL/get_user_detail.php?id=" + id)
 
         } else {
             binding.showUserTV.text = sharedPrefZ!!.getString("username", "user")
@@ -151,7 +152,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d("post Data:::::::", json_res.getString("message"))
             }
-        }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/highscore.php", json.toString())
+        }.execute("POST", "$MAIN_URL/highscore.php", json.toString())
 
         json.put("date", sharedPrefZ!!.getString("GetHighscoreMap12Date", "0"))
         json.put("username", sharedPrefZ!!.getString("GetHighscoreMap12Username", "user"))
@@ -169,7 +170,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d("post Data:::::::", json_res.getString("message"))
             }
-        }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/highscore.php", json.toString())
+        }.execute("POST", "$MAIN_URL/highscore.php", json.toString())
     }
 
     private fun postData2() {
@@ -191,7 +192,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d("post Data:::::::", json_res.getString("message"))
             }
-        }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/update_xp.php", json.toString())
+        }.execute("POST", "$MAIN_URL/update_xp.php", json.toString())
     }
 
     private fun initViews() {

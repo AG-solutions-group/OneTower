@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.agsolutions.td.LogIn.HttpTask
+import com.agsolutions.td.LogIn.MAIN_URL
 import com.agsolutions.td.Main.Highscore
 import com.agsolutions.td.Main.HighscoreAdapter
 import com.agsolutions.td.Main.HighscoreAtributes
@@ -79,7 +80,7 @@ class OverallHighscoreFragment : Fragment() {
                 } else {
                     Log.d("post Data:::::::", jsonRes.getString("message"))
                 }
-            }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_overall_highscore_map_11.php")
+            }.execute("GET", "$MAIN_URL/get_overall_highscore_map_11.php")
 
         }
     }
@@ -150,7 +151,7 @@ class OverallHighscoreFragmentModeTwo : Fragment() {
             } else {
                 Log.d("post Data:::::::", jsonRes.getString("message"))
             }
-        }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_overall_highscore_map_12.php")
+        }.execute("GET", "$MAIN_URL/get_overall_highscore_map_12.php")
 
     }
 

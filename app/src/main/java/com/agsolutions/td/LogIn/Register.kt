@@ -99,7 +99,7 @@ class Register : AppCompatActivity() {
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
-                }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/register.php", json.toString())
+                }.execute("POST", "$MAIN_URL/register.php", json.toString())
             }
 
         }

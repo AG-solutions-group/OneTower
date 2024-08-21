@@ -16,6 +16,7 @@ import com.agsolutions.td.ItemFragmentAdapter
 import com.agsolutions.td.ItemFragmentStrings
 import com.agsolutions.td.Items
 import com.agsolutions.td.LogIn.HttpTask
+import com.agsolutions.td.LogIn.MAIN_URL
 import com.agsolutions.td.R
 import com.agsolutions.td.StartItemAdapter
 import com.agsolutions.td.StartItemAdapter2
@@ -118,7 +119,7 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
                         } else {
                             Log.d("post Data else:::::::", json_res.getString("message"))
                         }
-                    }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/start_items.php", json.toString())
+                    }.execute("POST", "$MAIN_URL/start_items.php", json.toString())
                 }
             }else {
                 post1()
@@ -178,7 +179,7 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
                     } else {
                         Log.d("post Data:::::::", jsonRes.getString("message"))
                     }
-                }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_start_items.php?username=" + (username))
+                }.execute("GET", "$MAIN_URL/get_user_start_items.php?username=" + (username))
             }
             intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -217,7 +218,7 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
             } else {
                 Log.d("post Data:::::::", jsonRes.getString("message"))
             }
-        }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_start_items.php?username=" + (username))
+        }.execute("GET", "$MAIN_URL/get_user_start_items.php?username=" + (username))
     }
 
     override fun onClick(position: Int) {
@@ -297,7 +298,7 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
             } else {
                 Log.d("post Data:::::::", json_res.getString("message"))
             }
-        }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/start_items.php", json.toString())
+        }.execute("POST", "$MAIN_URL/start_items.php", json.toString())
     }
 
     private fun postData2(position: Int) {
@@ -382,7 +383,7 @@ class StartItemsMenu : AppCompatActivity(), StartItemAdapter.OnClickListener, St
                 } else {
                     Log.d("post Data:::::::", jsonRes.getString("message"))
                 }
-            }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_start_items.php?username=" + (username))
+            }.execute("GET", "$MAIN_URL/get_user_start_items.php?username=" + (username))
         }
 
         intent = Intent(this, MainActivity::class.java)

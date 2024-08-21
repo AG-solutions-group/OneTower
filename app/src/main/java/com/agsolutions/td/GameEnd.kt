@@ -11,6 +11,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.agsolutions.td.GameActivity.Companion.companionList
 import com.agsolutions.td.LogIn.HttpTask
+import com.agsolutions.td.LogIn.MAIN_URL
 import com.agsolutions.td.databinding.GameEndBinding
 import org.json.JSONArray
 import org.json.JSONObject
@@ -145,7 +146,7 @@ class GameEnd : AppCompatActivity() {
             } else {
                 Log.d("post Data:::::::", json_res.getString("message"))
             }
-        }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/highscore.php", json.toString())
+        }.execute("POST", "$MAIN_URL/highscore.php", json.toString())
     }
 
     private fun postData2() {
@@ -169,7 +170,7 @@ class GameEnd : AppCompatActivity() {
             } else {
                 Log.d("post Data:::::::", json_res.getString("message"))
             }
-        }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/update_xp.php", json.toString())
+        }.execute("POST", "$MAIN_URL/update_xp.php", json.toString())
     }
 
     fun isOnline(context: Context): Boolean {

@@ -87,7 +87,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.5">
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/buyItemBTN"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
@@ -103,7 +103,7 @@
                     app:backgroundTint="@null"
                     android:background="@drawable/gamebuttonemptylongbw"/>
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/quitBTN"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"

@@ -39,6 +39,7 @@ import com.agsolutions.td.GameView.Companion.paintTowerDmgDone
 import com.agsolutions.td.GameView.Companion.paintWizardDmgDone
 import com.agsolutions.td.GameView.Companion.towerBase
 import com.agsolutions.td.LogIn.HttpTask
+import com.agsolutions.td.LogIn.MAIN_URL
 import com.agsolutions.td.Main.MainActivity
 import com.agsolutions.td.Utils.round
 import com.agsolutions.td.databinding.ActivityGameBinding
@@ -260,7 +261,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                 } else {
                     Log.d("post Data:::::::", jsonRes.getString("message"))
                 }
-            }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_start_items.php?username=" + (usernameX))
+            }.execute("GET", "$MAIN_URL/get_user_start_items.php?username=" + (usernameX))
         } else {
             var textFile = File("$filesDir/itemList.dat")
             var fis = FileInputStream(textFile)
@@ -310,7 +311,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     } else {
                         Log.d("post Data:::::::", jsonRes.getString("message"))
                     }
-                }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_overall_highscore_map_11.php")
+                }.execute("GET", "$MAIN_URL/get_overall_highscore_map_11.php")
 
                 HttpTask {
                     if (it == null || it == "") {
@@ -341,7 +342,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     } else {
                         Log.d("post Data:::::::", jsonRes.getString("message"))
                     }
-                }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_highscore_map_11.php?username=" + (usernameX))
+                }.execute("GET", "$MAIN_URL/get_user_highscore_map_11.php?username=" + (usernameX))
 
             } else {
 
@@ -374,7 +375,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     } else {
                         Log.d("post Data:::::::", jsonRes.getString("message"))
                     }
-                }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_overall_highscore_map_12.php")
+                }.execute("GET", "$MAIN_URL/get_overall_highscore_map_12.php")
 
                 HttpTask {
                     if (it == null || it == "") {
@@ -405,7 +406,7 @@ class GameActivity : AppCompatActivity(), ItemAdapter.OnClickListener, ItemBagAd
                     } else {
                         Log.d("post Data:::::::", jsonRes.getString("message"))
                     }
-                }.execute("GET", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/get_user_highscore_map_12.php?username=" + (usernameX))
+                }.execute("GET", "$MAIN_URL/get_user_highscore_map_12.php?username=" + (usernameX))
 
             }
         } else {

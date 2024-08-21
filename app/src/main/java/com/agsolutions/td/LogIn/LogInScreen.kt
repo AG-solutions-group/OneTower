@@ -82,14 +82,14 @@ class LogInScreen : AppCompatActivity() {
             json.put("password", binding.textInputEditTextPassword.text.toString())
 
             binding.progressBar.visibility = View.VISIBLE
-            HttpTask {
+            HttpTask { task ->
                 binding.progressBar.visibility = View.INVISIBLE
-                if (it == null) {
+                if (task == null) {
                     println("connection error")
                     return@HttpTask
                 }
-                println(it)
-                val json_res = JSONObject(it)
+                println(task)
+                val json_res = JSONObject(task)
                 if (json_res.getString("status").equals("true")) {
                     var id = 0
                     var jsonArray = JSONArray(json_res.getString("data"))
@@ -115,7 +115,7 @@ class LogInScreen : AppCompatActivity() {
                     ).show()
                 }
 
-            }.execute("POST", "http://s100019391.ngcobalt394.manitu.net/ag-solutions-group.com/login.php", json.toString())
+            }.execute("POST", "$MAIN_URL/login.php", json.toString())
 
 
         }
